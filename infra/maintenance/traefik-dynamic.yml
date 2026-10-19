@@ -1,0 +1,35 @@
+# Traefik dynamic configuration for the maintenance page (FR-105, plan 14.4/5).
+# Coolify: Servers -> <server> -> Proxy -> Dynamic Configurations -> add this file (name: kazuist-maintenance.yaml).
+# Replace HOST below with staging.kazuist.com or kazuist.com per environment.
+#
+# 1. "kazuist-maintenance" middleware: when web answers 502/503/504 (or a dependency is down during deploy),
+#    Traefik serves the static page instead of its raw error page. Attach it to the web router with the
+#    Coolify container label:
+#      traefik.http.routers.<web-router>.middlewares=kazuist-maintenance@file
+# 2. "kazuist-maintenance-fallback" router: lowest priority catch-all for HOST. When no healthy web container
+#    is registered (Traefik drops unhealthy containers), requests fall through to the page with 503.
+http:
+  middlewares:
+    kazuist-maintenance:
+      errors:
+        status:
+          - '502'
+          - '503'
+          - '504'
+        service: kazuist-maintenance
+        query: /
+  routers:
+    kazuist-maintenance-fallback:
+      rule: Host(`HOST`)
+      priority: 1
+      entryPoints:
+        - https
+      service: kazuist-maintenance
+      tls:
+        certResolver: letsencrypt
+  services:
+    kazuist-maintenance:
+      loadBalancer:
+        servers:
+          # Container name of the maintenance service in Coolify, on the shared "coolify" network.
+          - url: http://kazuist-maintenance:8080

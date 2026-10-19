@@ -70,3 +70,102 @@ jobs:
           sudo mv gitleaks /usr/local/bin/gitleaks
       - name: Scan full history
         run: gitleaks git --redact --verbose .
+
+  docker:
+    # Real PostgreSQL 18 + pgvector, Valkey, S3 and Mailpit from infra/docker-compose.dev.yml on the runner;
+    # migrations through the one-shot migrate image, DB smoke test, and the three app images (no push).
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      COMPOSE_FILE: infra/docker-compose.dev.yml
+    steps:
+      - uses: actions/checkout@v5
+      - name: Throwaway credentials for CI services
+        run: |
+          {
+            echo "POSTGRES_PASSWORD=$(openssl rand -hex 16)"
+            echo "S3_ACCESS_KEY_ID=ci$(openssl rand -hex 6)"
+            echo "S3_SECRET_ACCESS_KEY=$(openssl rand -hex 20)"
+          } > .env
+      - name: Validate compose file
+        run: docker compose --env-file .env config --quiet
+      - name: docker compose up --wait
+        run: docker compose --env-file .env up -d --wait --wait-timeout 180
+      - name: Service status
+        if: always()
+        run: docker compose --env-file .env ps
+      - name: S3 endpoint answers
+        run: |
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:9000/ || true)
+            if [ "$code" != "000" ]; then echo "S3 HTTP $code"; exit 0; fi
+            sleep 2
+          done
+          docker compose --env-file .env logs s3 | tail -50
+          exit 1
+      - uses: docker/setup-buildx-action@v3
+      - name: Build migrate image
+        run: docker build -f infra/docker/worker-node/Dockerfile --target migrate -t kazuist-migrate:ci .
+      - name: Migrate (one-shot image, real PostgreSQL)
+        run: |
+          set -a; . ./.env; set +a
+          docker run --rm --network host \
+            -e DATABASE_URL="postgres://kazuist:${POSTGRES_PASSWORD}@127.0.0.1:5432/kazuist" \
+            kazuist-migrate:ci
+      - name: Migrate again (must be a no-op)
+        run: |
+          set -a; . ./.env; set +a
+          docker run --rm --network host \
+            -e DATABASE_URL="postgres://kazuist:${POSTGRES_PASSWORD}@127.0.0.1:5432/kazuist" \
+            kazuist-migrate:ci | tee migrate2.log
+          grep -q '"msg":"done"' migrate2.log
+      - name: DB smoke test (vector, pg_trgm, turkish tsvector, ledger triggers)
+        run: >
+          docker compose --env-file .env exec -T postgres
+          psql -U kazuist -d kazuist -v ON_ERROR_STOP=1 -f - < infra/scripts/db-smoke.sql
+      - name: Build web image
+        run: >
+          docker build -f infra/docker/web/Dockerfile -t kazuist-web:ci
+          --build-arg GIT_COMMIT=${{ github.sha }}
+          --build-arg BUILT_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ) .
+      - name: Build worker-node image
+        run: docker build -f infra/docker/worker-node/Dockerfile -t kazuist-worker-node:ci .
+      - name: Build worker-py image
+        run: docker build -f infra/docker/worker-py/Dockerfile -t kazuist-worker-py:ci .
+      - name: Maintenance page image returns 503 with the page
+        run: |
+          docker build -f infra/maintenance/Dockerfile -t kazuist-maintenance:ci .
+          docker run -d --name maint -p 127.0.0.1:8080:8080 kazuist-maintenance:ci
+          sleep 2
+          code=$(curl -s -o page.html -w '%{http_code}' http://127.0.0.1:8080/herhangi)
+          test "$code" = "503"
+          grep -q 'bakımda' page.html
+          docker rm -f maint
+      - name: Images run as non-root
+        run: |
+          for img in kazuist-web:ci kazuist-worker-node:ci kazuist-worker-py:ci kazuist-migrate:ci kazuist-maintenance:ci; do
+            u=$(docker image inspect -f '{{.Config.User}}' "$img")
+            echo "$img user=$u"
+            if [ -z "$u" ] || [ "$u" = "root" ] || [ "$u" = "0" ]; then exit 1; fi
+          done
+      - name: worker-py imports
+        run: docker run --rm kazuist-worker-py:ci python -c "import core.jobs, psycopg; print('ok')"
+      - name: web container answers /api/version with the build commit
+        run: |
+          docker run -d --name web --network host kazuist-web:ci
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/api/version > version.json; then break; fi
+            sleep 2
+          done
+          cat version.json
+          grep -q '${{ github.sha }}' version.json
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/api/health)
+          echo "health HTTP $code (503 expected until pings and env are wired)"
+      - name: Logs on failure
+        if: failure()
+        run: |
+          docker compose --env-file .env logs --tail 100
+          docker logs web || true
+      - name: Tear down
+        if: always()
+        run: docker compose --env-file .env down -v
