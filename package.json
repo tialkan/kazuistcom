@@ -15,7 +15,8 @@
     "format": "prettier --write .",
     "test": "pnpm -r --if-present test",
     "check:text": "node scripts/check-text.mjs",
-    "contracts:lint": "pnpm --filter @kazuist/contracts lint"
+    "contracts:lint": "pnpm --filter @kazuist/contracts lint",
+    "hooks:install": "git config core.hooksPath .githooks"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
