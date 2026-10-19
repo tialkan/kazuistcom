@@ -1,6 +1,6 @@
 {
-  "id": "65a0bef5-a7c0-4583-98bd-4ca2e6de1ac7",
-  "prevId": "7b1f9a79-7a2d-483f-8b4e-213eed157994",
+  "id": "cd1884b2-5abe-4d44-b45a-d941cdcf3c8e",
+  "prevId": "dd6cf878-42d4-496e-a081-715ed294f78c",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -703,6 +703,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "actor_hash": {
+          "name": "actor_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "action": {
           "name": "action",
           "type": "text",
@@ -776,7 +782,7 @@
             "id"
           ],
           "onUpdate": "no action",
-          "onDelete": "no action"
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -799,6 +805,12 @@
         "user_id": {
           "name": "user_id",
           "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_hash": {
+          "name": "user_hash",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -870,7 +882,7 @@
             "id"
           ],
           "onUpdate": "no action",
-          "onDelete": "cascade"
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -5044,24 +5056,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "reverses_transaction_id": {
-          "name": "reverses_transaction_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "idempotency_key": {
-          "name": "idempotency_key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "memo": {
-          "name": "memo",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -5107,35 +5101,36 @@
           "method": "btree",
           "concurrently": false
         },
-        "ledger_entries_idem_uq": {
-          "name": "ledger_entries_idem_uq",
+        "ledger_entries_lot_idx": {
+          "name": "ledger_entries_lot_idx",
           "columns": [
             {
-              "expression": "idempotency_key",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "account_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "side",
+              "expression": "lot_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
             }
           ],
-          "isUnique": true,
+          "isUnique": false,
           "with": {},
           "method": "btree",
           "concurrently": false
         }
       },
       "foreignKeys": {
+        "ledger_entries_transaction_id_ledger_transactions_id_fk": {
+          "name": "ledger_entries_transaction_id_ledger_transactions_id_fk",
+          "tableFrom": "ledger_entries",
+          "columnsFrom": [
+            "transaction_id"
+          ],
+          "tableTo": "ledger_transactions",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
         "ledger_entries_account_id_ledger_accounts_id_fk": {
           "name": "ledger_entries_account_id_ledger_accounts_id_fk",
           "tableFrom": "ledger_entries",
@@ -5172,6 +5167,65 @@
           "value": "\"ledger_entries\".\"credits\" > 0"
         }
       },
+      "isRLSEnabled": false
+    },
+    "public.ledger_transactions": {
+      "name": "ledger_transactions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "kind": {
+          "name": "kind",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "idempotency_key": {
+          "name": "idempotency_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reverses_transaction_id": {
+          "name": "reverses_transaction_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "memo": {
+          "name": "memo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "ledger_transactions_idempotency_key_unique": {
+          "name": "ledger_transactions_idempotency_key_unique",
+          "columns": [
+            "idempotency_key"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
       "isRLSEnabled": false
     },
     "public.orders": {
@@ -6330,8 +6384,8 @@
           "where": "\"jobs\".\"status\" = 'queued'",
           "concurrently": false
         },
-        "jobs_dedupe_idx": {
-          "name": "jobs_dedupe_idx",
+        "jobs_dedupe_active_uq": {
+          "name": "jobs_dedupe_active_uq",
           "columns": [
             {
               "expression": "type",
@@ -6346,7 +6400,7 @@
               "nulls": "last"
             }
           ],
-          "isUnique": false,
+          "isUnique": true,
           "with": {},
           "method": "btree",
           "where": "\"jobs\".\"dedupe_key\" is not null and \"jobs\".\"status\" in ('queued', 'running')",

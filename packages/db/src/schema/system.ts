@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import {
   boolean,
+  uniqueIndex,
   date,
   index,
   integer,
@@ -42,7 +43,7 @@ export const jobs = pgTable(
     index('jobs_ready_idx')
       .on(t.type, t.runAfter)
       .where(sql`${t.status} = 'queued'`),
-    index('jobs_dedupe_idx')
+    uniqueIndex('jobs_dedupe_active_uq')
       .on(t.type, t.dedupeKey)
       .where(sql`${t.dedupeKey} is not null and ${t.status} in ('queued', 'running')`),
   ],

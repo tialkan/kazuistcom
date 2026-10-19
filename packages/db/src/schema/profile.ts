@@ -31,9 +31,9 @@ export const consents = pgTable(
   'consents',
   {
     id: id(),
-    userId: uuid('user_id')
-      .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
+    /** Null after account deletion; userHash keeps the proof of consent (KVKK, Mesafeli Sozlesmeler Yon.). */
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    userHash: text('user_hash').notNull(),
     kind: consentKind('kind').notNull(),
     version: text('version').notNull(),
     granted: boolean('granted').notNull(),
@@ -47,7 +47,8 @@ export const auditLog = pgTable(
   'audit_log',
   {
     id: id(),
-    actorId: uuid('actor_id').references(() => users.id),
+    actorId: uuid('actor_id').references(() => users.id, { onDelete: 'set null' }),
+    actorHash: text('actor_hash'),
     action: text('action').notNull(),
     subjectType: text('subject_type').notNull(),
     subjectId: text('subject_id'),

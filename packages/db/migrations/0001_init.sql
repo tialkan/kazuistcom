@@ -105,6 +105,7 @@ CREATE TABLE "verifications" (
 CREATE TABLE "audit_log" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"actor_id" uuid,
+	"actor_hash" text,
 	"action" text NOT NULL,
 	"subject_type" text NOT NULL,
 	"subject_id" text,
@@ -115,7 +116,8 @@ CREATE TABLE "audit_log" (
 --> statement-breakpoint
 CREATE TABLE "consents" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"user_id" uuid NOT NULL,
+	"user_id" uuid,
+	"user_hash" text NOT NULL,
 	"kind" "consent_kind" NOT NULL,
 	"version" text NOT NULL,
 	"granted" boolean NOT NULL,
@@ -604,11 +606,18 @@ CREATE TABLE "ledger_entries" (
 	"credits" integer NOT NULL,
 	"lot_id" uuid,
 	"kind" text NOT NULL,
-	"reverses_transaction_id" uuid,
-	"idempotency_key" text,
-	"memo" text,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "ledger_entries_positive" CHECK ("ledger_entries"."credits" > 0)
+);
+--> statement-breakpoint
+CREATE TABLE "ledger_transactions" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"kind" text NOT NULL,
+	"idempotency_key" text NOT NULL,
+	"reverses_transaction_id" uuid,
+	"memo" text,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "ledger_transactions_idempotency_key_unique" UNIQUE("idempotency_key")
 );
 --> statement-breakpoint
 CREATE TABLE "orders" (
@@ -803,8 +812,8 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY
 ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_granted_by_users_id_fk" FOREIGN KEY ("granted_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "audit_log" ADD CONSTRAINT "audit_log_actor_id_users_id_fk" FOREIGN KEY ("actor_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "consents" ADD CONSTRAINT "consents_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "audit_log" ADD CONSTRAINT "audit_log_actor_id_users_id_fk" FOREIGN KEY ("actor_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "consents" ADD CONSTRAINT "consents_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "anonymization_spans" ADD CONSTRAINT "anonymization_spans_record_id_records_id_fk" FOREIGN KEY ("record_id") REFERENCES "public"."records"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "anonymization_spans" ADD CONSTRAINT "anonymization_spans_reviewed_by_users_id_fk" FOREIGN KEY ("reviewed_by") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -858,6 +867,7 @@ ALTER TABLE "idempotency_keys" ADD CONSTRAINT "idempotency_keys_user_id_users_id
 ALTER TABLE "invoices" ADD CONSTRAINT "invoices_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "invoices" ADD CONSTRAINT "invoices_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "ledger_accounts" ADD CONSTRAINT "ledger_accounts_wallet_id_wallets_id_fk" FOREIGN KEY ("wallet_id") REFERENCES "public"."wallets"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "ledger_entries" ADD CONSTRAINT "ledger_entries_transaction_id_ledger_transactions_id_fk" FOREIGN KEY ("transaction_id") REFERENCES "public"."ledger_transactions"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "ledger_entries" ADD CONSTRAINT "ledger_entries_account_id_ledger_accounts_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."ledger_accounts"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "ledger_entries" ADD CONSTRAINT "ledger_entries_lot_id_credit_lots_id_fk" FOREIGN KEY ("lot_id") REFERENCES "public"."credit_lots"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -918,13 +928,13 @@ CREATE UNIQUE INDEX "idempotency_keys_uq" ON "idempotency_keys" USING btree ("us
 CREATE UNIQUE INDEX "ledger_accounts_code_uq" ON "ledger_accounts" USING btree ("code");--> statement-breakpoint
 CREATE INDEX "ledger_entries_tx_idx" ON "ledger_entries" USING btree ("transaction_id");--> statement-breakpoint
 CREATE INDEX "ledger_entries_account_idx" ON "ledger_entries" USING btree ("account_id","created_at");--> statement-breakpoint
-CREATE UNIQUE INDEX "ledger_entries_idem_uq" ON "ledger_entries" USING btree ("idempotency_key","account_id","side");--> statement-breakpoint
+CREATE INDEX "ledger_entries_lot_idx" ON "ledger_entries" USING btree ("lot_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "orders_idem_uq" ON "orders" USING btree ("user_id","idempotency_key");--> statement-breakpoint
 CREATE UNIQUE INDEX "payments_provider_uq" ON "payments" USING btree ("provider","provider_payment_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "reservations_op_uq" ON "reservations" USING btree ("operation_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "subscriptions_provider_uq" ON "subscriptions" USING btree ("channel","provider_ref");--> statement-breakpoint
 CREATE UNIQUE INDEX "webhook_events_provider_event_uq" ON "webhook_events" USING btree ("provider","event_id");--> statement-breakpoint
 CREATE INDEX "jobs_ready_idx" ON "jobs" USING btree ("type","run_after") WHERE "jobs"."status" = 'queued';--> statement-breakpoint
-CREATE INDEX "jobs_dedupe_idx" ON "jobs" USING btree ("type","dedupe_key") WHERE "jobs"."dedupe_key" is not null and "jobs"."status" in ('queued', 'running');--> statement-breakpoint
+CREATE UNIQUE INDEX "jobs_dedupe_active_uq" ON "jobs" USING btree ("type","dedupe_key") WHERE "jobs"."dedupe_key" is not null and "jobs"."status" in ('queued', 'running');--> statement-breakpoint
 CREATE INDEX "provider_costs_day_idx" ON "provider_costs" USING btree ("day","provider","model","operation");--> statement-breakpoint
 CREATE INDEX "push_subscriptions_user_idx" ON "push_subscriptions" USING btree ("user_id");

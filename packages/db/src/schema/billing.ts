@@ -78,11 +78,26 @@ export const creditLots = pgTable(
   ],
 );
 
+/**
+ * One row per business transaction. Request idempotency lives here (one key, one transaction), so a single
+ * spend may touch several lots and accounts without colliding on a per entry unique key.
+ */
+export const ledgerTransactions = pgTable('ledger_transactions', {
+  id: id(),
+  kind: text('kind').notNull(),
+  idempotencyKey: text('idempotency_key').notNull().unique(),
+  reversesTransactionId: uuid('reverses_transaction_id'),
+  memo: text('memo'),
+  createdAt: createdAt(),
+});
+
 export const ledgerEntries = pgTable(
   'ledger_entries',
   {
     id: id(),
-    transactionId: uuid('transaction_id').notNull(),
+    transactionId: uuid('transaction_id')
+      .notNull()
+      .references(() => ledgerTransactions.id),
     accountId: uuid('account_id')
       .notNull()
       .references(() => ledgerAccounts.id),
@@ -90,15 +105,12 @@ export const ledgerEntries = pgTable(
     credits: integer('credits').notNull(),
     lotId: uuid('lot_id').references(() => creditLots.id),
     kind: text('kind').notNull(),
-    reversesTransactionId: uuid('reverses_transaction_id'),
-    idempotencyKey: text('idempotency_key'),
-    memo: text('memo'),
     createdAt: createdAt(),
   },
   (t) => [
     index('ledger_entries_tx_idx').on(t.transactionId),
     index('ledger_entries_account_idx').on(t.accountId, t.createdAt),
-    uniqueIndex('ledger_entries_idem_uq').on(t.idempotencyKey, t.accountId, t.side),
+    index('ledger_entries_lot_idx').on(t.lotId),
     check('ledger_entries_positive', sql`${t.credits} > 0`),
   ],
 );
