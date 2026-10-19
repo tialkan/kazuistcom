@@ -22,6 +22,10 @@ En güçlü güvenlik ve KVKK konumu; sunucuda anahtar saklama yoktur.
 - CSP'de üçüncü taraf betik yasaktır; anahtar XSS'e karşı böyle korunur.
 - Gemini ücretsiz katman uyarısı ve OpenRouter data_collection deny varsayılanı uygulanır (plan 8.4).
 
+## Not: nonce deposu (2026-10-19, denetim bulgusu D6)
+
+Nonce tek kullanımlıktır. prepare, nonce'u Valkey'de `byok:nonce:<nonce>` anahtarıyla `SET ... NX EX 600` komutuyla yazar; verify anahtarı `GETDEL` ile atomik olarak tüketir. Anahtar yoksa süre dolmuş veya nonce yeniden kullanılmıştır ve uç 410 döner. Bu karar packages/contracts'ta (PrepareResponse.nonce açıklaması, byokNonceKey) sabittir.
+
 ## Durum
 
 Önerildi, Tarık onayı bekliyor.

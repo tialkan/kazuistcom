@@ -2,6 +2,27 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 0, mimar, denetim düzeltmeleri, 2026-10-19
+
+### Durum
+
+Bağımsız denetimin yüksek (Y1), orta (O1..O5) ve düşük (D2..D7) bulguları kapatıldı; D1 Dalga 1'e ertelendi. main'de commit'li, push ve etiket yok.
+
+### Yapılanlar
+
+- Y1: ledger_transactions tablosu eklendi (idempotency_key tekil); ledger_entries satır düzeyi tekil dizini kaldırıldı, transaction_id artık ledger_transactions'a dış anahtar. Promosyon ve paket partisine yayılan tek harcama için PGlite testi var; aynı anahtarla ikinci yazım reddediliyor.
+- O1, O2: tüm istek gövdeleri additionalProperties: false; her gövde için zod şeması (packages/contracts/src/requests.ts, requestBodies eşlemesi); test, OpenAPI gövdeleriyle yapısal eşitliği ve kapalı nesneleri denetliyor (muaf: authPost, iyzicoWebhook, appStoreWebhook).
+- O3: POST /v1/answers ve /v1/abbreviations Idempotency-Key alıyor (diğer kredi harcayan uçlarda zaten vardı).
+- O4: CI'da gitleaks CLI 8.30.1 sabit sürüm ve sağlama toplamıyla; .githooks/pre-commit (gitleaks yoksa uyarı), etkinleştirme: pnpm hooks:install.
+- O5: consents ve audit_log ekle-yalnız tetikleyicili; kullanıcı silinince user_id/actor_id NULL olur, user_hash/actor_hash kanıtı tutar; testli.
+- D2: jobs (type, dedupe_key) etkin işlerde kısmi UNIQUE. D3: queued'a dönen işte NOTIFY. D4: /api/health yalnız {status} döner; veri tabanı ve Valkey için ping arayüzü (setHealthDeps), bağlantı yoksa 503. D5: admin uçlarında x-kazuist-requires: [passkey, second-factor]. D6: BYOK nonce Valkey SET NX EX 600 ve GETDEL, ADR-0008 notu. D7: sahiplik.md düzeltmesi ve gerekçeli sapma notları.
+- 0001_init.sql yeniden üretildi (henüz hiçbir ortamda uygulanmadığı için yeni migration yerine; contracts-v1 etiketinden sonra her değişiklik yeni migration olur).
+
+### Açık işler
+
+- D1 (ertelendi, Dalga 1 odeme): packages/ledger'da eksi bakiye kuralı (yalnız ters ibraz ve Apple iadesiyle eksiye düşme) ve özellik tabanlı testler.
+- Health ping'lerinin gerçek pg ve Valkey istemcilerine bağlanması (altyapi, Dalga 1).
+
 ## Dalga 0, mimar, 2026-10-19
 
 ### Durum

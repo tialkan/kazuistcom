@@ -34,7 +34,7 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
 | odeme | `packages/ledger/**`, `apps/web/src/server/billing/**`, `apps/web/src/app/(odeme)/**`, `apps/worker-node/src/billing/**`, `packages/i18n/{tr,en}/odeme.json` |
 | on-yuz | `packages/ui/**`, `packages/i18n/src/**`, `packages/i18n/test/**`, `packages/i18n/{tr,en}/ortak.json`, `apps/web/src/app/(kabuk)/**`, `apps/web/src/app/(casuist)/**`, `apps/web/src/app/page.tsx`, `apps/web/public/fonts/**` |
 | icerik | `content/**` (`content/desteler/**` ve `content/hukuki/**` hariç), `apps/web/src/app/rehberler/**`, `packages/i18n/{tr,en}/rehberler.json` |
-| seo | `apps/web/src/app/(seo)/**`, `apps/web/public/robots.txt`, `apps/web/public/llms.txt`, `apps/web/src/app/sitemap.ts`, `apps/web/src/app/robots.ts` |
+| seo | `apps/web/src/app/(seo)/**`, `apps/web/src/app/robots.ts`, `apps/web/src/app/sitemap.ts`, `apps/web/public/llms.txt` |
 | hukuk-uyum | `content/hukuki/**`, `docs/kvkk/**`, `docs/protokol/**`, `docs/ip/**` |
 | ios | `apps/ios/**`, `docs/appstore/**` |
 | kalite-guvenlik | `tests/e2e/**`, `tests/security/**`, `tests/load/**`, `docs/kalite/**` |
@@ -46,3 +46,5 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
 2. `apps/web/src/app/api/health/**`, `apps/web/src/app/api/version/**` ve `apps/web/src/server/env.ts` Dalga 0'da mimar tarafından yazıldı; Dalga 1'den itibaren altyapi ajanınındır.
 3. `/api/v1/**` Route Handler dosyaları ilgili modül ajanının `apps/web/src/app/api/v1/<modul>/**` yolundadır (ör. kampus için `api/v1/kampus/**`); uç şekli sözleşmeden gelir.
 4. `docs/ip/arka-plan-kaydi.md` Dalga 0'da mimar tarafından başlatıldı; sonraki güncellemeler hukuk-uyum ajanınındır, ADR listesi mimar tarafından eklenir.
+5. seo için robots kuralları yalnız `apps/web/src/app/robots.ts` ile üretilir; `public/robots.txt` kullanılmaz (iki kaynak çelişir). Plan 17.1'deki `public/robots.txt` bu yüzden listeden çıkarıldı.
+6. Plan 17.1'den bilinçli sapmalar: (a) i18n dosyaları modül ajanlarına dağıtıldı (`packages/i18n/{tr,en}/<modul>.json`), çünkü plan 17.3/9 dosya sahibini modül ajanı yapıyor; on-yuz `packages/i18n` kodunu ve `ortak.json`'u tutar. (b) `services/worker-py/core/jobs.py` veri-toplama yerine mimarda, çünkü iş kuyruğu sözleşmesinin (Ek C.3) Python tarafıdır ve sözleşme yalnız mimar ile değişir.

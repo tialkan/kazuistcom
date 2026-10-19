@@ -18,6 +18,7 @@ Kart verisi yalnız iyzico'dadır. Aynı olay iki kez işlenmez.
 
 ## Sonuçlar
 
+- İstek idempotency'si işlem düzeyindedir: ledger_transactions.idempotency_key tekildir; bir harcama birden çok partiye (promosyon ve paket) ve hesaba yayılabilir. Satır düzeyinde (idempotency_key, account_id, side) tekil dizini iki partili harcamayı reddettiği için kaldırıldı; dizine lot_id eklemek de seçilmedi, çünkü aynı isteğin farklı parti dağılımıyla ikinci kez yazılmasını engellemez (denetim bulgusu Y1).
 - ledger_entries tablosunda UPDATE, DELETE ve TRUNCATE tetikleyiciyle engellidir; her işlem kayıt anında (ertelenmiş kısıt tetikleyicisi) borç ve alacak eşitliğiyle denetlenir; PGlite testi bunu doğrular.
 - webhook_events, idempotency_keys, payments, iap_transactions, orders tabloları tekil anahtarlar taşır.
 - Kabul senaryoları plan 9.5'tedir.
