@@ -1,0 +1,93 @@
+{
+ "id": "sentetik-017",
+ "kind": "hukuk",
+ "synthetic": true,
+ "text": "T.C. Ankara 3. Asliye Hukuk Mahkemesi\nE. 2025/185 K. 2025/750\n\nDAVACI : Nur Toprakçı (T.C. kimlik no: 52161183962)\nAdres : Gülbahar Mahallesi, Menekşe Sk. No: 3/16 Kadıköy/İstanbul\nVEKİLİ : Av. Serkan Durukan\nDAVALI : Onur Öztekinler\n\nDavacı vekili Av. Serkan Durukan dava dilekçesinde, müvekkili Nur Toprakçı ile davalı Onur Öztekinler arasında 15 Temmuz 2023 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR47 6842 3048 0541 9118 3108 46 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0 550 463 67 75 numaralı telefon ve onur.oztekinler64@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 1484 ada 61 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Burak Uluçay raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Melike Demirsoy beyanında taşınmazın boş olduğunu, tanık Serkan Karaduman ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Demirsoy beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Onur Öztekinler tarafından davacıya ödeme yapılmasına karar verildi.",
+ "annotations_a": [
+  {
+   "start": 72,
+   "end": 84,
+   "entity": "PERSON"
+  },
+  {
+   "start": 102,
+   "end": 113,
+   "entity": "TCKN"
+  },
+  {
+   "start": 123,
+   "end": 163,
+   "entity": "ADDRESS"
+  },
+  {
+   "start": 194,
+   "end": 208,
+   "entity": "PERSON"
+  },
+  {
+   "start": 218,
+   "end": 233,
+   "entity": "PERSON"
+  },
+  {
+   "start": 253,
+   "end": 267,
+   "entity": "PERSON"
+  },
+  {
+   "start": 297,
+   "end": 309,
+   "entity": "PERSON"
+  },
+  {
+   "start": 321,
+   "end": 336,
+   "entity": "PERSON"
+  },
+  {
+   "start": 415,
+   "end": 447,
+   "entity": "IBAN"
+  },
+  {
+   "start": 516,
+   "end": 531,
+   "entity": "PHONE"
+  },
+  {
+   "start": 552,
+   "end": 585,
+   "entity": "EMAIL"
+  },
+  {
+   "start": 639,
+   "end": 657,
+   "entity": "PARCEL"
+  },
+  {
+   "start": 726,
+   "end": 738,
+   "entity": "PERSON"
+  },
+  {
+   "start": 809,
+   "end": 824,
+   "entity": "PERSON"
+  },
+  {
+   "start": 866,
+   "end": 882,
+   "entity": "PERSON"
+  },
+  {
+   "start": 941,
+   "end": 949,
+   "entity": "PERSON"
+  },
+  {
+   "start": 1022,
+   "end": 1037,
+   "entity": "PERSON"
+  }
+ ]
+}

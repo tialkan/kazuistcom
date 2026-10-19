@@ -1,0 +1,68 @@
+{
+ "id": "sentetik-031",
+ "kind": "aile",
+ "synthetic": true,
+ "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2025/635 K. 2022/514\n\nDAVACI : İpek Özbilge\nVEKİLİ : Av. Ahmet Özbilge\nDAVALI : Hülya Kayalıoğlu\n\nTarafların müşterek çocuğu Çağrı Özbilge 10 yaşında olup Defne İlkokulu öğrencisidir. Sosyal çalışma uzmanı Serkan Albayrakoğlu raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Hülya Kayalıoğlu ile davacı İpek Özbilge ortak ev adresi olan Kavaklı Mahallesi, Söğüt Caddesi No: 109/10 adresinden ayrılmıştır. Davalının 0538 906 58 78 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Çağrı Özbilge üzerindeki velayetin davacıya verilmesine karar verildi.",
+ "annotations_a": [
+  {
+   "start": 74,
+   "end": 86,
+   "entity": "PERSON"
+  },
+  {
+   "start": 100,
+   "end": 113,
+   "entity": "PERSON"
+  },
+  {
+   "start": 123,
+   "end": 139,
+   "entity": "PERSON"
+  },
+  {
+   "start": 168,
+   "end": 181,
+   "entity": "PERSON"
+  },
+  {
+   "start": 182,
+   "end": 192,
+   "entity": "CHILD_AGE"
+  },
+  {
+   "start": 198,
+   "end": 212,
+   "entity": "SCHOOL"
+  },
+  {
+   "start": 249,
+   "end": 268,
+   "entity": "PERSON"
+  },
+  {
+   "start": 347,
+   "end": 363,
+   "entity": "PERSON"
+  },
+  {
+   "start": 375,
+   "end": 387,
+   "entity": "PERSON"
+  },
+  {
+   "start": 409,
+   "end": 452,
+   "entity": "ADDRESS"
+  },
+  {
+   "start": 487,
+   "end": 501,
+   "entity": "PHONE"
+  },
+  {
+   "start": 588,
+   "end": 601,
+   "entity": "PERSON"
+  }
+ ]
+}

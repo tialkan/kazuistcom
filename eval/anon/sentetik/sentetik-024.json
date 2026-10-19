@@ -1,0 +1,58 @@
+{
+ "id": "sentetik-024",
+ "kind": "is",
+ "synthetic": true,
+ "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2021/832 K. 2025/196\n\nDAVACI : Mustafa Durukan (T.C. kimlik no: 13852147168)\nVEKİLİ : Av. Gülşen Bozdoğanlı\nDAVALI : Melike Ertuğrul İnşaat, vergi kimlik no 5127121979\n\nDavacı Mustafa Durukan davalıya ait şantiyede çalıştığını, ücretinin 4663 0100 3192 7311 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Mehmet Kocabey davacının mustafa.durukan79@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
+ "annotations_a": [
+  {
+   "start": 61,
+   "end": 76,
+   "entity": "PERSON"
+  },
+  {
+   "start": 94,
+   "end": 105,
+   "entity": "TCKN"
+  },
+  {
+   "start": 120,
+   "end": 137,
+   "entity": "PERSON"
+  },
+  {
+   "start": 147,
+   "end": 162,
+   "entity": "SOLE_PROPRIETOR"
+  },
+  {
+   "start": 187,
+   "end": 197,
+   "entity": "VKN"
+  },
+  {
+   "start": 206,
+   "end": 221,
+   "entity": "PERSON"
+  },
+  {
+   "start": 268,
+   "end": 287,
+   "entity": "CARD"
+  },
+  {
+   "start": 318,
+   "end": 331,
+   "entity": "UNION"
+  },
+  {
+   "start": 393,
+   "end": 407,
+   "entity": "PERSON"
+  },
+  {
+   "start": 418,
+   "end": 451,
+   "entity": "EMAIL"
+  }
+ ]
+}

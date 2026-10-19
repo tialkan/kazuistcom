@@ -1,0 +1,93 @@
+{
+ "id": "sentetik-029",
+ "kind": "hukuk",
+ "synthetic": true,
+ "text": "T.C. Konya 1. Sulh Hukuk Mahkemesi\nE. 2020/969 K. 2023/819\n\nDAVACI : Derya Yıldırımoğlu (T.C. kimlik no: 78402016660)\nAdres : Gülbahar Mahallesi, Menekşe Sk. No: 17/13 Nilüfer/Bursa\nVEKİLİ : Av. Levent Şahinalp\nDAVALI : Tolga Erginer\n\nDavacı vekili Av. Levent Şahinalp dava dilekçesinde, müvekkili Derya Yıldırımoğlu ile davalı Tolga Erginer arasında 12 Eylül 2022 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR86 0409 1098 7553 7767 8159 81 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0 546 128 92 93 numaralı telefon ve tolga.erginer89@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 693 ada 8 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Burak Ilgaz raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Sevgi Altınpınar beyanında taşınmazın boş olduğunu, tanık Fatma Evrenli ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Altınpınar beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Tolga Erginer tarafından davacıya ödeme yapılmasına karar verildi.",
+ "annotations_a": [
+  {
+   "start": 69,
+   "end": 87,
+   "entity": "PERSON"
+  },
+  {
+   "start": 105,
+   "end": 116,
+   "entity": "TCKN"
+  },
+  {
+   "start": 126,
+   "end": 167,
+   "entity": "ADDRESS"
+  },
+  {
+   "start": 195,
+   "end": 210,
+   "entity": "PERSON"
+  },
+  {
+   "start": 220,
+   "end": 233,
+   "entity": "PERSON"
+  },
+  {
+   "start": 253,
+   "end": 268,
+   "entity": "PERSON"
+  },
+  {
+   "start": 298,
+   "end": 316,
+   "entity": "PERSON"
+  },
+  {
+   "start": 328,
+   "end": 341,
+   "entity": "PERSON"
+  },
+  {
+   "start": 419,
+   "end": 451,
+   "entity": "IBAN"
+  },
+  {
+   "start": 520,
+   "end": 535,
+   "entity": "PHONE"
+  },
+  {
+   "start": 556,
+   "end": 587,
+   "entity": "EMAIL"
+  },
+  {
+   "start": 641,
+   "end": 657,
+   "entity": "PARCEL"
+  },
+  {
+   "start": 726,
+   "end": 737,
+   "entity": "PERSON"
+  },
+  {
+   "start": 808,
+   "end": 824,
+   "entity": "PERSON"
+  },
+  {
+   "start": 866,
+   "end": 879,
+   "entity": "PERSON"
+  },
+  {
+   "start": 938,
+   "end": 948,
+   "entity": "PERSON"
+  },
+  {
+   "start": 1021,
+   "end": 1034,
+   "entity": "PERSON"
+  }
+ ]
+}

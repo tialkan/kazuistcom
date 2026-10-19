@@ -1,0 +1,116 @@
+# Kazuist anonimleştirme politikası. Kaynak: plan.md Ek E (birebir). Politika hukukçu editör onayıyla
+# yürürlüğe girer; bu dosyadaki her değişiklik policy_version'ı artırır ve corpus yeniden işlenir.
+policy_version: "ekE-2026.10.0"
+status: taslak  # hukukçu editör onayı bekliyor
+dayanak: >-
+  KVKK m.4/2 (hukuka ve dürüstlük kurallarına uygunluk, amaçla bağlantılı, sınırlı ve ölçülü işleme) ve
+  m.5/2-f (meşru menfaat; denge testi docs/kvkk/denge-testi.md dosyasında). Resmî metinlerin çoğaltılması FSEK m.31.
+
+# Güven puanı bu eşiğin altındaki tespitler maskelenir ve editör kuyruğuna düşer (plan 6.4/6).
+review_threshold: 0.8
+
+rules:
+  - varlik: "Taraf, sanık, mağdur, tanık, bilirkişi, arabulucu"
+    kural: "Her zaman maskeli"
+    maske: "[Davacı], [Davalı], [Sanık 1], [Mağdur], [Tanık 2], [Bilirkişi]"
+    action: mask
+    entities: [PERSON]
+    roles: [davaci, davali, sanik, magdur, katilan, musteki, tanik, bilirkisi, arabulucu, kisi]
+  - varlik: "Vekil ve avukat"
+    kural: "Her zaman maskeli (profilleme riski)"
+    maske: "[Vekil]"
+    action: mask
+    entities: [PERSON]
+    roles: [vekil]
+  - varlik: "Çocuk"
+    kural: "Sıkı mod: yaş, okul ve yer bilgisi genelleştirilir"
+    maske: "[Çocuk A]"
+    action: mask
+    strict: true
+    entities: [PERSON, CHILD_AGE, SCHOOL]
+    roles: [cocuk]
+  - varlik: "İlk derece ve bölge adliye hâkimi, savcı"
+    kural: "Maskeli"
+    maske: "[Hâkim], [Savcı]"
+    action: mask
+    entities: [PERSON]
+    roles: [hakim, savci]
+  - varlik: "Yüksek mahkeme üyesi ve muhalefet şerhi yazarı"
+    kural: "Yalnız resmî kaynak açık yayımlıyorsa korunur (ör. AYM, AİHM, ABAD); kişi adıyla arama, filtreleme ve profil sayfası yoktur"
+    maske: "Kaynağa göre"
+    action: source_dependent
+    entities: [PERSON]
+    roles: [hakim]
+    open_sources: [AYM, AİHM, ABAD]
+  - varlik: "T.C. kimlik, vergi no (gerçek kişi), pasaport"
+    kural: "Maskeli"
+    maske: "[Kimlik No]"
+    action: mask
+    entities: [TCKN, VKN, PASSPORT]
+  - varlik: "Adres (mahalle, sokak, kapı)"
+    kural: "Maskeli; il ve ilçe hukuki önem taşıyorsa korunur"
+    maske: "[Adres]"
+    action: mask
+    entities: [ADDRESS]
+  - varlik: "Telefon, e-posta, IBAN, kart, plaka"
+    kural: "Maskeli"
+    maske: "[Telefon], [E-posta], [IBAN], [Kart], [Plaka]"
+    action: mask
+    entities: [PHONE, EMAIL, IBAN, CARD, PLATE]
+  - varlik: "Ada ve parsel"
+    kural: "Maskeli"
+    maske: "[Ada/Parsel]"
+    action: mask
+    entities: [PARCEL]
+  - varlik: "Doğum tarihi"
+    kural: "Maskeli; olay ve işlem tarihleri korunur"
+    maske: "[Doğum Tarihi]"
+    action: mask
+    entities: [DOB]
+  - varlik: "KVKK m.6 verisi (sağlık, cinsel hayat, din, etnik köken, siyasi düşünce, sendika, ceza mahkûmiyeti, biyometrik)"
+    kural: "Sıkı mod: ifade genelleştirilir veya maskelenir"
+    maske: "[Sağlık Bilgisi] gibi"
+    action: mask
+    strict: true
+    entities: [HEALTH, SEXUAL_LIFE, RELIGION, ETHNICITY, POLITICAL, UNION, CRIMINAL, BIOMETRIC]
+  - varlik: "Şirket ve kamu kurumu"
+    kural: "Tüzel kişi adı açık; gerçek kişi adını içeren ticaret unvanında kişi adı maskelenir"
+    maske: "[Şahıs İşletmesi]"
+    action: mask_person_in_trade_name
+    entities: [SOLE_PROPRIETOR]
+  - varlik: "Mahkeme, daire, esas, karar, tarih"
+    kural: "Açık"
+    maske: ""
+    action: keep
+    entities: [COURT, CASE_NO, DATE]
+
+genel_kurallar:
+  - "Kişi adları hiçbir arama dizinine ve öneri listesine girmez."
+  - "Kaynaklı özet ve oyun kartlarında kişi adı kullanılmaz (FR-21, FR-80)."
+  - "Kaynağında anonim karar da taranır."
+  - "Politika değişince tüm corpus yeniden işlenir ve fark raporu tutulur."
+
+# Varlık kodundan maske metnine eşleme (rol etiketleri roles.py içinde üretilir).
+masks:
+  TCKN: "[Kimlik No]"
+  VKN: "[Kimlik No]"
+  PASSPORT: "[Kimlik No]"
+  ADDRESS: "[Adres]"
+  PHONE: "[Telefon]"
+  EMAIL: "[E-posta]"
+  IBAN: "[IBAN]"
+  CARD: "[Kart]"
+  PLATE: "[Plaka]"
+  PARCEL: "[Ada/Parsel]"
+  DOB: "[Doğum Tarihi]"
+  HEALTH: "[Sağlık Bilgisi]"
+  SEXUAL_LIFE: "[Cinsel Hayat Bilgisi]"
+  RELIGION: "[Din Bilgisi]"
+  ETHNICITY: "[Etnik Köken Bilgisi]"
+  POLITICAL: "[Siyasi Düşünce Bilgisi]"
+  UNION: "[Sendika Bilgisi]"
+  CRIMINAL: "[Ceza Mahkûmiyeti Bilgisi]"
+  BIOMETRIC: "[Biyometrik Veri]"
+  CHILD_AGE: "[Yaş Bilgisi]"
+  SCHOOL: "[Okul]"
+  SOLE_PROPRIETOR: "[Şahıs İşletmesi]"

@@ -1,0 +1,68 @@
+{
+ "id": "sentetik-011",
+ "kind": "aile",
+ "synthetic": true,
+ "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2022/782 K. 2023/201\n\nDAVACI : Elif Ertuğrul\nVEKİLİ : Av. Sevgi Yamaner\nDAVALI : Sevgi Kocabey\n\nTarafların müşterek çocuğu Serkan Ertuğrul 8 yaşında olup Erguvan İlkokulu öğrencisidir. Sosyal çalışma uzmanı Aslı Erginer raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Sevgi Kocabey ile davacı Elif Ertuğrul ortak ev adresi olan Yenidoğan Mahallesi, Defne Sokak No: 39/1 adresinden ayrılmıştır. Davalının +90 545 669 85 63 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Serkan Ertuğrul üzerindeki velayetin davacıya verilmesine karar verildi.",
+ "annotations_a": [
+  {
+   "start": 74,
+   "end": 87,
+   "entity": "PERSON"
+  },
+  {
+   "start": 101,
+   "end": 114,
+   "entity": "PERSON"
+  },
+  {
+   "start": 124,
+   "end": 137,
+   "entity": "PERSON"
+  },
+  {
+   "start": 166,
+   "end": 181,
+   "entity": "PERSON"
+  },
+  {
+   "start": 182,
+   "end": 191,
+   "entity": "CHILD_AGE"
+  },
+  {
+   "start": 197,
+   "end": 213,
+   "entity": "SCHOOL"
+  },
+  {
+   "start": 250,
+   "end": 262,
+   "entity": "PERSON"
+  },
+  {
+   "start": 341,
+   "end": 354,
+   "entity": "PERSON"
+  },
+  {
+   "start": 366,
+   "end": 379,
+   "entity": "PERSON"
+  },
+  {
+   "start": 401,
+   "end": 442,
+   "entity": "ADDRESS"
+  },
+  {
+   "start": 477,
+   "end": 494,
+   "entity": "PHONE"
+  },
+  {
+   "start": 581,
+   "end": 596,
+   "entity": "PERSON"
+  }
+ ]
+}

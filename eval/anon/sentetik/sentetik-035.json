@@ -1,0 +1,68 @@
+{
+ "id": "sentetik-035",
+ "kind": "aile",
+ "synthetic": true,
+ "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2019/83 K. 2026/126\n\nDAVACI : Fatma Gürsoylu\nVEKİLİ : Av. Barış Erginer\nDAVALI : Sevgi Özbilge\n\nTarafların müşterek çocuğu Serkan Gürsoylu 11 yaşında olup Söğüt İlkokulu öğrencisidir. Sosyal çalışma uzmanı Serkan Çetinkol raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Sevgi Özbilge ile davacı Fatma Gürsoylu ortak ev adresi olan Yeşiltepe Mahallesi, Erguvan Cad. No: 74/9 adresinden ayrılmıştır. Davalının +90 545 144 56 59 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Serkan Gürsoylu üzerindeki velayetin davacıya verilmesine karar verildi.",
+ "annotations_a": [
+  {
+   "start": 73,
+   "end": 87,
+   "entity": "PERSON"
+  },
+  {
+   "start": 101,
+   "end": 114,
+   "entity": "PERSON"
+  },
+  {
+   "start": 124,
+   "end": 137,
+   "entity": "PERSON"
+  },
+  {
+   "start": 166,
+   "end": 181,
+   "entity": "PERSON"
+  },
+  {
+   "start": 182,
+   "end": 192,
+   "entity": "CHILD_AGE"
+  },
+  {
+   "start": 198,
+   "end": 212,
+   "entity": "SCHOOL"
+  },
+  {
+   "start": 249,
+   "end": 264,
+   "entity": "PERSON"
+  },
+  {
+   "start": 343,
+   "end": 356,
+   "entity": "PERSON"
+  },
+  {
+   "start": 368,
+   "end": 382,
+   "entity": "PERSON"
+  },
+  {
+   "start": 404,
+   "end": 446,
+   "entity": "ADDRESS"
+  },
+  {
+   "start": 481,
+   "end": 498,
+   "entity": "PHONE"
+  },
+  {
+   "start": 585,
+   "end": 600,
+   "entity": "PERSON"
+  }
+ ]
+}

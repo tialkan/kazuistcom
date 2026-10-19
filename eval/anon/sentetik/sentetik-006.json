@@ -1,0 +1,93 @@
+{
+ "id": "sentetik-006",
+ "kind": "ceza",
+ "synthetic": true,
+ "text": "T.C. Antalya 6. Asliye Ceza Mahkemesi\nE. 2019/699 K. 2024/335\n\nHâkim : Derya Kocabey\nSANIK : Derya Durukan, 06.12.1978 doğumlu, T.C. kimlik no 95057599874\nSANIK : Yiğit Bozdoğanlı, doğum tarihi: 14.09.1979\nMÜDAFİİ : Av. Barış Uluçay\nMAĞDUR : Aslı Özbilge\n\nİddianamede, sanık Derya Durukan yönetimindeki 26 PLE 5574 plakalı araçla 10 Ocak 2022 tarihinde mağdur Aslı Özbilge'a çarptığı, sanık Yiğit Bozdoğanlı'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun depresyon tanısıyla tedavi gördüğü raporla sabittir. Tanık Yiğit Gökdemir olayı gördüğünü beyan etmiştir. Sanık Durukan'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Derya Durukan hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+ "annotations_a": [
+  {
+   "start": 71,
+   "end": 84,
+   "entity": "PERSON"
+  },
+  {
+   "start": 93,
+   "end": 106,
+   "entity": "PERSON"
+  },
+  {
+   "start": 108,
+   "end": 118,
+   "entity": "DOB"
+  },
+  {
+   "start": 143,
+   "end": 154,
+   "entity": "TCKN"
+  },
+  {
+   "start": 163,
+   "end": 179,
+   "entity": "PERSON"
+  },
+  {
+   "start": 195,
+   "end": 205,
+   "entity": "DOB"
+  },
+  {
+   "start": 220,
+   "end": 232,
+   "entity": "PERSON"
+  },
+  {
+   "start": 242,
+   "end": 254,
+   "entity": "PERSON"
+  },
+  {
+   "start": 275,
+   "end": 288,
+   "entity": "PERSON"
+  },
+  {
+   "start": 303,
+   "end": 314,
+   "entity": "PLATE"
+  },
+  {
+   "start": 360,
+   "end": 372,
+   "entity": "PERSON"
+  },
+  {
+   "start": 391,
+   "end": 407,
+   "entity": "PERSON"
+  },
+  {
+   "start": 459,
+   "end": 468,
+   "entity": "HEALTH"
+  },
+  {
+   "start": 518,
+   "end": 532,
+   "entity": "PERSON"
+  },
+  {
+   "start": 571,
+   "end": 578,
+   "entity": "PERSON"
+  },
+  {
+   "start": 582,
+   "end": 601,
+   "entity": "CRIMINAL"
+  },
+  {
+   "start": 659,
+   "end": 672,
+   "entity": "PERSON"
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+ "id": "sentetik-012",
+ "kind": "is",
+ "synthetic": true,
+ "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2024/500 K. 2025/165\n\nDAVACI : Fatma Aydemirli (T.C. kimlik no: 87519380236)\nVEKİLİ : Av. Erdem Ilgaz\nDAVALI : Cem Karaduman İnşaat, vergi kimlik no 9225264346\n\nDavacı Fatma Aydemirli davalıya ait şantiyede çalıştığını, ücretinin 4190 1301 0890 7343 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Dilan Özbilge davacının fatma.aydemirli28@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
+ "annotations_a": [
+  {
+   "start": 61,
+   "end": 76,
+   "entity": "PERSON"
+  },
+  {
+   "start": 94,
+   "end": 105,
+   "entity": "TCKN"
+  },
+  {
+   "start": 120,
+   "end": 131,
+   "entity": "PERSON"
+  },
+  {
+   "start": 141,
+   "end": 154,
+   "entity": "SOLE_PROPRIETOR"
+  },
+  {
+   "start": 179,
+   "end": 189,
+   "entity": "VKN"
+  },
+  {
+   "start": 198,
+   "end": 213,
+   "entity": "PERSON"
+  },
+  {
+   "start": 260,
+   "end": 279,
+   "entity": "CARD"
+  },
+  {
+   "start": 310,
+   "end": 323,
+   "entity": "UNION"
+  },
+  {
+   "start": 385,
+   "end": 398,
+   "entity": "PERSON"
+  },
+  {
+   "start": 409,
+   "end": 442,
+   "entity": "EMAIL"
+  }
+ ]
+}

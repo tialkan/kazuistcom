@@ -1,0 +1,68 @@
+{
+ "id": "sentetik-007",
+ "kind": "aile",
+ "synthetic": true,
+ "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2025/547 K. 2024/457\n\nDAVACI : Mustafa Akbulut\nVEKİLİ : Av. Özge Durukan\nDAVALI : Özge Çetinkol\n\nTarafların müşterek çocuğu Çağrı Akbulut 6 yaşında olup Erguvan İlkokulu öğrencisidir. Sosyal çalışma uzmanı Fatma Altınpınar raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Özge Çetinkol ile davacı Mustafa Akbulut ortak ev adresi olan Gülbahar Mahallesi, Defne Cad. No: 3/13 adresinden ayrılmıştır. Davalının +90 539 133 80 84 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Çağrı Akbulut üzerindeki velayetin davacıya verilmesine karar verildi.",
+ "annotations_a": [
+  {
+   "start": 74,
+   "end": 89,
+   "entity": "PERSON"
+  },
+  {
+   "start": 103,
+   "end": 115,
+   "entity": "PERSON"
+  },
+  {
+   "start": 125,
+   "end": 138,
+   "entity": "PERSON"
+  },
+  {
+   "start": 167,
+   "end": 180,
+   "entity": "PERSON"
+  },
+  {
+   "start": 181,
+   "end": 190,
+   "entity": "CHILD_AGE"
+  },
+  {
+   "start": 196,
+   "end": 212,
+   "entity": "SCHOOL"
+  },
+  {
+   "start": 249,
+   "end": 265,
+   "entity": "PERSON"
+  },
+  {
+   "start": 344,
+   "end": 357,
+   "entity": "PERSON"
+  },
+  {
+   "start": 369,
+   "end": 384,
+   "entity": "PERSON"
+  },
+  {
+   "start": 406,
+   "end": 445,
+   "entity": "ADDRESS"
+  },
+  {
+   "start": 480,
+   "end": 497,
+   "entity": "PHONE"
+  },
+  {
+   "start": 584,
+   "end": 597,
+   "entity": "PERSON"
+  }
+ ]
+}

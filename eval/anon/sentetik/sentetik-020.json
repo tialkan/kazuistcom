@@ -1,0 +1,58 @@
+{
+ "id": "sentetik-020",
+ "kind": "is",
+ "synthetic": true,
+ "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2024/150 K. 2026/901\n\nDAVACI : Elif Tezcan (T.C. kimlik no: 16617436330)\nVEKİLİ : Av. Hülya Gürsoylu\nDAVALI : Erdem Kılıçarslan İnşaat, vergi kimlik no 9389033464\n\nDavacı Elif Tezcan davalıya ait şantiyede çalıştığını, ücretinin 4735 0223 6614 2170 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Erdem Durukan davacının elif.tezcan19@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
+ "annotations_a": [
+  {
+   "start": 61,
+   "end": 72,
+   "entity": "PERSON"
+  },
+  {
+   "start": 90,
+   "end": 101,
+   "entity": "TCKN"
+  },
+  {
+   "start": 116,
+   "end": 130,
+   "entity": "PERSON"
+  },
+  {
+   "start": 140,
+   "end": 157,
+   "entity": "SOLE_PROPRIETOR"
+  },
+  {
+   "start": 182,
+   "end": 192,
+   "entity": "VKN"
+  },
+  {
+   "start": 201,
+   "end": 212,
+   "entity": "PERSON"
+  },
+  {
+   "start": 259,
+   "end": 278,
+   "entity": "CARD"
+  },
+  {
+   "start": 309,
+   "end": 322,
+   "entity": "UNION"
+  },
+  {
+   "start": 384,
+   "end": 397,
+   "entity": "PERSON"
+  },
+  {
+   "start": 408,
+   "end": 437,
+   "entity": "EMAIL"
+  }
+ ]
+}
