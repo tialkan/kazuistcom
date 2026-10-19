@@ -1,0 +1,7 @@
+# swift-openapi-generator configuration for apps/ios (Wave 2, ios agent).
+# Place a symlink or copy of ../openapi.yaml next to this file in the Xcode target as openapi.yaml.
+generate:
+  - types
+  - client
+accessModifier: public
+namingStrategy: idiomatic

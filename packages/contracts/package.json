@@ -1,0 +1,25 @@
+{
+  "name": "@kazuist/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./openapi.yaml": "./openapi.yaml"
+  },
+  "scripts": {
+    "lint": "redocly lint openapi.yaml",
+    "generate": "openapi-typescript openapi.yaml -o src/generated/api.ts",
+    "check:generated": "openapi-typescript openapi.yaml -o src/generated/api.ts && git diff --exit-code src/generated/api.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@redocly/cli": "2.65.0",
+    "openapi-typescript": "7.13.0",
+    "yaml": "2.9.1"
+  }
+}

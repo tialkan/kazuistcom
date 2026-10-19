@@ -1,0 +1,2435 @@
+openapi: 3.1.0
+info:
+  title: Kazuist API
+  version: 1.0.0
+  summary: Kazuist web and iOS API contract (single source of truth).
+  description: |
+    Contract v1 for Kazuist (plan.md Ek C.1). All endpoints validate input with zod and reject unknown
+    fields. Every error body is `{code, message, requestId}` and never exposes internal structure.
+    Paths are relative to the `/api` prefix of the web application.
+  license:
+    name: Proprietary, Kulular Bilisim Teknolojileri Ltd. Sti.
+    identifier: LicenseRef-Proprietary
+  contact:
+    name: Kulular Bilisim Teknolojileri Ltd. Sti.
+    url: https://kazuist.com
+servers:
+  - url: https://kazuist.com/api
+    description: Production
+  - url: https://staging.kazuist.com/api
+    description: Staging
+security:
+  - sessionCookie: []
+  - bearerAuth: []
+tags:
+  - name: system
+    description: Health and version probes.
+  - name: auth
+    description: Better Auth handler (sign in, sign up, passkey, OAuth). Owned by the kimlik agent.
+  - name: account
+    description: Current user, consents, KVKK rights.
+  - name: search
+    description: Hybrid search, records and norm resolution.
+  - name: answers
+    description: Sourced summary (kaynakli ozet) streaming and BYOK client protocol.
+  - name: citations
+    description: Citation network.
+  - name: library
+    description: Saved records and bibliography export.
+  - name: guides
+    description: Guide progress.
+  - name: writing
+    description: Templates, journals, writing projects and abbreviations.
+  - name: practice
+    description: Decks, FSRS reviews and HMGS exams.
+  - name: kampus
+    description: Turkuaz Kampus (separate schema, feature flagged).
+  - name: wallet
+    description: Credit wallet, ledger view and prices.
+  - name: billing
+    description: Checkout, subscriptions, refunds and invoices.
+  - name: webhooks
+    description: Payment provider callbacks (signature verified, idempotent).
+  - name: notifications
+    description: Notification preferences and push registration.
+  - name: takedown
+    description: Content removal requests.
+  - name: jobs
+    description: Background job status.
+  - name: admin
+    description: Administration (passkey and second factor required).
+paths:
+  /health:
+    get:
+      tags: [system]
+      operationId: getHealth
+      summary: Readiness probe
+      security: []
+      responses:
+        '200':
+          description: All critical dependencies configured.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+        '503':
+          description: A critical dependency or environment variable is missing.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /version:
+    get:
+      tags: [system]
+      operationId: getVersion
+      summary: Build version
+      security: []
+      responses:
+        '200':
+          description: Version info.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Version' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /auth/{path}:
+    parameters:
+      - name: path
+        in: path
+        required: true
+        description: Better Auth sub path (for example sign-in/email). The handler owns the shape.
+        schema: { type: string }
+    get:
+      tags: [auth]
+      operationId: authGet
+      summary: Better Auth GET handler
+      security: []
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+    post:
+      tags: [auth]
+      operationId: authPost
+      summary: Better Auth POST handler
+      security: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /v1/me:
+    get:
+      tags: [account]
+      operationId: getMe
+      summary: Current user
+      responses:
+        '200':
+          description: Current user.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    patch:
+      tags: [account]
+      operationId: updateMe
+      summary: Update profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MePatch' }
+      responses:
+        '200':
+          description: Updated user.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    delete:
+      tags: [account]
+      operationId: deleteMe
+      summary: Delete account (KVKK m.7)
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/me/edu-verification:
+    post:
+      tags: [account]
+      operationId: startEduVerification
+      summary: Send code to an edu.tr address
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        '202': { $ref: '#/components/responses/Accepted' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/me/edu-verification/confirm:
+    post:
+      tags: [account]
+      operationId: confirmEduVerification
+      summary: Confirm edu.tr code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [code]
+              properties:
+                code: { type: string, pattern: '^[0-9]{6}$' }
+      responses:
+        '200':
+          description: Verified.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/me/export:
+    get:
+      tags: [account]
+      operationId: exportMe
+      summary: Export personal data (KVKK m.11)
+      responses:
+        '202':
+          description: Export job created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobRef' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/me/consents:
+    get:
+      tags: [account]
+      operationId: listConsents
+      summary: List consents
+      responses:
+        '200':
+          description: Consents.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Consent' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [account]
+      operationId: recordConsent
+      summary: Record or withdraw a consent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ConsentInput' }
+      responses:
+        '201':
+          description: Recorded.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Consent' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/me/target-profession:
+    put:
+      tags: [account]
+      operationId: setTargetProfession
+      summary: Set target profession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [professionId]
+              properties:
+                professionId: { type: string }
+                avatar: { type: string }
+      responses:
+        '200':
+          description: Updated user.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/professions:
+    get:
+      tags: [account]
+      operationId: listProfessions
+      summary: List professions
+      security: []
+      responses:
+        '200':
+          description: Professions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Profession' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/kvkk-requests:
+    post:
+      tags: [account]
+      operationId: createKvkkRequest
+      summary: KVKK m.11 application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [kind, detail]
+              properties:
+                kind: { type: string, enum: [bilgi, duzeltme, silme, itiraz, aktarim_bilgisi] }
+                detail: { type: string, maxLength: 4000 }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /v1/search:
+    get:
+      tags: [search]
+      operationId: search
+      summary: Hybrid search
+      security: []
+      parameters:
+        - { name: q, in: query, required: true, schema: { type: string, minLength: 1, maxLength: 500 } }
+        - { name: type, in: query, schema: { $ref: '#/components/schemas/RecordType' } }
+        - { name: sort, in: query, schema: { type: string, enum: [ilgililik, onem, tarih_yeni, tarih_eski], default: ilgililik } }
+        - { name: page, in: query, schema: { type: integer, minimum: 1, maximum: 50, default: 1 } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+        - { name: court, in: query, schema: { type: string, maxLength: 100 } }
+        - { name: authority, in: query, schema: { $ref: '#/components/schemas/AuthorityClass' } }
+      responses:
+        '200':
+          description: Search results.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SearchResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/records/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [search]
+      operationId: getRecord
+      summary: Record detail
+      security: []
+      responses:
+        '200':
+          description: Record.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Record' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/records/{id}/network:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [citations]
+      operationId: getRecordNetwork
+      summary: Citation neighbourhood of a record
+      security: []
+      responses:
+        '200':
+          description: Graph.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CitationGraph' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/records/{id}/versions:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [search]
+      operationId: getRecordVersions
+      summary: Legislation article versions
+      security: []
+      responses:
+        '200':
+          description: Versions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/RecordVersion' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/norms/resolve:
+    get:
+      tags: [search]
+      operationId: resolveNorm
+      summary: Resolve a norm reference such as "KVKK m.11/1-c"
+      security: []
+      parameters:
+        - { name: ref, in: query, required: true, schema: { type: string, minLength: 1, maxLength: 200 } }
+      responses:
+        '200':
+          description: Resolved references.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/NormRef' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /v1/answers:
+    post:
+      tags: [answers]
+      operationId: createAnswer
+      summary: Sourced summary stream (platform or BYOK relay mode)
+      description: |
+        Server Sent Events. Event names are `cumle`, `kaynaklar`, `uyari`, `cekimser`, `son`.
+        Each event `data` is a JSON object matching the schema of the same name. Only validated
+        sentences are emitted. Abstention costs no credit.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AnswerRequest' }
+      responses:
+        '200':
+          description: Event stream.
+          content:
+            text/event-stream:
+              schema: { $ref: '#/components/schemas/AnswerEvent' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '402': { $ref: '#/components/responses/PaymentRequired' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/answers/prepare:
+    post:
+      tags: [answers]
+      operationId: prepareAnswer
+      summary: BYOK client mode, signed prompt package
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PrepareRequest' }
+      responses:
+        '200':
+          description: Signed prompt package valid for 10 minutes.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PrepareResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/answers/verify:
+    post:
+      tags: [answers]
+      operationId: verifyAnswer
+      summary: BYOK, server side line validation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VerifyRequest' }
+      responses:
+        '200':
+          description: Validation result per line.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VerifyResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '410':
+          description: Nonce expired or already used.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /v1/citation-network:
+    get:
+      tags: [citations]
+      operationId: getCitationNetwork
+      summary: Citation network filtered view
+      security: []
+      parameters:
+        - { name: court, in: query, schema: { type: string } }
+        - { name: chamber, in: query, schema: { type: string } }
+        - { name: topic, in: query, schema: { type: string } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: Graph.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CitationGraph' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /v1/library:
+    get:
+      tags: [library]
+      operationId: listLibrary
+      summary: Saved items
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: Items.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: '#/components/schemas/LibraryItem' }
+                  nextCursor: { type: [string, 'null'] }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [library]
+      operationId: addLibraryItem
+      summary: Save a record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [recordId]
+              properties:
+                recordId: { type: string, format: uuid }
+                note: { type: string, maxLength: 2000 }
+      responses:
+        '201':
+          description: Saved.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/LibraryItem' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /v1/library/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    delete:
+      tags: [library]
+      operationId: deleteLibraryItem
+      summary: Remove a saved item
+      responses:
+        '204': { description: 'Removed.' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/library/export:
+    get:
+      tags: [library]
+      operationId: exportLibrary
+      summary: Bibliography export (CSL)
+      parameters:
+        - name: format
+          in: query
+          required: true
+          schema: { type: string, enum: [isnad-dipnotlu, isnad-metinici, oscola, bluebook, ris, bibtex] }
+      responses:
+        '200':
+          description: Export file.
+          content:
+            text/plain:
+              schema: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /v1/guides/{id}/progress:
+    parameters:
+      - $ref: '#/components/parameters/Slug'
+    get:
+      tags: [guides]
+      operationId: getGuideProgress
+      summary: Guide progress
+      responses:
+        '200':
+          description: Progress.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GuideProgress' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    put:
+      tags: [guides]
+      operationId: setGuideProgress
+      summary: Update guide progress
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/GuideProgress' }
+      responses:
+        '200':
+          description: Progress.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GuideProgress' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /v1/templates/rules:
+    post:
+      tags: [writing]
+      operationId: extractTemplateRules
+      summary: Upload a thesis guide and start rule extraction (returns a job)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: { type: string, contentMediaType: application/pdf }
+                institutionName: { type: string, maxLength: 200 }
+      responses:
+        '202':
+          description: Job created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobRef' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '402': { $ref: '#/components/responses/PaymentRequired' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+  /v1/jobs/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [jobs]
+      operationId: getJob
+      summary: Job status
+      responses:
+        '200':
+          description: Job.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobStatus' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/templates/docx:
+    post:
+      tags: [writing]
+      operationId: createTemplateDocx
+      summary: Generate a DOCX template from rules
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                templateRuleId: { type: string, format: uuid }
+                journalRuleVersionId: { type: string, format: uuid }
+      responses:
+        '202':
+          description: Job created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobRef' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/journals:
+    get:
+      tags: [writing]
+      operationId: listJournals
+      summary: Search journals
+      security: []
+      parameters:
+        - { name: q, in: query, schema: { type: string, maxLength: 200 } }
+      responses:
+        '200':
+          description: Journals.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Journal' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /v1/journals/{id}/rules:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [writing]
+      operationId: getJournalRules
+      summary: Approved journal rule version
+      security: []
+      responses:
+        '200':
+          description: Rules.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RuleSet' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/writing-projects:
+    get:
+      tags: [writing]
+      operationId: listWritingProjects
+      summary: List writing projects
+      responses:
+        '200':
+          description: Projects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/WritingProject' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [writing]
+      operationId: createWritingProject
+      summary: Create a writing project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WritingProjectInput' }
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WritingProject' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/writing-projects/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [writing]
+      operationId: getWritingProject
+      summary: Writing project
+      responses:
+        '200':
+          description: Project.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WritingProject' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [writing]
+      operationId: updateWritingProject
+      summary: Update writing project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WritingProjectInput' }
+      responses:
+        '200':
+          description: Project.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WritingProject' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [writing]
+      operationId: deleteWritingProject
+      summary: Delete writing project
+      responses:
+        '204': { description: 'Deleted.' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/writing-projects/{id}/progress:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags: [writing]
+      operationId: logWritingProgress
+      summary: Log daily progress
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [words]
+              properties:
+                words: { type: integer, minimum: 0, maximum: 100000 }
+                note: { type: string, maxLength: 1000 }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/writing-projects/{id}/docx-count:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags: [writing]
+      operationId: countDocxWords
+      summary: Count words from DOCX XML (file is not stored)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  contentMediaType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+      responses:
+        '200':
+          description: Count.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [words]
+                properties:
+                  words: { type: integer }
+                  footnoteWords: { type: integer }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+  /v1/abbreviations:
+    post:
+      tags: [writing]
+      operationId: buildAbbreviations
+      summary: Build a table of abbreviations from text
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [text]
+              properties:
+                text: { type: string, maxLength: 200000 }
+                useAi: { type: boolean, default: false }
+      responses:
+        '200':
+          description: Abbreviations.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required: [short, long]
+                  properties:
+                    short: { type: string }
+                    long: { type: string }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '402': { $ref: '#/components/responses/PaymentRequired' }
+
+  /v1/decks:
+    get:
+      tags: [practice]
+      operationId: listDecks
+      summary: List decks
+      security: []
+      responses:
+        '200':
+          description: Decks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Deck' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/decks/{id}/cards:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [practice]
+      operationId: listDeckCards
+      summary: Cards of a deck
+      responses:
+        '200':
+          description: Cards.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Card' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/reviews:
+    post:
+      tags: [practice]
+      operationId: submitReview
+      summary: Submit an FSRS review
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [cardId, rating, reviewedAt]
+              properties:
+                cardId: { type: string, format: uuid }
+                rating: { type: integer, minimum: 1, maximum: 4 }
+                reviewedAt: { type: string, format: date-time }
+      responses:
+        '201':
+          description: Next schedule.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [due]
+                properties:
+                  due: { type: string, format: date-time }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/hmgs/exams:
+    get:
+      tags: [practice]
+      operationId: listHmgsExams
+      summary: HMGS practice exams
+      responses:
+        '200':
+          description: Exams.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Exam' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/hmgs/exams/{id}/attempts:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags: [practice]
+      operationId: submitHmgsAttempt
+      summary: Submit an exam attempt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [answers]
+              properties:
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    required: [cardId, choice]
+                    properties:
+                      cardId: { type: string, format: uuid }
+                      choice: { type: [string, 'null'], enum: [A, B, C, D, E, null] }
+      responses:
+        '201':
+          description: Result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [score]
+                properties:
+                  score: { type: number }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/hmgs/report:
+    get:
+      tags: [practice]
+      operationId: getHmgsReport
+      summary: HMGS progress report by subject
+      responses:
+        '200':
+          description: Report.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: { type: number }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /v1/kampus/profiles:
+    get:
+      tags: [kampus]
+      operationId: listKampusProfiles
+      summary: List Kampus profiles
+      parameters:
+        - { name: q, in: query, schema: { type: string, maxLength: 100 } }
+      responses:
+        '200':
+          description: Profiles.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/KampusProfile' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    put:
+      tags: [kampus]
+      operationId: upsertKampusProfile
+      summary: Create or update own Kampus profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/KampusProfile' }
+      responses:
+        '200':
+          description: Profile.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KampusProfile' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/kampus/profiles/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [kampus]
+      operationId: getKampusProfile
+      summary: Kampus profile
+      responses:
+        '200':
+          description: Profile.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KampusProfile' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/kampus/posts:
+    get:
+      tags: [kampus]
+      operationId: listKampusPosts
+      summary: List posts
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: Posts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/KampusPost' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [kampus]
+      operationId: createKampusPost
+      summary: Create a post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/KampusPostInput' }
+      responses:
+        '201':
+          description: Post.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KampusPost' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/kampus/posts/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [kampus]
+      operationId: getKampusPost
+      summary: Post
+      responses:
+        '200':
+          description: Post.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KampusPost' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [kampus]
+      operationId: deleteKampusPost
+      summary: Delete own post
+      responses:
+        '204': { description: 'Deleted.' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/kampus/follows:
+    get:
+      tags: [kampus]
+      operationId: listKampusFollows
+      summary: Followed profiles
+      responses:
+        '200':
+          description: Profile ids.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: string, format: uuid }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [kampus]
+      operationId: followKampusProfile
+      summary: Follow a profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [profileId]
+              properties:
+                profileId: { type: string, format: uuid }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /v1/kampus/follows/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    delete:
+      tags: [kampus]
+      operationId: unfollowKampusProfile
+      summary: Unfollow
+      responses:
+        '204': { description: 'Unfollowed.' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/kampus/feed:
+    get:
+      tags: [kampus]
+      operationId: getKampusFeed
+      summary: Feed
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: Posts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/KampusPost' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/kampus/summaries:
+    post:
+      tags: [kampus]
+      operationId: createKampusSummary
+      summary: AI summary of a Kampus file (job)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [fileId]
+              properties:
+                fileId: { type: string, format: uuid }
+      responses:
+        '202':
+          description: Job created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobRef' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '402': { $ref: '#/components/responses/PaymentRequired' }
+  /v1/kampus/posters:
+    post:
+      tags: [kampus]
+      operationId: createKampusPoster
+      summary: Poster draft (job)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [fileId]
+              properties:
+                fileId: { type: string, format: uuid }
+      responses:
+        '202':
+          description: Job created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JobRef' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '402': { $ref: '#/components/responses/PaymentRequired' }
+  /v1/kampus/fulltext-requests:
+    get:
+      tags: [kampus]
+      operationId: listKampusFulltextRequests
+      summary: Full text requests (sent and received)
+      responses:
+        '200':
+          description: Requests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/KampusFulltextRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [kampus]
+      operationId: createKampusFulltextRequest
+      summary: Request full text from author
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [postId]
+              properties:
+                postId: { type: string, format: uuid }
+                message: { type: string, maxLength: 1000 }
+      responses:
+        '201':
+          description: Request.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KampusFulltextRequest' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /v1/kampus/reports:
+    post:
+      tags: [kampus]
+      operationId: createKampusReport
+      summary: Report content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [targetType, targetId, reason]
+              properties:
+                targetType: { type: string, enum: [post, profile, file] }
+                targetId: { type: string, format: uuid }
+                reason: { type: string, maxLength: 2000 }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /v1/wallet:
+    get:
+      tags: [wallet]
+      operationId: getWallet
+      summary: Balance and lots
+      responses:
+        '200':
+          description: Wallet.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Wallet' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/wallet/ledger:
+    get:
+      tags: [wallet]
+      operationId: getWalletLedger
+      summary: Ledger movements of the wallet
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: Movements.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/LedgerMovement' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/prices:
+    get:
+      tags: [wallet]
+      operationId: getPrices
+      summary: Effective price table
+      security: []
+      responses:
+        '200':
+          description: Prices.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PriceTable' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /v1/checkout/topup:
+    post:
+      tags: [billing]
+      operationId: checkoutTopup
+      summary: Start iyzico checkout form for a credit pack
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [productCode, preInfoConsentVersion, distanceContractConsentVersion, withdrawalWaiver]
+              properties:
+                productCode: { type: string, enum: [kredi.300, kredi.1000, kredi.3000] }
+                couponCode: { type: string, maxLength: 40 }
+                preInfoConsentVersion: { type: string }
+                distanceContractConsentVersion: { type: string }
+                withdrawalWaiver: { type: boolean }
+      responses:
+        '201':
+          description: Checkout started.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CheckoutSession' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/checkout/subscription:
+    post:
+      tags: [billing]
+      operationId: checkoutSubscription
+      summary: Start iyzico subscription checkout
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [planCode, preInfoConsentVersion, distanceContractConsentVersion]
+              properties:
+                planCode: { type: string, enum: [ogrenci.aylik, ogrenci.yillik, akademisyen.aylik, akademisyen.yillik] }
+                couponCode: { type: string, maxLength: 40 }
+                preInfoConsentVersion: { type: string }
+                distanceContractConsentVersion: { type: string }
+      responses:
+        '201':
+          description: Checkout started.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CheckoutSession' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/subscriptions/{id}/cancel:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    post:
+      tags: [billing]
+      operationId: cancelSubscription
+      summary: Cancel a subscription in one step
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [mode]
+              properties:
+                mode: { type: string, enum: [donem_sonu, hemen] }
+      responses:
+        '200':
+          description: Cancellation result, including refund amount for annual plans.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status: { type: string }
+                  refundAmountKurus: { type: integer }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/refund-requests:
+    post:
+      tags: [billing]
+      operationId: createRefundRequest
+      summary: Request a refund
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [orderId]
+              properties:
+                orderId: { type: string, format: uuid }
+                reason: { type: string, maxLength: 2000 }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /v1/invoices:
+    get:
+      tags: [billing]
+      operationId: listInvoices
+      summary: Invoices
+      responses:
+        '200':
+          description: Invoices.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Invoice' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /v1/webhooks/iyzico:
+    post:
+      tags: [webhooks]
+      operationId: iyzicoWebhook
+      summary: iyzico notification (signature verified, idempotent, re-queried)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        '200': { description: 'Accepted or already processed.' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/webhooks/appstore:
+    post:
+      tags: [webhooks]
+      operationId: appStoreWebhook
+      summary: App Store Server Notifications V2 (signed JWS)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [signedPayload]
+              properties:
+                signedPayload: { type: string }
+      responses:
+        '200': { description: 'Accepted or already processed.' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /v1/notifications/preferences:
+    get:
+      tags: [notifications]
+      operationId: getNotificationPreferences
+      summary: Notification preferences
+      responses:
+        '200':
+          description: Preferences.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NotificationPreferences' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    put:
+      tags: [notifications]
+      operationId: setNotificationPreferences
+      summary: Update notification preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/NotificationPreferences' }
+      responses:
+        '200':
+          description: Preferences.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/NotificationPreferences' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /v1/push/web-subscriptions:
+    post:
+      tags: [notifications]
+      operationId: registerWebPush
+      summary: Register a Web Push subscription (VAPID)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [endpoint, keys]
+              properties:
+                endpoint: { type: string, format: uri }
+                keys:
+                  type: object
+                  required: [p256dh, auth]
+                  properties:
+                    p256dh: { type: string }
+                    auth: { type: string }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+  /v1/push/apns-tokens:
+    post:
+      tags: [notifications]
+      operationId: registerApnsToken
+      summary: Register an APNs device token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [deviceToken, environment]
+              properties:
+                deviceToken: { type: string, pattern: '^[0-9a-f]{64,200}$' }
+                environment: { type: string, enum: [sandbox, production] }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /v1/takedown-requests:
+    post:
+      tags: [takedown]
+      operationId: createTakedownRequest
+      summary: Request removal or anonymisation of content
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [recordId, reason, contactEmail]
+              properties:
+                recordId: { type: string, format: uuid }
+                reason: { type: string, maxLength: 4000 }
+                contactEmail: { type: string, format: email }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /v1/admin/queues/{queue}:
+    parameters:
+      - name: queue
+        in: path
+        required: true
+        schema: { type: string, enum: [anonymization, citations, cards, journal-rules, takedowns, kampus-reports] }
+    get:
+      tags: [admin]
+      operationId: adminListQueue
+      summary: Review queue items
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: Items.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ReviewItem' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/queues/{queue}/{itemId}/decision:
+    parameters:
+      - name: queue
+        in: path
+        required: true
+        schema: { type: string, enum: [anonymization, citations, cards, journal-rules, takedowns, kampus-reports] }
+      - name: itemId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [admin]
+      operationId: adminDecideQueueItem
+      summary: Approve, reject or edit a queue item (audited)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [decision]
+              properties:
+                decision: { type: string, enum: [onay, ret, duzelt] }
+                note: { type: string, maxLength: 2000 }
+                patch: { type: object }
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/admin/prices:
+    get:
+      tags: [admin]
+      operationId: adminListPriceTables
+      summary: Price table versions
+      responses:
+        '200':
+          description: Versions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PriceTable' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [admin]
+      operationId: adminCreatePriceTable
+      summary: Create a dated price table version
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PriceTable' }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/flags:
+    get:
+      tags: [admin]
+      operationId: adminListFlags
+      summary: Feature flags
+      responses:
+        '200':
+          description: Flags.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/FeatureFlag' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    put:
+      tags: [admin]
+      operationId: adminSetFlag
+      summary: Set a feature flag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/FeatureFlag' }
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/professions:
+    get:
+      tags: [admin]
+      operationId: adminListProfessions
+      summary: Professions (editable)
+      responses:
+        '200':
+          description: Professions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Profession' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [admin]
+      operationId: adminUpsertProfession
+      summary: Create or update a profession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Profession' }
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/weights:
+    get:
+      tags: [admin]
+      operationId: adminGetWeights
+      summary: Ranking weights and label thresholds
+      responses:
+        '200':
+          description: Weights.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RankingWeights' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    put:
+      tags: [admin]
+      operationId: adminSetWeights
+      summary: Update ranking weights
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RankingWeights' }
+      responses:
+        '200': { $ref: '#/components/responses/Generic' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/users:
+    get:
+      tags: [admin]
+      operationId: adminListUsers
+      summary: Search users
+      parameters:
+        - { name: q, in: query, schema: { type: string, maxLength: 200 } }
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '200':
+          description: Users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Me' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/ledger-adjustments:
+    post:
+      tags: [admin]
+      operationId: adminLedgerAdjustment
+      summary: Manual ledger adjustment (reversal entry, reason and audit required)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [userId, credits, reason]
+              properties:
+                userId: { type: string, format: uuid }
+                credits: { type: integer }
+                reason: { type: string, minLength: 10, maxLength: 2000 }
+      responses:
+        '201': { $ref: '#/components/responses/Created' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/reports:
+    get:
+      tags: [admin]
+      operationId: adminGetReports
+      summary: Cost, abstention and reconciliation reports
+      parameters:
+        - { name: kind, in: query, required: true, schema: { type: string, enum: [maliyet, cekimserlik, mutabakat, kullanim] } }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+      responses:
+        '200':
+          description: Report rows.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: object }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: kazuist.session_token
+      description: HttpOnly, Secure, SameSite=Lax session cookie set by Better Auth.
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer session token for the iOS app.
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    Slug:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, pattern: '^[a-z0-9-]{1,120}$' }
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema: { type: string, maxLength: 200 }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Client generated request id, unique per user and operation.
+      schema: { type: string, minLength: 8, maxLength: 100 }
+  responses:
+    Generic:
+      description: OK.
+      content:
+        application/json:
+          schema: { type: object }
+    Created:
+      description: Created.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [id]
+            properties:
+              id: { type: string, format: uuid }
+    Accepted:
+      description: Accepted for processing.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/JobRef' }
+    BadRequest:
+      description: Validation failed.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Authentication required.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    PaymentRequired:
+      description: Insufficient credits or daily free quota exhausted.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Not allowed.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Not found.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Conflict or duplicate.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    PayloadTooLarge:
+      description: Upload larger than 20 MB.
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limited.
+      headers:
+        Retry-After:
+          description: Seconds to wait.
+          schema: { type: integer }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      required: [code, message, requestId]
+      properties:
+        code: { $ref: '#/components/schemas/ErrorCode' }
+        message: { type: string, description: 'User facing message; never includes internals.' }
+        requestId: { type: string }
+    ErrorCode:
+      type: string
+      enum:
+        - bad_request
+        - unauthorized
+        - forbidden
+        - not_found
+        - conflict
+        - payload_too_large
+        - rate_limited
+        - insufficient_credits
+        - nonce_expired
+        - unavailable
+        - internal
+    Health:
+      type: object
+      required: [status, checks]
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        checks:
+          type: object
+          additionalProperties: { type: string, enum: [ok, missing] }
+    Version:
+      type: object
+      required: [version, commit, builtAt]
+      properties:
+        version: { type: string }
+        commit: { type: string }
+        builtAt: { type: string, format: date-time }
+    JobRef:
+      type: object
+      required: [jobId]
+      properties:
+        jobId: { type: string, format: uuid }
+    JobStatus:
+      type: object
+      required: [id, type, status]
+      properties:
+        id: { type: string, format: uuid }
+        type: { $ref: '#/components/schemas/JobType' }
+        status: { $ref: '#/components/schemas/JobState' }
+        result: { type: [object, 'null'] }
+        error: { type: [string, 'null'] }
+    JobState:
+      type: string
+      enum: [queued, running, done, failed, dead]
+    JobType:
+      type: string
+      enum:
+        - ingest.fetch
+        - ingest.parse
+        - anon.run
+        - embed.chunks
+        - citations.extract
+        - rules.extract
+        - docx.validate
+        - kampus.summarize
+        - kampus.poster
+        - billing.monthly_grant
+        - billing.reconcile
+        - notify.send
+        - kalemcik.daily
+        - mevzuat.rg_daily
+        - live.fetch
+    Me:
+      type: object
+      required: [id, email, roles, eduVerified]
+      properties:
+        id: { type: string, format: uuid }
+        email: { type: string, format: email }
+        name: { type: [string, 'null'] }
+        roles:
+          type: array
+          items: { type: string }
+        eduVerified: { type: boolean }
+        targetProfession: { type: [string, 'null'] }
+        avatar: { type: [string, 'null'] }
+        tone: { type: [string, 'null'], enum: [nazik, dogrudan, null] }
+        plan: { type: string, enum: [ucretsiz, byok, ogrenci_plus, akademisyen] }
+    MePatch:
+      type: object
+      additionalProperties: false
+      properties:
+        name: { type: string, maxLength: 120 }
+        avatar: { type: string, maxLength: 60 }
+        tone: { type: string, enum: [nazik, dogrudan] }
+    Consent:
+      type: object
+      required: [kind, version, granted, at]
+      properties:
+        kind: { $ref: '#/components/schemas/ConsentKind' }
+        version: { type: string }
+        granted: { type: boolean }
+        at: { type: string, format: date-time }
+    ConsentInput:
+      type: object
+      additionalProperties: false
+      required: [kind, version, granted]
+      properties:
+        kind: { $ref: '#/components/schemas/ConsentKind' }
+        version: { type: string, maxLength: 40 }
+        granted: { type: boolean }
+    ConsentKind:
+      type: string
+      enum: [aydinlatma, acik_riza_analitik, acik_riza_pazarlama, kullanim_kosullari, on_bilgilendirme, mesafeli_sozlesme, cayma_istisnasi, yz_aktarim]
+    Profession:
+      type: object
+      required: [id, label]
+      properties:
+        id: { type: string }
+        label: { type: string }
+        avatars:
+          type: array
+          items: { type: string }
+    AuthorityClass:
+      type: string
+      description: plan.md Ek F
+      enum: [baglayici_norm, baglayici_karar, yuksek_emsal, emsal, emsal_sinirli, idari_karar, doktrin, karsilastirmali]
+    RecordType:
+      type: string
+      enum: [mevzuat, karar, kurul_karari, makale, kitap, tez, ab_hukuku]
+    RecordStatus:
+      type: string
+      enum: [yururlukte, degisti, yururlukten_kalkti, bozuldu, onandi, kesinlesti, bilinmiyor]
+    NormRef:
+      type: object
+      required: [kanunNo, madde]
+      properties:
+        kanunNo: { type: string }
+        kanunAdi: { type: [string, 'null'] }
+        madde: { type: string }
+        fikra: { type: [string, 'null'] }
+        bent: { type: [string, 'null'] }
+        recordId: { type: [string, 'null'], format: uuid }
+    Label:
+      type: string
+      enum: [yeni, yerlesik, eski, oncu, anonimlestirildi, ilgililik_yuksek, ilgililik_orta, ilgililik_arka_plan, guncellik_uyarisi, canli_kaynak, veri_gunu]
+    RecordSummary:
+      type: object
+      required: [id, type, title, authorityClass, status, labels]
+      properties:
+        id: { type: string, format: uuid }
+        type: { $ref: '#/components/schemas/RecordType' }
+        title: { type: string }
+        court: { type: [string, 'null'] }
+        chamber: { type: [string, 'null'] }
+        esasNo: { type: [string, 'null'] }
+        kararNo: { type: [string, 'null'] }
+        date: { type: [string, 'null'], format: date }
+        authorityClass: { $ref: '#/components/schemas/AuthorityClass' }
+        status: { $ref: '#/components/schemas/RecordStatus' }
+        labels:
+          type: array
+          items: { $ref: '#/components/schemas/Label' }
+        snippet: { type: [string, 'null'] }
+        liveOnly: { type: boolean }
+        fetchedAt: { type: [string, 'null'], format: date-time }
+    Record:
+      allOf:
+        - $ref: '#/components/schemas/RecordSummary'
+        - type: object
+          required: [jurisdiction, anonymized, sourceUrl]
+          properties:
+            jurisdiction: { type: string }
+            normRefs:
+              type: array
+              items: { $ref: '#/components/schemas/NormRef' }
+            validFrom: { type: [string, 'null'], format: date }
+            validTo: { type: [string, 'null'], format: date }
+            amendedBy: { type: [string, 'null'] }
+            licenseBasis: { type: string }
+            anonymized: { type: boolean }
+            anonymizationVersion: { type: [string, 'null'] }
+            sourceUrl: { type: string, format: uri }
+            text: { type: string }
+    RecordVersion:
+      type: object
+      required: [id, validFrom]
+      properties:
+        id: { type: string, format: uuid }
+        validFrom: { type: string, format: date }
+        validTo: { type: [string, 'null'], format: date }
+        amendedBy: { type: [string, 'null'] }
+        text: { type: string }
+    SearchResponse:
+      type: object
+      required: [items, page, total]
+      properties:
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RecordSummary' }
+        live:
+          type: array
+          items: { $ref: '#/components/schemas/RecordSummary' }
+        resolvedNorms:
+          type: array
+          items: { $ref: '#/components/schemas/NormRef' }
+        page: { type: integer }
+        total: { type: integer }
+    CitationGraph:
+      type: object
+      required: [nodes, edges]
+      properties:
+        nodes:
+          type: array
+          items: { $ref: '#/components/schemas/RecordSummary' }
+        edges:
+          type: array
+          items:
+            type: object
+            required: [from, to, kind]
+            properties:
+              from: { type: string, format: uuid }
+              to: { type: string, format: uuid }
+              kind: { type: string, enum: [atif, bozma, onama, ayni_yonde, aksi_yonde] }
+    SourceChip:
+      type: object
+      description: A source shown next to a sentence (kenar serhi).
+      required: [id, recordId, title, authorityClass, status]
+      properties:
+        id: { type: string, description: 'Prompt local id such as K3.' }
+        recordId: { type: string, format: uuid }
+        title: { type: string }
+        authorityClass: { $ref: '#/components/schemas/AuthorityClass' }
+        status: { $ref: '#/components/schemas/RecordStatus' }
+        date: { type: [string, 'null'], format: date }
+        fetchedAt: { type: [string, 'null'], format: date-time }
+    AnswerRequest:
+      type: object
+      additionalProperties: false
+      required: [q]
+      properties:
+        q: { type: string, minLength: 3, maxLength: 1000 }
+        mode: { type: string, enum: [platform, byok_aktarma], default: platform }
+        depth: { type: string, enum: [standart, derin], default: standart }
+        filters:
+          type: object
+          additionalProperties: false
+          properties:
+            type: { $ref: '#/components/schemas/RecordType' }
+            from: { type: string, format: date }
+            to: { type: string, format: date }
+            court: { type: string }
+        byok:
+          description: Only for byok_aktarma; key is held in request memory, never stored or logged.
+          type: object
+          additionalProperties: false
+          required: [provider, model, apiKey]
+          properties:
+            provider: { $ref: '#/components/schemas/ByokProvider' }
+            model: { type: string, maxLength: 120 }
+            apiKey: { type: string, maxLength: 400, writeOnly: true }
+    ByokProvider:
+      type: string
+      enum: [anthropic, openrouter, openai, gemini]
+    AnswerEvent:
+      description: SSE data payload; the SSE event name equals the `t` discriminator.
+      oneOf:
+        - $ref: '#/components/schemas/CumleEvent'
+        - $ref: '#/components/schemas/KaynaklarEvent'
+        - $ref: '#/components/schemas/UyariEvent'
+        - $ref: '#/components/schemas/CekimserEvent'
+        - $ref: '#/components/schemas/SonEvent'
+      discriminator:
+        propertyName: t
+        mapping:
+          cumle: '#/components/schemas/CumleEvent'
+          kaynaklar: '#/components/schemas/KaynaklarEvent'
+          uyari: '#/components/schemas/UyariEvent'
+          cekimser: '#/components/schemas/CekimserEvent'
+          son: '#/components/schemas/SonEvent'
+    CumleEvent:
+      type: object
+      required: [t, index, metin, kaynaklar, alinti]
+      properties:
+        t: { type: string, const: cumle }
+        index: { type: integer, minimum: 0, maximum: 2 }
+        metin: { type: string }
+        kaynaklar:
+          type: array
+          minItems: 1
+          items: { type: string }
+        alinti:
+          type: object
+          additionalProperties: { type: string, minLength: 12 }
+        destekleyici: { type: boolean, description: 'True when no binding source supports the sentence.' }
+    KaynaklarEvent:
+      type: object
+      required: [t, kaynaklar]
+      properties:
+        t: { type: string, const: kaynaklar }
+        kaynaklar:
+          type: array
+          items: { $ref: '#/components/schemas/SourceChip' }
+    UyariEvent:
+      type: object
+      required: [t, kod, metin]
+      properties:
+        t: { type: string, const: uyari }
+        kod: { type: string, enum: [veri_gunu, guncellik, destekleyici_kaynak, sabit_fr19, sabit_fr20] }
+        metin: { type: string }
+        cumleIndex: { type: [integer, 'null'] }
+    CekimserEvent:
+      type: object
+      required: [t, metin]
+      properties:
+        t: { type: string, const: cekimser }
+        metin: { type: string }
+        neden: { type: [string, 'null'] }
+    SonEvent:
+      type: object
+      required: [t, requestId, creditsCharged]
+      properties:
+        t: { type: string, const: son }
+        requestId: { type: string }
+        creditsCharged: { type: integer, minimum: 0 }
+        droppedLines: { type: integer, minimum: 0 }
+    PrepareRequest:
+      type: object
+      additionalProperties: false
+      required: [q, provider, model]
+      properties:
+        q: { type: string, minLength: 3, maxLength: 1000 }
+        provider: { $ref: '#/components/schemas/ByokProvider' }
+        model: { type: string, maxLength: 120 }
+        depth: { type: string, enum: [standart, derin], default: standart }
+    PrepareResponse:
+      type: object
+      required: [nonce, expiresAt, signature, system, prompt, sources, limits]
+      properties:
+        nonce: { type: string, minLength: 16 }
+        expiresAt: { type: string, format: date-time, description: 'Issued time plus 10 minutes.' }
+        signature: { type: string, description: 'Server HMAC over nonce, expiresAt, prompt hash and source ids.' }
+        system: { type: string, description: 'Fixed system instruction (Ek D.1).' }
+        prompt: { type: string, description: 'Masked query and wrapped passages.' }
+        sources:
+          type: array
+          items: { $ref: '#/components/schemas/SourceChip' }
+        passages:
+          type: object
+          description: Passage text per prompt id, for client side validation.
+          additionalProperties: { type: string }
+        limits:
+          type: object
+          required: [maxInputTokens, maxOutputTokens]
+          properties:
+            maxInputTokens: { type: integer }
+            maxOutputTokens: { type: integer }
+    VerifyRequest:
+      type: object
+      additionalProperties: false
+      required: [nonce, signature, lines]
+      properties:
+        nonce: { type: string }
+        signature: { type: string }
+        lines:
+          type: array
+          maxItems: 20
+          items: { type: string, maxLength: 4000, description: 'Raw JSON Lines produced by the model.' }
+        save: { type: boolean, default: false }
+    VerifyResponse:
+      type: object
+      required: [results, abstained]
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            required: [index, ok]
+            properties:
+              index: { type: integer }
+              ok: { type: boolean }
+              reason: { type: [string, 'null'] }
+        abstained: { type: boolean }
+        savedId: { type: [string, 'null'], format: uuid }
+    LibraryItem:
+      type: object
+      required: [id, recordId, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        recordId: { type: string, format: uuid }
+        note: { type: [string, 'null'] }
+        createdAt: { type: string, format: date-time }
+    GuideProgress:
+      type: object
+      required: [completedSteps]
+      properties:
+        completedSteps:
+          type: array
+          items: { type: string }
+        updatedAt: { type: string, format: date-time, readOnly: true }
+    Journal:
+      type: object
+      required: [id, name]
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        issn: { type: [string, 'null'] }
+        hasApprovedRules: { type: boolean }
+    RuleSet:
+      type: object
+      required: [id, version, rules]
+      properties:
+        id: { type: string, format: uuid }
+        version: { type: integer }
+        approvedAt: { type: [string, 'null'], format: date-time }
+        rules:
+          type: array
+          items:
+            type: object
+            required: [key, value]
+            properties:
+              key: { type: string }
+              value: {}
+              evidence: { type: [string, 'null'], description: 'Source excerpt from the guide.' }
+    WritingProject:
+      type: object
+      required: [id, title, kind, targetWords]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        kind: { type: string, enum: [tez, makale, odev] }
+        targetWords: { type: integer }
+        deadline: { type: [string, 'null'], format: date }
+        currentWords: { type: integer }
+    WritingProjectInput:
+      type: object
+      additionalProperties: false
+      properties:
+        title: { type: string, maxLength: 300 }
+        kind: { type: string, enum: [tez, makale, odev] }
+        targetWords: { type: integer, minimum: 0 }
+        deadline: { type: string, format: date }
+    Deck:
+      type: object
+      required: [id, title, cardCount]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        subject: { type: [string, 'null'] }
+        cardCount: { type: integer }
+        hmgs: { type: boolean }
+    Card:
+      type: object
+      required: [id, kind, front]
+      properties:
+        id: { type: string, format: uuid }
+        kind: { type: string, enum: [bilgi, coktan_secmeli, dogru_yanlis, eslestirme] }
+        front: { type: string }
+        back: { type: [string, 'null'] }
+        choices:
+          type: array
+          items: { type: string }
+        sourceRecordId: { type: [string, 'null'], format: uuid }
+        due: { type: [string, 'null'], format: date-time }
+    Exam:
+      type: object
+      required: [id, title, questionCount]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        questionCount: { type: integer }
+        durationMinutes: { type: integer }
+    KampusProfile:
+      type: object
+      required: [displayName]
+      properties:
+        id: { type: string, format: uuid, readOnly: true }
+        displayName: { type: string, maxLength: 120 }
+        institution: { type: [string, 'null'] }
+        bio: { type: [string, 'null'], maxLength: 1000 }
+    KampusPost:
+      type: object
+      required: [id, profileId, kind, title, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        profileId: { type: string, format: uuid }
+        kind: { type: string, enum: [makale, tez, bildiri, poster, not] }
+        title: { type: string }
+        abstract: { type: [string, 'null'] }
+        fileId: { type: [string, 'null'], format: uuid }
+        createdAt: { type: string, format: date-time }
+    KampusPostInput:
+      type: object
+      additionalProperties: false
+      required: [kind, title]
+      properties:
+        kind: { type: string, enum: [makale, tez, bildiri, poster, not] }
+        title: { type: string, maxLength: 300 }
+        abstract: { type: string, maxLength: 5000 }
+        fileId: { type: string, format: uuid }
+    KampusFulltextRequest:
+      type: object
+      required: [id, postId, status]
+      properties:
+        id: { type: string, format: uuid }
+        postId: { type: string, format: uuid }
+        status: { type: string, enum: [bekliyor, kabul, ret] }
+    Wallet:
+      type: object
+      required: [balance, lots, dailyFreeRemaining]
+      properties:
+        balance: { type: integer }
+        reserved: { type: integer }
+        dailyFreeRemaining: { type: integer }
+        lots:
+          type: array
+          items:
+            type: object
+            required: [source, remaining]
+            properties:
+              source: { $ref: '#/components/schemas/LotSource' }
+              remaining: { type: integer }
+              expiresAt: { type: [string, 'null'], format: date-time }
+    LotSource:
+      type: string
+      enum: [promosyon, abonelik, paket, iap]
+    LedgerMovement:
+      type: object
+      required: [id, at, credits, kind]
+      properties:
+        id: { type: string, format: uuid }
+        at: { type: string, format: date-time }
+        credits: { type: integer, description: 'Positive for grants, negative for consumption.' }
+        kind: { type: string, enum: [yukleme, tuketim, iade, ters_kayit, duzeltme, son_kullanma] }
+        description: { type: [string, 'null'] }
+    PriceTable:
+      type: object
+      required: [version, effectiveFrom, products, operations]
+      properties:
+        version: { type: string }
+        effectiveFrom: { type: string, format: date-time }
+        products:
+          type: array
+          items:
+            type: object
+            required: [code, priceKurus]
+            properties:
+              code: { type: string }
+              priceKurus: { type: integer, description: 'VAT included, in kurus.' }
+              credits: { type: [integer, 'null'] }
+        operations:
+          type: object
+          additionalProperties: { type: integer }
+    CheckoutSession:
+      type: object
+      required: [orderId, checkoutFormContent]
+      properties:
+        orderId: { type: string, format: uuid }
+        checkoutFormContent: { type: string, description: 'iyzico checkout form script or page URL token.' }
+        paymentPageUrl: { type: [string, 'null'], format: uri }
+    Invoice:
+      type: object
+      required: [id, number, issuedAt, totalKurus]
+      properties:
+        id: { type: string, format: uuid }
+        number: { type: string }
+        issuedAt: { type: string, format: date-time }
+        totalKurus: { type: integer }
+        pdfUrl: { type: [string, 'null'], format: uri }
+    NotificationPreferences:
+      type: object
+      additionalProperties: false
+      properties:
+        email: { type: object, additionalProperties: { type: boolean } }
+        webPush: { type: object, additionalProperties: { type: boolean } }
+        apns: { type: object, additionalProperties: { type: boolean } }
+    ReviewItem:
+      type: object
+      required: [id, queue, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        queue: { type: string }
+        subjectId: { type: [string, 'null'], format: uuid }
+        payload: { type: object }
+        createdAt: { type: string, format: date-time }
+    FeatureFlag:
+      type: object
+      required: [key, enabled]
+      properties:
+        key: { type: string, pattern: '^[a-z0-9_.]{1,80}$' }
+        enabled: { type: boolean }
+        rolloutPercent: { type: integer, minimum: 0, maximum: 100 }
+    RankingWeights:
+      type: object
+      additionalProperties: { type: number }
