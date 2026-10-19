@@ -72,7 +72,7 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Health' }
         '503':
-          description: A critical dependency or environment variable is missing.
+          description: A critical dependency is unreachable or not configured.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Health' }
@@ -399,6 +399,8 @@ paths:
         Server Sent Events. Event names are `cumle`, `kaynaklar`, `uyari`, `cekimser`, `son`.
         Each event `data` is a JSON object matching the schema of the same name. Only validated
         sentences are emitted. Abstention costs no credit.
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
         content:
@@ -597,6 +599,7 @@ paths:
           multipart/form-data:
             schema:
               type: object
+              additionalProperties: false
               required: [file]
               properties:
                 file: { type: string, contentMediaType: application/pdf }
@@ -787,6 +790,7 @@ paths:
           multipart/form-data:
             schema:
               type: object
+              additionalProperties: false
               required: [file]
               properties:
                 file:
@@ -810,6 +814,8 @@ paths:
       tags: [writing]
       operationId: buildAbbreviations
       summary: Build a table of abbreviations from text
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
         content:
@@ -932,6 +938,7 @@ paths:
                   type: array
                   items:
                     type: object
+                    additionalProperties: false
                     required: [cardId, choice]
                     properties:
                       cardId: { type: string, format: uuid }
@@ -1474,6 +1481,7 @@ paths:
                 endpoint: { type: string, format: uri }
                 keys:
                   type: object
+                  additionalProperties: false
                   required: [p256dh, auth]
                   properties:
                     p256dh: { type: string }
@@ -1533,6 +1541,7 @@ paths:
     get:
       tags: [admin]
       operationId: adminListQueue
+      x-kazuist-requires: [passkey, second-factor]
       summary: Review queue items
       parameters:
         - $ref: '#/components/parameters/Cursor'
@@ -1559,6 +1568,7 @@ paths:
     post:
       tags: [admin]
       operationId: adminDecideQueueItem
+      x-kazuist-requires: [passkey, second-factor]
       summary: Approve, reject or edit a queue item (audited)
       requestBody:
         required: true
@@ -1571,7 +1581,20 @@ paths:
               properties:
                 decision: { type: string, enum: [onay, ret, duzelt] }
                 note: { type: string, maxLength: 2000 }
-                patch: { type: object }
+                patch:
+                  type: object
+                  additionalProperties: false
+                  properties:
+                    changes:
+                      type: array
+                      maxItems: 100
+                      items:
+                        type: object
+                        additionalProperties: false
+                        required: [path, value]
+                        properties:
+                          path: { type: string, maxLength: 200 }
+                          value: {}
       responses:
         '200': { $ref: '#/components/responses/Generic' }
         '403': { $ref: '#/components/responses/Forbidden' }
@@ -1580,6 +1603,7 @@ paths:
     get:
       tags: [admin]
       operationId: adminListPriceTables
+      x-kazuist-requires: [passkey, second-factor]
       summary: Price table versions
       responses:
         '200':
@@ -1593,6 +1617,7 @@ paths:
     post:
       tags: [admin]
       operationId: adminCreatePriceTable
+      x-kazuist-requires: [passkey, second-factor]
       summary: Create a dated price table version
       requestBody:
         required: true
@@ -1607,6 +1632,7 @@ paths:
     get:
       tags: [admin]
       operationId: adminListFlags
+      x-kazuist-requires: [passkey, second-factor]
       summary: Feature flags
       responses:
         '200':
@@ -1620,6 +1646,7 @@ paths:
     put:
       tags: [admin]
       operationId: adminSetFlag
+      x-kazuist-requires: [passkey, second-factor]
       summary: Set a feature flag
       requestBody:
         required: true
@@ -1634,6 +1661,7 @@ paths:
     get:
       tags: [admin]
       operationId: adminListProfessions
+      x-kazuist-requires: [passkey, second-factor]
       summary: Professions (editable)
       responses:
         '200':
@@ -1647,6 +1675,7 @@ paths:
     post:
       tags: [admin]
       operationId: adminUpsertProfession
+      x-kazuist-requires: [passkey, second-factor]
       summary: Create or update a profession
       requestBody:
         required: true
@@ -1661,6 +1690,7 @@ paths:
     get:
       tags: [admin]
       operationId: adminGetWeights
+      x-kazuist-requires: [passkey, second-factor]
       summary: Ranking weights and label thresholds
       responses:
         '200':
@@ -1672,6 +1702,7 @@ paths:
     put:
       tags: [admin]
       operationId: adminSetWeights
+      x-kazuist-requires: [passkey, second-factor]
       summary: Update ranking weights
       requestBody:
         required: true
@@ -1686,6 +1717,7 @@ paths:
     get:
       tags: [admin]
       operationId: adminListUsers
+      x-kazuist-requires: [passkey, second-factor]
       summary: Search users
       parameters:
         - { name: q, in: query, schema: { type: string, maxLength: 200 } }
@@ -1703,6 +1735,7 @@ paths:
     post:
       tags: [admin]
       operationId: adminLedgerAdjustment
+      x-kazuist-requires: [passkey, second-factor]
       summary: Manual ledger adjustment (reversal entry, reason and audit required)
       parameters:
         - $ref: '#/components/parameters/IdempotencyKey'
@@ -1726,6 +1759,7 @@ paths:
     get:
       tags: [admin]
       operationId: adminGetReports
+      x-kazuist-requires: [passkey, second-factor]
       summary: Cost, abstention and reconciliation reports
       parameters:
         - { name: kind, in: query, required: true, schema: { type: string, enum: [maliyet, cekimserlik, mutabakat, kullanim] } }
@@ -1863,12 +1897,11 @@ components:
         - internal
     Health:
       type: object
-      required: [status, checks]
+      description: Only the overall state is exposed; variable and dependency names stay internal.
+      additionalProperties: false
+      required: [status]
       properties:
         status: { type: string, enum: [ok, degraded] }
-        checks:
-          type: object
-          additionalProperties: { type: string, enum: [ok, missing] }
     Version:
       type: object
       required: [version, commit, builtAt]
@@ -1954,6 +1987,7 @@ components:
       enum: [aydinlatma, acik_riza_analitik, acik_riza_pazarlama, kullanim_kosullari, on_bilgilendirme, mesafeli_sozlesme, cayma_istisnasi, yz_aktarim]
     Profession:
       type: object
+      additionalProperties: false
       required: [id, label]
       properties:
         id: { type: string }
@@ -2177,7 +2211,10 @@ components:
       type: object
       required: [nonce, expiresAt, signature, system, prompt, sources, limits]
       properties:
-        nonce: { type: string, minLength: 16 }
+        nonce:
+          type: string
+          minLength: 16
+          description: 'Single use. Stored in Valkey with SET NX EX 600 at prepare and consumed atomically (GETDEL) at verify; a reused or expired nonce returns 410.'
         expiresAt: { type: string, format: date-time, description: 'Issued time plus 10 minutes.' }
         signature: { type: string, description: 'Server HMAC over nonce, expiresAt, prompt hash and source ids.' }
         system: { type: string, description: 'Fixed system instruction (Ek D.1).' }
@@ -2232,6 +2269,7 @@ components:
         createdAt: { type: string, format: date-time }
     GuideProgress:
       type: object
+      additionalProperties: false
       required: [completedSteps]
       properties:
         completedSteps:
@@ -2312,6 +2350,7 @@ components:
         durationMinutes: { type: integer }
     KampusProfile:
       type: object
+      additionalProperties: false
       required: [displayName]
       properties:
         id: { type: string, format: uuid, readOnly: true }
@@ -2375,6 +2414,7 @@ components:
         description: { type: [string, 'null'] }
     PriceTable:
       type: object
+      additionalProperties: false
       required: [version, effectiveFrom, products, operations]
       properties:
         version: { type: string }
@@ -2383,6 +2423,7 @@ components:
           type: array
           items:
             type: object
+            additionalProperties: false
             required: [code, priceKurus]
             properties:
               code: { type: string }
@@ -2425,6 +2466,7 @@ components:
         createdAt: { type: string, format: date-time }
     FeatureFlag:
       type: object
+      additionalProperties: false
       required: [key, enabled]
       properties:
         key: { type: string, pattern: '^[a-z0-9_.]{1,80}$' }

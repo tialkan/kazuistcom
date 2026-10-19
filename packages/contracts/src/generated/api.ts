@@ -1338,12 +1338,10 @@ export interface components {
         };
         /** @enum {string} */
         ErrorCode: "bad_request" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "payload_too_large" | "rate_limited" | "insufficient_credits" | "nonce_expired" | "unavailable" | "internal";
+        /** @description Only the overall state is exposed; variable and dependency names stay internal. */
         Health: {
             /** @enum {string} */
             status: "ok" | "degraded";
-            checks: {
-                [key: string]: "ok" | "missing";
-            };
         };
         Version: {
             version: string;
@@ -1598,6 +1596,7 @@ export interface components {
             depth: "standart" | "derin";
         };
         PrepareResponse: {
+            /** @description Single use. Stored in Valkey with SET NX EX 600 at prepare and consumed atomically (GETDEL) at verify; a reused or expired nonce returns 410. */
             nonce: string;
             /**
              * Format: date-time
@@ -1979,7 +1978,7 @@ export interface operations {
                 };
             };
             429: components["responses"]["TooManyRequests"];
-            /** @description A critical dependency or environment variable is missing. */
+            /** @description A critical dependency is unreachable or not configured. */
             503: {
                 headers: {
                     [name: string]: unknown;
@@ -2424,7 +2423,10 @@ export interface operations {
     createAnswer: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
             path?: never;
             cookie?: never;
         };
@@ -3007,7 +3009,10 @@ export interface operations {
     buildAbbreviations: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
             path?: never;
             cookie?: never;
         };
@@ -4007,7 +4012,12 @@ export interface operations {
                     /** @enum {string} */
                     decision: "onay" | "ret" | "duzelt";
                     note?: string;
-                    patch?: Record<string, never>;
+                    patch?: {
+                        changes?: {
+                            path: string;
+                            value: unknown;
+                        }[];
+                    };
                 };
             };
         };

@@ -23,10 +23,8 @@ export const ApiError = z.strictObject({
 });
 export type ApiError = z.infer<typeof ApiError>;
 
-export const Health = z.object({
-  status: z.enum(['ok', 'degraded']),
-  checks: z.record(z.string(), z.enum(['ok', 'missing'])),
-});
+/** Overall state only; dependency and variable names stay internal. */
+export const Health = z.strictObject({ status: z.enum(['ok', 'degraded']) });
 export type Health = z.infer<typeof Health>;
 
 export const Version = z.object({
@@ -218,7 +216,11 @@ export function parseModelLine(raw: string): ModelLine | null {
   return result.success ? result.data : null;
 }
 
-/** BYOK client protocol (plan 8.1). */
+/**
+ * BYOK client protocol (plan 8.1). The nonce is single use: prepare stores it in Valkey with
+ * SET key value NX EX 600, verify consumes it with GETDEL; missing means expired or reused (410).
+ */
+export const byokNonceKey = (nonce: string): string => `byok:nonce:${nonce}`;
 export const BYOK_NONCE_TTL_SECONDS = 600;
 
 export const PrepareRequest = z.strictObject({
