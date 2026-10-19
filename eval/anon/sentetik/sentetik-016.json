@@ -1,58 +1,58 @@
 {
- "id": "sentetik-016",
- "kind": "is",
- "synthetic": true,
- "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2022/631 K. 2026/599\n\nDAVACI : Aslı Evrenli (T.C. kimlik no: 26888791694)\nVEKİLİ : Av. Dilan Evrenli\nDAVALI : Onur Çetinkol İnşaat, vergi kimlik no 0236866239\n\nDavacı Aslı Evrenli davalıya ait şantiyede çalıştığını, ücretinin 4682 7927 3848 5001 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Okan Yıldırımoğlu davacının asli.evrenli33@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
- "annotations_a": [
-  {
-   "start": 61,
-   "end": 73,
-   "entity": "PERSON"
-  },
-  {
-   "start": 91,
-   "end": 102,
-   "entity": "TCKN"
-  },
-  {
-   "start": 117,
-   "end": 130,
-   "entity": "PERSON"
-  },
-  {
-   "start": 140,
-   "end": 153,
-   "entity": "SOLE_PROPRIETOR"
-  },
-  {
-   "start": 178,
-   "end": 188,
-   "entity": "VKN"
-  },
-  {
-   "start": 197,
-   "end": 209,
-   "entity": "PERSON"
-  },
-  {
-   "start": 256,
-   "end": 275,
-   "entity": "CARD"
-  },
-  {
-   "start": 306,
-   "end": 319,
-   "entity": "UNION"
-  },
-  {
-   "start": 381,
-   "end": 398,
-   "entity": "PERSON"
-  },
-  {
-   "start": 409,
-   "end": 439,
-   "entity": "EMAIL"
-  }
- ]
+  "id": "sentetik-016",
+  "kind": "is",
+  "synthetic": true,
+  "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2022/631 K. 2026/599\n\nDAVACI : Aslı Evrenli (T.C. kimlik no: 26888791694)\nVEKİLİ : Av. Dilan Evrenli\nDAVALI : Onur Çetinkol İnşaat, vergi kimlik no 0236866239\n\nDavacı Aslı Evrenli davalıya ait şantiyede çalıştığını, ücretinin 4682 7927 3848 5001 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Okan Yıldırımoğlu davacının asli.evrenli33@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
+  "annotations_a": [
+    {
+      "start": 61,
+      "end": 73,
+      "entity": "PERSON"
+    },
+    {
+      "start": 91,
+      "end": 102,
+      "entity": "TCKN"
+    },
+    {
+      "start": 117,
+      "end": 130,
+      "entity": "PERSON"
+    },
+    {
+      "start": 140,
+      "end": 153,
+      "entity": "SOLE_PROPRIETOR"
+    },
+    {
+      "start": 178,
+      "end": 188,
+      "entity": "VKN"
+    },
+    {
+      "start": 197,
+      "end": 209,
+      "entity": "PERSON"
+    },
+    {
+      "start": 256,
+      "end": 275,
+      "entity": "CARD"
+    },
+    {
+      "start": 306,
+      "end": 319,
+      "entity": "UNION"
+    },
+    {
+      "start": 381,
+      "end": 398,
+      "entity": "PERSON"
+    },
+    {
+      "start": 409,
+      "end": 439,
+      "entity": "EMAIL"
+    }
+  ]
 }

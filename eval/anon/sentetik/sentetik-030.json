@@ -1,93 +1,93 @@
 {
- "id": "sentetik-030",
- "kind": "ceza",
- "synthetic": true,
- "text": "T.C. İzmir 2. Ağır Ceza Mahkemesi\nE. 2019/44 K. 2022/40\n\nHâkim : Tolga Ertuğrul\nSANIK : Sevgi Bozdoğanlı, 13.10.1990 doğumlu, T.C. kimlik no 30457818422\nSANIK : Selin Yıldırımoğlu, doğum tarihi: 13.03.1979\nMÜDAFİİ : Av. Mehmet Demirsoy\nMAĞDUR : Yiğit Kılıçarslan\n\nİddianamede, sanık Sevgi Bozdoğanlı yönetimindeki 67 BN 784 plakalı araçla 8 Şubat 2022 tarihinde mağdur Yiğit Kılıçarslan'a çarptığı, sanık Selin Yıldırımoğlu'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun epilepsi tanısıyla tedavi gördüğü raporla sabittir. Tanık Fatma Sönmezler olayı gördüğünü beyan etmiştir. Sanık Bozdoğanlı'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Sevgi Bozdoğanlı hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
- "annotations_a": [
-  {
-   "start": 65,
-   "end": 79,
-   "entity": "PERSON"
-  },
-  {
-   "start": 88,
-   "end": 104,
-   "entity": "PERSON"
-  },
-  {
-   "start": 106,
-   "end": 116,
-   "entity": "DOB"
-  },
-  {
-   "start": 141,
-   "end": 152,
-   "entity": "TCKN"
-  },
-  {
-   "start": 161,
-   "end": 179,
-   "entity": "PERSON"
-  },
-  {
-   "start": 195,
-   "end": 205,
-   "entity": "DOB"
-  },
-  {
-   "start": 220,
-   "end": 235,
-   "entity": "PERSON"
-  },
-  {
-   "start": 245,
-   "end": 262,
-   "entity": "PERSON"
-  },
-  {
-   "start": 283,
-   "end": 299,
-   "entity": "PERSON"
-  },
-  {
-   "start": 314,
-   "end": 323,
-   "entity": "PLATE"
-  },
-  {
-   "start": 369,
-   "end": 386,
-   "entity": "PERSON"
-  },
-  {
-   "start": 405,
-   "end": 423,
-   "entity": "PERSON"
-  },
-  {
-   "start": 475,
-   "end": 483,
-   "entity": "HEALTH"
-  },
-  {
-   "start": 533,
-   "end": 548,
-   "entity": "PERSON"
-  },
-  {
-   "start": 587,
-   "end": 597,
-   "entity": "PERSON"
-  },
-  {
-   "start": 601,
-   "end": 620,
-   "entity": "CRIMINAL"
-  },
-  {
-   "start": 678,
-   "end": 694,
-   "entity": "PERSON"
-  }
- ]
+  "id": "sentetik-030",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. İzmir 2. Ağır Ceza Mahkemesi\nE. 2019/44 K. 2022/40\n\nHâkim : Tolga Ertuğrul\nSANIK : Sevgi Bozdoğanlı, 13.10.1990 doğumlu, T.C. kimlik no 30457818422\nSANIK : Selin Yıldırımoğlu, doğum tarihi: 13.03.1979\nMÜDAFİİ : Av. Mehmet Demirsoy\nMAĞDUR : Yiğit Kılıçarslan\n\nİddianamede, sanık Sevgi Bozdoğanlı yönetimindeki 67 BN 784 plakalı araçla 8 Şubat 2022 tarihinde mağdur Yiğit Kılıçarslan'a çarptığı, sanık Selin Yıldırımoğlu'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun epilepsi tanısıyla tedavi gördüğü raporla sabittir. Tanık Fatma Sönmezler olayı gördüğünü beyan etmiştir. Sanık Bozdoğanlı'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Sevgi Bozdoğanlı hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 65,
+      "end": 79,
+      "entity": "PERSON"
+    },
+    {
+      "start": 88,
+      "end": 104,
+      "entity": "PERSON"
+    },
+    {
+      "start": 106,
+      "end": 116,
+      "entity": "DOB"
+    },
+    {
+      "start": 141,
+      "end": 152,
+      "entity": "TCKN"
+    },
+    {
+      "start": 161,
+      "end": 179,
+      "entity": "PERSON"
+    },
+    {
+      "start": 195,
+      "end": 205,
+      "entity": "DOB"
+    },
+    {
+      "start": 220,
+      "end": 235,
+      "entity": "PERSON"
+    },
+    {
+      "start": 245,
+      "end": 262,
+      "entity": "PERSON"
+    },
+    {
+      "start": 283,
+      "end": 299,
+      "entity": "PERSON"
+    },
+    {
+      "start": 314,
+      "end": 323,
+      "entity": "PLATE"
+    },
+    {
+      "start": 369,
+      "end": 386,
+      "entity": "PERSON"
+    },
+    {
+      "start": 405,
+      "end": 423,
+      "entity": "PERSON"
+    },
+    {
+      "start": 475,
+      "end": 483,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 533,
+      "end": 548,
+      "entity": "PERSON"
+    },
+    {
+      "start": 587,
+      "end": 597,
+      "entity": "PERSON"
+    },
+    {
+      "start": 601,
+      "end": 620,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 678,
+      "end": 694,
+      "entity": "PERSON"
+    }
+  ]
 }

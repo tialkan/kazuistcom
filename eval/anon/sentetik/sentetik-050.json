@@ -1,93 +1,93 @@
 {
- "id": "sentetik-050",
- "kind": "ceza",
- "synthetic": true,
- "text": "T.C. Antalya 6. Asliye Ceza Mahkemesi\nE. 2020/762 K. 2024/142\n\nHâkim : Gülşen Evrenli\nSANIK : Okan Akbulut, 03.01.1989 doğumlu, T.C. kimlik no 96496166726\nSANIK : Erdem Sarıkaya, doğum tarihi: 01.02.1977\nMÜDAFİİ : Av. Nur Yıldırımoğlu\nMAĞDUR : Kerem Özbilge\n\nİddianamede, sanık Okan Akbulut yönetimindeki 32 RS 286 plakalı araçla 23 Şubat 2021 tarihinde mağdur Kerem Özbilge'a çarptığı, sanık Erdem Sarıkaya'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun depresyon tanısıyla tedavi gördüğü raporla sabittir. Tanık Sevgi Sarıkaya olayı gördüğünü beyan etmiştir. Sanık Akbulut'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Okan Akbulut hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
- "annotations_a": [
-  {
-   "start": 71,
-   "end": 85,
-   "entity": "PERSON"
-  },
-  {
-   "start": 94,
-   "end": 106,
-   "entity": "PERSON"
-  },
-  {
-   "start": 108,
-   "end": 118,
-   "entity": "DOB"
-  },
-  {
-   "start": 143,
-   "end": 154,
-   "entity": "TCKN"
-  },
-  {
-   "start": 163,
-   "end": 177,
-   "entity": "PERSON"
-  },
-  {
-   "start": 193,
-   "end": 203,
-   "entity": "DOB"
-  },
-  {
-   "start": 218,
-   "end": 234,
-   "entity": "PERSON"
-  },
-  {
-   "start": 244,
-   "end": 257,
-   "entity": "PERSON"
-  },
-  {
-   "start": 278,
-   "end": 290,
-   "entity": "PERSON"
-  },
-  {
-   "start": 305,
-   "end": 314,
-   "entity": "PLATE"
-  },
-  {
-   "start": 361,
-   "end": 374,
-   "entity": "PERSON"
-  },
-  {
-   "start": 393,
-   "end": 407,
-   "entity": "PERSON"
-  },
-  {
-   "start": 459,
-   "end": 468,
-   "entity": "HEALTH"
-  },
-  {
-   "start": 518,
-   "end": 532,
-   "entity": "PERSON"
-  },
-  {
-   "start": 571,
-   "end": 578,
-   "entity": "PERSON"
-  },
-  {
-   "start": 582,
-   "end": 601,
-   "entity": "CRIMINAL"
-  },
-  {
-   "start": 659,
-   "end": 671,
-   "entity": "PERSON"
-  }
- ]
+  "id": "sentetik-050",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. Antalya 6. Asliye Ceza Mahkemesi\nE. 2020/762 K. 2024/142\n\nHâkim : Gülşen Evrenli\nSANIK : Okan Akbulut, 03.01.1989 doğumlu, T.C. kimlik no 96496166726\nSANIK : Erdem Sarıkaya, doğum tarihi: 01.02.1977\nMÜDAFİİ : Av. Nur Yıldırımoğlu\nMAĞDUR : Kerem Özbilge\n\nİddianamede, sanık Okan Akbulut yönetimindeki 32 RS 286 plakalı araçla 23 Şubat 2021 tarihinde mağdur Kerem Özbilge'a çarptığı, sanık Erdem Sarıkaya'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun depresyon tanısıyla tedavi gördüğü raporla sabittir. Tanık Sevgi Sarıkaya olayı gördüğünü beyan etmiştir. Sanık Akbulut'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Okan Akbulut hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 71,
+      "end": 85,
+      "entity": "PERSON"
+    },
+    {
+      "start": 94,
+      "end": 106,
+      "entity": "PERSON"
+    },
+    {
+      "start": 108,
+      "end": 118,
+      "entity": "DOB"
+    },
+    {
+      "start": 143,
+      "end": 154,
+      "entity": "TCKN"
+    },
+    {
+      "start": 163,
+      "end": 177,
+      "entity": "PERSON"
+    },
+    {
+      "start": 193,
+      "end": 203,
+      "entity": "DOB"
+    },
+    {
+      "start": 218,
+      "end": 234,
+      "entity": "PERSON"
+    },
+    {
+      "start": 244,
+      "end": 257,
+      "entity": "PERSON"
+    },
+    {
+      "start": 278,
+      "end": 290,
+      "entity": "PERSON"
+    },
+    {
+      "start": 305,
+      "end": 314,
+      "entity": "PLATE"
+    },
+    {
+      "start": 361,
+      "end": 374,
+      "entity": "PERSON"
+    },
+    {
+      "start": 393,
+      "end": 407,
+      "entity": "PERSON"
+    },
+    {
+      "start": 459,
+      "end": 468,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 518,
+      "end": 532,
+      "entity": "PERSON"
+    },
+    {
+      "start": 571,
+      "end": 578,
+      "entity": "PERSON"
+    },
+    {
+      "start": 582,
+      "end": 601,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 659,
+      "end": 671,
+      "entity": "PERSON"
+    }
+  ]
 }

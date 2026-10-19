@@ -1,68 +1,68 @@
 {
- "id": "sentetik-003",
- "kind": "aile",
- "synthetic": true,
- "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2023/729 K. 2023/162\n\nDAVACI : Kerem Kocabey\nVEKİLİ : Av. Mustafa Gürsoylu\nDAVALI : İpek Ilgaz\n\nTarafların müşterek çocuğu Ebru Kocabey 11 yaşında olup Söğüt İlkokulu öğrencisidir. Sosyal çalışma uzmanı Elif Toprakçı raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı İpek Ilgaz ile davacı Kerem Kocabey ortak ev adresi olan Yeşiltepe Mahallesi, Akasya Cad. No: 39/15 adresinden ayrılmıştır. Davalının +90 536 691 43 41 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Ebru Kocabey üzerindeki velayetin davacıya verilmesine karar verildi.",
- "annotations_a": [
-  {
-   "start": 74,
-   "end": 87,
-   "entity": "PERSON"
-  },
-  {
-   "start": 101,
-   "end": 117,
-   "entity": "PERSON"
-  },
-  {
-   "start": 127,
-   "end": 137,
-   "entity": "PERSON"
-  },
-  {
-   "start": 166,
-   "end": 178,
-   "entity": "PERSON"
-  },
-  {
-   "start": 179,
-   "end": 189,
-   "entity": "CHILD_AGE"
-  },
-  {
-   "start": 195,
-   "end": 209,
-   "entity": "SCHOOL"
-  },
-  {
-   "start": 246,
-   "end": 259,
-   "entity": "PERSON"
-  },
-  {
-   "start": 338,
-   "end": 348,
-   "entity": "PERSON"
-  },
-  {
-   "start": 360,
-   "end": 373,
-   "entity": "PERSON"
-  },
-  {
-   "start": 395,
-   "end": 437,
-   "entity": "ADDRESS"
-  },
-  {
-   "start": 472,
-   "end": 489,
-   "entity": "PHONE"
-  },
-  {
-   "start": 576,
-   "end": 588,
-   "entity": "PERSON"
-  }
- ]
+  "id": "sentetik-003",
+  "kind": "aile",
+  "synthetic": true,
+  "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2023/729 K. 2023/162\n\nDAVACI : Kerem Kocabey\nVEKİLİ : Av. Mustafa Gürsoylu\nDAVALI : İpek Ilgaz\n\nTarafların müşterek çocuğu Ebru Kocabey 11 yaşında olup Söğüt İlkokulu öğrencisidir. Sosyal çalışma uzmanı Elif Toprakçı raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı İpek Ilgaz ile davacı Kerem Kocabey ortak ev adresi olan Yeşiltepe Mahallesi, Akasya Cad. No: 39/15 adresinden ayrılmıştır. Davalının +90 536 691 43 41 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Ebru Kocabey üzerindeki velayetin davacıya verilmesine karar verildi.",
+  "annotations_a": [
+    {
+      "start": 74,
+      "end": 87,
+      "entity": "PERSON"
+    },
+    {
+      "start": 101,
+      "end": 117,
+      "entity": "PERSON"
+    },
+    {
+      "start": 127,
+      "end": 137,
+      "entity": "PERSON"
+    },
+    {
+      "start": 166,
+      "end": 178,
+      "entity": "PERSON"
+    },
+    {
+      "start": 179,
+      "end": 189,
+      "entity": "CHILD_AGE"
+    },
+    {
+      "start": 195,
+      "end": 209,
+      "entity": "SCHOOL"
+    },
+    {
+      "start": 246,
+      "end": 259,
+      "entity": "PERSON"
+    },
+    {
+      "start": 338,
+      "end": 348,
+      "entity": "PERSON"
+    },
+    {
+      "start": 360,
+      "end": 373,
+      "entity": "PERSON"
+    },
+    {
+      "start": 395,
+      "end": 437,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 472,
+      "end": 489,
+      "entity": "PHONE"
+    },
+    {
+      "start": 576,
+      "end": 588,
+      "entity": "PERSON"
+    }
+  ]
 }

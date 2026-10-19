@@ -1,68 +1,68 @@
 {
- "id": "sentetik-043",
- "kind": "aile",
- "synthetic": true,
- "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2025/867 K. 2022/45\n\nDAVACI : Ayşe Bozdoğanlı\nVEKİLİ : Av. Mehmet Kılıçarslan\nDAVALI : Emre Öztekinler\n\nTarafların müşterek çocuğu Erdem Bozdoğanlı 12 yaşında olup Menekşe İlkokulu öğrencisidir. Sosyal çalışma uzmanı Şule Gökdemir raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Emre Öztekinler ile davacı Ayşe Bozdoğanlı ortak ev adresi olan Esentepe Mahallesi, Söğüt Caddesi No: 25/11 adresinden ayrılmıştır. Davalının 0 537 870 52 40 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Erdem Bozdoğanlı üzerindeki velayetin davacıya verilmesine karar verildi.",
- "annotations_a": [
-  {
-   "start": 73,
-   "end": 88,
-   "entity": "PERSON"
-  },
-  {
-   "start": 102,
-   "end": 120,
-   "entity": "PERSON"
-  },
-  {
-   "start": 130,
-   "end": 145,
-   "entity": "PERSON"
-  },
-  {
-   "start": 174,
-   "end": 190,
-   "entity": "PERSON"
-  },
-  {
-   "start": 191,
-   "end": 201,
-   "entity": "CHILD_AGE"
-  },
-  {
-   "start": 207,
-   "end": 223,
-   "entity": "SCHOOL"
-  },
-  {
-   "start": 260,
-   "end": 273,
-   "entity": "PERSON"
-  },
-  {
-   "start": 352,
-   "end": 367,
-   "entity": "PERSON"
-  },
-  {
-   "start": 379,
-   "end": 394,
-   "entity": "PERSON"
-  },
-  {
-   "start": 416,
-   "end": 459,
-   "entity": "ADDRESS"
-  },
-  {
-   "start": 494,
-   "end": 509,
-   "entity": "PHONE"
-  },
-  {
-   "start": 596,
-   "end": 612,
-   "entity": "PERSON"
-  }
- ]
+  "id": "sentetik-043",
+  "kind": "aile",
+  "synthetic": true,
+  "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2025/867 K. 2022/45\n\nDAVACI : Ayşe Bozdoğanlı\nVEKİLİ : Av. Mehmet Kılıçarslan\nDAVALI : Emre Öztekinler\n\nTarafların müşterek çocuğu Erdem Bozdoğanlı 12 yaşında olup Menekşe İlkokulu öğrencisidir. Sosyal çalışma uzmanı Şule Gökdemir raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Emre Öztekinler ile davacı Ayşe Bozdoğanlı ortak ev adresi olan Esentepe Mahallesi, Söğüt Caddesi No: 25/11 adresinden ayrılmıştır. Davalının 0 537 870 52 40 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Erdem Bozdoğanlı üzerindeki velayetin davacıya verilmesine karar verildi.",
+  "annotations_a": [
+    {
+      "start": 73,
+      "end": 88,
+      "entity": "PERSON"
+    },
+    {
+      "start": 102,
+      "end": 120,
+      "entity": "PERSON"
+    },
+    {
+      "start": 130,
+      "end": 145,
+      "entity": "PERSON"
+    },
+    {
+      "start": 174,
+      "end": 190,
+      "entity": "PERSON"
+    },
+    {
+      "start": 191,
+      "end": 201,
+      "entity": "CHILD_AGE"
+    },
+    {
+      "start": 207,
+      "end": 223,
+      "entity": "SCHOOL"
+    },
+    {
+      "start": 260,
+      "end": 273,
+      "entity": "PERSON"
+    },
+    {
+      "start": 352,
+      "end": 367,
+      "entity": "PERSON"
+    },
+    {
+      "start": 379,
+      "end": 394,
+      "entity": "PERSON"
+    },
+    {
+      "start": 416,
+      "end": 459,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 494,
+      "end": 509,
+      "entity": "PHONE"
+    },
+    {
+      "start": 596,
+      "end": 612,
+      "entity": "PERSON"
+    }
+  ]
 }

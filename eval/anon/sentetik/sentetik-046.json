@@ -1,93 +1,93 @@
 {
- "id": "sentetik-046",
- "kind": "ceza",
- "synthetic": true,
- "text": "T.C. Antalya 6. Asliye Ceza Mahkemesi\nE. 2023/166 K. 2023/442\n\nHâkim : Emre Demirsoy\nSANIK : Levent Karaduman, 18.04.1983 doğumlu, T.C. kimlik no 80842922982\nSANIK : Ebru Bozdoğanlı, doğum tarihi: 26.04.1970\nMÜDAFİİ : Av. Gülşen Albayrakoğlu\nMAĞDUR : Tolga Uluçay\n\nİddianamede, sanık Levent Karaduman yönetimindeki 23 AB 7197 plakalı araçla 10 Ağustos 2023 tarihinde mağdur Tolga Uluçay'a çarptığı, sanık Ebru Bozdoğanlı'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun diyabet tanısıyla tedavi gördüğü raporla sabittir. Tanık Kerem Şahinalp olayı gördüğünü beyan etmiştir. Sanık Karaduman'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Levent Karaduman hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
- "annotations_a": [
-  {
-   "start": 71,
-   "end": 84,
-   "entity": "PERSON"
-  },
-  {
-   "start": 93,
-   "end": 109,
-   "entity": "PERSON"
-  },
-  {
-   "start": 111,
-   "end": 121,
-   "entity": "DOB"
-  },
-  {
-   "start": 146,
-   "end": 157,
-   "entity": "TCKN"
-  },
-  {
-   "start": 166,
-   "end": 181,
-   "entity": "PERSON"
-  },
-  {
-   "start": 197,
-   "end": 207,
-   "entity": "DOB"
-  },
-  {
-   "start": 222,
-   "end": 241,
-   "entity": "PERSON"
-  },
-  {
-   "start": 251,
-   "end": 263,
-   "entity": "PERSON"
-  },
-  {
-   "start": 284,
-   "end": 300,
-   "entity": "PERSON"
-  },
-  {
-   "start": 315,
-   "end": 325,
-   "entity": "PLATE"
-  },
-  {
-   "start": 374,
-   "end": 386,
-   "entity": "PERSON"
-  },
-  {
-   "start": 405,
-   "end": 420,
-   "entity": "PERSON"
-  },
-  {
-   "start": 472,
-   "end": 479,
-   "entity": "HEALTH"
-  },
-  {
-   "start": 529,
-   "end": 543,
-   "entity": "PERSON"
-  },
-  {
-   "start": 582,
-   "end": 591,
-   "entity": "PERSON"
-  },
-  {
-   "start": 595,
-   "end": 614,
-   "entity": "CRIMINAL"
-  },
-  {
-   "start": 672,
-   "end": 688,
-   "entity": "PERSON"
-  }
- ]
+  "id": "sentetik-046",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. Antalya 6. Asliye Ceza Mahkemesi\nE. 2023/166 K. 2023/442\n\nHâkim : Emre Demirsoy\nSANIK : Levent Karaduman, 18.04.1983 doğumlu, T.C. kimlik no 80842922982\nSANIK : Ebru Bozdoğanlı, doğum tarihi: 26.04.1970\nMÜDAFİİ : Av. Gülşen Albayrakoğlu\nMAĞDUR : Tolga Uluçay\n\nİddianamede, sanık Levent Karaduman yönetimindeki 23 AB 7197 plakalı araçla 10 Ağustos 2023 tarihinde mağdur Tolga Uluçay'a çarptığı, sanık Ebru Bozdoğanlı'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun diyabet tanısıyla tedavi gördüğü raporla sabittir. Tanık Kerem Şahinalp olayı gördüğünü beyan etmiştir. Sanık Karaduman'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Levent Karaduman hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 71,
+      "end": 84,
+      "entity": "PERSON"
+    },
+    {
+      "start": 93,
+      "end": 109,
+      "entity": "PERSON"
+    },
+    {
+      "start": 111,
+      "end": 121,
+      "entity": "DOB"
+    },
+    {
+      "start": 146,
+      "end": 157,
+      "entity": "TCKN"
+    },
+    {
+      "start": 166,
+      "end": 181,
+      "entity": "PERSON"
+    },
+    {
+      "start": 197,
+      "end": 207,
+      "entity": "DOB"
+    },
+    {
+      "start": 222,
+      "end": 241,
+      "entity": "PERSON"
+    },
+    {
+      "start": 251,
+      "end": 263,
+      "entity": "PERSON"
+    },
+    {
+      "start": 284,
+      "end": 300,
+      "entity": "PERSON"
+    },
+    {
+      "start": 315,
+      "end": 325,
+      "entity": "PLATE"
+    },
+    {
+      "start": 374,
+      "end": 386,
+      "entity": "PERSON"
+    },
+    {
+      "start": 405,
+      "end": 420,
+      "entity": "PERSON"
+    },
+    {
+      "start": 472,
+      "end": 479,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 529,
+      "end": 543,
+      "entity": "PERSON"
+    },
+    {
+      "start": 582,
+      "end": 591,
+      "entity": "PERSON"
+    },
+    {
+      "start": 595,
+      "end": 614,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 672,
+      "end": 688,
+      "entity": "PERSON"
+    }
+  ]
 }

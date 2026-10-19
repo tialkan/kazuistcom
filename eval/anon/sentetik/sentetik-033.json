@@ -1,93 +1,93 @@
 {
- "id": "sentetik-033",
- "kind": "hukuk",
- "synthetic": true,
- "text": "T.C. Ankara 3. Asliye Hukuk Mahkemesi\nE. 2023/931 K. 2026/537\n\nDAVACI : Cem Tezcan (T.C. kimlik no: 44177430864)\nAdres : Karşıyaka Mahallesi, Lale Sk. No: 23/1 Kadıköy/İstanbul\nVEKİLİ : Av. Zeynep Akbulut\nDAVALI : Okan Albayrakoğlu\n\nDavacı vekili Av. Zeynep Akbulut dava dilekçesinde, müvekkili Cem Tezcan ile davalı Okan Albayrakoğlu arasında 14 Mayıs 2022 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR81 6196 0001 1360 3378 9916 19 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0551 132 50 24 numaralı telefon ve okan.albayrakoglu82@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 5417 ada 99 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Fatma Yamaner raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Sevgi Albayrakoğlu beyanında taşınmazın boş olduğunu, tanık Ayşe Durukan ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Albayrakoğlu beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Okan Albayrakoğlu tarafından davacıya ödeme yapılmasına karar verildi.",
- "annotations_a": [
-  {
-   "start": 72,
-   "end": 82,
-   "entity": "PERSON"
-  },
-  {
-   "start": 100,
-   "end": 111,
-   "entity": "TCKN"
-  },
-  {
-   "start": 121,
-   "end": 159,
-   "entity": "ADDRESS"
-  },
-  {
-   "start": 190,
-   "end": 204,
-   "entity": "PERSON"
-  },
-  {
-   "start": 214,
-   "end": 231,
-   "entity": "PERSON"
-  },
-  {
-   "start": 251,
-   "end": 265,
-   "entity": "PERSON"
-  },
-  {
-   "start": 295,
-   "end": 305,
-   "entity": "PERSON"
-  },
-  {
-   "start": 317,
-   "end": 334,
-   "entity": "PERSON"
-  },
-  {
-   "start": 412,
-   "end": 444,
-   "entity": "IBAN"
-  },
-  {
-   "start": 513,
-   "end": 527,
-   "entity": "PHONE"
-  },
-  {
-   "start": 548,
-   "end": 583,
-   "entity": "EMAIL"
-  },
-  {
-   "start": 637,
-   "end": 655,
-   "entity": "PARCEL"
-  },
-  {
-   "start": 724,
-   "end": 737,
-   "entity": "PERSON"
-  },
-  {
-   "start": 808,
-   "end": 826,
-   "entity": "PERSON"
-  },
-  {
-   "start": 868,
-   "end": 880,
-   "entity": "PERSON"
-  },
-  {
-   "start": 939,
-   "end": 951,
-   "entity": "PERSON"
-  },
-  {
-   "start": 1024,
-   "end": 1041,
-   "entity": "PERSON"
-  }
- ]
+  "id": "sentetik-033",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Ankara 3. Asliye Hukuk Mahkemesi\nE. 2023/931 K. 2026/537\n\nDAVACI : Cem Tezcan (T.C. kimlik no: 44177430864)\nAdres : Karşıyaka Mahallesi, Lale Sk. No: 23/1 Kadıköy/İstanbul\nVEKİLİ : Av. Zeynep Akbulut\nDAVALI : Okan Albayrakoğlu\n\nDavacı vekili Av. Zeynep Akbulut dava dilekçesinde, müvekkili Cem Tezcan ile davalı Okan Albayrakoğlu arasında 14 Mayıs 2022 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR81 6196 0001 1360 3378 9916 19 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0551 132 50 24 numaralı telefon ve okan.albayrakoglu82@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 5417 ada 99 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Fatma Yamaner raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Sevgi Albayrakoğlu beyanında taşınmazın boş olduğunu, tanık Ayşe Durukan ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Albayrakoğlu beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Okan Albayrakoğlu tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 72,
+      "end": 82,
+      "entity": "PERSON"
+    },
+    {
+      "start": 100,
+      "end": 111,
+      "entity": "TCKN"
+    },
+    {
+      "start": 121,
+      "end": 159,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 190,
+      "end": 204,
+      "entity": "PERSON"
+    },
+    {
+      "start": 214,
+      "end": 231,
+      "entity": "PERSON"
+    },
+    {
+      "start": 251,
+      "end": 265,
+      "entity": "PERSON"
+    },
+    {
+      "start": 295,
+      "end": 305,
+      "entity": "PERSON"
+    },
+    {
+      "start": 317,
+      "end": 334,
+      "entity": "PERSON"
+    },
+    {
+      "start": 412,
+      "end": 444,
+      "entity": "IBAN"
+    },
+    {
+      "start": 513,
+      "end": 527,
+      "entity": "PHONE"
+    },
+    {
+      "start": 548,
+      "end": 583,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 637,
+      "end": 655,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 724,
+      "end": 737,
+      "entity": "PERSON"
+    },
+    {
+      "start": 808,
+      "end": 826,
+      "entity": "PERSON"
+    },
+    {
+      "start": 868,
+      "end": 880,
+      "entity": "PERSON"
+    },
+    {
+      "start": 939,
+      "end": 951,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1024,
+      "end": 1041,
+      "entity": "PERSON"
+    }
+  ]
 }

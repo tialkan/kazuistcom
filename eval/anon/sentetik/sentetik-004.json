@@ -1,58 +1,58 @@
 {
- "id": "sentetik-004",
- "kind": "is",
- "synthetic": true,
- "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2021/236 K. 2021/884\n\nDAVACI : Tolga Akbulut (T.C. kimlik no: 49582327808)\nVEKİLİ : Av. Cem Tunçel\nDAVALI : Burak Tezcan İnşaat, vergi kimlik no 0712954001\n\nDavacı Tolga Akbulut davalıya ait şantiyede çalıştığını, ücretinin 4519 1101 6720 8787 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Barış Gökdemir davacının tolga.akbulut54@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
- "annotations_a": [
-  {
-   "start": 61,
-   "end": 74,
-   "entity": "PERSON"
-  },
-  {
-   "start": 92,
-   "end": 103,
-   "entity": "TCKN"
-  },
-  {
-   "start": 118,
-   "end": 128,
-   "entity": "PERSON"
-  },
-  {
-   "start": 138,
-   "end": 150,
-   "entity": "SOLE_PROPRIETOR"
-  },
-  {
-   "start": 175,
-   "end": 185,
-   "entity": "VKN"
-  },
-  {
-   "start": 194,
-   "end": 207,
-   "entity": "PERSON"
-  },
-  {
-   "start": 254,
-   "end": 273,
-   "entity": "CARD"
-  },
-  {
-   "start": 304,
-   "end": 317,
-   "entity": "UNION"
-  },
-  {
-   "start": 379,
-   "end": 393,
-   "entity": "PERSON"
-  },
-  {
-   "start": 404,
-   "end": 435,
-   "entity": "EMAIL"
-  }
- ]
+  "id": "sentetik-004",
+  "kind": "is",
+  "synthetic": true,
+  "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2021/236 K. 2021/884\n\nDAVACI : Tolga Akbulut (T.C. kimlik no: 49582327808)\nVEKİLİ : Av. Cem Tunçel\nDAVALI : Burak Tezcan İnşaat, vergi kimlik no 0712954001\n\nDavacı Tolga Akbulut davalıya ait şantiyede çalıştığını, ücretinin 4519 1101 6720 8787 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Barış Gökdemir davacının tolga.akbulut54@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
+  "annotations_a": [
+    {
+      "start": 61,
+      "end": 74,
+      "entity": "PERSON"
+    },
+    {
+      "start": 92,
+      "end": 103,
+      "entity": "TCKN"
+    },
+    {
+      "start": 118,
+      "end": 128,
+      "entity": "PERSON"
+    },
+    {
+      "start": 138,
+      "end": 150,
+      "entity": "SOLE_PROPRIETOR"
+    },
+    {
+      "start": 175,
+      "end": 185,
+      "entity": "VKN"
+    },
+    {
+      "start": 194,
+      "end": 207,
+      "entity": "PERSON"
+    },
+    {
+      "start": 254,
+      "end": 273,
+      "entity": "CARD"
+    },
+    {
+      "start": 304,
+      "end": 317,
+      "entity": "UNION"
+    },
+    {
+      "start": 379,
+      "end": 393,
+      "entity": "PERSON"
+    },
+    {
+      "start": 404,
+      "end": 435,
+      "entity": "EMAIL"
+    }
+  ]
 }

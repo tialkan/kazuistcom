@@ -4,7 +4,8 @@ Bütün adlar, numaralar ve adresler uydurmadır; kimlik, vergi, IBAN ve kart nu
 basamağı geçerli olacak biçimde rastgele üretilir ve hiçbir gerçek kişiye ait değildir. Bu set gerçek
 karar metninin yerine geçmez; Dalga 3 kapısı 200 gerçek kararlık setle ölçülür (plan 6.7, 15.3/2).
 
-Kullanım: uv run python ../../eval/anon/generate.py  (services/worker-py içinden; çıktı eval/anon/sentetik)
+Kullanım: uv run python ../../eval/anon/generate.py  (services/worker-py içinden; çıktı eval/anon/sentetik),
+ardından kökte: pnpm exec prettier --write "eval/anon/**/*.json"
 """
 
 from __future__ import annotations

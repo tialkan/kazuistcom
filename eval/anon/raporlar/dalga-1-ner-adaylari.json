@@ -1,30 +1,30 @@
 {
- "hushmark-berturk-112m": {
-  "hf_id": "lokomotifai/hushmark-berturk-112m",
-  "license": "apache-2.0",
-  "kind": "hushmark-span",
-  "note": "Özel span başlığı ve kendi yükleyicisi var (custom code); yalnız sentetik veriyle eğitilmiş.",
-  "status": "ölçülemedi: model yerelde yok"
- },
- "akdeniz27": {
-  "hf_id": "akdeniz27/bert-base-turkish-cased-ner",
-  "license": "mit",
-  "kind": "token-classification",
-  "note": "PER/LOC/ORG",
-  "status": "ölçülemedi: model yerelde yok"
- },
- "savasy": {
-  "hf_id": "savasy/bert-base-turkish-ner-cased",
-  "license": "belirtilmemiş",
-  "kind": "token-classification",
-  "note": "Model kartında lisans alanı yok; üretimde kullanmadan önce lisans netleşmeli.",
-  "status": "ölçülemedi: model yerelde yok"
- },
- "gliner-multi-v2.1": {
-  "hf_id": "urchade/gliner_multi-v2.1",
-  "license": "apache-2.0",
-  "kind": "gliner",
-  "note": "urchade/gliner_multi (v1) cc-by-nc-4.0 olduğu için kullanılmaz; v2.1 Apache-2.0.",
-  "status": "ölçülemedi: model yerelde yok"
- }
+  "hushmark-berturk-112m": {
+    "hf_id": "lokomotifai/hushmark-berturk-112m",
+    "license": "apache-2.0",
+    "kind": "hushmark-span",
+    "note": "Özel span başlığı ve kendi yükleyicisi var (custom code); yalnız sentetik veriyle eğitilmiş.",
+    "status": "ölçülemedi: model yerelde yok"
+  },
+  "akdeniz27": {
+    "hf_id": "akdeniz27/bert-base-turkish-cased-ner",
+    "license": "mit",
+    "kind": "token-classification",
+    "note": "PER/LOC/ORG",
+    "status": "ölçülemedi: model yerelde yok"
+  },
+  "savasy": {
+    "hf_id": "savasy/bert-base-turkish-ner-cased",
+    "license": "belirtilmemiş",
+    "kind": "token-classification",
+    "note": "Model kartında lisans alanı yok; üretimde kullanmadan önce lisans netleşmeli.",
+    "status": "ölçülemedi: model yerelde yok"
+  },
+  "gliner-multi-v2.1": {
+    "hf_id": "urchade/gliner_multi-v2.1",
+    "license": "apache-2.0",
+    "kind": "gliner",
+    "note": "urchade/gliner_multi (v1) cc-by-nc-4.0 olduğu için kullanılmaz; v2.1 Apache-2.0.",
+    "status": "ölçülemedi: model yerelde yok"
+  }
 }

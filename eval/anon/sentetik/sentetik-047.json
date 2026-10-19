@@ -1,68 +1,68 @@
 {
- "id": "sentetik-047",
- "kind": "aile",
- "synthetic": true,
- "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2023/138 K. 2022/25\n\nDAVACI : Okan Özbilge\nVEKİLİ : Av. Fatma Sarıkaya\nDAVALI : Zeynep Şahinalp\n\nTarafların müşterek çocuğu Nihan Özbilge 7 yaşında olup Ihlamur İlkokulu öğrencisidir. Sosyal çalışma uzmanı Elif Gürsoylu raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Zeynep Şahinalp ile davacı Okan Özbilge ortak ev adresi olan Esentepe Mahallesi, Lale Cad. No: 93/12 adresinden ayrılmıştır. Davalının 0 558 786 62 35 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Nihan Özbilge üzerindeki velayetin davacıya verilmesine karar verildi.",
- "annotations_a": [
-  {
-   "start": 73,
-   "end": 85,
-   "entity": "PERSON"
-  },
-  {
-   "start": 99,
-   "end": 113,
-   "entity": "PERSON"
-  },
-  {
-   "start": 123,
-   "end": 138,
-   "entity": "PERSON"
-  },
-  {
-   "start": 167,
-   "end": 180,
-   "entity": "PERSON"
-  },
-  {
-   "start": 181,
-   "end": 190,
-   "entity": "CHILD_AGE"
-  },
-  {
-   "start": 196,
-   "end": 212,
-   "entity": "SCHOOL"
-  },
-  {
-   "start": 249,
-   "end": 262,
-   "entity": "PERSON"
-  },
-  {
-   "start": 341,
-   "end": 356,
-   "entity": "PERSON"
-  },
-  {
-   "start": 368,
-   "end": 380,
-   "entity": "PERSON"
-  },
-  {
-   "start": 402,
-   "end": 441,
-   "entity": "ADDRESS"
-  },
-  {
-   "start": 476,
-   "end": 491,
-   "entity": "PHONE"
-  },
-  {
-   "start": 578,
-   "end": 591,
-   "entity": "PERSON"
-  }
- ]
+  "id": "sentetik-047",
+  "kind": "aile",
+  "synthetic": true,
+  "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2023/138 K. 2022/25\n\nDAVACI : Okan Özbilge\nVEKİLİ : Av. Fatma Sarıkaya\nDAVALI : Zeynep Şahinalp\n\nTarafların müşterek çocuğu Nihan Özbilge 7 yaşında olup Ihlamur İlkokulu öğrencisidir. Sosyal çalışma uzmanı Elif Gürsoylu raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Zeynep Şahinalp ile davacı Okan Özbilge ortak ev adresi olan Esentepe Mahallesi, Lale Cad. No: 93/12 adresinden ayrılmıştır. Davalının 0 558 786 62 35 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Nihan Özbilge üzerindeki velayetin davacıya verilmesine karar verildi.",
+  "annotations_a": [
+    {
+      "start": 73,
+      "end": 85,
+      "entity": "PERSON"
+    },
+    {
+      "start": 99,
+      "end": 113,
+      "entity": "PERSON"
+    },
+    {
+      "start": 123,
+      "end": 138,
+      "entity": "PERSON"
+    },
+    {
+      "start": 167,
+      "end": 180,
+      "entity": "PERSON"
+    },
+    {
+      "start": 181,
+      "end": 190,
+      "entity": "CHILD_AGE"
+    },
+    {
+      "start": 196,
+      "end": 212,
+      "entity": "SCHOOL"
+    },
+    {
+      "start": 249,
+      "end": 262,
+      "entity": "PERSON"
+    },
+    {
+      "start": 341,
+      "end": 356,
+      "entity": "PERSON"
+    },
+    {
+      "start": 368,
+      "end": 380,
+      "entity": "PERSON"
+    },
+    {
+      "start": 402,
+      "end": 441,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 476,
+      "end": 491,
+      "entity": "PHONE"
+    },
+    {
+      "start": 578,
+      "end": 591,
+      "entity": "PERSON"
+    }
+  ]
 }
