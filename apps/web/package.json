@@ -13,6 +13,7 @@
   "dependencies": {
     "@kazuist/contracts": "workspace:*",
     "@kazuist/i18n": "workspace:*",
+    "@kazuist/ledger": "workspace:*",
     "@kazuist/ui": "workspace:*",
     "next": "16.4.2",
     "react": "19.3.1",

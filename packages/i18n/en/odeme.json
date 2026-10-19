@@ -1,0 +1,23 @@
+{
+  "baslik": "Payment",
+  "urun": "Selected product",
+  "fiyatKdvDahil": "Price (VAT included)",
+  "onBilgilendirme": {
+    "baslik": "Pre-contract information form",
+    "metin": "[hukuk-uyum:on-bilgilendirme-formu]"
+  },
+  "mesafeliSozlesme": {
+    "baslik": "Distance sales contract",
+    "metin": "[hukuk-uyum:mesafeli-satis-sozlesmesi]"
+  },
+  "teyitKutusu": "[hukuk-uyum:teyit-kutusu-metni]",
+  "caymaIstisnasiKutusu": "[hukuk-uyum:cayma-istisnasi-kutusu-metni]",
+  "odemeyeGec": "Continue to payment",
+  "odemeKapali": "Payment opens once the required boxes are checked.",
+  "donus": {
+    "baslik": "Payment result",
+    "kontrol": "Your payment is being verified with iyzico.",
+    "basarili": "Payment received; the credits are in your wallet.",
+    "basarisiz": "Payment was not completed; you were not charged."
+  }
+}
