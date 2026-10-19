@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-19
 - Karar kodu: K-15 (plan.md bölüm 1)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)
 
 ## Bağlam
 
@@ -23,4 +23,4 @@ Bileşenler ad üzerinden bağlanır; değer değişikliği bileşenleri bozmaz.
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026).

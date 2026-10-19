@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-19
 - Karar kodu: K-03 (plan.md bölüm 1)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)
 
 ## Bağlam
 
@@ -24,4 +24,4 @@ Kişisel veri için yurt dışı aktarım doğmaz; aktarım envanteri (plan 5.5)
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026).

@@ -1,6 +1,6 @@
 # ADR dizini
 
-Karar kayıtları plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi. Tümü "Önerildi, Tarık onayı bekliyor" durumundadır.
+Karar kayıtları plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi. Tümü "Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)" durumundadır.
 
 | No | Başlık | Özet |
 |---|---|---|

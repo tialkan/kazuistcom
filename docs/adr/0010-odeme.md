@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-19
 - Karar kodu: K-10 (plan.md bölüm 1)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)
 
 ## Bağlam
 
@@ -25,4 +25,4 @@ Kart verisi yalnız iyzico'dadır. Aynı olay iki kez işlenmez.
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026).

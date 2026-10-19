@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-19
 - Karar kodu: K-19 (plan.md bölüm 1)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)
 
 ## Bağlam
 
@@ -23,4 +23,4 @@ Arka plan IP tarihli ve denetlenebilir biçimde belgelenir.
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026).

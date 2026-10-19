@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-19
 - Karar kodu: K-06 (plan.md bölüm 1)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)
 
 ## Bağlam
 
@@ -24,4 +24,4 @@ Tek veri tabanı, tek yedek. halfvec bellek ve disk kullanımını yarıya indir
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026).
