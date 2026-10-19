@@ -1,0 +1,24 @@
+# Build context is the repository root for every image (infra/docker/*/Dockerfile).
+**/node_modules
+**/.next
+**/dist
+**/coverage
+**/.turbo
+**/*.tsbuildinfo
+**/.venv
+**/__pycache__
+**/.pytest_cache
+.git
+.github
+.claude
+.githooks
+**/.env
+**/.env.*
+!.env.example
+**/.DS_Store
+docs
+eval
+plan.md
+DEVIR.md
+apps/ios
+tests

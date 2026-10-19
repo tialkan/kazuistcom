@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# Read-only Cloudflare DNS backup for kazuist.com (plan 14.3, siteyarat 22).
+# Needs a token limited to Zone:Read + DNS:Read on the kazuist.com zone only, stored as
+#   CLOUDFLARE_API_TOKEN=...
+# in ~/Desktop/kazuist-cloudflare-api.txt (override with CF_TOKEN_FILE). The token is never printed.
+# Writes docs/runbook/dns-yedek-<UTC date>.json (all records, JSON) and .zone (BIND export).
+# Only GET requests are made; nothing in Cloudflare is changed.
+# Usage: infra/scripts/dns-export [zone]   (default zone: kazuist.com)
+set -euo pipefail
+
+ZONE="${1:-kazuist.com}"
+TOKEN_FILE="${CF_TOKEN_FILE:-$HOME/Desktop/kazuist-cloudflare-api.txt}"
+API="https://api.cloudflare.com/client/v4"
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+OUT_DIR="${OUT_DIR:-$ROOT/docs/runbook}"
+STAMP="$(date -u +%Y-%m-%d)"
+
+command -v curl >/dev/null || { echo "curl is required" >&2; exit 2; }
+command -v jq >/dev/null || { echo "jq is required" >&2; exit 2; }
+
+if [ ! -r "$TOKEN_FILE" ]; then
+  echo "Token file not found: $TOKEN_FILE (see docs/runbook/dns-yedek.md). Nothing was run." >&2
+  exit 3
+fi
+TOKEN="$(grep -E '^CLOUDFLARE_API_TOKEN=' "$TOKEN_FILE" | head -1 | cut -d= -f2- | tr -d '[:space:]')"
+[ -n "$TOKEN" ] || { echo "CLOUDFLARE_API_TOKEN line missing in token file" >&2; exit 3; }
+
+cf() {
+  # Header via stdin-free curl config so the token never appears in the process list.
+  curl -sS --fail-with-body -K - "$@" <<EOF
+header = "Authorization: Bearer $TOKEN"
+EOF
+}
+
+echo "1/4 token status"
+status="$(cf "$API/user/tokens/verify" | jq -r '.result.status // "unknown"')"
+[ "$status" = "active" ] || { echo "token is not active ($status)" >&2; exit 4; }
+
+echo "2/4 zone lookup ($ZONE)"
+zones="$(cf "$API/zones?per_page=50")"
+count="$(jq '.result | length' <<<"$zones")"
+if [ "$count" != "1" ]; then
+  echo "warning: token sees $count zones; the least-privilege token should see exactly one" >&2
+fi
+ZONE_ID="$(jq -r --arg z "$ZONE" '.result[] | select(.name == $z) | .id' <<<"$zones")"
+[ -n "$ZONE_ID" ] || { echo "zone $ZONE is not visible to this token" >&2; exit 5; }
+
+echo "3/4 records (JSON)"
+mkdir -p "$OUT_DIR"
+page=1
+records='[]'
+while :; do
+  resp="$(cf "$API/zones/$ZONE_ID/dns_records?per_page=100&page=$page")"
+  records="$(jq -s '.[0] + .[1].result' <(echo "$records") <(echo "$resp"))"
+  total_pages="$(jq -r '.result_info.total_pages // 1' <<<"$resp")"
+  [ "$page" -ge "$total_pages" ] && break
+  page=$((page + 1))
+done
+jq --arg zone "$ZONE" --arg at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+  '{zone: $zone, exportedAt: $at, count: length, records: (sort_by(.type, .name) | map({type, name, content, ttl, proxied, priority, comment}))}' \
+  <<<"$records" > "$OUT_DIR/dns-yedek-$STAMP.json"
+
+echo "4/4 BIND export"
+cf "$API/zones/$ZONE_ID/dns_records/export" > "$OUT_DIR/dns-yedek-$STAMP.zone"
+
+echo "done: $(jq .count "$OUT_DIR/dns-yedek-$STAMP.json") records -> $OUT_DIR/dns-yedek-$STAMP.{json,zone}"
