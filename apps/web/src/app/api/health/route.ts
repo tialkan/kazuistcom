@@ -1,11 +1,8 @@
-import type { Health } from '@kazuist/contracts';
-import { envChecks } from '@/server/env';
+import { checkHealth } from '@/server/health';
 
 export const dynamic = 'force-dynamic';
 
-export function GET(): Response {
-  const checks = envChecks();
-  const ok = Object.values(checks).every((v) => v === 'ok');
-  const body: Health = { status: ok ? 'ok' : 'degraded', checks };
-  return Response.json(body, { status: ok ? 200 : 503, headers: { 'Cache-Control': 'no-store' } });
+export async function GET(): Promise<Response> {
+  const { status, body } = await checkHealth();
+  return Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 }

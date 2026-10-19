@@ -1,6 +1,6 @@
 /**
- * Critical environment variables. /api/health returns 503 when any of them is missing.
- * Values are never returned or logged, only presence.
+ * Critical environment variables. /api/health returns 503 when any is missing.
+ * Names and values are never returned; only the overall state leaves the server.
  */
 export const criticalEnv = [
   'DATABASE_URL',
@@ -12,8 +12,6 @@ export const criticalEnv = [
   'S3_BUCKET',
 ] as const;
 
-export function envChecks(
-  env: Record<string, string | undefined> = process.env,
-): Record<string, 'ok' | 'missing'> {
-  return Object.fromEntries(criticalEnv.map((k) => [k, env[k] ? 'ok' : 'missing']));
+export function missingEnv(env: Record<string, string | undefined> = process.env): string[] {
+  return criticalEnv.filter((k) => !env[k]);
 }
