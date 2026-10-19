@@ -8,7 +8,9 @@ const EM_DASH = String.fromCharCode(0x2014);
 const EXEMPT = new Set(['plan.md', 'pnpm-lock.yaml']);
 const BINARY = /\.(png|jpe?g|gif|webp|ico|pdf|docx|xlsx|pptx|zip|gz|woff2?|ttf|otf|mp4|mov)$/i;
 
-const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' })
+const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], {
+  encoding: 'utf8',
+})
   .split('\n')
   .filter((f) => f && !EXEMPT.has(f) && !BINARY.test(f) && existsSync(f));
 
@@ -28,7 +30,8 @@ for (const file of files) {
   if (/^(packages\/i18n|content)\//.test(file) && file !== 'content/yasak-ifadeler.txt') {
     const lower = text.toLocaleLowerCase('tr-TR');
     for (const phrase of banned) {
-      if (lower.includes(phrase.toLocaleLowerCase('tr-TR'))) problems.push(`${file}: banned phrase "${phrase}"`);
+      if (lower.includes(phrase.toLocaleLowerCase('tr-TR')))
+        problems.push(`${file}: banned phrase "${phrase}"`);
     }
   }
 }
