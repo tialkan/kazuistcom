@@ -1,0 +1,75 @@
+/*
+ * Kazuist design tokens (plan 12, webtasarim.md 12). Names are the contract; values are placeholders
+ * that the on-yuz agent replaces. Light theme only in 1.0 (K-15). One accent colour.
+ */
+:root {
+  /* Colour */
+  --kz-color-bg: #ffffff;
+  --kz-color-surface: #ffffff;
+  --kz-color-surface-muted: #f5f5f5;
+  --kz-color-text: #111111;
+  --kz-color-text-muted: #555555;
+  --kz-color-border: #dddddd;
+  --kz-color-accent: #000000;
+  --kz-color-accent-contrast: #ffffff;
+  --kz-color-focus: #000000;
+  --kz-color-success: #000000;
+  --kz-color-warning: #000000;
+  --kz-color-danger: #000000;
+  /* Authority class and labels: always paired with shape and text, never colour alone (plan 7.3) */
+  --kz-color-authority-binding: #000000;
+  --kz-color-authority-high: #000000;
+  --kz-color-authority-precedent: #000000;
+  --kz-color-authority-other: #000000;
+  /* Margin note (kenar serhi), the signature element */
+  --kz-serh-width: 16rem;
+  --kz-serh-rule: 1px;
+  --kz-serh-gap: 1.5rem;
+
+  /* Typography */
+  --kz-font-heading: serif;
+  --kz-font-body: sans-serif;
+  --kz-font-mono: monospace;
+  --kz-text-xs: 0.75rem;
+  --kz-text-sm: 0.875rem;
+  --kz-text-md: 1rem;
+  --kz-text-lg: 1.125rem;
+  --kz-text-xl: 1.25rem;
+  --kz-text-2xl: 1.5rem;
+  --kz-text-3xl: 2rem;
+  --kz-leading-tight: 1.2;
+  --kz-leading-body: 1.6;
+
+  /* Space */
+  --kz-space-1: 0.25rem;
+  --kz-space-2: 0.5rem;
+  --kz-space-3: 0.75rem;
+  --kz-space-4: 1rem;
+  --kz-space-6: 1.5rem;
+  --kz-space-8: 2rem;
+  --kz-space-12: 3rem;
+  --kz-space-16: 4rem;
+
+  /* Shape and depth */
+  --kz-radius-sm: 0;
+  --kz-radius-md: 0;
+  --kz-radius-lg: 0;
+  --kz-shadow-1: none;
+  --kz-shadow-2: none;
+
+  /* Layout */
+  --kz-content-max: 72rem;
+  --kz-reading-max: 42rem;
+
+  /* Motion */
+  --kz-duration-fast: 120ms;
+  --kz-duration-base: 200ms;
+  --kz-ease: ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --kz-duration-fast: 0ms;
+    --kz-duration-base: 0ms;
+  }
+}

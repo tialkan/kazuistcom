@@ -1,0 +1,26 @@
+[project]
+name = "kazuist-worker"
+version = "0.0.0"
+description = "Kazuist Python worker: ingestion, anonymisation, NLP, citation extraction, DOCX validation."
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+dependencies = [
+  "psycopg[binary]>=3.2",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4",
+  "pyyaml>=6.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"

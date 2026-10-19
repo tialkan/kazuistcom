@@ -1,0 +1,17 @@
+{
+  "marka": "Kazuist",
+  "gezinme": {
+    "ara": "Search",
+    "yazma": "Writing",
+    "pratik": "Practice",
+    "kampus": "Campus",
+    "hesap": "My account"
+  },
+  "uyari": {
+    "danismanlik": "Kazuist does not provide legal advice and does not give opinions on your personal situation.",
+    "intihal": "Kazuist does not facilitate plagiarism or ethical violations."
+  },
+  "hata": {
+    "genel": "Something went wrong. Please try again shortly."
+  }
+}

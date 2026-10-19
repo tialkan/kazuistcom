@@ -1,0 +1,11 @@
+# Yasak ifadeler (webtasarim.md 35). Satir basina bir ifade; buyuk kucuk harf duyarsiz.
+# Sahibi icerik ajanidir; scripts/check-text.mjs packages/i18n ve content altinda tarar.
+yenilikçi çözümler
+dijital dönüşüm yolculuğu
+sınırları zorluyoruz
+geleceği şekillendiriyoruz
+sinerji
+vizyoner
+kusursuz
+benzersiz deneyim
+bir sonraki seviye

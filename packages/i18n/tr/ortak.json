@@ -1,0 +1,17 @@
+{
+  "marka": "Kazuist",
+  "gezinme": {
+    "ara": "Ara",
+    "yazma": "Yazma",
+    "pratik": "Pratik",
+    "kampus": "Kampüs",
+    "hesap": "Hesabım"
+  },
+  "uyari": {
+    "danismanlik": "Kazuist hukuki danışmanlık vermez ve kişisel durumunuz için görüş bildirmez.",
+    "intihal": "Kazuist intihale ve etik ihlaline aracılık etmez."
+  },
+  "hata": {
+    "genel": "Bir sorun oluştu. Lütfen biraz sonra yeniden deneyin."
+  }
+}
