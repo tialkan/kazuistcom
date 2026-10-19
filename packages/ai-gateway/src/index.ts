@@ -1,18 +1,14 @@
 /** Provider independent AI gateway (plan 8). Owner: yz-gecidi agent. */
-import type { ByokProvider } from '@kazuist/contracts';
-
-export type GatewayMode = 'platform' | 'byok_istemci' | 'byok_aktarma';
-
-export interface CompletionRequest {
-  provider: ByokProvider;
-  model: string;
-  system: string;
-  prompt: string;
-  maxOutputTokens: number;
-}
-
-/** Adapters stream raw text; content is never logged (plan 8.8). */
-export interface ProviderAdapter {
-  readonly provider: ByokProvider;
-  stream(request: CompletionRequest, signal?: AbortSignal): AsyncIterable<string>;
-}
+export * from './types.ts';
+export * from './adapters/index.ts';
+export { readSse } from './adapters/sse.ts';
+export * from './jsonl.ts';
+export * from './pii.ts';
+export * from './protocol.ts';
+export * from './budget.ts';
+export * from './routing.ts';
+export * from './ledger.ts';
+export * from './observe.ts';
+export * from './prompt.ts';
+export * from './gemini.ts';
+export * from './gateway.ts';
