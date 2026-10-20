@@ -1,0 +1,103 @@
+{
+  "path": "/legal/cookies",
+  "source": "https://kazuist.com/legal/cookies",
+  "lang": "en",
+  "title": "Cookie notice | Casuist",
+  "description": "This website does not use analytics, advertising or personalisation cookies. No third-party analytics script is loaded.",
+  "nav": [
+    {
+      "href": "/problem",
+      "text": "Problem"
+    },
+    {
+      "href": "/partner",
+      "text": "Partner call"
+    },
+    {
+      "href": "/how-it-works",
+      "text": "How it works"
+    },
+    {
+      "href": "/evaluation",
+      "text": "Evaluation"
+    },
+    {
+      "href": "/about",
+      "text": "About"
+    }
+  ],
+  "langLink": {
+    "href": "/hukuki/cerezler",
+    "text": "Türkçe",
+    "hreflang": "tr"
+  },
+  "tagline": "A Kulular Teknoloji research project",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Legal text"
+      ],
+      ["h1", {}, "Cookie notice"],
+      ["p", {}, "Last updated 11 September 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Current use"],
+          [
+            "p",
+            {},
+            "This website does not use analytics, advertising or personalisation cookies. No third-party analytics script is loaded."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Necessary storage"],
+          [
+            "p",
+            {},
+            "The hosting layer may use strictly necessary technical storage for security or delivery. Such storage is not used to profile visitors."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Future changes"],
+          [
+            "p",
+            {},
+            "If optional analytics or another non-essential technology is added, it will remain disabled until the visitor gives consent. This notice and the consent controls will be updated before that change is released."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

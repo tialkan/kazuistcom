@@ -1,0 +1,362 @@
+{
+  "path": "/tr/ortak",
+  "source": "https://kazuist.com/tr/ortak",
+  "lang": "tr",
+  "title": "Veri teslimine değil, hukuki değerlendirmeye liderlik edin. | Casuist",
+  "description": "Kulular Teknoloji, Kazuist için Eurostars Çağrı 12 başvurusu hazırlıyor. Bilimsel değerlendirmeyi birlikte tasarlayacak ve yönetecek Avrupalı bir üniversite, araştırma kuruluşu ya da Ar-Ge yapan KOBİ arıyoruz.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/partner",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "ortak-kahraman"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Eurostars Çağrı 12 ortak arayışı"
+      ],
+      ["h1", {}, "Veri teslimine değil, hukuki değerlendirmeye liderlik edin."],
+      [
+        "p",
+        {},
+        "Kulular Teknoloji, Kazuist için Eurostars Çağrı 12 başvurusu hazırlıyor. Bilimsel değerlendirmeyi birlikte tasarlayacak ve yönetecek Avrupalı bir üniversite, araştırma kuruluşu ya da Ar-Ge yapan KOBİ arıyoruz."
+      ],
+      [
+        "div",
+        {
+          "class": "tarih-kutusu"
+        },
+        ["span", {}, "Son başvuru"],
+        ["strong", {}, "4 Mart 2027, saat 14.00, Brüksel"]
+      ],
+      [
+        "a",
+        {
+          "class": "kaynak-bagi",
+          "href": "https://www.eurekanetwork.org/programmes-and-calls/eurostars/eurostars-call-12-for-projects-deadline-march-2027/"
+        },
+        "Resmî çağrı sayfası",
+        " ↗"
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "program-kutusu"
+      },
+      [
+        "div",
+        {
+          "class": "program-logolari",
+          "aria-label": "Target programme marks"
+        },
+        [
+          "img",
+          {
+            "alt": "TÜBİTAK",
+            "width": "82",
+            "height": "58"
+          }
+        ],
+        [
+          "img",
+          {
+            "alt": "Eureka",
+            "width": "150",
+            "height": "40"
+          }
+        ],
+        [
+          "img",
+          {
+            "alt": "Eurostars",
+            "width": "78",
+            "height": "58"
+          }
+        ]
+      ],
+      ["p", {}, "Hedeflenen programdır. Proje Eurostars ya da TÜBİTAK desteği almamıştır."]
+    ],
+    [
+      "section",
+      {
+        "class": "iki-kolon-bolum"
+      },
+      ["h2", {}, "Uygunluk ve fonlama yolu"],
+      [
+        "div",
+        {},
+        [
+          "ul",
+          {
+            "class": "onay-listesi"
+          },
+          ["li", {}, "Türkiye, Çağrı 12 için Eurostars ülkeleri arasında listeleniyor."],
+          [
+            "li",
+            {},
+            "Konsorsiyuma bir Eurostars ülkesindeki yenilikçi KOBİ liderlik etmeli. Konsorsiyum, en az iki Eurostars ülkesinden en az iki bağımsız kuruluş içermeli."
+          ],
+          [
+            "li",
+            {},
+            "Türkiye katılımı TÜBİTAK 1709 EUREKA Eurostars yolu üzerinden planlanıyor. Ulusal ölçütler, sorumlu fonlama kuruluşunun kararına tabi."
+          ],
+          [
+            "li",
+            {},
+            "Tarihler, uluslararası uygunluk ve ülke fonlama durumu için bağlayıcı kaynak resmî Eureka çağrı sayfasıdır."
+          ]
+        ],
+        [
+          "p",
+          {
+            "class": "kaynak-notu"
+          },
+          "Çağrı 17 Aralık 2026'da açılıyor. Eureka, ülke fonlama bilgilerinin hâlâ teyit edildiğini ve açılıştan önce değişebileceğini belirtiyor. Her ortak kendi ulusal fonlama yolunu erkenden doğrulamalı."
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "paket-bolumu"
+      },
+      [
+        "div",
+        {
+          "class": "bolum-giris"
+        },
+        [
+          "p",
+          {
+            "class": "etiket"
+          },
+          "WP / 01–06"
+        ],
+        ["h2", {}, "Taslak iş paketi yapısı"],
+        [
+          "p",
+          {},
+          "Ortak üç bilimsel iş paketine liderlik ediyor. Ayrıntılı görevler, emek ve bütçe taslaktan önce müzakere edilir. Bu sitede kesinleşmemiş süre ya da adam ay rakamı yok."
+        ]
+      ],
+      [
+        "div",
+        {
+          "class": "paket-tablosu",
+          "aria-label": "Taslak iş paketi yapısı"
+        },
+        [
+          "div",
+          {},
+          ["span", {}, "WP1"],
+          ["strong", {}, "Proje yönetimi ve konsorsiyum koordinasyonu"],
+          ["em", {}, "Kulular"]
+        ],
+        [
+          "div",
+          {
+            "class": "ortak-paketi"
+          },
+          ["span", {}, "WP2"],
+          ["strong", {}, "Hukuki gereksinimler, yargı düzeni kapsamı ve değerlendirme çerçevesi"],
+          ["em", {}, "Ortak"]
+        ],
+        [
+          "div",
+          {
+            "class": "ortak-paketi"
+          },
+          ["span", {}, "WP3"],
+          ["strong", {}, "Ölçüt külliyatı ve altın standart açıklama"],
+          ["em", {}, "Ortak"]
+        ],
+        [
+          "div",
+          {},
+          ["span", {}, "WP4"],
+          ["strong", {}, "Getirme, dayanak ve köken motoru"],
+          ["em", {}, "Kulular"]
+        ],
+        [
+          "div",
+          {
+            "class": "ortak-paketi"
+          },
+          ["span", {}, "WP5"],
+          ["strong", {}, "Doğrulama, kıyaslama ve hata çözümlemesi"],
+          ["em", {}, "Ortak"]
+        ],
+        [
+          "div",
+          {},
+          ["span", {}, "WP6"],
+          ["strong", {}, "Pilot bütünleştirme, ticarileştirme ve yayım"],
+          ["em", {}, "Paylaşımlı"]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "iki-kolon-bolum"
+      },
+      ["h2", {}, "Güçlü bir ortak bunların birkaçına evet diyebilmeli"],
+      [
+        "ul",
+        {
+          "class": "onay-listesi"
+        },
+        [
+          "li",
+          {},
+          "Değerlendirme için sınırlı bir yargı düzeni, mahkeme hiyerarşisi ve belge kümesi tanımlayabiliyor."
+        ],
+        ["li", {}, "Açıklama tasarlayacak ve yönetecek nitelikli hukuk araştırmacılarına sahip."],
+        ["li", {}, "Ölçüt yöntemine, uyum ölçümüne ve hata çözümlemesine liderlik edebiliyor."],
+        [
+          "li",
+          {},
+          "Uygun hukuki külliyatı barındırabiliyor ya da hukuka uygun biçimde erişebiliyor ve lisans temelini belgeleyebiliyor."
+        ],
+        ["li", {}, "Hakemli yayına ve inandırıcı bir pilot ortama katkı verebiliyor."],
+        [
+          "li",
+          {},
+          "Ulusal Eurostars fonuna erişimini ya da kendi kaynaklarıyla katılım yolunu teyit edebiliyor."
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "fikri-bolum"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "IP / Draft boundary"
+      ],
+      ["h2", {}, "Önerilen fikri mülkiyet sınırı"],
+      [
+        "p",
+        {},
+        "Her taraf arka plan fikri mülkiyetini korur. Çekirdek platform yazılımının ön plan mülkiyeti Kulular'da kalır."
+      ],
+      [
+        "p",
+        {},
+        "Değerlendirme yöntemi, ölçüt veri seti ve ortaya çıkan yayınlar için ortak mülkiyet önerilir. Ortak, kendi alanında araştırma ve öğretim hakkını ve tanımlı bir ticari yolu korur."
+      ],
+      [
+        "p",
+        {},
+        "Bu sınır, proje taslağı başlamadan önce müzakere edilir. Konsorsiyum sözleşmesi aşamasına bırakılmaz."
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "surec-bolumu"
+      },
+      ["h2", {}, "Açık karara giden kısa süreç"],
+      [
+        "div",
+        {},
+        [
+          "article",
+          {},
+          ["span", {}, "01"],
+          ["h3", {}, "Otuz dakikalık tanışma"],
+          ["p", {}, "Bilimsel uyumu, ulusal fonlama yolunu ve karar verecek kişileri teyit ederiz."]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "02"],
+          ["h3", {}, "İki sayfalık ortak kavram notu"],
+          ["p", {}, "Araştırma sorusunu, iş paketi sahipliğini ve önerilen külliyatı sabitleriz."]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "03"],
+          ["h3", {}, "Evet ya da hayır"],
+          ["p", {}, "Tam başvuru taslağı başlamadan iki taraf da karar verir."]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "iletisim-cagrisi"
+      },
+      [
+        "div",
+        {},
+        [
+          "p",
+          {
+            "class": "etiket"
+          },
+          "Contact"
+        ],
+        ["h2", {}, "Proje ekibiyle konuşun"],
+        [
+          "p",
+          {},
+          "Kurumunuzu, hukuki külliyatınızı, değerlendirme deneyiminizi ve ulusal fonlama yolunuzu anlatan kısa bir not gönderin."
+        ]
+      ],
+      [
+        "div",
+        {
+          "class": "kisi-karti"
+        },
+        ["strong", {}, "Tarık İsmet Alkan"],
+        ["span", {}, "Kurucu ortak, teknik muhatap"],
+        [
+          "a",
+          {
+            "class": "dugme bakir",
+            "href": "mailto:kulularteknoloji@gmail.com?subject=Casuist%20Eurostars%20Call%2012%20partnership"
+          },
+          "Ortaklık hakkında yaz"
+        ]
+      ]
+    ]
+  ]
+}

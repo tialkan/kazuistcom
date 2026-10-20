@@ -1,0 +1,224 @@
+{
+  "path": "/tr/hakkinda",
+  "source": "https://kazuist.com/tr/hakkinda",
+  "lang": "tr",
+  "title": "Bir Kulular Teknoloji araştırma projesi. | Casuist",
+  "description": "Kazuist, Ankara'daki Kulular Bilişim Teknolojileri Limited Şirketi bünyesinde geliştiriliyor. Şirket, hukuk araştırmasını ve yazılım uygulamasını aynı karar kaydında bir araya getiriyor.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/about",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "sayfa-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Şirket ve ekip"
+      ],
+      ["h1", {}, "Bir Kulular Teknoloji araştırma projesi."],
+      [
+        "p",
+        {
+          "class": "buyuk-giris"
+        },
+        "Kazuist, Ankara'daki Kulular Bilişim Teknolojileri Limited Şirketi bünyesinde geliştiriliyor. Şirket, hukuk araştırmasını ve yazılım uygulamasını aynı karar kaydında bir araya getiriyor."
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "kunye-bolumu"
+      },
+      ["h2", {}, "Doğrulanabilir şirket künyesi"],
+      [
+        "dl",
+        {},
+        [
+          "div",
+          {},
+          ["dt", {}, "Ticaret unvanı"],
+          ["dd", {}, "Kulular Bilişim Teknolojileri Limited Şirketi"]
+        ],
+        [
+          "div",
+          {},
+          ["dt", {}, "Merkez"],
+          ["dd", {}, "Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara"]
+        ],
+        ["div", {}, ["dt", {}, "MERSİS"], ["dd", {}, "0591095454600001"]],
+        ["div", {}, ["dt", {}, "Ticaret sicili"], ["dd", {}, "550123, Ankara Ticaret Sicili Müdürlüğü"]]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "ekip-bolumu"
+      },
+      [
+        "div",
+        {
+          "class": "bolum-giris"
+        },
+        [
+          "p",
+          {
+            "class": "etiket"
+          },
+          "K / 01–05"
+        ],
+        ["h2", {}, "Kurucu ekip"],
+        [
+          "p",
+          {},
+          "Burada yalnızca kamuya açık ve doğrulanabilir özgeçmiş bilgileri yer alır. Projeye özel roller konsorsiyum planında sabitlenecek."
+        ]
+      ],
+      [
+        "div",
+        {
+          "class": "ekip-listesi"
+        },
+        [
+          "article",
+          {},
+          ["span", {}, "K/1"],
+          [
+            "div",
+            {},
+            ["p", {}, "Doç. Dr. / Kurucu ortak"],
+            ["h3", {}, "Merve Ayşegül Kulular Ibrahem"],
+            [
+              "p",
+              {},
+              "Bilişim ve teknoloji hukuku. Hacettepe Üniversitesinde öğretim üyesi, Queen Mary University of London'da yüksek lisans ve Murdoch University'de araştırma görevi."
+            ]
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "K/2"],
+          [
+            "div",
+            {},
+            ["p", {}, "Kurucu ortak / Şirket müdürü"],
+            ["h3", {}, "Fatıma Betül Altunbağ"],
+            [
+              "p",
+              {},
+              "Şirket müdürü. Dil eğitimi, yabancılara Türkçe öğretimi ve çocuk gelişimi alanlarında uzman."
+            ]
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "K/3"],
+          [
+            "div",
+            {},
+            ["p", {}, "Doç. Dr. / Kurucu ortak"],
+            ["h3", {}, "Erman Eroğlu"],
+            [
+              "p",
+              {},
+              "Uluslararası ticaret ve yatırım hukuku. Amerika ve Avrupa'da akademik çalışmalar, Sciences Po Paris'te misafir öğretim üyeliği."
+            ]
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "K/4"],
+          [
+            "div",
+            {},
+            ["p", {}, "Öğr. Gör. / Kurucu ortak"],
+            ["h3", {}, "Tarık İsmet Alkan"],
+            [
+              "p",
+              {},
+              "Merkeziyetsiz finans, dijital para ve sermaye piyasası. Ankara Yıldırım Beyazıt Üniversitesinde öğretim görevlisi, Birleşik Krallık'ta yüksek lisans."
+            ]
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "K/5"],
+          [
+            "div",
+            {},
+            ["p", {}, "Kurucu ortak"],
+            ["h3", {}, "Ahmet Büyükdağ"],
+            [
+              "p",
+              {},
+              "Hukukçu. İnsan hakları ve ombudsmanlık alanında saha deneyimi, Türkiye Cumhuriyeti Anayasa Mahkemesinde staj."
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "iki-kolon-bolum"
+      },
+      ["h2", {}, "Ar-Ge kaydı"],
+      [
+        "div",
+        {},
+        [
+          "p",
+          {},
+          "Kazuist proje başvurusu hazırlığındadır. Alınmış destek, tamamlanmış ölçüt ya da ölçülmüş ürün iddiası başarı olarak sunulmaz."
+        ],
+        [
+          "p",
+          {},
+          "Kamuya açık kayıt, ancak proje, yayın, veri seti ya da değerlendirme çıktısı doğrulanabilir bir kaynağa bağlandığında genişletilecek."
+        ],
+        [
+          "a",
+          {
+            "class": "dugme koyu",
+            "href": "https://kulular.com.tr"
+          },
+          "Kulular Teknoloji'yi ziyaret et",
+          " ↗"
+        ]
+      ]
+    ]
+  ]
+}

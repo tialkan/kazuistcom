@@ -1,0 +1,111 @@
+{
+  "path": "/hukuki/erisilebilirlik",
+  "source": "https://kazuist.com/tr/hukuki/erisilebilirlik",
+  "lang": "tr",
+  "title": "Erişilebilirlik beyanı | Casuist",
+  "description": "Bu sitenin WCAG 2.1 AA düzeyine uymasını hedefliyoruz. Site klavye ile gezinme, görünür odak, okunabilir kontrast, metin büyütme ve azaltılmış hareket tercihleri gözetilerek tasarlanmıştır.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/legal/accessibility",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Hukuki metin"
+      ],
+      ["h1", {}, "Erişilebilirlik beyanı"],
+      ["p", {}, "Son güncelleme 11 Eylül 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Taahhüt"],
+          [
+            "p",
+            {},
+            "Bu sitenin WCAG 2.1 AA düzeyine uymasını hedefliyoruz. Site klavye ile gezinme, görünür odak, okunabilir kontrast, metin büyütme ve azaltılmış hareket tercihleri gözetilerek tasarlanmıştır."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Bilinen sınırlar"],
+          [
+            "p",
+            {},
+            "/eski adresindeki arşivlenmiş önceki site bu beyandan önce hazırlanmıştır ve aynı düzeyi karşılamayabilir. Güncel açık sayfalar anlamlı başlıklar kullanır ve yalnızca işaretçiyle yapılabilen işlem içermez."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Geri bildirim"],
+          [
+            "p",
+            {},
+            "Bir erişilebilirlik engeliyle karşılaşırsanız sayfa adresi ve kısa açıklamayla ",
+            [
+              "a",
+              {
+                "href": "mailto:kulularteknoloji@gmail.com"
+              },
+              "kulularteknoloji@gmail.com"
+            ],
+            " adresine yazın. Sorunu inceleyip makul olduğu ölçüde erişilebilir bir alternatif sunacağız."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

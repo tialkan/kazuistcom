@@ -1,0 +1,320 @@
+{
+  "path": "/tr/nasil-calisir",
+  "source": "https://kazuist.com/tr/nasil-calisir",
+  "lang": "tr",
+  "title": "Arayüzün değil, hatanın etrafında tasarlandı. | Casuist",
+  "description": "Her mekanizma belirli bir hatayla başlar ve incelenebilen ya da ölçülebilen bir davranışla biter. Güvenin birimi akıcı cevap değil, önerme ve dayanağıdır.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/how-it-works",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "sayfa-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Dört mekanizma"
+      ],
+      ["h1", {}, "Arayüzün değil, hatanın etrafında tasarlandı."],
+      [
+        "p",
+        {
+          "class": "buyuk-giris"
+        },
+        "Her mekanizma belirli bir hatayla başlar ve incelenebilen ya da ölçülebilen bir davranışla biter. Güvenin birimi akıcı cevap değil, önerme ve dayanağıdır."
+      ]
+    ],
+    [
+      "div",
+      {
+        "class": "mekanizma-listesi"
+      },
+      [
+        "section",
+        {
+          "class": "mekanizma-detay"
+        },
+        [
+          "div",
+          {
+            "class": "mekanizma-baslik"
+          },
+          ["span", {}, "01"],
+          ["h2", {}, "Önerme düzeyinde dayanak"]
+        ],
+        [
+          "div",
+          {
+            "class": "akis",
+            "aria-label": "Önerme, Kaynak parçası, Görünür bağ"
+          },
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "01"],
+            ["strong", {}, "Önerme"]
+          ],
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "02"],
+            ["strong", {}, "Kaynak parçası"]
+          ],
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "03"],
+            ["strong", {}, "Görünür bağ"]
+          ]
+        ],
+        [
+          "dl",
+          {},
+          [
+            "div",
+            {},
+            ["dt", {}, "Sorun"],
+            [
+              "dd",
+              {},
+              "Metin sonundaki kaynakça, hangi cümlenin hangi kaynak parçasına dayandığını göstermez."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["dt", {}, "Tasarım"],
+            ["dd", {}, "Her önerme, dayandığı kaynak parçasına bağlanır. Kaynak, önermenin yanında açılır."]
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "mekanizma-detay"
+        },
+        [
+          "div",
+          {
+            "class": "mekanizma-baslik"
+          },
+          ["span", {}, "02"],
+          ["h2", {}, "Bağlayıcı ve atıf yapılan ayrımı"]
+        ],
+        [
+          "div",
+          {
+            "class": "akis",
+            "aria-label": "Yargı düzeni, Yürürlük, Kapsam"
+          },
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "01"],
+            ["strong", {}, "Yargı düzeni"]
+          ],
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "02"],
+            ["strong", {}, "Yürürlük"]
+          ],
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "03"],
+            ["strong", {}, "Kapsam"]
+          ]
+        ],
+        [
+          "dl",
+          {},
+          [
+            "div",
+            {},
+            ["dt", {}, "Sorun"],
+            ["dd", {}, "Bir karar gerçek olabilir ve yine de eldeki soru bakımından bağlayıcı olmayabilir."]
+          ],
+          [
+            "div",
+            {},
+            ["dt", {}, "Tasarım"],
+            [
+              "dd",
+              {},
+              "Otorite, yargı düzeni, yürürlük ve kapsam bakımından değerlendirilir. Atıf yapılan kaynak ile bağlayıcı kaynak ayrılır."
+            ]
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "mekanizma-detay"
+        },
+        [
+          "div",
+          {
+            "class": "mekanizma-baslik"
+          },
+          ["span", {}, "03"],
+          ["h2", {}, "Çekinme"]
+        ],
+        [
+          "div",
+          {
+            "class": "akis",
+            "aria-label": "Dayanak testi, Eşik, Çekinme"
+          },
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "01"],
+            ["strong", {}, "Dayanak testi"]
+          ],
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "02"],
+            ["strong", {}, "Eşik"]
+          ],
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "03"],
+            ["strong", {}, "Çekinme"]
+          ]
+        ],
+        [
+          "dl",
+          {},
+          [
+            "div",
+            {},
+            ["dt", {}, "Sorun"],
+            ["dd", {}, "Model, dayanak zayıfken makul görünen bir cümleyle boşluğu doldurma eğilimindedir."]
+          ],
+          [
+            "div",
+            {},
+            ["dt", {}, "Tasarım"],
+            ["dd", {}, "Dayanak eşiği geçilmezse önerme kurulmaz ve çıktı dayanaksız olarak işaretlenir."]
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "mekanizma-detay"
+        },
+        [
+          "div",
+          {
+            "class": "mekanizma-baslik"
+          },
+          ["span", {}, "04"],
+          ["h2", {}, "Bağımsız değerlendirme"]
+        ],
+        [
+          "div",
+          {
+            "class": "akis",
+            "aria-label": "Altın standart, Kör test, Hata incelemesi"
+          },
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "01"],
+            ["strong", {}, "Altın standart"]
+          ],
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "02"],
+            ["strong", {}, "Kör test"]
+          ],
+          [
+            "div",
+            {
+              "class": "akis-ogesi"
+            },
+            ["span", {}, "03"],
+            ["strong", {}, "Hata incelemesi"]
+          ]
+        ],
+        [
+          "dl",
+          {},
+          [
+            "div",
+            {},
+            ["dt", {}, "Sorun"],
+            ["dd", {}, "Yalnızca geliştiren ekibin ölçtüğü sonuç, mesleki kullanım için yeterli değildir."]
+          ],
+          [
+            "div",
+            {},
+            ["dt", {}, "Tasarım"],
+            [
+              "dd",
+              {},
+              "Ayrı bir ekip, çıktıları nitelikli hukukçuların açıkladığı altın standarda karşı ölçer."
+            ]
+          ]
+        ]
+      ]
+    ]
+  ]
+}

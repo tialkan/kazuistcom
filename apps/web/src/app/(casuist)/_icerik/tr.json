@@ -1,0 +1,354 @@
+{
+  "path": "/tr",
+  "source": "https://kazuist.com/tr",
+  "lang": "tr",
+  "title": "Kazuist | Denetlenebilir hukuki yapay zekâ | Casuist",
+  "description": "Hukuki yapay zekâ çıktısını önerme düzeyinde denetlenebilir kılan dayanak ve köken katmanı.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/en",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "kahraman"
+      },
+      [
+        "div",
+        {
+          "class": "kahraman-metin"
+        },
+        [
+          "p",
+          {
+            "class": "etiket"
+          },
+          "Hukuki külliyat için dayanak ve köken"
+        ],
+        [
+          "h1",
+          {},
+          "Kazuist hukuki soruyu cevaplamıyor.",
+          ["span", {}, "Cevabın denetlenebilir olmasını sağlıyor."]
+        ],
+        [
+          "div",
+          {
+            "class": "kahraman-aciklama"
+          },
+          ["p", {}, "Tehlikeli hata, bariz uydurma değil."],
+          [
+            "p",
+            {},
+            "Gerçekten var olan ama o meselede bağlayıcı olmayan bir karara yapılan makul görünüşlü atıf."
+          ]
+        ],
+        [
+          "div",
+          {
+            "class": "dugme-sirasi"
+          },
+          [
+            "a",
+            {
+              "class": "dugme koyu",
+              "href": "/tr/nasil-calisir"
+            },
+            "Nasıl çalıştığını gör"
+          ],
+          [
+            "a",
+            {
+              "class": "dugme cizgili",
+              "href": "/tr/ortak"
+            },
+            "Eurostars Çağrı 12: ortak arayışı"
+          ]
+        ]
+      ],
+      [
+        "div",
+        {
+          "class": "kahraman-gorsel"
+        },
+        [
+          "img",
+          {
+            "alt": "",
+            "width": "1600",
+            "height": "900"
+          }
+        ],
+        [
+          "p",
+          {},
+          "Kazuist için editoryal çalışma. İç içe biçimler, önermenin kaynağına bağlanmasını temsil ediyor."
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "sorun-bandi",
+        "aria-label": "Problem summary"
+      },
+      [
+        "article",
+        {},
+        ["span", {}, "A"],
+        ["h2", {}, "Akıcılık, doğrulanabilirliği geçti."],
+        ["p", {}, "İkna edici bir cümle yine de yanlış otoriteye dayanabilir."]
+      ],
+      [
+        "article",
+        {},
+        ["span", {}, "B"],
+        ["h2", {}, "Doğrulama hukukçuya kalıyor."],
+        ["p", {}, "Taslakta kazanılan süre, kaynak kontrolünde geri veriliyor."]
+      ],
+      [
+        "article",
+        {},
+        ["span", {}, "C"],
+        ["h2", {}, "Doğrulanamayan çıktı düzenlenmiş işte kullanılamaz."],
+        ["p", {}, "Hukukçu, önermeye dayanmadan önce temelini inceleyebilmelidir."]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "ana-bolum mekanizma-ozet"
+      },
+      [
+        "div",
+        {
+          "class": "bolum-giris"
+        },
+        [
+          "p",
+          {
+            "class": "etiket"
+          },
+          "01 / Method"
+        ],
+        ["h2", {}, "Cevap, bir metin bloğu değil, bir zincir."],
+        [
+          "p",
+          {},
+          "Kazuist, hukuki külliyat üzerinde çalışan bir dayanak ve köken katmanıdır. Tasarımı, sınanabilir dört mekanizma etrafında kurulur."
+        ]
+      ],
+      [
+        "div",
+        {
+          "class": "mekanizma-kartlari"
+        },
+        [
+          "a",
+          {
+            "class": "mekanizma-karti",
+            "href": "/tr/nasil-calisir"
+          },
+          [
+            "span",
+            {
+              "class": "kart-no"
+            },
+            "01"
+          ],
+          ["h3", {}, "Önerme düzeyinde dayanak"],
+          ["p", {}, "Her önerme, dayandığı kaynak parçasına bağlanır. Kaynak, önermenin yanında açılır."],
+          [
+            "span",
+            {
+              "class": "ok"
+            },
+            "↗"
+          ]
+        ],
+        [
+          "a",
+          {
+            "class": "mekanizma-karti",
+            "href": "/tr/nasil-calisir"
+          },
+          [
+            "span",
+            {
+              "class": "kart-no"
+            },
+            "02"
+          ],
+          ["h3", {}, "Bağlayıcı ve atıf yapılan ayrımı"],
+          [
+            "p",
+            {},
+            "Otorite, yargı düzeni, yürürlük ve kapsam bakımından değerlendirilir. Atıf yapılan kaynak ile bağlayıcı kaynak ayrılır."
+          ],
+          [
+            "span",
+            {
+              "class": "ok"
+            },
+            "↗"
+          ]
+        ],
+        [
+          "a",
+          {
+            "class": "mekanizma-karti",
+            "href": "/tr/nasil-calisir"
+          },
+          [
+            "span",
+            {
+              "class": "kart-no"
+            },
+            "03"
+          ],
+          ["h3", {}, "Çekinme"],
+          ["p", {}, "Dayanak eşiği geçilmezse önerme kurulmaz ve çıktı dayanaksız olarak işaretlenir."],
+          [
+            "span",
+            {
+              "class": "ok"
+            },
+            "↗"
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "sinir-bolumu"
+      },
+      [
+        "div",
+        {
+          "class": "bolum-giris acik"
+        },
+        [
+          "p",
+          {
+            "class": "etiket"
+          },
+          "Tanımlı sınır"
+        ],
+        ["h2", {}, "Güven, sistemin yapmadığını söylemekle başlar."],
+        [
+          "p",
+          {},
+          "Kazuist, nitelikli hukukçular için tasarlanır. İncelemeyi destekler. Hükmün yerine geçmez."
+        ]
+      ],
+      [
+        "ol",
+        {
+          "class": "sinir-listesi"
+        },
+        ["li", {}, ["span", {}, "01"], "Karar verme ya da hüküm üretme sistemi değildir."],
+        ["li", {}, ["span", {}, "02"], "Yargı kararının sonucunu tahmin etmez."],
+        ["li", {}, ["span", {}, "03"], "Hukuki danışmanlığın ve mesleki sorumluluğun yerine geçmez."],
+        ["li", {}, ["span", {}, "04"], "Genel amaçlı bir sohbet arayüzü değildir."]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "ortak-seridi"
+      },
+      [
+        "div",
+        {},
+        [
+          "p",
+          {
+            "class": "etiket"
+          },
+          "Eurostars Çağrı 12"
+        ],
+        ["h2", {}, "Değerlendirme çalışmalarına liderlik edecek Avrupalı bir araştırma ortağı arıyoruz."],
+        [
+          "p",
+          {},
+          "Ortak veri tedarikçisi değil. Hukuki kapsamı, altın standardı ve bağımsız değerlendirmeyi birlikte tasarlar."
+        ]
+      ],
+      [
+        "div",
+        {
+          "class": "ortak-tarih"
+        },
+        ["span", {}, "Deadline"],
+        ["strong", {}, "04·03·2027"],
+        [
+          "a",
+          {
+            "class": "dugme bakir",
+            "href": "/tr/ortak"
+          },
+          "Ortaklık dosyasını oku"
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "faq-bolumu"
+      },
+      ["h2", {}, "İlk sorulara kısa cevaplar."],
+      [
+        "div",
+        {},
+        [
+          "details",
+          {},
+          ["summary", {}, "Kazuist hukuki danışmanlık verir mi?"],
+          ["p", {}, "Hayır. Nitelikli hukukçular için karar destek ve doğrulama katmanı olarak tasarlanıyor."]
+        ],
+        [
+          "details",
+          {},
+          ["summary", {}, "Yargı kararlarının sonucunu tahmin eder mi?"],
+          ["p", {}, "Hayır. Sonuç tahmini, amaçlanan ürün sınırının dışındadır."]
+        ],
+        [
+          "details",
+          {},
+          ["summary", {}, "Dayanak zayıfsa ne olur?"],
+          [
+            "p",
+            {},
+            "Amaçlanan davranış, önermeyi akıcı biçimde tamamlamak yerine kurmamak ve dayanaksız olarak işaretlemektir."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

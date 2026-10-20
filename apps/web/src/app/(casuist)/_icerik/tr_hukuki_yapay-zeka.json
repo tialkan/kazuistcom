@@ -1,0 +1,148 @@
+{
+  "path": "/hukuki/yapay-zeka",
+  "source": "https://kazuist.com/tr/hukuki/yapay-zeka",
+  "lang": "tr",
+  "title": "Yapay zekâ politikası | Casuist",
+  "description": "Kazuist, nitelikli hukukçular için karar destek aracı olarak tasarlanıyor. Sonucu belirlemez. Mesleki değerlendirme ve kullanım sorumluluğu kullanıcıda kalır.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/legal/ai",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Hukuki metin"
+      ],
+      ["h1", {}, "Yapay zekâ politikası"],
+      ["p", {}, "Son güncelleme 11 Eylül 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Amaçlanan rol"],
+          [
+            "p",
+            {},
+            "Kazuist, nitelikli hukukçular için karar destek aracı olarak tasarlanıyor. Sonucu belirlemez. Mesleki değerlendirme ve kullanım sorumluluğu kullanıcıda kalır."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Köken gereksinimi"],
+          [
+            "p",
+            {},
+            "Köken isteğe bağlı bir özellik değil, ürün gereksinimidir. Üretilen her önerme, dayanağı olarak gösterilen kaynak parçasına bağlanmalıdır."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Çekinme"],
+          [
+            "p",
+            {},
+            "Sistem, dayanak tanımlı eşiği geçmediğinde önerme kurmamak üzere tasarlanır. Dayanaksız durumu, incelenebilir temeli olmayan akıcı bir tamamlamaya tercih edilir."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "04"],
+        [
+          "div",
+          {},
+          ["h2", {}, "AB Yapay Zekâ Tüzüğü değerlendirmesi"],
+          [
+            "p",
+            {},
+            "Her konuşlandırma için önceden tek bir risk sınıfı ileri sürülmez. Sınıflandırma, konuşlandırmanın amaçlanan amacı, kullanıcıları, bağlamı ve gerçek işlevi üzerinden yapılmalıdır. Adaletin idaresiyle bağlantılı kullanımlar ayrıca değerlendirilir."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "05"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Külliyat ve veri"],
+          [
+            "p",
+            {},
+            "Geliştirme ya da değerlendirmede kullanılan her külliyat belgelenmiş hukuki sebebe, lisans incelemesine ve uygulanabilir KVKK ile GDPR yükümlülüklerine uygun işleme denetimlerine sahip olmalıdır."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "06"],
+        [
+          "div",
+          {},
+          ["h2", {}, "İnsan denetimi"],
+          [
+            "p",
+            {},
+            "Denetim, hukukçu dayanağı inceleyebildiğinde, çıktıya itiraz edebildiğinde ve onu reddedebildiğinde anlamlıdır. Tek başına onay düğmesi denetim sayılmaz."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

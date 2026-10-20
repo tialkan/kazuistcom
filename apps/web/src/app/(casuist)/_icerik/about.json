@@ -1,0 +1,219 @@
+{
+  "path": "/about",
+  "source": "https://kazuist.com/about",
+  "lang": "en",
+  "title": "A research project by Kulular Teknoloji. | Casuist",
+  "description": "Casuist is developed within Kulular Bilişim Teknolojileri Limited Şirketi in Ankara. The company brings legal research and software implementation into the same decision record.",
+  "nav": [
+    {
+      "href": "/problem",
+      "text": "Problem"
+    },
+    {
+      "href": "/partner",
+      "text": "Partner call"
+    },
+    {
+      "href": "/how-it-works",
+      "text": "How it works"
+    },
+    {
+      "href": "/evaluation",
+      "text": "Evaluation"
+    },
+    {
+      "href": "/about",
+      "text": "About"
+    }
+  ],
+  "langLink": {
+    "href": "/tr/hakkinda",
+    "text": "Türkçe",
+    "hreflang": "tr"
+  },
+  "tagline": "A Kulular Teknoloji research project",
+  "main": [
+    [
+      "section",
+      {
+        "class": "sayfa-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Company and team"
+      ],
+      ["h1", {}, "A research project by Kulular Teknoloji."],
+      [
+        "p",
+        {
+          "class": "buyuk-giris"
+        },
+        "Casuist is developed within Kulular Bilişim Teknolojileri Limited Şirketi in Ankara. The company brings legal research and software implementation into the same decision record."
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "kunye-bolumu"
+      },
+      ["h2", {}, "Verifiable company particulars"],
+      [
+        "dl",
+        {},
+        ["div", {}, ["dt", {}, "Legal name"], ["dd", {}, "Kulular Bilişim Teknolojileri Limited Şirketi"]],
+        [
+          "div",
+          {},
+          ["dt", {}, "Registered office"],
+          ["dd", {}, "Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara"]
+        ],
+        ["div", {}, ["dt", {}, "MERSİS"], ["dd", {}, "0591095454600001"]],
+        ["div", {}, ["dt", {}, "Trade registry"], ["dd", {}, "550123, Ankara Trade Registry Directorate"]]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "ekip-bolumu"
+      },
+      [
+        "div",
+        {
+          "class": "bolum-giris"
+        },
+        [
+          "p",
+          {
+            "class": "etiket"
+          },
+          "K / 01–05"
+        ],
+        ["h2", {}, "Founding team"],
+        [
+          "p",
+          {},
+          "Only public, verifiable biographical details are listed here. Project-specific roles will be fixed in the consortium plan."
+        ]
+      ],
+      [
+        "div",
+        {
+          "class": "ekip-listesi"
+        },
+        [
+          "article",
+          {},
+          ["span", {}, "K/1"],
+          [
+            "div",
+            {},
+            ["p", {}, "Assoc. Prof. Dr. / Co-founder"],
+            ["h3", {}, "Merve Ayşegül Kulular Ibrahem"],
+            [
+              "p",
+              {},
+              "Information and technology law. Academic staff at Hacettepe University, a master's from Queen Mary University of London and a research post at Murdoch University."
+            ]
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "K/2"],
+          [
+            "div",
+            {},
+            ["p", {}, "Co-founder / Managing director"],
+            ["h3", {}, "Fatıma Betül Altunbağ"],
+            [
+              "p",
+              {},
+              "Managing director. Specialist in language education, teaching Turkish to non-native speakers and child development."
+            ]
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "K/3"],
+          [
+            "div",
+            {},
+            ["p", {}, "Assoc. Prof. Dr. / Co-founder"],
+            ["h3", {}, "Erman Eroğlu"],
+            [
+              "p",
+              {},
+              "International trade and investment law. Academic work in the United States and Europe, including a visiting position at Sciences Po Paris."
+            ]
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "K/4"],
+          [
+            "div",
+            {},
+            ["p", {}, "Lecturer / Co-founder"],
+            ["h3", {}, "Tarık İsmet Alkan"],
+            [
+              "p",
+              {},
+              "Decentralised finance, digital money and capital markets. Lecturer at Ankara Yıldırım Beyazıt University, with a master's degree from the United Kingdom."
+            ]
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "K/5"],
+          [
+            "div",
+            {},
+            ["p", {}, "Co-founder"],
+            ["h3", {}, "Ahmet Büyükdağ"],
+            [
+              "p",
+              {},
+              "Law graduate. Field experience in human rights and ombudsman work, and an internship at Türkiye's Constitutional Court."
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "iki-kolon-bolum"
+      },
+      ["h2", {}, "R&D record"],
+      [
+        "div",
+        {},
+        [
+          "p",
+          {},
+          "Casuist is in proposal preparation. No grant award, completed benchmark or measured product claim is presented as an achievement."
+        ],
+        [
+          "p",
+          {},
+          "The public record will be expanded only when a project, publication, dataset or evaluation output can be linked to a verifiable source."
+        ],
+        [
+          "a",
+          {
+            "class": "dugme koyu",
+            "href": "https://kulular.com.tr"
+          },
+          "Visit Kulular Teknoloji",
+          " ↗"
+        ]
+      ]
+    ]
+  ]
+}

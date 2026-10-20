@@ -1,0 +1,40 @@
+/*
+ * Local, subset web fonts (Latin, Latin-1, Turkish). Files: apps/web/public/fonts, licences OFL 1.1
+ * (see NOTICE.txt there). KzSans and KzMono are renamed subsets of IBM Plex Sans and IBM Plex Mono.
+ */
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/SourceSerif4.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Source Serif 4';
+  src: url('/fonts/SourceSerif4-Italic.woff2') format('woff2');
+  font-weight: 200 900;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'KzSans';
+  src: url('/fonts/KzSans.woff2') format('woff2');
+  font-weight: 100 700;
+  font-stretch: 85% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'KzMono';
+  src: url('/fonts/KzMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'KzMono';
+  src: url('/fonts/KzMono-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}

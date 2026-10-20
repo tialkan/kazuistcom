@@ -1,17 +1,156 @@
 {
   "marka": "Kazuist",
+  "amac": "Find the legal source, see what supports it, and write your text to the rules.",
+  "atla": "Skip to content",
   "gezinme": {
     "ara": "Search",
     "yazma": "Writing",
     "pratik": "Practice",
     "kampus": "Campus",
-    "hesap": "My account"
+    "hesap": "My account",
+    "ana": "Main navigation",
+    "moduller": "Modules",
+    "anaSayfa": "Kazuist home",
+    "fiyatlar": "Pricing",
+    "arge": "R&D: Casuist",
+    "sekme": {
+      "ara": "Research",
+      "atifAgi": "Citation network",
+      "rehberler": "Guides",
+      "yazma": "Writing",
+      "pratik": "Learn by playing",
+      "kampus": "Turkuaz Kampüs",
+      "kaydettiklerim": "Saved"
+    }
+  },
+  "hedefim": {
+    "etiket": "My goal",
+    "secilmedi": "Choose a profession",
+    "aciklama": "Choose or change your target profession"
   },
   "uyari": {
-    "danismanlik": "Kazuist does not provide legal advice and does not give opinions on your personal situation.",
-    "intihal": "Kazuist does not facilitate plagiarism or ethical violations."
+    "danismanlik": "Kazuist does not give legal advice and does not give opinions on your personal situation.",
+    "intihal": "Kazuist does not facilitate plagiarism or breaches of research ethics."
   },
   "hata": {
     "genel": "Something went wrong. Please try again shortly."
+  },
+  "altBilgi": {
+    "etiket": "Footer",
+    "urun": "Product",
+    "hukuki": "Legal texts",
+    "arge": "R&D",
+    "casuistTr": "Casuist research project",
+    "casuistEn": "Casuist (English)",
+    "kunye": "Company particulars",
+    "mersis": "MERSİS",
+    "adres": "Registered office",
+    "sicil": "Trade registry",
+    "eposta": "Email",
+    "yerTutucu": "Awaiting verification",
+    "telif": "Kulular Bilişim Teknolojileri Ltd. Şti."
+  },
+  "hukuki": {
+    "baslik": "Legal texts",
+    "giris": "We publish Kazuist's terms of use, privacy and payment rules on these pages. Each text shows its version and last update date below the title.",
+    "ust": "Legal text",
+    "surum": "Version",
+    "guncelleme": "Last updated",
+    "hazirlaniyor": "This text is in preparation",
+    "hazirlaniyorAciklama": "The text will be published here after legal review. You can send questions to the email address in the footer.",
+    "casuistSurumu": "This is the version published for the Casuist research site. The Kazuist product text is in preparation and will appear on this page once approved.",
+    "belge": {
+      "uyari": "Legal notice and particulars",
+      "aydinlatma": "Privacy notice",
+      "gizlilik": "Privacy policy",
+      "cerezler": "Cookie policy",
+      "yapay-zeka": "AI policy",
+      "kosullar": "Terms of use",
+      "iade-ve-kredi": "Refund, cancellation and credit rules",
+      "erisilebilirlik": "Accessibility statement",
+      "topluluk": "Community rules",
+      "kaldirma": "Copyright and takedown policy",
+      "basvuru": "KVKK request form"
+    }
+  },
+  "anasayfa": {
+    "baslik": "Kazuist: find the legal source, see what supports it",
+    "aciklama": "Legislation, court decisions, authority decisions and articles in one search. Every summary sentence shows its source beside it.",
+    "giris": "We bring legislation, court decisions, independent authority decisions and legal articles into one search. Every sentence of the short summary sits next to the source it rests on; without a source, the sentence is not written.",
+    "aramaEtiketi": "Type your question or topic",
+    "aramaIpucu": "Example: rent increase rate, limitation period in tort, explicit consent under KVKK",
+    "aramaDugme": "Search sources",
+    "orneklerBaslik": "You can start with these questions",
+    "ornekler": {
+      "1": "How is the rent increase rate for housing determined?",
+      "2": "Limitation period for compensation claims arising from tort",
+      "3": "When is explicit consent required under KVKK?",
+      "4": "Mandatory mediation in reinstatement cases"
+    },
+    "serhBaslik": "Every sentence is read with its source",
+    "serhGiris": "Margin note layout: the sentence on the left, its source level with it in the right margin. On a phone the sources move below the sentence.",
+    "serhOrnekNotu": "Layout example. The text and citations are placeholders, not a real summary.",
+    "serhOrnek1": "The first sentence of the summary sits here and only reports what appears in the source beside it.",
+    "serhOrnek2": "The second sentence rests on another source; its authority class is shown with shape and text.",
+    "serhKaynak": "Sources for this sentence",
+    "otoriteBaglayici": "Binding norm",
+    "otoriteYuksek": "High precedent",
+    "modullerBaslik": "From research to writing in one place",
+    "modul": {
+      "ara": "Search a question or topic; the source list, short summary and decision network come together.",
+      "yazma": "Get a Word template that follows your institute's guide or a journal's rules, and track your writing goal.",
+      "pratik": "Revise topics with card games and HMGS decks.",
+      "rehberler": "Article and thesis guides, Zotero and EndNote walkthroughs, a pre-submission checklist."
+    },
+    "kampusBaslik": "Turkuaz Kampüs",
+    "kampusMetin": "A feed where researchers share their work, abstracts and posters. Reading and following are free.",
+    "kampusBag": "Go to Kampüs",
+    "enNotu": "Casuist research and the Eurostars partner call:"
+  },
+  "fiyatlar": {
+    "baslik": "Pricing",
+    "aciklama": "Kazuist plans, credit packs and credits per operation. Prices include VAT.",
+    "giris": "Search, filters, labels and viewing the citation network are free. Operations that use AI run on a daily free allowance, your own key (BYOK) or credits.",
+    "taslak": "DRAFT: Prices await approval and may change. Sales are not open yet.",
+    "kdv": "All prices include VAT.",
+    "planlar": "Plans",
+    "paketler": "Credit packs",
+    "islemler": "Credits per operation",
+    "sutun": {
+      "plan": "Plan",
+      "kime": "For",
+      "fiyat": "Web price",
+      "kredi": "Credits loaded each month",
+      "ozellik": "Highlights",
+      "paket": "Pack",
+      "krediMiktari": "Credits",
+      "krediBasi": "Per credit",
+      "islem": "Operation",
+      "krediBedeli": "Credits"
+    },
+    "kurallarBaslik": "Credit rules",
+    "kural": {
+      "1": "Purchased credits do not expire.",
+      "2": "Promotional credits are valid for 90 days; they are not refunded or converted to cash.",
+      "3": "No credit is charged when no summary is produced for lack of sources or because of a technical error.",
+      "4": "Operations above 20 credits ask for your confirmation first."
+    }
+  },
+  "durum": {
+    "bulunamadiBaslik": "We could not find this page",
+    "bulunamadiAciklama": "The address may have changed or been mistyped. If you are looking for a source, you can find it with the search box.",
+    "anaSayfaya": "Back to the home page",
+    "aramaya": "Search sources",
+    "bakimBaslik": "Kazuist is under short maintenance",
+    "bakimAciklama": "We are updating the system. Your saved items and credits are kept. Please try again in a few minutes.",
+    "bakimDurum": "Status information is updated on this page.",
+    "yukleniyor": "Loading"
+  },
+  "casuist": {
+    "baglayiciSurum": "The Turkish version is binding.",
+    "turkceSurum": "Turkish version",
+    "gorselYerTutucu": "Image placeholder",
+    "ustBilgi": "Casuist research project",
+    "eskiNot": "This page is an archive of the previous site and is not current."
   }
 }

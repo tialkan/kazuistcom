@@ -1,0 +1,141 @@
+{
+  "path": "/hukuki/gizlilik",
+  "source": "https://kazuist.com/tr/hukuki/gizlilik",
+  "lang": "tr",
+  "title": "Gizlilik ve aydınlatma | Casuist",
+  "description": "Bu site bakımından veri sorumlusu Kulular Bilişim Teknolojileri Limited Şirketidir. Sorular kulularteknoloji@gmail.com adresine iletilebilir.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/legal/privacy",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Hukuki metin"
+      ],
+      ["h1", {}, "Gizlilik ve aydınlatma"],
+      ["p", {}, "Son güncelleme 11 Eylül 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Veri sorumlusu"],
+          [
+            "p",
+            {},
+            "Bu site bakımından veri sorumlusu Kulular Bilişim Teknolojileri Limited Şirketidir. Sorular ",
+            [
+              "a",
+              {
+                "href": "mailto:kulularteknoloji@gmail.com"
+              },
+              "kulularteknoloji@gmail.com"
+            ],
+            " adresine iletilebilir."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "İşlenen veriler"],
+          [
+            "p",
+            {},
+            "Açık sitede hesap, iletişim formu ya da analitik hizmeti yoktur. Standart sunucu kayıtları IP adresi, istek zamanı, istenen yol, tarayıcı bilgisi ve güvenlik olaylarını içerebilir."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Amaç ve hukuki sebep"],
+          [
+            "p",
+            {},
+            "Kayıtlar sitenin sunulması, güvenliğin korunması, hataların incelenmesi ve bir hakkın tesisi ya da savunulması için işlenir. İşleme, bu meşru işletim amaçları için gerekli olanla sınırlıdır."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "04"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Saklama ve alıcılar"],
+          [
+            "p",
+            {},
+            "Kayıtlar güvenlik ve işletim için gereken süre boyunca tutulur, sonra silinir ya da anonimleştirilir. Barındırma ve altyapı sağlayıcıları, hizmet koşulları ve uygulanabilir veri koruma yükümlülükleri altında sınırlı veri işleyebilir."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "05"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Haklarınız"],
+          [
+            "p",
+            {},
+            "Erişim, düzeltme, silme, kısıtlama ve itiraz talepleri iletişim adresine gönderilebilir. Haklar, ilgili kişiye ve işleme faaliyetine uygulanan mevzuat kapsamında değerlendirilir."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

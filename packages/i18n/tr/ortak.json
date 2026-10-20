@@ -1,11 +1,32 @@
 {
   "marka": "Kazuist",
+  "amac": "Hukuk kaynağını bulun, dayanağını görün, metninizi kurallarına uygun yazın.",
+  "atla": "İçeriğe atla",
   "gezinme": {
     "ara": "Ara",
     "yazma": "Yazma",
     "pratik": "Pratik",
     "kampus": "Kampüs",
-    "hesap": "Hesabım"
+    "hesap": "Hesabım",
+    "ana": "Ana gezinme",
+    "moduller": "Modüller",
+    "anaSayfa": "Kazuist ana sayfa",
+    "fiyatlar": "Fiyatlar",
+    "arge": "Ar-Ge: Casuist",
+    "sekme": {
+      "ara": "Araştırma zamanı",
+      "atifAgi": "Atıf ağı",
+      "rehberler": "Rehberler",
+      "yazma": "Yazma zamanı",
+      "pratik": "Eğlenerek öğrenme",
+      "kampus": "Turkuaz Kampüs",
+      "kaydettiklerim": "Kaydettiklerim"
+    }
+  },
+  "hedefim": {
+    "etiket": "Hedefim",
+    "secilmedi": "Meslek seçin",
+    "aciklama": "Hedef mesleğinizi seçin veya değiştirin"
   },
   "uyari": {
     "danismanlik": "Kazuist hukuki danışmanlık vermez ve kişisel durumunuz için görüş bildirmez.",
@@ -13,5 +34,123 @@
   },
   "hata": {
     "genel": "Bir sorun oluştu. Lütfen biraz sonra yeniden deneyin."
+  },
+  "altBilgi": {
+    "etiket": "Alt bilgi",
+    "urun": "Ürün",
+    "hukuki": "Hukuki metinler",
+    "arge": "Ar-Ge",
+    "casuistTr": "Casuist araştırma projesi",
+    "casuistEn": "Casuist (English)",
+    "kunye": "Şirket künyesi",
+    "mersis": "MERSİS",
+    "adres": "Merkez",
+    "sicil": "Ticaret sicili",
+    "eposta": "E-posta",
+    "yerTutucu": "Doğrulama bekliyor",
+    "telif": "Kulular Bilişim Teknolojileri Ltd. Şti."
+  },
+  "hukuki": {
+    "baslik": "Hukuki metinler",
+    "giris": "Kazuist'in kullanım, gizlilik ve ödeme kurallarını bu sayfalarda yayımlıyoruz. Her metnin sürümü ve son güncelleme tarihi başlığının altında yazar.",
+    "ust": "Hukuki metin",
+    "surum": "Sürüm",
+    "guncelleme": "Son güncelleme",
+    "hazirlaniyor": "Bu metin hazırlanıyor",
+    "hazirlaniyorAciklama": "Metin hukuki incelemeden geçtikten sonra burada yayımlanacak. Sorularınızı alt bilgideki e-posta adresine gönderebilirsiniz.",
+    "casuistSurumu": "Bu metin Casuist araştırma sitesi için yayımlanan sürümdür. Kazuist ürün metni hazırlanıyor ve onaylandığında bu sayfada yer alacak.",
+    "belge": {
+      "uyari": "Hukuki uyarı ve künye",
+      "aydinlatma": "Aydınlatma metni",
+      "gizlilik": "Gizlilik politikası",
+      "cerezler": "Çerez politikası",
+      "yapay-zeka": "Yapay zekâ politikası",
+      "kosullar": "Kullanım koşulları",
+      "iade-ve-kredi": "İade, iptal ve kredi kuralları",
+      "erisilebilirlik": "Erişilebilirlik beyanı",
+      "topluluk": "Topluluk kuralları",
+      "kaldirma": "Telif ve kaldırma talebi politikası",
+      "basvuru": "KVKK başvuru formu"
+    }
+  },
+  "anasayfa": {
+    "baslik": "Kazuist: hukuk kaynağını bulun, dayanağını görün",
+    "aciklama": "Mevzuat, mahkeme kararları, kurum kararları ve makaleler tek aramada. Özetteki her cümlenin dayanağı yanında gösterilir.",
+    "giris": "Mevzuatı, mahkeme kararlarını, bağımsız kurum kararlarını ve hukuk makalelerini tek aramada topluyoruz. Kısa özetteki her cümlenin yanında dayandığı kaynak durur; kaynak yoksa cümle yazılmaz.",
+    "aramaEtiketi": "Sorunuzu veya konunuzu yazın",
+    "aramaIpucu": "Örnek: kira artış oranı, haksız fiil zamanaşımı, KVKK açık rıza",
+    "aramaDugme": "Kaynakları ara",
+    "orneklerBaslik": "Bu sorularla başlayabilirsiniz",
+    "ornekler": {
+      "1": "Konut kirasında artış oranı nasıl belirlenir?",
+      "2": "Haksız fiilden doğan tazminat isteminde zamanaşımı",
+      "3": "KVKK'ya göre açık rıza hangi hâllerde gerekir?",
+      "4": "İşe iade davasında arabuluculuk şartı"
+    },
+    "serhBaslik": "Her cümle kaynağıyla birlikte okunur",
+    "serhGiris": "Kenar şerhi düzeni: cümle solda, dayandığı kaynak aynı hizada sağ kenarda. Telefonda kaynaklar cümlenin altına iner.",
+    "serhOrnekNotu": "Görünüm örneği. Metin ve künyeler yer tutucudur, gerçek bir özet değildir.",
+    "serhOrnek1": "Özetin ilk cümlesi burada durur ve yalnız yanındaki kaynakta geçen bilgiyi aktarır.",
+    "serhOrnek2": "İkinci cümle başka bir kaynağa dayanır; otorite sınıfı şekil ve metinle belirtilir.",
+    "serhKaynak": "Bu cümlenin kaynakları",
+    "otoriteBaglayici": "Bağlayıcı norm",
+    "otoriteYuksek": "Yüksek emsal",
+    "modullerBaslik": "Araştırmadan yazıma aynı yerde",
+    "modul": {
+      "ara": "Soru veya konu arayın; kaynak listesi, kısa özet ve karar ağı birlikte gelir.",
+      "yazma": "Enstitü kılavuzuna veya dergi kurallarına göre Word şablonu alın, yazma hedefinizi izleyin.",
+      "pratik": "Kartlı oyunlarla ve HMGS destelerinde konuları tekrar edin.",
+      "rehberler": "Makale ve tez rehberi, Zotero ve EndNote anlatımı, teslim öncesi kontrol listesi."
+    },
+    "kampusBaslik": "Turkuaz Kampüs",
+    "kampusMetin": "Araştırmacıların çalışmalarını, özetlerini ve posterlerini paylaştığı akış. Okumak ve takip etmek ücretsiz.",
+    "kampusBag": "Kampüs'e git",
+    "enNotu": "Casuist research and the Eurostars partner call:"
+  },
+  "fiyatlar": {
+    "baslik": "Fiyatlar",
+    "aciklama": "Kazuist planları, kredi paketleri ve işlem başına kredi. Fiyatlar KDV dahildir.",
+    "giris": "Arama, filtreler, etiketler ve atıf ağını görüntüleme ücretsizdir. Yapay zekâ kullanan işlemler günlük ücretsiz hakla, kendi anahtarınızla (BYOK) veya krediyle çalışır.",
+    "taslak": "TASLAK: Fiyatlar onay bekliyor ve değişebilir. Satış henüz açık değildir.",
+    "kdv": "Tüm fiyatlar KDV dahildir.",
+    "planlar": "Planlar",
+    "paketler": "Kredi paketleri",
+    "islemler": "İşlem başına kredi",
+    "sutun": {
+      "plan": "Plan",
+      "kime": "Kime",
+      "fiyat": "Web fiyatı",
+      "kredi": "Her ay yüklenen kredi",
+      "ozellik": "Öne çıkanlar",
+      "paket": "Paket",
+      "krediMiktari": "Kredi",
+      "krediBasi": "Kredi başı",
+      "islem": "İşlem",
+      "krediBedeli": "Kredi"
+    },
+    "kurallarBaslik": "Kredi kuralları",
+    "kural": {
+      "1": "Satın alınan kredinin süresi dolmaz.",
+      "2": "Promosyon kredisi 90 gün geçerlidir; iade edilmez ve nakde çevrilmez.",
+      "3": "Kaynak yetersiz olduğu için özet üretilmezse veya teknik hata olursa kredi düşülmez.",
+      "4": "20 kredinin üstündeki işlemlerde önce onayınız istenir."
+    }
+  },
+  "durum": {
+    "bulunamadiBaslik": "Bu sayfayı bulamadık",
+    "bulunamadiAciklama": "Adres değişmiş veya yanlış yazılmış olabilir. Aradığınız bir kaynaksa arama kutusundan bulabilirsiniz.",
+    "anaSayfaya": "Ana sayfaya dön",
+    "aramaya": "Kaynak ara",
+    "bakimBaslik": "Kazuist kısa bir bakımda",
+    "bakimAciklama": "Sistemi güncelliyoruz. Kaydettikleriniz ve kredileriniz korunur. Lütfen birkaç dakika sonra yeniden deneyin.",
+    "bakimDurum": "Durum bilgisi bu sayfada güncellenir.",
+    "yukleniyor": "Yükleniyor"
+  },
+  "casuist": {
+    "baglayiciSurum": "Bağlayıcı sürüm Türkçedir.",
+    "turkceSurum": "Türkçe sürüm",
+    "gorselYerTutucu": "Görsel yer tutucu",
+    "ustBilgi": "Casuist araştırma projesi",
+    "eskiNot": "Bu sayfa önceki sitenin arşividir ve güncel değildir."
   }
 }
