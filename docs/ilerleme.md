@@ -14,7 +14,7 @@ Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sür�
 | 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7 main'de |
 | 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü | kapı bekliyor | PR #3 main'de |
 | 1 | odeme | Defter, iyzico sandbox | kapı bekliyor | PR #5 main'de |
-| 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8 main'de |
+| 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8 main'de; 2026-10-20 onayları (künye, fiyatlar, Casuist görselleri) dalga-1/on-yuz/onaylar PR'ında |
 | 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4 main'de |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri | bekliyor | |

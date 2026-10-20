@@ -85,7 +85,8 @@
           {
             "alt": "TÜBİTAK",
             "width": "82",
-            "height": "58"
+            "height": "58",
+            "src": "/tubitak.svg"
           }
         ],
         [
@@ -93,7 +94,8 @@
           {
             "alt": "Eureka",
             "width": "150",
-            "height": "40"
+            "height": "40",
+            "src": "/eureka.png"
           }
         ],
         [
@@ -101,7 +103,8 @@
           {
             "alt": "Eurostars",
             "width": "78",
-            "height": "58"
+            "height": "58",
+            "src": "/eurostars.png"
           }
         ]
       ],
