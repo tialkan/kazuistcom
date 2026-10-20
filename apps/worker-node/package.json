@@ -12,10 +12,19 @@
     "@kazuist/contracts": "workspace:*",
     "@kazuist/db": "workspace:*",
     "@kazuist/ledger": "workspace:*",
-    "pg": "8.23.1"
+    "@kazuist/i18n": "workspace:*",
+    "nodemailer": "10.1.7",
+    "pg": "8.23.1",
+    "web-push": "3.6.7",
+    "zod": "4.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.10",
+    "@electric-sql/pglite-pgvector": "0.0.11",
+    "@types/nodemailer": "8.0.2",
     "@types/pg": "8.23.1",
+    "@types/web-push": "3.6.4",
+    "drizzle-orm": "0.45.4",
     "tsx": "4.23.15"
   }
 }
