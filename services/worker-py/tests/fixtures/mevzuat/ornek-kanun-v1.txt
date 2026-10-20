@@ -1,0 +1,26 @@
+SENTETIK ORNEK KANUN (test fikstürü; gerçek bir kanun metni değildir)
+Kanun Numarası: 9999
+Kabul Tarihi: 1/1/2020
+
+BİRİNCİ BÖLÜM
+Amaç, Kapsam ve Tanımlar
+
+Amaç
+MADDE 1- (1) Bu Kanunun amacı, örnek bir ayrıştırma sınamasıdır.
+
+Kapsam
+MADDE 2- (1) Bu Kanun, yalnız test verisine uygulanır.
+(2) İkinci fıkra örnek metindir.
+
+Tanımlar
+MADDE 3- (1) Bu Kanunun uygulanmasında;
+a) Test: Sentetik sınamayı,
+b) Fikstür: Kayıtlı örnek belgeyi,
+ifade eder.
+
+Yürürlük
+MADDE 4- (1) Bu Kanun yayımı tarihinde yürürlüğe girer.
+
+Ek Madde 1- (1) Ek madde örnek metnidir.
+
+Geçici Madde 1- (1) Geçici madde örnek metnidir.
