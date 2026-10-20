@@ -25,6 +25,10 @@ def create_app(rt: Runtime, env: Optional[Mapping[str, str]] = None) -> FastAPI:
         if not x_internal_token or not hmac.compare_digest(x_internal_token, expected):
             raise HTTPException(status_code=401, detail="unauthorized")
 
+    def _known(name: str) -> None:
+        if name not in rt.registry.names():
+            raise HTTPException(status_code=404, detail="unknown source")
+
     @app.get("/healthz")
     def healthz() -> Dict[str, str]:
         return {"status": "ok"}
@@ -35,13 +39,13 @@ def create_app(rt: Runtime, env: Optional[Mapping[str, str]] = None) -> FastAPI:
 
     @app.post("/internal/sources/{name}/stop", dependencies=[Depends(auth)])
     def stop(name: str) -> Dict[str, str]:
-        rt.registry.get(name)
+        _known(name)
         rt.registry.trip(name, "stopped by operator")
         return {"source": name, "state": "stopped"}
 
     @app.post("/internal/sources/{name}/reset", dependencies=[Depends(auth)])
     def reset(name: str) -> Dict[str, str]:
-        rt.registry.get(name)
+        _known(name)
         rt.registry.untrip(name)
         rt.fetcher.breaker.reset(name)
         return {"source": name, "state": "reset"}

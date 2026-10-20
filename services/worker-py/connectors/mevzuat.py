@@ -25,7 +25,7 @@ BASE = "https://www.mevzuat.gov.tr"
 LICENSE_BASIS = "Resmî metin (FSEK m.31); Mevzuat Bilgi Sistemi"
 
 _ARTICLE = re.compile(
-    r"^(?P<kind>EK\s+MADDE|GEÇİCİ\s+MADDE|MADDE)\s+(?P<no>\d+(?:/[A-ZÇĞİÖŞÜ])?)\s*[-–]\s*(?P<body>.*)$",
+    r"^(?P<kind>EK\s+MADDE|GEÇİCİ\s+MADDE|GEÇICI\s+MADDE|MADDE)\s+(?P<no>\d+(?:/[A-ZÇĞİÖŞÜ])?)\s*[-–]\s*(?P<body>.*)$",
     re.I,
 )
 _ANNOTATION = re.compile(
@@ -33,7 +33,11 @@ _ANNOTATION = re.compile(
     r"(?P<date>\d{1,2}/\d{1,2}/\d{4})\s*-\s*(?P<law>\d{3,4})",
     re.I,
 )
-_KIND_PREFIX = {"MADDE": "m", "EK MADDE": "ek", "GEÇİCİ MADDE": "gecici"}
+
+
+def _kind_code(raw: str) -> str:
+    head = raw.strip()[:2].lower()  # 'ek' / 'ge' / 'ma'; avoids Turkish dotted I case mapping issues
+    return "ek" if head == "ek" else ("gecici" if head == "ge" else "m")
 
 
 @dataclass(frozen=True)
@@ -69,6 +73,8 @@ def law_url(meta: LawMeta) -> str:
 
 
 def _looks_like_heading(line: str) -> bool:
+    if re.search(r"\b(BÖLÜM|KISIM|BOLUM)\b", line, re.I) and len(line) < 40:
+        return False
     return 0 < len(line) <= 90 and not line.endswith((".", ";", ":")) and not _ARTICLE.match(line)
 
 
@@ -102,12 +108,13 @@ def parse_articles(text: str) -> List[Article]:
         m = _ARTICLE.match(ln)
         if m:
             close()
-            kind = _KIND_PREFIX[re.sub(r"\s+", " ", m.group("kind").upper())]
+            kind = _kind_code(m.group("kind"))
             current = Article(kind, m.group("no"), pending_heading, "")
             body = [ln]
             pending_heading = None
             continue
         if current is None:
+            pending_heading = ln if _looks_like_heading(ln) else None
             continue
         # A short unpunctuated line directly before the next article is that article's heading.
         if _looks_like_heading(ln):
