@@ -1,0 +1,1920 @@
+{
+  "path": "/eski",
+  "source": "https://kazuist.com/eski",
+  "lang": "en",
+  "title": "Previous Kazuist site | Casuist",
+  "description": "The archived previous Kazuist website.",
+  "nav": [],
+  "langLink": null,
+  "tagline": "Hacettepe Üniversitesi & Ankara Yıldırım Beyazıt Üniversitesi ortak projesidir.",
+  "main": [
+    [
+      "nav",
+      {},
+      [
+        "div",
+        {},
+        ["span", {}, "Kazuist"],
+        [
+          "div",
+          {},
+          [
+            "a",
+            {
+              "href": "#kazu"
+            },
+            "Kazu"
+          ],
+          [
+            "a",
+            {
+              "href": "#nasil-calisir"
+            },
+            "Nasıl Çalışır"
+          ],
+          [
+            "a",
+            {
+              "href": "#kariyer"
+            },
+            "Kariyer"
+          ],
+          [
+            "a",
+            {
+              "href": "#mimari"
+            },
+            "Mimari"
+          ],
+          [
+            "a",
+            {
+              "href": "#yol-haritasi"
+            },
+            "Yol Haritası"
+          ]
+        ],
+        [
+          "a",
+          {
+            "href": "https://github.com/tialkan/Kazuist"
+          },
+          "GitHub"
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["div", {}, ["p", {}, "Hukuk Eğitiminde Yeni Paradigma"]],
+        ["h1", {}, "Kazu ile tanış.", ["br", {}], ["span", {}, "Yapay zeka hukuk mentörün."]],
+        [
+          "p",
+          {},
+          "Kazuist, hukuk öğrencilerine Sokratik diyalog yöntemiyle rehberlik eden, öğrenme hızına uyum sağlayan ve bilimsel tekrar zamanlamasıyla kalıcı öğrenme sunan yapay zeka destekli eğitim platformudur."
+        ],
+        [
+          "p",
+          {},
+          "Kazu, sadece Türk hukuku üzerinde eğitilmiş, tüm mevzuata ve güncel içtihatlara hakim yapay zeka mentörüdür. Cevabı vermez - düşündürür."
+        ],
+        [
+          "div",
+          {},
+          [
+            "a",
+            {
+              "href": "/demo"
+            },
+            "Kazu Demo"
+          ],
+          [
+            "a",
+            {
+              "href": "https://github.com/tialkan/Kazuist"
+            },
+            "GitHub"
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Problem"],
+        ["h2", {}, "Hukuk eğitimi hâlâ 20. yüzyılda."],
+        [
+          "p",
+          {},
+          "Türk hukuk fakültelerinde öğrenciler pratik kitaplarla çalışıyor. Herkes aynı soruları çözüyor, herkes aynı cevap anahtarına bakıyor. Kişiselleştirme yok, geri bildirim yok, adaptasyon yok."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["h3", {}, "Tek tip zorluk"],
+            ["p", {}, "Aynı kitap, herkese aynı soruları sorar. İyi öğrenci sıkılır, zayıf öğrenci kaybolur."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Geri bildirim yok"],
+            ["p", {}, "Kitap nerede hata yaptığınızı açıklayamaz. Hoca her öğrenciyle birebir ilgilenemez."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Pasif öğrenme"],
+            ["p", {}, "Oku, çöz, cevap anahtarına bak. Neden doğru ya da yanlış olduğunu düşünmeye yer yok."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Tekrar planlaması yok"],
+            [
+              "p",
+              {},
+              "Öğrenci neyi ne zaman tekrar etmesi gerektiğini bilemez. Sınav öncesi toplu ezber yapar."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Sınırlı içerik"],
+            [
+              "p",
+              {},
+              "Pratik kitaplarında sınırlı sayıda soru var. Biten kitabın yerine yenisi kolay bulunamaz."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Güncellenme sorunu"],
+            [
+              "p",
+              {},
+              "Kanun değişikliklerinde eski kitaplar güncelliğini yitirir, baskı süreci aylarca sürer."
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "id": "kazu"
+      },
+      [
+        "div",
+        {},
+        ["p", {}, "Yapay Zeka Mentör"],
+        ["h2", {}, "Kazu: Türk hukukuna hakim yapay zeka."],
+        [
+          "p",
+          {},
+          "Kazu sıradan bir sohbet botu değil - sadece Türk hukuku üzerinde eğitilmiş, tüm mevzuata ve güncel içtihatlara hakim, özelleştirilmiş bir dil modelidir. Her sabah Resmi Gazete'yi okur, Yargıtay ve Danıştay kararlarını günlük takip eder, kanun değişikliklerini anında öğrenir."
+        ],
+        ["div", {}],
+        [
+          "div",
+          {},
+          ["div", {}, ["span", {}, "Ö"], ["div", {}, "Bu olayda fail hırsızlıktan ceza alır mı?"]],
+          [
+            "div",
+            {},
+            ["span", {}, "K"],
+            [
+              "div",
+              {},
+              "Güzel soru! Ama hemen sonuca atlamayalım. Önce failin eylemini hukuki olarak nitelendirmemiz gerek. Olayda anlatılan hareket hangi suç tipine giriyor olabilir?"
+            ]
+          ],
+          ["div", {}, ["span", {}, "Ö"], ["div", {}, "Hırsızlık?"]],
+          [
+            "div",
+            {},
+            ["span", {}, "K"],
+            [
+              "div",
+              {},
+              "Hırsızlık olabilir. Peki TCK m.141'deki tanımın unsurlarını düşünelim - “taşınır mal” ve “zilyedinin rızası olmadan alma” var. Bu olayda her iki unsur da mevcut mu?"
+            ]
+          ]
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["h3", {}, "Sadece Türk Hukuku"],
+            ["p", {}, "Anayasa'dan TCK'ya, TMK'dan İş Kanunu'na - tüm mevzuata hakim."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Güncel İçtihat"],
+            ["p", {}, "Yargıtay, Danıştay, Anayasa Mahkemesi kararlarını günlük takip eder."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Resmi Gazete"],
+            ["p", {}, "Her sabah Resmi Gazete'yi tarar, kanun değişikliklerini anında öğrenir."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Kaynak Gösterir"],
+            ["p", {}, "Her hukuki iddiayı gerçek kanun maddesiyle destekler, asla uydurmaz."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Sınırsız Sabır"],
+            ["p", {}, "Aynı konuyu farklı açılardan, farklı örneklerle tekrar tekrar açıklar."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Eğlenceli Ama Ciddi"],
+            ["p", {}, "Samimi ve yakın, ama hukuki kesinlikten asla ödün vermez."]
+          ]
+        ],
+        ["h3", {}, "Kazu Nasıl Eğitiliyor?"],
+        [
+          "p",
+          {},
+          "Kazu, genel amaçlı bir dil modelinin üzerine konuşma eklenerek değil - Türk hukuku için sıfırdan özelleştirilerek eğitilir."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["span", {}, "1"],
+            [
+              "div",
+              {},
+              ["h4", {}, "Veri Toplama"],
+              ["p", {}, "13 mahkeme veritabanı, tüm mevzuat, günlük Resmi Gazete - 120B+ token hukuki veri."],
+              ["p", {}, "Yargı MCP + Mevzuat MCP + Resmi Gazete Scraper"]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "2"],
+            [
+              "div",
+              {},
+              ["h4", {}, "Devam Ön-eğitim"],
+              ["p", {}, "Temel modele Türk hukuk dilini, terminolojisini ve kalıplarını öğretme."],
+              ["p", {}, "Mecellem corpus yaklaşımı ile müfredatlı eğitim"]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "3"],
+            [
+              "div",
+              {},
+              ["h4", {}, "İnce Ayar (QLoRA)"],
+              ["p", {}, "Hukuki soru-cevap çiftleri üzerinde parametre-verimli ince ayar."],
+              ["p", {}, "Sadece %0,1 parametre güncellenir - verimli ve hızlı"]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "4"],
+            [
+              "div",
+              {},
+              ["h4", {}, "Hizalama (DPO)"],
+              ["p", {}, "İyi/kötü hukuki yanıt tercihleri ile halüsinasyon engelleme."],
+              ["p", {}, "Uydurma madde numarası vermeyi cezalandıran tercih eğitimi"]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "5"],
+            [
+              "div",
+              {},
+              ["h4", {}, "RAG Katmanı"],
+              ["p", {}, "Güncel mevzuat ve içtihat erişimi ile gerçek zamanlı bilgi doğrulama."],
+              ["p", {}, "Her iddia gerçek kanun maddesine dayandırılır"]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "6"],
+            [
+              "div",
+              {},
+              ["h4", {}, "Sürekli Güncelleme"],
+              ["p", {}, "Günlük cron job ile yeni kararlar ve kanun değişiklikleri otomatik işlenir."],
+              ["p", {}, "Resmi Gazete 06:00, mahkeme kararları 07:00, mevzuat 08:00"]
+            ]
+          ]
+        ],
+        [
+          "div",
+          {},
+          ["h3", {}, "Kazu'nun Veri Kaynakları"],
+          [
+            "div",
+            {},
+            ["span", {}, "Yargıtay"],
+            ["span", {}, "Danıştay"],
+            ["span", {}, "Anayasa Mahkemesi"],
+            ["span", {}, "Uyuşmazlık Mahkemesi"],
+            ["span", {}, "Rekabet Kurumu"],
+            ["span", {}, "Kamu İhale Kurulu"],
+            ["span", {}, "Sayıştay"],
+            ["span", {}, "KVKK Kararları"],
+            ["span", {}, "BDDK"],
+            ["span", {}, "UYAP Emsal"],
+            ["span", {}, "Mevzuat.gov.tr"],
+            ["span", {}, "Resmi Gazete"],
+            ["span", {}, "Hukuk Doktrini"]
+          ],
+          [
+            "p",
+            {},
+            [
+              "a",
+              {
+                "href": "https://github.com/saidsurucu/yargi-mcp"
+              },
+              "Yargı MCP"
+            ],
+            " ile 13 mahkeme veritabanına,",
+            " ",
+            [
+              "a",
+              {
+                "href": "https://lobehub.com/mcp/saidsurucu-mevzuat-mcp"
+              },
+              "Mevzuat MCP"
+            ],
+            " ile tüm mevzuata programatik erişim sağlanır."
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "id": "nasil-calisir"
+      },
+      [
+        "div",
+        {},
+        ["p", {}, "Sokratik Diyalog"],
+        ["h2", {}, "Cevabı vermez, düşündürür."],
+        [
+          "p",
+          {},
+          "Antik Yunan filozofu Sokrates, öğrencilerine cevap vermek yerine sorular sorarak onları doğruya kendi başlarına ulaşmaya yönlendirirdi. Kazuist bu yöntemi yapay zeka ile hayata geçirir - tıpkı iyi bir hukuk hocasının dershanede yapacağı gibi."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Tur 1-2"], ["span", {}, "-"], ["span", {}, "Geniş, açık uçlu sorular"]],
+            ["p", {}, "“", "Bu olaydaki hukuki ilişkiyi nasıl nitelendirirsiniz?", "”"]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Tur 3-4"], ["span", {}, "-"], ["span", {}, "Daraltıcı sorular"]],
+            ["p", {}, "“", "Ceza sorumluluğundan bahsettiniz - hangi suç unsuru eksik olabilir?", "”"]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Tur 5-6"], ["span", {}, "-"], ["span", {}, "Hedefli ipuçları"]],
+            [
+              "p",
+              {},
+              "“",
+              "TCK m.21'deki kast türlerini düşünün. Şüphelinin zihin durumu neyi işaret ediyor?",
+              "”"
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Tur 7+"], ["span", {}, "-"], ["span", {}, "Cevaba yakın iskele"]],
+            [
+              "p",
+              {},
+              "“",
+              "Çok yaklaştınız. Olası kast ile bilinçli taksir ayrımı tek bir faktöre bağlı - nedir?",
+              "”"
+            ]
+          ]
+        ],
+        [
+          "p",
+          {},
+          "Öğrenci doğru cevaba ulaştığında yapay zeka onu tebrik eder ve",
+          " ",
+          ["strong", {}, "neden doğru olduğunu açıklamasını ister"],
+          " ",
+          "- böylece ezber değil, gerçek anlama sağlanır. Diyalog SSE ile anlık akış olarak iletilir: yapay zeka yanıtı kelime kelime ekranda belirir."
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "İçerik Güvencesi"],
+        ["h2", {}, "Üç aşamalı kalite hattı."],
+        [
+          "p",
+          {},
+          "Yapay zeka modelleri bazen olgusal hatalar yapabilir. Özellikle hukuk gibi hassas alanlarda yanlış bir madde numarası öğrencinin yanlış öğrenmesine neden olabilir. Bu yüzden hiçbir yapay zeka içeriği doğrudan öğrenciye ulaşmaz."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["span", {}, "1"],
+            ["h3", {}, "Yapay Zeka Yazar"],
+            ["p", {}, "Akademik kitaplardan örnek şablonlar verilerek yeni pratik üretilir. Durum: Taslak."],
+            ["span", {}, "Taslak"]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "2"],
+            ["h3", {}, "Yapay Zeka Editör"],
+            ["p", {}, "Üretenden bağımsız, ayrı bir yapay zeka çağrısı hukuki tutarlılığı denetler."],
+            ["span", {}, "Doğrulanmış"]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "3"],
+            ["h3", {}, "Akademisyen Onayı"],
+            ["p", {}, "Gerçek bir akademisyen son kontrolü yapar, onaylar veya düzeltme ister."],
+            ["span", {}, "Onaylanmış"]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Uyarlanabilir Zorluk"],
+        ["h2", {}, "Satranç dünyasından eğitime: Elo sistemi."],
+        [
+          "p",
+          {},
+          "Her öğrenci ve her soru 1500 puanla başlar. Zor bir soruyu doğru çözen öğrencinin puanı çok yükselir, kolay bir soruyu yanlış çözenin çok düşer. Sistem her öğrenciye tam olarak “biraz zorlayıcı ama başarılabilir” seviyede sorular sunar."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            [
+              "div",
+              {},
+              ["div", {}, ["span", {}, "Çok kolay"], ["span", {}, "Optimal bölge"], ["span", {}, "Çok zor"]],
+              ["div", {}, ["div", {}]]
+            ]
+          ],
+          [
+            "p",
+            {},
+            "Araştırmalar en etkili öğrenmenin",
+            " ",
+            ["strong", {}, "%70-85 başarı oranında"],
+            " ",
+            "gerçekleştiğini gösteriyor (Wilson et al., 2019). Kazuist her öğrenciyi bu optimal bölgede tutar."
+          ]
+        ],
+        [
+          "p",
+          {},
+          "Yeterli veri biriktiğinde (10.000+ etkileşim), Elo sistemi daha gelişmiş Madde Tepki Kuramı (IRT) modeline geçirilecektir. IRT, her sorunun sadece zorluğunu değil, “iyi öğrenciyi kötüsünden ayırt etme gücünü” de ölçer."
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Aralıklı Tekrar"],
+        ["h2", {}, "Tam unutacakken tekrar ettiren algoritma."],
+        [
+          "p",
+          {},
+          "İnsan hafızası yeni öğrenilen bilgiyi zamanla unutur. FSRS algoritması, 700 milyon tekrar verisinden makine öğrenmesiyle eğitilmiş modern bir zamanlayıcıdır. Her öğrencinin kişisel hafıza kalıplarını öğrenir ve “tam unutacakken” tekrar ettirerek bilgiyi kalıcı kılar."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["span", {}, ["span", {}, ["span", {}, "1. gün"], ["span", {}, "Öğren"]], ["span", {}, "→"]],
+            ["span", {}, ["span", {}, ["span", {}, "3. gün"], ["span", {}, "1. tekrar"]], ["span", {}, "→"]],
+            ["span", {}, ["span", {}, ["span", {}, "7. gün"], ["span", {}, "2. tekrar"]], ["span", {}, "→"]],
+            ["span", {}, ["span", {}, ["span", {}, "21. gün"], ["span", {}, "3. tekrar"]], ["span", {}, "→"]],
+            ["span", {}, ["span", {}, ["span", {}, "60. gün"], ["span", {}, "4. tekrar"]]],
+            ["span", {}, "...artan aralıklarla"]
+          ]
+        ],
+        ["h3", {}, "SM-2 ve FSRS Karşılaştırması"],
+        [
+          "div",
+          {},
+          [
+            "table",
+            {},
+            [
+              "thead",
+              {},
+              ["tr", {}, ["th", {}, "Özellik"], ["th", {}, "SM-2 (Geleneksel)"], ["th", {}, "FSRS (Kazuist)"]]
+            ],
+            [
+              "tbody",
+              {},
+              [
+                "tr",
+                {},
+                ["td", {}, "Temel"],
+                ["td", {}, "1987'de tasarlanmış sabit formül"],
+                ["td", {}, "700M veriyle eğitilmiş makine öğrenmesi"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Kişiselleştirme"],
+                ["td", {}, "Yok"],
+                ["td", {}, "Kullanıcının hafıza kalıplarını öğrenir"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Verimlilik"],
+                ["td", {}, "Temel düzey"],
+                ["td", {}, "%20-30 daha az tekrarla aynı sonuç"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Performans"],
+                ["td", {}, "-"],
+                ["td", {}, "Test edilen kullanıcıların %99,6'sında üstün"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Kullanım"],
+                ["td", {}, "Eski Anki sürümleri"],
+                ["td", {}, "Anki 23.10+ varsayılan algoritması"]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Hukuki Doğruluk"],
+        ["h2", {}, "Yapay zeka hayal gücüyle değil, gerçek mevzuatla konuşur."],
+        [
+          "p",
+          {},
+          "Yapay zeka modelleri Türk hukukunu genel hatlarıyla bilir, ama spesifik madde numaralarını uydurabilir. RAG sistemiyle her hukuki iddia veritabanındaki gerçek kanun maddelerine dayandırılır."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["span", {}, "1"],
+            ["h3", {}, "Ara"],
+            ["p", {}, "Soru analiz edilir, veritabanında ilgili kanun maddeleri ve içtihatlar aranır."]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "2"],
+            ["h3", {}, "Bağlam Ekle"],
+            ["p", {}, "Bulunan gerçek maddeler yapay zekanın bağlamına eklenir."]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "3"],
+            ["h3", {}, "Doğru Yanıt"],
+            ["p", {}, "Yapay zeka bu gerçek kaynaklarla yanıt üretir. Hayal gücü değil, mevzuat konuşur."]
+          ]
+        ],
+        [
+          "div",
+          {},
+          ["h3", {}, "İndekslenmiş Kaynaklar"],
+          [
+            "div",
+            {},
+            ["span", {}, "Anayasa"],
+            ["span", {}, "Türk Ceza Kanunu (TCK)"],
+            ["span", {}, "Türk Medeni Kanunu (TMK)"],
+            ["span", {}, "Türk Borçlar Kanunu (TBK)"],
+            ["span", {}, "Hukuk Muhakemeleri Kanunu (HMK)"],
+            ["span", {}, "Yargıtay Kararları"],
+            ["span", {}, "Anayasa Mahkemesi Kararları"],
+            ["span", {}, "Doktrin"]
+          ],
+          [
+            "p",
+            {},
+            "Arama PostgreSQL'in Türkçe tam metin arama (tsvector) özelliği ile yapılır. Ayrı bir vektör veritabanına gerek yoktur - maliyet düşer, sistem basit kalır."
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "id": "mimari"
+      },
+      [
+        "div",
+        {},
+        ["p", {}, "Mimari"],
+        ["h2", {}, "Üç Uzay modeli."],
+        [
+          "p",
+          {},
+          "Geleneksel yapay zeka uygulamaları herkese aynı deneyimi sunar. Kazuist, birbirinden bağımsız ama sürekli iletişim halindeki üç bilgi uzayı üzerine inşa edilmiştir. Bu mimari sayesinde yapay zeka bir sohbet botu değil, seni tanıyan gerçek bir mentör olur."
+        ],
+        [
+          "p",
+          {},
+          "Her uzay kendi bilgi alanına sahiptir. Öğrenci Uzayı senin geçmişini tutar, Hukuk Uzayı neyi bilmen gerektiğini bilir, Öğrenme Uzayı ikisini birleştirerek “bu öğrenciye şimdi tam olarak ne sorulmalı?” sorusuna cevap verir."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["div", {}],
+            ["h3", {}, "Öğrenci Uzayı"],
+            ["p", {}, "Her öğrencinin kişisel bilgi durumu."],
+            [
+              "ul",
+              {},
+              ["li", {}, "Bilgi haritası ve ustalık seviyeleri"],
+              ["li", {}, "Güçlü ve zayıf alanlar"],
+              ["li", {}, "FSRS hafıza durumu"],
+              ["li", {}, "Performans geçmişi"]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}],
+            ["h3", {}, "Hukuk Uzayı"],
+            ["p", {}, "Türk hukuk sisteminin yapısal haritası."],
+            [
+              "ul",
+              {},
+              ["li", {}, "Hukuk alanları ve konular"],
+              ["li", {}, "Kavramlar ve kavram grafı"],
+              ["li", {}, "Önkoşul ilişkileri"],
+              ["li", {}, "Mevzuat referansları"]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}],
+            ["h3", {}, "Öğrenme Uzayı"],
+            ["p", {}, "Pedagojik zeka ve karar motoru."],
+            [
+              "ul",
+              {},
+              ["li", {}, "Uyarlanabilir zorluk (Elo)"],
+              ["li", {}, "FSRS tekrar zamanlaması"],
+              ["li", {}, "Sokratik diyalog motoru"],
+              ["li", {}, "Öğrenme yolu optimizasyonu"]
+            ]
+          ]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            ["strong", {}, "Sonuç:"],
+            " ",
+            "Genel amaçlı bir sohbet botu değil, seni ve hukuku aynı anda anlayan bir eğitim zekası. Bağlam her şeydir - ve bu mimari bağlamı üç boyutta tutar."
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "id": "karsilastirma"
+      },
+      [
+        "div",
+        {},
+        ["p", {}, "Karşılaştırma"],
+        ["h2", {}, "Paradigma değişimi."],
+        [
+          "p",
+          {},
+          "Pratik kitaplar ve statik web siteleri kötü değil - sadece yetersiz. Teknoloji artık çok daha fazlasını mümkün kılıyor."
+        ],
+        [
+          "div",
+          {},
+          [
+            "table",
+            {},
+            ["thead", {}, ["tr", {}, ["th", {}], ["th", {}, "Geleneksel Yöntem"], ["th", {}, "Kazuist"]]],
+            [
+              "tbody",
+              {},
+              [
+                "tr",
+                {},
+                ["td", {}, "İçerik"],
+                ["td", {}, "Sınırlı sayıda, statik sorular"],
+                ["td", {}, "Sınırsız, yapay zeka üretimli vakalar"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Zorluk"],
+                ["td", {}, "Herkese aynı"],
+                ["td", {}, "Elo sistemiyle kişiye özel"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Öğrenme"],
+                ["td", {}, "Oku → Çöz → Cevap anahtarı"],
+                ["td", {}, "Sokratik diyalog ile keşif"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Geri bildirim"],
+                ["td", {}, "Doğru / Yanlış"],
+                ["td", {}, "Anında, kişiselleştirilmiş açıklama"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Tekrar"],
+                ["td", {}, "Sınav öncesi toplu ezber"],
+                ["td", {}, "FSRS ile bilimsel zamanlama"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Kişiselleştirme"],
+                ["td", {}, "Yok"],
+                ["td", {}, "Bilgi haritası + öğrenme profili"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Hukuki doğruluk"],
+                ["td", {}, "Yazarın bilgisine bağımlı"],
+                ["td", {}, "RAG ile gerçek mevzuata dayalı"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Kanun değişiklikleri"],
+                ["td", {}, "Yeni baskı gerekli"],
+                ["td", {}, "Otomatik güncelleme"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Motivasyon"],
+                ["td", {}, "Öğrenciye bırakılır"],
+                ["td", {}, "Oyunlaştırma: XP, seviye, rozetler"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Erişim"],
+                ["td", {}, "Fiziksel kitap"],
+                ["td", {}, "Web ve mobil, her yerden"]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Güvenlik"],
+        ["h2", {}, "5 katmanlı savunma mimarisi."],
+        [
+          "p",
+          {},
+          "Eğitim platformlarında kritik bir risk var: öğrenci yapay zekayı kandırarak cevabı almaya çalışabilir. Kazuist bunu mimari düzeyde çözer."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["span", {}, "1"],
+            [
+              "div",
+              {},
+              ["h3", {}, "Değiştirilemez Talimatlar"],
+              ["p", {}, "Sistem seviyesinde, kullanıcı tarafından geçersiz kılınamayan kurallar."]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "2"],
+            [
+              "div",
+              {},
+              ["h3", {}, "Girdi Sınıflandırma"],
+              [
+                "p",
+                {},
+                "Her mesaj yapay zekaya ulaşmadan önce - meşru öğrenme girişimi mi, cevap arama mı, manipülasyon denemesi mi - diye sınıflandırılır."
+              ]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "3"],
+            [
+              "div",
+              {},
+              ["h3", {}, "Çıktı Doğrulama"],
+              [
+                "p",
+                {},
+                "Yapay zekanın yanıtı öğrenciye gösterilmeden önce doğrudan cevap içerip içermediği kontrol edilir."
+              ]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "4"],
+            [
+              "div",
+              {},
+              ["h3", {}, "Oturum İzleme"],
+              ["p", {}, "Art arda gelen manipülasyon denemeleri tespit edilip işaretlenir."]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["span", {}, "5"],
+            [
+              "div",
+              {},
+              ["h3", {}, "Mimari Ayrım"],
+              [
+                "p",
+                {},
+                "En güçlü katman: doğru cevap, öğrenciyle konuşan yapay zekanın erişemeyeceği ayrı bir ortamda tutulur. Cevap anahtarı ayrı veritabanında saklanır; ipucu üreten servis kademeli ipuçları hazırlar; ama öğrenciyle konuşan yapay zeka cevabın kendisini asla görmez."
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Kişisel Verilerin Korunması"],
+        ["h2", {}, "KVKK tam uyumlu."],
+        [
+          "p",
+          {},
+          "6698 sayılı Kişisel Verilerin Korunması Kanunu'na tam uyumlu tasarlanmıştır. Yapay zeka servisleriyle paylaşılan verilerde kişisel bilgi korunur."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["h3", {}, "Anonimleştirme"],
+            [
+              "p",
+              {},
+              "Yapay zeka servislerine gönderilen metinlerdeki TC kimlik numarası, telefon ve e-posta otomatik olarak temizlenir."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Üç Ayrı Rıza"],
+            [
+              "p",
+              {},
+              "Veri işleme, yapay zeka ile analiz ve yurt dışı veri aktarımı için ayrı ayrı rıza toplanır."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Denetim Kayıtları"],
+            [
+              "p",
+              {},
+              "Tüm veri işleme operasyonları loglanır. Kim, ne zaman, hangi veriyi işledi - izlenebilir."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Unutulma Hakkı"],
+            [
+              "p",
+              {},
+              "Öğrenci tüm verilerinin silinmesini talep edebilir. Silme işlemi geri dönüşümsüz uygulanır."
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "id": "kariyer"
+      },
+      [
+        "div",
+        {},
+        ["p", {}, "Kariyer Rehberi"],
+        ["h2", {}, "Kazu sadece hukuk öğretmez, geleceğini de planlar."],
+        [
+          "p",
+          {},
+          "Mezun verilerine dayalı, proaktif ve dinamik kariyer rehberliği. Kazu seni tanıdıkça kariyer tahmini güncellenir - sormana gerek yok, Kazu sana gelir."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["span", {}, "K"],
+            [
+              "div",
+              {},
+              [
+                "p",
+                {},
+                "Akademik profilini analiz ettim. Sana benzer profildeki Hacettepe mezunlarının %68'i özel hukuk bürolarında kariyer yaptı."
+              ],
+              [
+                "div",
+                {},
+                ["span", {}, "Kariyer Puanı: 72/100"],
+                ["span", {}, "En Güçlü Alan: Özel Hukuk"],
+                ["span", {}, "Tahmini İşe Giriş: ~8 ay"]
+              ]
+            ]
+          ],
+          ["div", {}, ["span", {}, "Ö"], ["div", {}, "Hakim savcılık ihtimalim ne kadar?"]],
+          [
+            "div",
+            {},
+            ["span", {}, "K"],
+            [
+              "div",
+              {},
+              "Şu anki profilinle %12. Ama İdare Hukuku notunu BB'den AA'ya çıkarırsan ve KPSS hazırlığına başlarsan, benzer geçiş yapan mezunlarda bu oran %34'e çıkmış."
+            ]
+          ]
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["h3", {}, "Proaktif Rehberlik"],
+            [
+              "p",
+              {},
+              "Öğrenci sormadan bildirim gönderir. Her Kazuist aktivitesi kariyer profilini günceller."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Gerçek Mezun Verisi"],
+            ["p", {}, "Hacettepe, AYBÜ ve ASBÜ'den resmi olarak alınan anonimleştirilmiş mezun verileri."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Kariyer Hazırlık Puanı"],
+            ["p", {}, "0-100 arası dinamik puan. Notlar, Kazuist performansı ve alan uyumu ile hesaplanır."]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Kariyer DNA"],
+            [
+              "p",
+              {},
+              "Ceza mı, özel hukuk mu, akademi mi? Kişilik profilini hukuk alanlarına eşleyen görsel harita."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "İşe Giriş Tahmini"],
+            [
+              "p",
+              {},
+              "Benzer profildeki mezunlar ortalama kaç ayda işe girmiş? Hayatta kalma analizi ile tahmin."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Eğlenceli Gamifikasyon"],
+            ["p", {}, "Kariyer Wrapped, XP, streak sistemi - kariyer planlaması bile Kazuist'te eğlenceli."]
+          ]
+        ],
+        [
+          "div",
+          {},
+          ["h3", {}, "Nasıl Çalışır?"],
+          [
+            "div",
+            {},
+            [
+              "div",
+              {},
+              ["span", {}, "1"],
+              [
+                "div",
+                {},
+                ["h4", {}, "Verini Gir"],
+                ["p", {}, "Fakülte sınav notlarını, giriş yılını ve ders bilgilerini Kazuist'e ekle."]
+              ]
+            ],
+            [
+              "div",
+              {},
+              ["span", {}, "2"],
+              [
+                "div",
+                {},
+                ["h4", {}, "Kazuist'i Kullan"],
+                [
+                  "p",
+                  {},
+                  "Platform performansın, güçlü/zayıf alanların ve çalışma düzenin sürekli analiz edilir."
+                ]
+              ]
+            ],
+            [
+              "div",
+              {},
+              ["span", {}, "3"],
+              [
+                "div",
+                {},
+                ["h4", {}, "Kazu Yönlendirir"],
+                [
+                  "p",
+                  {},
+                  "Mezun verilerindeki benzer profillerle eşleştirme yapılır, kariyer tahmini güncellenir."
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Teknoloji"],
+        ["h2", {}, "Kanıtlanmış, ölçeklenebilir altyapı."],
+        [
+          "p",
+          {},
+          "Her teknoloji seçimi bir gerekçeye dayanır. Pahalı modeller yalnızca gerektiğinde kullanılır - farklı görevler farklı modellere yönlendirilir."
+        ],
+        [
+          "div",
+          {},
+          ["div", {}, ["p", {}, "Next.js 15"], ["p", {}, "Arayüz"]],
+          ["div", {}, ["p", {}, "FastAPI"], ["p", {}, "Sunucu"]],
+          ["div", {}, ["p", {}, "PostgreSQL 16"], ["p", {}, "Veritabanı"]],
+          ["div", {}, ["p", {}, "Redis 7"], ["p", {}, "Önbellek"]],
+          ["div", {}, ["p", {}, "Claude Sonnet"], ["p", {}, "Derin Muhakeme"]],
+          ["div", {}, ["p", {}, "Gemini Flash"], ["p", {}, "Hızlı İşlemler"]],
+          ["div", {}, ["p", {}, "LiteLLM"], ["p", {}, "Model Yönlendirme"]],
+          ["div", {}, ["p", {}, "FSRS v5+"], ["p", {}, "Aralıklı Tekrar"]],
+          ["div", {}, ["p", {}, "Langfuse"], ["p", {}, "Gözlemlenebilirlik"]],
+          ["div", {}, ["p", {}, "Turborepo"], ["p", {}, "Tek Depo"]],
+          ["div", {}, ["p", {}, "Docker"], ["p", {}, "Dağıtım"]],
+          ["div", {}, ["p", {}, "SSE"], ["p", {}, "Anlık Akış"]]
+        ],
+        ["h3", {}, "Yapay Zeka Maliyet Tablosu"],
+        [
+          "p",
+          {},
+          "Farklı görevler farklı modellere yönlendirilir. Pahalı model yalnızca gerektiğinde devreye girer."
+        ],
+        [
+          "div",
+          {},
+          [
+            "table",
+            {},
+            [
+              "thead",
+              {},
+              ["tr", {}, ["th", {}, "Görev"], ["th", {}, "Model"], ["th", {}, "Yaklaşık Maliyet"]]
+            ],
+            [
+              "tbody",
+              {},
+              [
+                "tr",
+                {},
+                ["td", {}, "İpucu üretme"],
+                ["td", {}, "Gemini Flash"],
+                ["td", {}, "~$0.03 / istek"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Kavram açıklama"],
+                ["td", {}, "Gemini Flash"],
+                ["td", {}, "~$0.06 / istek"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Sokratik diyalog"],
+                ["td", {}, "Claude Sonnet"],
+                ["td", {}, "~$0.60 / istek"]
+              ],
+              [
+                "tr",
+                {},
+                ["td", {}, "Vaka üretimi"],
+                ["td", {}, "Claude Sonnet"],
+                ["td", {}, "~$0.60 / istek"]
+              ]
+            ]
+          ]
+        ],
+        [
+          "div",
+          {},
+          ["div", {}, ["span", {}, "~$2"], ["span", {}, "/ öğrenci / ay"]],
+          [
+            "p",
+            {},
+            "Bağlam penceresi optimizasyonu ile yapay zeka maliyeti öğrenci başına aylık yaklaşık $2 seviyesine düşürülmüştür. Naif yaklaşıma göre",
+            " ",
+            ["strong", {}, "%53-84 tasarruf"],
+            " sağlanır. Bir pratik kitabının fiyatının çok altında, sınırsız içerik."
+          ]
+        ],
+        ["h3", {}, "Bağlam Penceresi Optimizasyonu"],
+        [
+          "p",
+          {},
+          "10 turlu bir Sokratik diyalog oturumunda tüm geçmişi yapay zekaya göndermek ~60.000 token harcar. Kazuist bunun yerine kayan pencere + yapay zeka özeti yaklaşımı kullanır."
+        ],
+        [
+          "div",
+          {},
+          [
+            "table",
+            {},
+            [
+              "thead",
+              {},
+              [
+                "tr",
+                {},
+                ["th", {}, "Yaklaşım"],
+                ["th", {}, "Token / Oturum"],
+                ["th", {}, "Aylık Maliyet (1K öğrenci)"]
+              ]
+            ],
+            [
+              "tbody",
+              {},
+              [
+                "tr",
+                {},
+                ["td", {}, "Tam geçmiş (naif)"],
+                ["td", {}, "~60.000"],
+                ["td", {}, "$4.500 – $13.500"]
+              ],
+              ["tr", {}, ["td", {}, "Kayan pencere + özet"], ["td", {}, "~25.000"], ["td", {}, "$2.100"]]
+            ]
+          ]
+        ],
+        [
+          "p",
+          {},
+          "Senaryo (~800 token) + önceki turların yapay zeka özeti (~200 token) + son 4 tur (~1.200 token) + sistem komutu (~300 token) = toplam ~2.500 token. Özet, her 4 turda bir arka plan görevi olarak üretilir (maliyet: ~$0,001)."
+        ],
+        ["h3", {}, "Günlük Kullanım Kotaları"],
+        [
+          "p",
+          {},
+          "Maliyet kontrolü ve adil kullanım için her öğrenciye günlük yapay zeka kotası tanımlanır. Kotalar öğrenci profiline göre ayarlanabilir."
+        ],
+        [
+          "div",
+          {},
+          ["div", {}, ["p", {}, "50"], ["p", {}, "Sokratik tur / gün"], ["p", {}, "~$1", " / gün"]],
+          ["div", {}, ["p", {}, "30"], ["p", {}, "İpucu / gün"], ["p", {}, "~$0,03", " / gün"]],
+          ["div", {}, ["p", {}, "20"], ["p", {}, "Kavram açıklama / gün"], ["p", {}, "~$0,04", " / gün"]]
+        ],
+        ["h3", {}, "Maliyet Düşürme Yol Haritası"],
+        [
+          "p",
+          {},
+          "Yeterli veri biriktiğinde büyük modellerin bilgisi küçük modellere aktarılarak (distilasyon) maliyet 10x düşürülecektir."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Lansman"]],
+            ["div", {}, ["p", {}, "Few-shot + RAG (Claude Sonnet)"], ["p", {}, "0-6 ay"]],
+            ["span", {}, "~$0,03 / istek"]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Ölçekleme"]],
+            ["div", {}, ["p", {}, "Distilasyon: Haiku, Sonnet verisinden fine-tune"], ["p", {}, "6-12 ay"]],
+            ["span", {}, "~$0,003 / istek"]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Olgunluk"]],
+            ["div", {}, ["p", {}, "Görev bazlı özelleştirilmiş modeller"], ["p", {}, "12+ ay"]],
+            ["span", {}, "~$0,001 / istek"]
+          ]
+        ],
+        ["h3", {}, "Kendi Sunucunuzda Çalıştırılabilir"],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Kazuist, Docker Compose ile 4GB RAM'li bir Raspberry Pi'de bile çalışacak şekilde optimize edilmiştir. Fakülteler uygulamayı kendi sunucularında barındırabilir - üçüncü taraf bağımlılığı yoktur."
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["p", {}, "PostgreSQL"], ["p", {}, "1 GB"]],
+            ["div", {}, ["p", {}, "Redis"], ["p", {}, "300 MB"]],
+            ["div", {}, ["p", {}, "API (FastAPI)"], ["p", {}, "512 MB"]],
+            ["div", {}, ["p", {}, "ARQ Worker"], ["p", {}, "512 MB"]],
+            ["div", {}, ["p", {}, "Web (Next.js)"], ["p", {}, "512 MB"]]
+          ],
+          ["p", {}, "Toplam: ~2,8 GB RAM - 4 GB Raspberry Pi veya herhangi bir VPS ile uyumlu."]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "id": "yol-haritasi"
+      },
+      [
+        "div",
+        {},
+        ["p", {}, "Yol Haritası"],
+        ["h2", {}, "5 fazda geliştirme planı."],
+        [
+          "p",
+          {},
+          "Proje akademik bir planlama ile 5 fazda, 13 haftada geliştirilmektedir. Her faz somut doğrulama kriterleriyle tanımlanmıştır."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Faz 1"], ["span", {}, "Hafta 1-2"]],
+            ["h3", {}, "Temel Altyapı"],
+            [
+              "div",
+              {},
+              ["span", {}, "Tek depo kurulumu"],
+              ["span", {}, "Veritabanı şeması"],
+              ["span", {}, "Kimlik doğrulama"],
+              ["span", {}, "KVKK rıza toplama"],
+              ["span", {}, "Arayüz iskeleti"]
+            ],
+            ["p", {}, "Doğrulama: ", "Kullanıcı kayıt olup giriş yapabilir, denetim kaydı yazılır."]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Faz 2"], ["span", {}, "Hafta 3-5"]],
+            ["h3", {}, "Hukuk Uzayı + Vaka Motoru"],
+            [
+              "div",
+              {},
+              ["span", {}, "Hukuk taksonomisi"],
+              ["span", {}, "Vaka üretim hattı"],
+              ["span", {}, "YZ doğrulama"],
+              ["span", {}, "Akademisyen onay paneli"],
+              ["span", {}, "Tam metin arama"]
+            ],
+            ["p", {}, "Doğrulama: ", "Üretim → doğrulama → onay → yayın akışı uçtan uca çalışır."]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Faz 3"], ["span", {}, "Hafta 6-7"]],
+            ["h3", {}, "Öğrenci Uzayı + FSRS"],
+            [
+              "div",
+              {},
+              ["span", {}, "Bilgi durumu takibi"],
+              ["span", {}, "FSRS motoru"],
+              ["span", {}, "Öğrenme profili"],
+              ["span", {}, "Bilgi grafı"],
+              ["span", {}, "Sıralama tablosu"]
+            ],
+            ["p", {}, "Doğrulama: ", "İlerleme takip edilir, aralıklı tekrar zamanlaması çalışır."]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Faz 4"], ["span", {}, "Hafta 8-10"]],
+            ["h3", {}, "Öğrenme Uzayı + Sokratik YZ"],
+            [
+              "div",
+              {},
+              ["span", {}, "Uyarlanabilir zorluk"],
+              ["span", {}, "Sokratik diyalog motoru"],
+              ["span", {}, "SSE anlık akış"],
+              ["span", {}, "Token bütçe yönetimi"]
+            ],
+            ["p", {}, "Doğrulama: ", "Sokratik diyalog akışı çalışır, kota aşımı engellenir."]
+          ],
+          [
+            "div",
+            {},
+            ["div", {}, ["span", {}, "Faz 5"], ["span", {}, "Hafta 11-13"]],
+            ["h3", {}, "Oyunlaştırma + Son Rötuşlar"],
+            [
+              "div",
+              {},
+              ["span", {}, "Rozetler ve seri günler"],
+              ["span", {}, "Üniversite sıralaması"],
+              ["span", {}, "Mobil uyumluluk"],
+              ["span", {}, "Performans optimizasyonu"]
+            ],
+            ["p", {}, "Doğrulama: ", "Tüm akış kendi sunucumuzda çalışır, KVKK uyumlu."]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Kimin İçin"],
+        ["h2", {}, "Her paydaş için değer."],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["h3", {}, "Hukuk Öğrencileri"],
+            [
+              "p",
+              {},
+              "Artık ezberci eğitim yok, robotik soru-cevap yok. Seni gerçekten anlayan, zayıf yönlerini bilen, güçlü yönlerini zorlayan ve seninle birlikte gelişen bir mentör. 7/24 erişilebilir, sınırsız sabırlı."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Hukuk Fakülteleri"],
+            [
+              "p",
+              {},
+              "21. yüzyıl hukuk eğitimi böyle görünüyor. Ölçeklenebilir, kanıta dayalı pedagoji. Her öğrencinin ilerleme verisiyle desteklenen akademik karar alma. KVKK tam uyumlu, kendi sunucunuzda çalıştırılabilir."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Yatırımcılar & Partnerler"],
+            [
+              "p",
+              {},
+              "Bu sadece bir EdTech uygulaması değil, tamamen yeni bir eğitim paradigması. Üç Uzay mimarisi üzerine inşa edilmiş, akademik referanslara dayanan, üretim ortamında test edilmiş bir sistem. Türkiye'de 200.000+ hukuk öğrencisi, büyüyen bir pazar ve öğrenci başına aylık ~$2 yapay zeka maliyetiyle sürdürülebilir birim ekonomisi."
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        [
+          "div",
+          {},
+          ["div", {}, ["p", {}, "200K+"], ["p", {}, "Hukuk öğrencisi (Türkiye)"]],
+          ["div", {}, ["p", {}, "700M"], ["p", {}, "FSRS eğitim verisi"]],
+          ["div", {}, ["p", {}, "5"], ["p", {}, "Güvenlik katmanı"]],
+          ["div", {}, ["p", {}, "~$2"], ["p", {}, "Aylık YZ maliyeti / öğrenci"]]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Ekip"],
+        ["h2", {}, "Akademi ve mühendislik, bir arada."],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            [
+              "img",
+              {
+                "alt": "Hacettepe Üniversitesi",
+                "width": "32",
+                "height": "32"
+              }
+            ],
+            ["p", {}, "Doç. Dr. Merve Ayşegül Kulular İbrahim"],
+            ["p", {}, "Akademik Danışman"],
+            ["p", {}, "Hacettepe Üniversitesi, Bilişim Hukuku"]
+          ],
+          [
+            "div",
+            {},
+            [
+              "img",
+              {
+                "alt": "Ankara Yıldırım Beyazıt Üniversitesi",
+                "width": "32",
+                "height": "32"
+              }
+            ],
+            ["p", {}, "Öğr. Gör. Tarık İsmet Alkan"],
+            ["p", {}, "Geliştirici"],
+            ["p", {}, "Ankara Yıldırım Beyazıt Üniversitesi, Bilgisayar Programcılığı"]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["p", {}, "Bilimsel Dayanak"],
+        ["h2", {}, "Akademik referanslara dayalı mimari kararlar."],
+        [
+          "p",
+          {},
+          "Kazuist'in her tasarım kararı arkasında hakemli dergilerde yayımlanmış araştırmalar ve endüstri standartları vardır. Tüm kaynaklar doğrulanabilir ve erişilebilirdir."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["h3", {}, "Pedagoji ve Öğrenme Bilimleri"],
+            [
+              "ul",
+              {},
+              [
+                "li",
+                {},
+                "Wilson, R. C., Shenhav, A., Stiso, J. & Cohen, J. D. (2019). “The Eighty Five Percent Rule for Optimal Learning.” ",
+                ["span", {}, "Nature Communications"],
+                ", 10(1).",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://doi.org/10.1038/s41467-019-12552-4"
+                  },
+                  "doi:10.1038/s41467-019-12552-4"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "Sailer, M. & Homner, L. (2023). “The Gamification of Learning: a Meta-Analysis.” ",
+                ["span", {}, "Frontiers in Psychology"],
+                ", 14.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://doi.org/10.3389/fpsyg.2019.01659"
+                  },
+                  "doi:10.3389/fpsyg.2019.01659"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "Bediou, B. et al. (2024). “PBL/CBL Motivation Meta-Analysis.” ",
+                ["span", {}, "Educational Psychology Review"],
+                ", 36.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://doi.org/10.1007/s10648-024-09845-3"
+                  },
+                  "doi:10.1007/s10648-024-09845-3"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "Sobczak, A. (2024). “Gamified Mobile Learning Retention.” ",
+                ["span", {}, "Accounting Education"],
+                ". Oyunlaştırmanın öğrenme kalıcılığını %30-40 artırdığını gösteriyor."
+              ],
+              [
+                "li",
+                {},
+                "Álvarez-García, D. et al. (2025). “Gamification in Criminal Law Teaching.” Ceza hukuku eğitiminde XP/rozet/seri sistemlerinin etkinliği."
+              ]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Yapay Zeka ve Sokratik Öğretim"],
+            [
+              "ul",
+              {},
+              [
+                "li",
+                {},
+                "Liu, J. et al. (2024). “SocraticLM: Exploring Socratic Personalized Teaching with Large Language Models.” ",
+                ["span", {}, "NeurIPS 2024"],
+                ".",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "http://staff.ustc.edu.cn/~huangzhy/files/papers/JiayuLiu-NeurIPS2024.pdf"
+                  },
+                  "PDF"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "Multi-Agent Socratic Teaching (2025). ",
+                ["span", {}, "ACL 2025 Findings"],
+                ". Akran öğrenmesi ve diyalog tabanlı pedagoji.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://aclanthology.org/2025.findings-emnlp.888.pdf"
+                  },
+                  "PDF"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "Magesh, V. et al. (2024). “Hallucination-Free? Assessing the Reliability of Leading AI Legal Research Tools.” ",
+                ["span", {}, "Stanford HAI"],
+                ". Yapay zeka modellerinin hukuki araştırmalarda madde numarası uydurduğunu kanıtlıyor.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://hai.stanford.edu"
+                  },
+                  "Stanford HAI"
+                ]
+              ]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Aralıklı Tekrar Algoritmaları"],
+            [
+              "ul",
+              {},
+              [
+                "li",
+                {},
+                "Ye, W. (2023). “FSRS - Free Spaced Repetition Scheduler.” 700 milyon tekrar verisinden eğitilmiş, Anki 23.10+ varsayılan algoritması.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://github.com/open-spaced-repetition/fsrs4anki"
+                  },
+                  "GitHub"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "FSRS vs SM-2 Karşılaştırması. Test edilen kullanıcıların %99,6'sında SM-2'den daha düşük log loss.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://memoforge.app/blog/fsrs-vs-sm2-anki-algorithm-guide-2025/"
+                  },
+                  "Analiz"
+                ]
+              ]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Güvenlik ve Uyumluluk"],
+            [
+              "ul",
+              {},
+              [
+                "li",
+                {},
+                "OWASP (2025). “LLM01:2025 - Prompt Injection.” Büyük dil modellerinde komut enjeksiyonu tehditleri ve savunma stratejileri.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+                  },
+                  "OWASP"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "KVKK 2025 Uyum Rehberi. Kişisel verilerin korunması ve yurt dışı veri aktarımı gereksinimleri.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://alfalawfirm.com/kvkk-2025-updates-a-compliance-guide-for-companies/"
+                  },
+                  "Rehber"
+                ]
+              ]
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Mimari ve Altyapı"],
+            [
+              "ul",
+              {},
+              [
+                "li",
+                {},
+                "LiteLLM - 100+ LLM desteği, otomatik yedekleme, maliyet takibi.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://docs.litellm.ai/docs/routing"
+                  },
+                  "Dokümantasyon"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "FastAPI + Next.js Monorepo Mimarisi.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://www.vintasoftware.com/blog/nextjs-fastapi-monorepo"
+                  },
+                  "Makale"
+                ]
+              ],
+              [
+                "li",
+                {},
+                "SSE for LLM Streaming. Yapay zeka akışı için endüstri standardı.",
+                " ",
+                [
+                  "a",
+                  {
+                    "href": "https://medium.com/@2nick2patel2/fastapi-server-sent-events-for-llm-streaming"
+                  },
+                  "Makale"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {},
+      [
+        "div",
+        {},
+        ["h2", {}, "Fakültenize Kazuist'i getirelim."],
+        [
+          "p",
+          {},
+          "İşbirliği, kurumsal entegrasyon ve yatırım görüşmeleri için bize ulaşın. Üniversitelere bulut veya yerel sunucu kurulumu tarafımızca sağlanır."
+        ],
+        [
+          "div",
+          {},
+          [
+            "div",
+            {},
+            ["h3", {}, "Bulut Kurulum"],
+            [
+              "p",
+              {},
+              "Kazuist'i uzak sunucularımız üzerinden kurumunuza entegre ederiz. Altyapı yönetimi bize ait, aylık abonelik modeli uygulanır."
+            ]
+          ],
+          [
+            "div",
+            {},
+            ["h3", {}, "Yerel Kurulum"],
+            [
+              "p",
+              {},
+              "Üniversitenizin kendi sunucularına kurulum yaparız. Yalnızca bakım ve güncelleme ücreti - toplam maliyet önemli ölçüde düşer."
+            ]
+          ]
+        ],
+        [
+          "a",
+          {
+            "href": "mailto:kazuisthukuk@gmail.com"
+          },
+          "kazuisthukuk@gmail.com"
+        ],
+        [
+          "div",
+          {},
+          [
+            "a",
+            {
+              "href": "https://github.com/tialkan/Kazuist"
+            },
+            "Teknik detayları GitHub'da inceleyin"
+          ]
+        ]
+      ]
+    ],
+    [
+      "footer",
+      {},
+      [
+        "div",
+        {},
+        [
+          "div",
+          {},
+          ["span", {}, "Kazuist"],
+          [
+            "div",
+            {},
+            [
+              "a",
+              {
+                "href": "https://github.com/tialkan/Kazuist"
+              }
+            ],
+            [
+              "div",
+              {},
+              [
+                "img",
+                {
+                  "alt": "Hacettepe Üniversitesi",
+                  "width": "24",
+                  "height": "24"
+                }
+              ],
+              [
+                "img",
+                {
+                  "alt": "Ankara Yıldırım Beyazıt Üniversitesi",
+                  "width": "24",
+                  "height": "24"
+                }
+              ]
+            ]
+          ]
+        ],
+        ["p", {}, "Hacettepe Üniversitesi & Ankara Yıldırım Beyazıt Üniversitesi ortak projesidir."]
+      ]
+    ]
+  ]
+}

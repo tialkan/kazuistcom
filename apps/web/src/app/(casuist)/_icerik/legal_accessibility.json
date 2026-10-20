@@ -1,0 +1,111 @@
+{
+  "path": "/legal/accessibility",
+  "source": "https://kazuist.com/legal/accessibility",
+  "lang": "en",
+  "title": "Accessibility statement | Casuist",
+  "description": "We aim for this website to conform to WCAG 2.1 Level AA. The site is designed for keyboard navigation, visible focus, readable contrast, text resizing and reduced motion preferences.",
+  "nav": [
+    {
+      "href": "/problem",
+      "text": "Problem"
+    },
+    {
+      "href": "/partner",
+      "text": "Partner call"
+    },
+    {
+      "href": "/how-it-works",
+      "text": "How it works"
+    },
+    {
+      "href": "/evaluation",
+      "text": "Evaluation"
+    },
+    {
+      "href": "/about",
+      "text": "About"
+    }
+  ],
+  "langLink": {
+    "href": "/hukuki/erisilebilirlik",
+    "text": "Türkçe",
+    "hreflang": "tr"
+  },
+  "tagline": "A Kulular Teknoloji research project",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Legal text"
+      ],
+      ["h1", {}, "Accessibility statement"],
+      ["p", {}, "Last updated 11 September 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Commitment"],
+          [
+            "p",
+            {},
+            "We aim for this website to conform to WCAG 2.1 Level AA. The site is designed for keyboard navigation, visible focus, readable contrast, text resizing and reduced motion preferences."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Known limits"],
+          [
+            "p",
+            {},
+            "The archived previous site at /eski predates this statement and may not meet the same standard. The current public pages use semantic headings and do not require pointer-only interaction."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Feedback"],
+          [
+            "p",
+            {},
+            "If you encounter an accessibility barrier, email ",
+            [
+              "a",
+              {
+                "href": "mailto:kulularteknoloji@gmail.com"
+              },
+              "kulularteknoloji@gmail.com"
+            ],
+            " with the page address and a short description. We will review the issue and provide an accessible alternative where reasonably possible."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

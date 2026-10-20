@@ -1,0 +1,103 @@
+{
+  "path": "/hukuki/cerezler",
+  "source": "https://kazuist.com/tr/hukuki/cerezler",
+  "lang": "tr",
+  "title": "Çerez politikası | Casuist",
+  "description": "Bu site analitik, reklam ya da kişiselleştirme çerezi kullanmaz. Üçüncü taraf analitik betiği yüklenmez.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/legal/cookies",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Hukuki metin"
+      ],
+      ["h1", {}, "Çerez politikası"],
+      ["p", {}, "Son güncelleme 11 Eylül 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Mevcut kullanım"],
+          [
+            "p",
+            {},
+            "Bu site analitik, reklam ya da kişiselleştirme çerezi kullanmaz. Üçüncü taraf analitik betiği yüklenmez."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Zorunlu depolama"],
+          [
+            "p",
+            {},
+            "Barındırma katmanı güvenlik ya da sunum için kesinlikle gerekli teknik depolama kullanabilir. Bu depolama ziyaretçi profili oluşturmak için kullanılmaz."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Gelecekteki değişiklik"],
+          [
+            "p",
+            {},
+            "İsteğe bağlı analitik ya da zorunlu olmayan başka bir teknoloji eklenirse ziyaretçi onay verene kadar kapalı kalır. Bu metin ve onay denetimleri değişiklik yayına girmeden önce güncellenir."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

@@ -1,0 +1,259 @@
+{
+  "path": "/tr/degerlendirme",
+  "source": "https://kazuist.com/tr/degerlendirme",
+  "lang": "tr",
+  "title": "Önce yöntem. Sayı, yalnızca ölçümden sonra. | Casuist",
+  "description": "Bu sayfa neyin, nasıl ölçüleceğini anlatıyor. Geçici performans rakamı yayımlamıyor. Sonuçlar yalnızca protokol, külliyat ve bağımsız değerlendirme tamamlandıktan sonra açıklanacak.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/evaluation",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "sayfa-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Değerlendirme protokolü"
+      ],
+      ["h1", {}, "Önce yöntem. Sayı, yalnızca ölçümden sonra."],
+      [
+        "p",
+        {
+          "class": "buyuk-giris"
+        },
+        "Bu sayfa neyin, nasıl ölçüleceğini anlatıyor. Geçici performans rakamı yayımlamıyor. Sonuçlar yalnızca protokol, külliyat ve bağımsız değerlendirme tamamlandıktan sonra açıklanacak."
+      ]
+    ],
+    [
+      "div",
+      {
+        "class": "makale-akisi"
+      },
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "01 / Atıf sadakati"
+          ],
+          ["h2", {}, "Atıf, kendisine bağlanan önermeyi desteklemeli."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Değerlendirme önerme düzeyinde başlar. Açıklayıcı, önermeyi, gösterilen kaynak parçasını ve kaynağın sunulduğu hukuki bağlamı birlikte görür."
+          ],
+          [
+            "p",
+            {},
+            "Test, parçanın önermeyi destekleyip desteklemediğini, kaynağın doğru temsil edilip edilmediğini ve bağın ilgili yargı düzeniyle zaman aralığında geçerli kalıp kalmadığını sorar."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "02 / Altın standart"
+          ],
+          ["h2", {}, "Referans kümesini nitelikli hukukçular kurar."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Ölçüt; önermeyi, aday kaynak parçalarını, otorite durumunu ve hata etiketini kaydeder. Açıklama kılavuzu, üretim başlamadan önce her etiketi tanımlar."
+          ],
+          [
+            "p",
+            {},
+            "Kalibrasyon turunu bağımsız açıklama izler. Görüş ayrılıkları saklanır, ölçülür ve kayıtlı protokole göre çözülür. Ölçüt, hukuki külliyatla birlikte sürümlenir."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "03 / Uyum"
+          ],
+          ["h2", {}, "Görüş ayrılığı gizlenecek gürültü değildir."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Açıklayıcılar arası uyum, örnekleme çerçevesi ve etiket dağılımıyla birlikte açıklanır. Zor sınıflar tek bir toplam puana sıkıştırılmaz, ayrıca incelenir."
+          ],
+          [
+            "p",
+            {},
+            "Kılavuz, külliyat ya da eşik değiştiğinde yeni değerlendirme sürümü oluşur. Farklı sürümlerin sonuçları açıklama olmadan doğrudan karşılaştırılmaz."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "04 / Bağımsızlık"
+          ],
+          ["h2", {}, "Değerlendiren, geliştirene itiraz edebilmeli."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Getirme ve üretim sistemini kuran ekip, çıktının geçip geçmediğine tek başına karar vermez. Araştırma ortağı ölçüt tasarımına, açıklama yönetişimine ve hata çözümlemesine liderlik eder."
+          ],
+          [
+            "p",
+            {},
+            "Bu ayrım olumsuz sonucu da kullanılabilir kılar. Mühendislik kararlarının, geçmesi beklenen testi sessizce yeniden tanımlamasını önler."
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "hata-bolumu"
+      },
+      ["h2", {}, "Hata sınıflandırması"],
+      [
+        "div",
+        {
+          "class": "hata-listesi"
+        },
+        [
+          "article",
+          {},
+          ["span", {}, "H1"],
+          ["h3", {}, "Uydurma atıf"],
+          ["p", {}, "Kaynak ya da tanımlayıcı bilgi doğrulanamaz."]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "H2"],
+          ["h3", {}, "Gerçek ama bağlayıcı olmayan"],
+          ["p", {}, "Kaynak vardır, fakat önerme için ileri sürülen otoriteyi taşımaz."]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "H3"],
+          ["h3", {}, "Yürürlükten kalkmış kaynak"],
+          [
+            "p",
+            {},
+            "Kaynak, ilgili zamanda kaldırılmış, değiştirilmiş ya da başka kuralla yer değiştirmiştir."
+          ]
+        ],
+        [
+          "article",
+          {},
+          ["span", {}, "H4"],
+          ["h3", {}, "Kapsam dışı uygulama"],
+          [
+            "p",
+            {},
+            "Kaynak; kişi, olay, usul ya da hukuki mesele bakımından sınırlarının dışında uygulanmıştır."
+          ]
+        ]
+      ]
+    ],
+    [
+      "section",
+      {
+        "class": "yayin-notu"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Mevcut yayın durumu"
+      ],
+      [
+        "p",
+        {},
+        "Henüz performans rakamı yayımlanmıyor. İlk açık sonuç; külliyat sürümünü, örnekleme çerçevesini, açıklama protokolünü, değerlendireni ve her ölçümün belirsizliğini açıklayacak."
+      ]
+    ]
+  ]
+}

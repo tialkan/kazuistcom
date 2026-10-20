@@ -1,0 +1,148 @@
+{
+  "path": "/legal/ai",
+  "source": "https://kazuist.com/legal/ai",
+  "lang": "en",
+  "title": "AI policy | Casuist",
+  "description": "Casuist is being designed as a decision-support tool for qualified legal professionals. It does not determine outcomes. The user remains responsible for professional judgement and use.",
+  "nav": [
+    {
+      "href": "/problem",
+      "text": "Problem"
+    },
+    {
+      "href": "/partner",
+      "text": "Partner call"
+    },
+    {
+      "href": "/how-it-works",
+      "text": "How it works"
+    },
+    {
+      "href": "/evaluation",
+      "text": "Evaluation"
+    },
+    {
+      "href": "/about",
+      "text": "About"
+    }
+  ],
+  "langLink": {
+    "href": "/hukuki/yapay-zeka",
+    "text": "Türkçe",
+    "hreflang": "tr"
+  },
+  "tagline": "A Kulular Teknoloji research project",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Legal text"
+      ],
+      ["h1", {}, "AI policy"],
+      ["p", {}, "Last updated 11 September 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Intended role"],
+          [
+            "p",
+            {},
+            "Casuist is being designed as a decision-support tool for qualified legal professionals. It does not determine outcomes. The user remains responsible for professional judgement and use."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Provenance requirement"],
+          [
+            "p",
+            {},
+            "Provenance is a product requirement, not an optional feature. Each generated proposition must be connected to the source passage presented as its support."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Abstention"],
+          [
+            "p",
+            {},
+            "The system is designed to withhold a proposition when support does not meet the defined threshold. An unsupported status is preferable to a fluent completion without an inspectable basis."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "04"],
+        [
+          "div",
+          {},
+          ["h2", {}, "EU AI Act assessment"],
+          [
+            "p",
+            {},
+            "No risk category is claimed in advance for every deployment. Classification must be assessed against the intended purpose, users, context and actual function of each deployment. Uses connected to the administration of justice require a separate assessment."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "05"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Corpora and data"],
+          [
+            "p",
+            {},
+            "Every corpus used for development or evaluation must have a documented legal basis, a licensing review and processing controls consistent with applicable KVKK and GDPR obligations."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "06"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Human oversight"],
+          [
+            "p",
+            {},
+            "Oversight is meaningful only when the professional can inspect the basis, challenge the output and decline it. An approval click alone is not treated as control."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

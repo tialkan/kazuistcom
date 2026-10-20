@@ -1,0 +1,141 @@
+{
+  "path": "/legal/privacy",
+  "source": "https://kazuist.com/legal/privacy",
+  "lang": "en",
+  "title": "Privacy notice | Casuist",
+  "description": "Kulular Bilişim Teknolojileri Limited Şirketi is the data controller for this website. Questions may be sent to kulularteknoloji@gmail.com.",
+  "nav": [
+    {
+      "href": "/problem",
+      "text": "Problem"
+    },
+    {
+      "href": "/partner",
+      "text": "Partner call"
+    },
+    {
+      "href": "/how-it-works",
+      "text": "How it works"
+    },
+    {
+      "href": "/evaluation",
+      "text": "Evaluation"
+    },
+    {
+      "href": "/about",
+      "text": "About"
+    }
+  ],
+  "langLink": {
+    "href": "/hukuki/gizlilik",
+    "text": "Türkçe",
+    "hreflang": "tr"
+  },
+  "tagline": "A Kulular Teknoloji research project",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Legal text"
+      ],
+      ["h1", {}, "Privacy notice"],
+      ["p", {}, "Last updated 11 September 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Data controller"],
+          [
+            "p",
+            {},
+            "Kulular Bilişim Teknolojileri Limited Şirketi is the data controller for this website. Questions may be sent to ",
+            [
+              "a",
+              {
+                "href": "mailto:kulularteknoloji@gmail.com"
+              },
+              "kulularteknoloji@gmail.com"
+            ],
+            "."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Data processed"],
+          [
+            "p",
+            {},
+            "The public website has no account, contact form or analytics service. Standard server logs may contain an IP address, request time, requested path, browser information and security events."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Purpose and legal basis"],
+          [
+            "p",
+            {},
+            "Logs are processed to deliver the site, maintain security, diagnose faults and establish or defend legal claims. Processing is limited to what is necessary for these legitimate operational purposes."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "04"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Retention and recipients"],
+          [
+            "p",
+            {},
+            "Logs are retained only for the period needed for security and operations, then deleted or anonymised. Hosting and infrastructure providers may process limited data under their service terms and applicable data-protection obligations."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "05"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Your rights"],
+          [
+            "p",
+            {},
+            "Requests concerning access, correction, deletion, restriction or objection may be sent to the contact address. Rights are assessed under the law applicable to the person and processing activity."
+          ]
+        ]
+      ]
+    ]
+  ]
+}

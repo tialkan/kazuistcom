@@ -1,0 +1,284 @@
+/* Protected Casuist pages: original class names, styled with Kazuist tokens. */
+.casuist-ust {
+  border-bottom: 1px solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+}
+.casuist-ust__ic,
+.casuist-govde {
+  max-width: var(--kz-content-max);
+  margin: 0 auto;
+  padding: 0 var(--kz-space-4);
+}
+.casuist-ust__ic {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--kz-space-6);
+}
+.casuist-marka {
+  font-family: var(--kz-font-heading);
+  font-weight: 700;
+  font-size: var(--kz-text-lg);
+  text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.casuist-ust ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0 var(--kz-space-4);
+  font-size: var(--kz-text-sm);
+}
+.casuist-ust a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.casuist-ust a[aria-current='page'] {
+  font-weight: 700;
+  text-decoration-color: var(--kz-color-accent);
+  text-decoration-thickness: 2px;
+}
+.casuist-govde {
+  padding-top: var(--kz-space-12);
+}
+.casuist-govde > section,
+.casuist-govde > div {
+  margin-bottom: var(--kz-space-12);
+}
+.casuist .etiket {
+  font-size: var(--kz-text-xs);
+  font-weight: 700;
+  color: var(--kz-color-accent);
+  margin-bottom: var(--kz-space-2);
+}
+.casuist h1 {
+  font-size: var(--kz-text-3xl);
+  max-width: 22ch;
+}
+.casuist h1 span {
+  display: block;
+  color: var(--kz-color-accent);
+}
+.casuist h2 {
+  font-size: var(--kz-text-2xl);
+}
+.casuist h3 {
+  font-size: var(--kz-text-lg);
+}
+.casuist p,
+.casuist li,
+.casuist dd {
+  max-width: var(--kz-reading-max);
+}
+.casuist .buyuk-giris,
+.casuist .kahraman-aciklama {
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-lg);
+}
+.casuist .kahraman {
+  display: grid;
+  gap: var(--kz-space-8);
+}
+@media (min-width: 60rem) {
+  .casuist .kahraman {
+    grid-template-columns: 3fr 2fr;
+    align-items: end;
+  }
+  .casuist .makale-bolumu,
+  .casuist .iki-kolon-bolum,
+  .casuist .hukuk-metni > section,
+  .casuist .mekanizma-detay {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: var(--kz-space-8);
+  }
+}
+.casuist-gorsel {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 6rem;
+  border: 1px dashed var(--kz-color-text-muted);
+  background: var(--kz-color-surface-muted);
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-xs);
+  text-align: center;
+  padding: var(--kz-space-2);
+}
+.casuist .program-logolari {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 8rem));
+  gap: var(--kz-space-4);
+}
+.casuist .dugme-sirasi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-3);
+}
+.casuist .dugme {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--kz-space-6);
+  border: 1.5px solid var(--kz-color-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+.casuist .dugme.koyu,
+.casuist .dugme.bakir {
+  background: var(--kz-color-text);
+  color: var(--kz-color-bg);
+}
+.casuist .dugme.koyu:hover,
+.casuist .dugme.bakir:hover {
+  background: var(--kz-color-accent);
+  border-color: var(--kz-color-accent);
+}
+.casuist .sorun-bandi,
+.casuist .mekanizma-kartlari,
+.casuist .surec-bolumu > div,
+.casuist .ekip-listesi,
+.casuist .hata-listesi,
+.casuist .akis {
+  display: grid;
+  gap: var(--kz-space-6);
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+.casuist .sorun-bandi article,
+.casuist .surec-bolumu article,
+.casuist .ekip-listesi article,
+.casuist .hata-listesi article {
+  border-top: 2px solid var(--kz-color-text);
+  padding-top: var(--kz-space-3);
+}
+.casuist .mekanizma-karti {
+  display: block;
+  border-left: var(--kz-serh-rule) solid var(--kz-color-accent);
+  padding: var(--kz-space-2) var(--kz-space-4);
+  text-decoration: none;
+}
+.casuist .kart-no,
+.casuist .sorun-bandi span,
+.casuist .hukuk-metni > section > span,
+.casuist .sinir-listesi span,
+.casuist .surec-bolumu span,
+.casuist .ekip-listesi article > span,
+.casuist .paket-tablosu span {
+  font-family: var(--kz-font-mono);
+  color: var(--kz-color-accent);
+  font-size: var(--kz-text-sm);
+}
+.casuist .sinir-listesi {
+  list-style: none;
+  padding: 0;
+  border-top: 2px solid var(--kz-color-text);
+}
+.casuist .sinir-listesi li {
+  display: flex;
+  gap: var(--kz-space-4);
+  padding: var(--kz-space-3) 0;
+  border-bottom: 1px solid var(--kz-color-border);
+}
+.casuist .ortak-seridi {
+  background: var(--kz-color-surface-muted);
+  border-left: 4px solid var(--kz-color-accent);
+  padding: var(--kz-space-8);
+  display: grid;
+  gap: var(--kz-space-6);
+}
+.casuist .ortak-tarih,
+.casuist .tarih-kutusu {
+  display: grid;
+  gap: var(--kz-space-2);
+  justify-items: start;
+}
+.casuist .ortak-tarih strong,
+.casuist .tarih-kutusu strong {
+  font-family: var(--kz-font-mono);
+  font-size: var(--kz-text-xl);
+}
+.casuist details {
+  border-bottom: 1px solid var(--kz-color-border);
+  padding: var(--kz-space-3) 0;
+  max-width: 48rem;
+}
+.casuist summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.casuist .sonuc-alintisi {
+  margin: 0 0 var(--kz-space-12);
+  padding-left: var(--kz-space-6);
+  border-left: 4px solid var(--kz-color-accent);
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-xl);
+  max-width: 48rem;
+}
+.casuist .makale-bolumu,
+.casuist .mekanizma-detay,
+.casuist .hukuk-metni > section {
+  padding: var(--kz-space-6) 0;
+  border-top: 1px solid var(--kz-color-border);
+}
+.casuist dl {
+  margin: 0;
+}
+.casuist dt {
+  font-weight: 700;
+  margin-top: var(--kz-space-3);
+}
+.casuist dd {
+  margin: 0;
+}
+.casuist .paket-tablosu {
+  display: grid;
+  border-top: 2px solid var(--kz-color-text);
+}
+.casuist .paket-tablosu > div {
+  display: grid;
+  grid-template-columns: 4rem 1fr auto;
+  gap: var(--kz-space-4);
+  padding: var(--kz-space-3) 0;
+  border-bottom: 1px solid var(--kz-color-border);
+}
+.casuist .paket-tablosu .ortak-paketi strong {
+  color: var(--kz-color-accent);
+}
+.casuist .onay-listesi {
+  padding-left: 1.2rem;
+}
+.casuist .kaynak-notu,
+.casuist-alt,
+.casuist-not {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+.casuist-not {
+  border: 1.5px solid var(--kz-color-text-muted);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  max-width: 48rem;
+  font-weight: 600;
+}
+.casuist table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: var(--kz-text-sm);
+}
+.casuist th,
+.casuist td {
+  text-align: left;
+  border-bottom: 1px solid var(--kz-color-border);
+  padding: var(--kz-space-2);
+  vertical-align: top;
+}
+.casuist .casuist-tablo {
+  overflow-x: auto;
+}

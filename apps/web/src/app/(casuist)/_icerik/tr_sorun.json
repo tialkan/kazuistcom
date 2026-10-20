@@ -1,0 +1,231 @@
+{
+  "path": "/tr/sorun",
+  "source": "https://kazuist.com/tr/sorun",
+  "lang": "tr",
+  "title": "Gerçek bir atıf yine de yanlış otorite olabilir. | Casuist",
+  "description": "Yakalanması en zor hukuki yapay zekâ hatası ne anlamsız metin ne de uydurma karardır. Kaynak vardır, ilgili görünür ve desteklediği önermede bağlayıcı değildir.",
+  "nav": [
+    {
+      "href": "/tr/sorun",
+      "text": "Sorun"
+    },
+    {
+      "href": "/tr/ortak",
+      "text": "Ortak çağrısı"
+    },
+    {
+      "href": "/tr/nasil-calisir",
+      "text": "Nasıl çalışıyor"
+    },
+    {
+      "href": "/tr/degerlendirme",
+      "text": "Değerlendirme"
+    },
+    {
+      "href": "/tr/hakkinda",
+      "text": "Hakkında"
+    }
+  ],
+  "langLink": {
+    "href": "/problem",
+    "text": "English",
+    "hreflang": "en"
+  },
+  "tagline": "Bir Kulular Teknoloji araştırma projesi",
+  "main": [
+    [
+      "section",
+      {
+        "class": "sayfa-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Adı konmuş hata biçimi"
+      ],
+      ["h1", {}, "Gerçek bir atıf yine de yanlış otorite olabilir."],
+      [
+        "p",
+        {
+          "class": "buyuk-giris"
+        },
+        "Yakalanması en zor hukuki yapay zekâ hatası ne anlamsız metin ne de uydurma karardır. Kaynak vardır, ilgili görünür ve desteklediği önermede bağlayıcı değildir."
+      ]
+    ],
+    [
+      "div",
+      {
+        "class": "makale-akisi"
+      },
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "01 / Senaryo"
+          ],
+          ["h2", {}, "Cevap kullanıma hazır görünür."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Bir avukat dar bir hukuki soru sorar. Sistem akıcı bir cevap üretir ve yayımlanmış bir karara atıf verir. Mahkeme, tarih ve dosya numarası gerçektir. İlk kontrol, kararın varlığını doğrular."
+          ],
+          [
+            "p",
+            {},
+            "Karar başka bir yargısal çizgidedir, önceki bir kuralı uygular ya da esaslı biçimde farklı bir kapsamı ele alır. Atıf, hızlı kontrolden geçecek kadar ilgilidir. Önerme bakımından bağlayıcı değildir."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "02 / Yakalama"
+          ],
+          ["h2", {}, "Makul görünüş hatayı örter."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Uydurma bir atıf ilk aramada çöker. Makul görünen bağlayıcı olmayan atıf, bu kontrolü geçer. Hatayı bulmak için kaynağı okumak, dayanılan bölümü saptamak ve otoriteyi, yürürlüğü, kapsamı sınamak gerekir."
+          ],
+          [
+            "p",
+            {},
+            "Metin ne kadar akıcıysa okunabilirliği hukuki dayanakla karıştırmak o kadar kolaylaşır. Kaynak bulunduğu için sistem sessizce yanılır."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "03 / Maliyet"
+          ],
+          ["h2", {}, "Doğrulama maliyeti hukukçuya geri döner."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Hukukçu her kaynağı yeniden açmalı, kurulan bağı yeniden inşa etmeli ve otoritenin o noktada bağlayıcı olup olmadığına karar vermelidir. Taslak aşamasında kazanılan süre, doğrulamada harcanır."
+          ],
+          [
+            "p",
+            {},
+            "Bu iş atlanırsa dayanağı denetlenmemiş önerme mesleki çalışmaya girer. Eksiksiz yapılırsa araç işi ortadan kaldırmak yerine yerini değiştirmiş olur."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "04 / Sorumluluk"
+          ],
+          ["h2", {}, "Mesleki değerlendirme akıcılığa devredilemez."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Hukuki sorumluluk kullanıcıda kalır. Üretilen cevabın emin görünmesi, kaynağın güncel, bağlayıcı ve doğru uygulanmış olduğu kararını veremez."
+          ],
+          [
+            "p",
+            {},
+            "Kazuist insan kararını yerinde tutar. Görevi daha dardır. Hukukçunun inceleyebileceği bir dayanak zinciri açar."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {
+          "class": "makale-bolumu"
+        },
+        [
+          "div",
+          {},
+          [
+            "p",
+            {
+              "class": "etiket"
+            },
+            "05 / Araştırma boşluğu"
+          ],
+          ["h2", {}, "Getirme tek başına otoriteyi çözmez."]
+        ],
+        [
+          "div",
+          {},
+          [
+            "p",
+            {},
+            "Arama, ilgili belgeyi getirebilir. Atıf üreticisi bu belgeyi biçimlendirebilir. İki işlem de alıntılanan bölümün önermeyi desteklediğini ya da kaynağın bağlayıcı olduğunu göstermez."
+          ],
+          [
+            "p",
+            {},
+            "Araştırma sorunu, önerme düzeyinde dayanak, otorite sınıflandırması, ayarlı çekinme ve ortaya çıkan hataların bağımsız ölçümüdür."
+          ]
+        ]
+      ]
+    ],
+    [
+      "blockquote",
+      {
+        "class": "sonuc-alintisi"
+      },
+      "Ürün sorusu, modelin cevap yazıp yazamadığı değildir. Kullanıcıya ulaşan her önermenin incelenebilir ve doğru sınıflandırılmış bir dayanağa sahip olup olmadığıdır."
+    ]
+  ]
+}

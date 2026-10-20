@@ -1,0 +1,118 @@
+{
+  "path": "/legal/notice",
+  "source": "https://kazuist.com/legal/notice",
+  "lang": "en",
+  "title": "Legal notice | Casuist",
+  "description": "This website describes an R&D project in preparation. Its content is informational and is not prepared for direct application to a particular legal matter.",
+  "nav": [
+    {
+      "href": "/problem",
+      "text": "Problem"
+    },
+    {
+      "href": "/partner",
+      "text": "Partner call"
+    },
+    {
+      "href": "/how-it-works",
+      "text": "How it works"
+    },
+    {
+      "href": "/evaluation",
+      "text": "Evaluation"
+    },
+    {
+      "href": "/about",
+      "text": "About"
+    }
+  ],
+  "langLink": {
+    "href": "/hukuki/uyari",
+    "text": "Türkçe",
+    "hreflang": "tr"
+  },
+  "tagline": "A Kulular Teknoloji research project",
+  "main": [
+    [
+      "section",
+      {
+        "class": "hukuk-basligi"
+      },
+      [
+        "p",
+        {
+          "class": "etiket"
+        },
+        "Legal text"
+      ],
+      ["h1", {}, "Legal notice"],
+      ["p", {}, "Last updated 11 September 2026"]
+    ],
+    [
+      "div",
+      {
+        "class": "hukuk-metni"
+      },
+      [
+        "section",
+        {},
+        ["span", {}, "01"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Purpose"],
+          [
+            "p",
+            {},
+            "This website describes an R&D project in preparation. Its content is informational and is not prepared for direct application to a particular legal matter."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "02"],
+        [
+          "div",
+          {},
+          ["h2", {}, "No legal service"],
+          [
+            "p",
+            {},
+            "Casuist does not provide legal advice and is not a legal practice. Any future system output will not constitute a legal opinion or replace advice from an authorised legal professional."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "03"],
+        [
+          "div",
+          {},
+          ["h2", {}, "No funding representation"],
+          [
+            "p",
+            {},
+            "References to Eurostars, Eureka and TÜBİTAK describe a target programme and application route. They do not indicate endorsement, selection or funding."
+          ]
+        ]
+      ],
+      [
+        "section",
+        {},
+        ["span", {}, "04"],
+        [
+          "div",
+          {},
+          ["h2", {}, "Operator"],
+          [
+            "p",
+            {},
+            "The website is operated by Kulular Bilişim Teknolojileri Limited Şirketi. Company particulars and contact information are available on the About page."
+          ]
+        ]
+      ]
+    ]
+  ]
+}
