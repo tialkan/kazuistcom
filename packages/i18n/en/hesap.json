@@ -1,0 +1,104 @@
+{
+  "eposta": {
+    "konu": {
+      "sign-in": "Your Kazuist sign in code",
+      "email-verification": "Your Kazuist e-mail verification code",
+      "forget-password": "Your Kazuist password reset code",
+      "change-email": "Your Kazuist e-mail change code",
+      "edu": "Your Kazuist student verification code",
+      "admin-step-up": "Your Kazuist admin approval code"
+    },
+    "kodMetni": "Your code: {kod}\n\nThe code is valid for 10 minutes. If you did not request it, you can ignore this message."
+  },
+  "hata": {
+    "girisGerekli": "Please sign in to continue.",
+    "yetkiYok": "You are not allowed to do this.",
+    "bulunamadi": "The record was not found.",
+    "gecersiz": "The submitted data is invalid.",
+    "cokFazla": "Too many attempts. Please try again later.",
+    "eduDegil": "Please enter your institutional edu.tr address.",
+    "kodHatali": "The code is wrong or has expired.",
+    "ikinciAdim": "The admin panel requires a passkey sign in and a second step.",
+    "kaynak": "The request origin could not be verified.",
+    "genel": "Something went wrong. Please try again later."
+  },
+  "meslekler": {
+    "avukat": "Lawyer",
+    "hakim": "Judge",
+    "savci": "Prosecutor",
+    "noter": "Notary",
+    "akademisyen": "Academic",
+    "hukuk_ogrencisi": "Law student",
+    "hukuk_musaviri": "Legal counsel",
+    "diger": "Other"
+  },
+  "sayfa": {
+    "giris": {
+      "baslik": "Sign in",
+      "aciklama": "Sign in with e-mail and password, an e-mail code, a passkey, Google or Apple."
+    },
+    "kayit": {
+      "baslik": "Create an account",
+      "aciklama": "By signing up you confirm that you have read the terms and the privacy notice."
+    },
+    "hesap": {
+      "baslik": "My account",
+      "aciklama": "Profile, sessions, passkeys, notification preferences and your rights."
+    },
+    "veri": {
+      "baslik": "My data",
+      "aciklama": "Download your personal data as JSON or CSV, or delete your account.",
+      "json": "Download JSON",
+      "csv": "Download CSV",
+      "sil": "Delete my account"
+    },
+    "kvkk": {
+      "baslik": "KVKK application",
+      "aciklama": "Apply for your rights under Article 11 of Law No. 6698."
+    },
+    "ogrenci": {
+      "baslik": "Student verification",
+      "aciklama": "We send a 6 digit code to your edu.tr address. Verification is renewed every year."
+    }
+  },
+  "bildirim": {
+    "teslim_hatirlatmasi": {
+      "baslik": "Your deadline is close",
+      "metin": "The deadline of your writing project is close. See your progress on Kazuist."
+    },
+    "kalemcik": {
+      "baslik": "A note from Kalemcik",
+      "metin": "Your writing goal for today is waiting for you."
+    },
+    "tam_metin_istegi": {
+      "baslik": "New full text request",
+      "metin": "You received a full text request for your Kampus post."
+    },
+    "tam_metin_cevabi": {
+      "baslik": "Your full text request was answered",
+      "metin": "Your full text request on Kampus was answered."
+    },
+    "takip": {
+      "baslik": "An update you follow",
+      "metin": "A record you follow has an update."
+    },
+    "odeme": {
+      "baslik": "Payment notice",
+      "metin": "There is a notice about your payment. Details are in your account."
+    },
+    "fesih_teyidi": {
+      "baslik": "Your subscription ended",
+      "metin": "Your cancellation was received. Details are in your account."
+    },
+    "mevzuat_degisikligi": {
+      "baslik": "Legislation change",
+      "metin": "A change was published in legislation you saved."
+    },
+    "kampanya": {
+      "baslik": "News from Kazuist",
+      "metin": "We have an announcement for you."
+    },
+    "altBilgi": "You can change your notification preferences under My account > Notifications.",
+    "ret": "If you no longer want such messages, use the opt out link."
+  }
+}
