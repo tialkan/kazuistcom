@@ -1,0 +1,23 @@
+{
+  "baslik": "Ödeme",
+  "urun": "Seçilen ürün",
+  "fiyatKdvDahil": "Fiyat (KDV dahil)",
+  "onBilgilendirme": {
+    "baslik": "Ön bilgilendirme formu",
+    "metin": "[hukuk-uyum:on-bilgilendirme-formu]"
+  },
+  "mesafeliSozlesme": {
+    "baslik": "Mesafeli satış sözleşmesi",
+    "metin": "[hukuk-uyum:mesafeli-satis-sozlesmesi]"
+  },
+  "teyitKutusu": "[hukuk-uyum:teyit-kutusu-metni]",
+  "caymaIstisnasiKutusu": "[hukuk-uyum:cayma-istisnasi-kutusu-metni]",
+  "odemeyeGec": "Ödemeye geç",
+  "odemeKapali": "Ödeme, gerekli kutular işaretlenince açılır.",
+  "donus": {
+    "baslik": "Ödeme sonucu",
+    "kontrol": "Ödemeniz iyzico'dan doğrulanıyor.",
+    "basarili": "Ödeme alındı; krediler cüzdanınıza yüklendi.",
+    "basarisiz": "Ödeme tamamlanmadı; hesabınızdan ücret alınmadı."
+  }
+}

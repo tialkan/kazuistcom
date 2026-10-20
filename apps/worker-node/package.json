@@ -11,6 +11,7 @@
   "dependencies": {
     "@kazuist/contracts": "workspace:*",
     "@kazuist/db": "workspace:*",
+    "@kazuist/ledger": "workspace:*",
     "@kazuist/i18n": "workspace:*",
     "nodemailer": "10.1.7",
     "pg": "8.23.1",
