@@ -2,6 +2,96 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, orkestra birleştirmesi, 2026-10-20
+
+PR #1-#8 main'de, CI yeşil. Kapı henüz kapanmadı (kalite-guvenlik raporu bekliyor). Aşağıdaki bölümler ajanların PR açıklamalarındaki DEVIR notlarıdır.
+
+### on-yuz (PR #8)
+
+
+Dalga 1, on-yuz, 2026-10-20. Durum: PR açık, birleştirilmedi. Bileşenler `@kazuist/ui`'dan (stil: `@kazuist/ui/components.css`, layout'ta yüklü); metinler prop ile verilir, bileşen içinde sabit metin yok. Kenar şerhi: `<SerhliMetin><SerhSatiri serhEtiketi=... serh={<KaynakCipi .../>}>cümle</SerhSatiri></SerhliMetin>`. Etiket türleri ve şekilleri `etiketSekli`'nde; yeni etiket eklerken benzersiz şekil testi korunmalı. Kabuk her sayfayı sarar; modül sayfası kendi `<main>`'ini açmaz, sayfa kapsayıcısı için `.sayfa` sınıfı kullanılabilir. Casuist içeriği yeniden çekmek için: docs/tasarim/casuist-arsiv'e HTML'i yeniden kaydedip `python3 -I docs/tasarim/casuist-arsiv/donustur.py docs/tasarim/casuist-arsiv "apps/web/src/app/(casuist)/_icerik"`. Ekran görüntüleri: üretim sunucusu açıkken `docs/tasarim/ekran-goruntusu.mjs` (başındaki komut; playwright ve @axe-core/playwright NODE_PATH ile verilir, PW_CHROME önbellekteki tarayıcıyı kullanır).
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+
+### veri-toplama (PR #7)
+
+- Kapatma anahtarı: ortam `KAZUIST_SOURCE_<AD>=on` (MEVZUAT, RESMI_GAZETE, KVKK, REKABET, OPENALEX, CROSSREF, EURLEX); varsayılan kapalı; `KAZUIST_ENV=production` iken ek olarak kaynak belgesinde `tarik_onayi: onaylandi`.
+- Anonimleştirme kancası: karar ve kurul_karari kayıtları `anonymized=false` yazılır, `anon.run {recordId}` kuyruğa girer (anonymizer/job.py ile uyumlu). embed.chunks'ı yalnız anonimleştirme tamamlanınca anonimleştirme tarafı kuyruğa atmalı; bu kod atmaz. Norm ve künye kayıtları `anonymized=true`, sürüm `gerekmez-norm`.
+- jurisdiction: yabancı doktrin için "INT" kullanıldı (plan "ülke kodu" der); mimar teyit etmeli.
+- Mevzuat fikstürü SENTETİK; sürüm zinciri ileri yönlüdür (geriye dönük RG zinciri editör onaylı ayrı iş). RG tetikleyicisi yalnız kanun numarası içeren başlıklar için ingest.fetch kuyruğa atar; mevzuat künye listesi (başlık, tür, tertip) yok.
+- Ham arşiv varsayılanı ./.raw-store (KAZUIST_RAW_DIR); .gitignore'a eklenmesi orkestra işi. S3 için boto3 benzeri istemci enjekte edilir, SDK bağımlılığı eklenmedi.
+- Canlı sorgu sayıları: KVKK ve EUR-Lex'te 5 sınırı aşıldı (6), ayrıntı kaynak belgelerinde. Fikstür kayıt sayıları: RG 55 girdi, KVKK 6 liste + 1 özet, Rekabet 4 liste + 1 karar, OpenAlex 1, Crossref 1, CELLAR GDPR 2 madde, Mevzuat 6 madde x 2 sürüm (sentetik).
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+
+### kimlik (PR #6)
+
+
+Dalga 1, kimlik, 2026-10-20. Kimlik çekirdeği apps/web/src/server/auth altında; her hesap ucu withAuth ile korunur, yeni modül uçları da withAuth({ roles, admin, rate }) kullanmalı. Yönetici uçları için `admin: true` passkey oturumu ve /api/auth/step-up ile ikinci adım ister. Bildirim üreticileri jobs tablosuna `notify.send` ve `{ type, userId, refId? }` yazar; kişisel veri yazmaz. Geçici çözümler ve istekler yukarıda. Gereken ortam değişkenleri: BETTER_AUTH_SECRET, BETTER_AUTH_URL, DATABASE_URL, MAIL_SMTP_URL, TRUSTED_PROXY_COUNT, AUTH_TRUSTED_ORIGINS, GOOGLE_CLIENT_ID/SECRET, APPLE_CLIENT_ID/SECRET, APPLE_APP_BUNDLE_IDENTIFIER (.env.example mimarındır; istek gerekebilir).
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+
+### odeme (PR #5)
+
+Dalga 1 odeme, 2026-10-20. Defter ve kurallar packages/ledger'da saf TS ve PGlite testli; iyzico akışları taklit istemciyle 9.5 Dalga 1 senaryolarını geçiyor. D1 kapandı. Sonraki adım: istek dosyasındaki DB sütunları, PgBillingStore, route bağlama, sandbox anahtarıyla gerçek uçtan uca deneme.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+
+### hukuk-uyum (PR #4)
+
+
+Dalga 1, hukuk-uyum, 2026-10-20. Durum: taslaklar PR'da, onay bekliyor. Sonraki: Tarık künye ve kararları verir; mimar istekleri işletir; odeme ve kimlik ajanları consent_kind ve metin sürümlerini (ön bilgi version) onay ekranlarına bağlar; on-yuz yayın kapısını (status: taslak ve yer tutucu kontrolü) uygular.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+
+### anonimlestirme (PR #3)
+
+
+### Durum
+Dalga 1 anonimleştirme iskeleti PR'da; birleştirilmedi. Kapı ölçümü yalnız sentetik, NER yok.
+
+### Bilinmesi gerekenler
+- pyproject.toml ve uv.lock orkestra dosyası: pyyaml çalışma bağımlılığına taşındı, extras eklendi, testpaths genişletildi (testler sahiplik yolunda, anonymizer/tests).
+- review_queue.decision için 'superseded' değeri kullanılıyor; maskeli metnin nerede tutulacağı mimar kararı bekliyor (istek dosyası).
+- Sentetik setin şablonları ve kurallar aynı elden; sonuçlar iyimser.
+
+### Sonraki adım
+NER adaylarını ölç, en iyisini `KAZUIST_NER_BACKEND` ile bağla, gerçek altın sette kaçak analizi yap.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+
+### altyapi (PR #2)
+
+
+### Durum
+Dalga 1 anonimleştirme iskeleti PR'da; birleştirilmedi. Kapı ölçümü yalnız sentetik, NER yok.
+
+### Bilinmesi gerekenler
+- pyproject.toml ve uv.lock orkestra dosyası: pyyaml çalışma bağımlılığına taşındı, extras eklendi, testpaths genişletildi (testler sahiplik yolunda, anonymizer/tests).
+- review_queue.decision için 'superseded' değeri kullanılıyor; maskeli metnin nerede tutulacağı mimar kararı bekliyor (istek dosyası).
+- Sentetik setin şablonları ve kurallar aynı elden; sonuçlar iyimser.
+
+### Sonraki adım
+NER adaylarını ölç, en iyisini `KAZUIST_NER_BACKEND` ile bağla, gerçek altın sette kaçak analizi yap.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+
+### yz-gecidi (PR #1)
+
+- Durum: geçit kodu ve testleri PR'da; birleştirilmedi.
+- Bilinmesi gerekenler: istemci modu sunucuda çalışmaz (RunInput.mode byok_istemci kabul etmez); tarayıcı `createAdapters({ browser: true })` kullanır. restoreLabels varsayılan kapalı; maskeli etiketler gösterime öyle gider. Yedeğe geçiş yalnız ilk çıktıdan önce ve yalnız platform modunda. odeme ajanı LedgerReservations arayüzünü packages/ledger'da gerçekler; web ajanı NonceGoneError'ı 410'a, BudgetError'ı 429'a, GatewayError'ı status alanına eşler.
+- Sonraki adım: canlı duman testi, gerçek Valkey sayaç ve nonce deposu bağlantısı (altyapı).
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+
 ## Dalga 0, mimar, denetim düzeltmeleri, 2026-10-19
 
 ### Durum
