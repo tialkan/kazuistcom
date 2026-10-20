@@ -1,0 +1,7 @@
+# Default rules plus a narrow allowlist.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Public Crossref metadata fixtures: reference 'key' fields are citation ids, not secrets"
+paths = ['''services/worker-py/tests/fixtures/crossref/.*\.json''']
