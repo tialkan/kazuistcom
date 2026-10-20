@@ -1,0 +1,104 @@
+{
+  "eposta": {
+    "konu": {
+      "sign-in": "Kazuist giriş kodunuz",
+      "email-verification": "Kazuist e-posta doğrulama kodunuz",
+      "forget-password": "Kazuist parola sıfırlama kodunuz",
+      "change-email": "Kazuist e-posta değişikliği kodunuz",
+      "edu": "Kazuist öğrenci doğrulama kodunuz",
+      "admin-step-up": "Kazuist yönetim paneli onay kodunuz"
+    },
+    "kodMetni": "Kodunuz: {kod}\n\nKod 10 dakika geçerlidir. Bu isteği siz yapmadıysanız bu iletiyi yok sayabilirsiniz."
+  },
+  "hata": {
+    "girisGerekli": "Bu işlem için giriş yapmanız gerekir.",
+    "yetkiYok": "Bu işlem için yetkiniz yok.",
+    "bulunamadi": "Aradığınız kayıt bulunamadı.",
+    "gecersiz": "Gönderilen bilgiler geçersiz.",
+    "cokFazla": "Çok fazla deneme yaptınız. Lütfen biraz sonra yeniden deneyin.",
+    "eduDegil": "Lütfen edu.tr uzantılı kurum e-posta adresinizi girin.",
+    "kodHatali": "Kod hatalı veya süresi dolmuş.",
+    "ikinciAdim": "Yönetim paneli için passkey ile giriş ve ikinci adım onayı gerekir.",
+    "kaynak": "İstek kaynağı doğrulanamadı.",
+    "genel": "Bir sorun oluştu. Lütfen biraz sonra yeniden deneyin."
+  },
+  "meslekler": {
+    "avukat": "Avukat",
+    "hakim": "Hâkim",
+    "savci": "Savcı",
+    "noter": "Noter",
+    "akademisyen": "Akademisyen",
+    "hukuk_ogrencisi": "Hukuk öğrencisi",
+    "hukuk_musaviri": "Hukuk müşaviri",
+    "diger": "Diğer"
+  },
+  "sayfa": {
+    "giris": {
+      "baslik": "Giriş yapın",
+      "aciklama": "E-posta ve parola, e-posta kodu, passkey, Google veya Apple ile giriş yapabilirsiniz."
+    },
+    "kayit": {
+      "baslik": "Hesap oluşturun",
+      "aciklama": "Kayıt olarak kullanım koşullarını ve aydınlatma metnini okuduğunuzu belirtirsiniz."
+    },
+    "hesap": {
+      "baslik": "Hesabım",
+      "aciklama": "Profil, oturumlar, passkey, bildirim tercihleri ve haklarınız."
+    },
+    "veri": {
+      "baslik": "Verilerim",
+      "aciklama": "Kişisel verilerinizi JSON veya CSV olarak indirebilir, hesabınızı silebilirsiniz.",
+      "json": "JSON indir",
+      "csv": "CSV indir",
+      "sil": "Hesabımı sil"
+    },
+    "kvkk": {
+      "baslik": "KVKK başvurusu",
+      "aciklama": "6698 sayılı Kanun'un 11. maddesindeki haklarınız için başvuru yapabilirsiniz."
+    },
+    "ogrenci": {
+      "baslik": "Öğrenci doğrulaması",
+      "aciklama": "edu.tr uzantılı adresinize 6 haneli bir kod göndeririz. Doğrulama yılda bir yenilenir."
+    }
+  },
+  "bildirim": {
+    "teslim_hatirlatmasi": {
+      "baslik": "Teslim tarihiniz yaklaşıyor",
+      "metin": "Yazma projenizin teslim tarihi yaklaşıyor. İlerlemenizi Kazuist'te görebilirsiniz."
+    },
+    "kalemcik": {
+      "baslik": "Kalemcik'ten bir not",
+      "metin": "Bugünkü yazma hedefin seni bekliyor."
+    },
+    "tam_metin_istegi": {
+      "baslik": "Yeni tam metin isteği",
+      "metin": "Kampüs paylaşımınız için tam metin isteği aldınız."
+    },
+    "tam_metin_cevabi": {
+      "baslik": "Tam metin isteğiniz yanıtlandı",
+      "metin": "Kampüs'teki tam metin isteğiniz yanıtlandı."
+    },
+    "takip": {
+      "baslik": "Takip ettiğiniz bir güncelleme",
+      "metin": "Takip ettiğiniz bir kayıtta güncelleme var."
+    },
+    "odeme": {
+      "baslik": "Ödeme bildirimi",
+      "metin": "Ödeme işleminizle ilgili bir bildirim var. Ayrıntılar hesabınızda."
+    },
+    "fesih_teyidi": {
+      "baslik": "Aboneliğiniz sona erdi",
+      "metin": "Fesih talebiniz alındı. Ayrıntılar hesabınızda."
+    },
+    "mevzuat_degisikligi": {
+      "baslik": "Mevzuat değişikliği",
+      "metin": "Kaydettiğiniz bir mevzuatta değişiklik yayımlandı."
+    },
+    "kampanya": {
+      "baslik": "Kazuist'ten haber",
+      "metin": "Size özel bir duyurumuz var."
+    },
+    "altBilgi": "Bildirim tercihlerinizi Hesabım > Bildirimler bölümünden değiştirebilirsiniz.",
+    "ret": "Bu tür iletileri almak istemiyorsanız ret bağlantısını kullanabilirsiniz."
+  }
+}
