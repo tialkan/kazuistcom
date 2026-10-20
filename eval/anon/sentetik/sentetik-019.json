@@ -1,0 +1,68 @@
+{
+  "id": "sentetik-019",
+  "kind": "aile",
+  "synthetic": true,
+  "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2019/232 K. 2025/521\n\nDAVACI : Ufuk Toprakçı\nVEKİLİ : Av. Erdem Karaduman\nDAVALI : Nihan Gürsoylu\n\nTarafların müşterek çocuğu Serkan Toprakçı 7 yaşında olup Söğüt İlkokulu öğrencisidir. Sosyal çalışma uzmanı Nihan Uluçay raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Nihan Gürsoylu ile davacı Ufuk Toprakçı ortak ev adresi olan Yenidoğan Mahallesi, Akasya Cad. No: 29/16 adresinden ayrılmıştır. Davalının 0 535 821 95 62 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Serkan Toprakçı üzerindeki velayetin davacıya verilmesine karar verildi.",
+  "annotations_a": [
+    {
+      "start": 74,
+      "end": 87,
+      "entity": "PERSON"
+    },
+    {
+      "start": 101,
+      "end": 116,
+      "entity": "PERSON"
+    },
+    {
+      "start": 126,
+      "end": 140,
+      "entity": "PERSON"
+    },
+    {
+      "start": 169,
+      "end": 184,
+      "entity": "PERSON"
+    },
+    {
+      "start": 185,
+      "end": 194,
+      "entity": "CHILD_AGE"
+    },
+    {
+      "start": 200,
+      "end": 214,
+      "entity": "SCHOOL"
+    },
+    {
+      "start": 251,
+      "end": 263,
+      "entity": "PERSON"
+    },
+    {
+      "start": 342,
+      "end": 356,
+      "entity": "PERSON"
+    },
+    {
+      "start": 368,
+      "end": 381,
+      "entity": "PERSON"
+    },
+    {
+      "start": 403,
+      "end": 445,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 480,
+      "end": 495,
+      "entity": "PHONE"
+    },
+    {
+      "start": 582,
+      "end": 597,
+      "entity": "PERSON"
+    }
+  ]
+}

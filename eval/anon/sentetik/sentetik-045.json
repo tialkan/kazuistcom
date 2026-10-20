@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-045",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Ankara 3. Asliye Hukuk Mahkemesi\nE. 2022/412 K. 2023/443\n\nDAVACI : Sevgi Yıldırımoğlu (T.C. kimlik no: 23494183622)\nAdres : Kavaklı Mahallesi, Defne Caddesi No: 105/1 Nilüfer/Bursa\nVEKİLİ : Av. Hülya Ilgaz\nDAVALI : Fatma Öztekinler\n\nDavacı vekili Av. Hülya Ilgaz dava dilekçesinde, müvekkili Sevgi Yıldırımoğlu ile davalı Fatma Öztekinler arasında 2 Kasım 2021 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR48 9344 2032 8001 2531 9936 62 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0535 754 63 34 numaralı telefon ve fatma.oztekinler84@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 6276 ada 40 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Şule Ertuğrul raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Levent Uluçay beyanında taşınmazın boş olduğunu, tanık Emre Evrenli ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Uluçay beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Fatma Öztekinler tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 72,
+      "end": 90,
+      "entity": "PERSON"
+    },
+    {
+      "start": 108,
+      "end": 119,
+      "entity": "TCKN"
+    },
+    {
+      "start": 129,
+      "end": 171,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 199,
+      "end": 210,
+      "entity": "PERSON"
+    },
+    {
+      "start": 220,
+      "end": 236,
+      "entity": "PERSON"
+    },
+    {
+      "start": 256,
+      "end": 267,
+      "entity": "PERSON"
+    },
+    {
+      "start": 297,
+      "end": 315,
+      "entity": "PERSON"
+    },
+    {
+      "start": 327,
+      "end": 343,
+      "entity": "PERSON"
+    },
+    {
+      "start": 420,
+      "end": 452,
+      "entity": "IBAN"
+    },
+    {
+      "start": 521,
+      "end": 535,
+      "entity": "PHONE"
+    },
+    {
+      "start": 556,
+      "end": 590,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 644,
+      "end": 662,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 731,
+      "end": 744,
+      "entity": "PERSON"
+    },
+    {
+      "start": 815,
+      "end": 828,
+      "entity": "PERSON"
+    },
+    {
+      "start": 870,
+      "end": 882,
+      "entity": "PERSON"
+    },
+    {
+      "start": 941,
+      "end": 947,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1020,
+      "end": 1036,
+      "entity": "PERSON"
+    }
+  ]
+}

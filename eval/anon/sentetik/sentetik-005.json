@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-005",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Konya 1. Sulh Hukuk Mahkemesi\nE. 2024/599 K. 2022/625\n\nDAVACI : Erdem Toprakçı (T.C. kimlik no: 21209833558)\nAdres : Karşıyaka Mahallesi, Defne Caddesi No: 29/17 Selçuklu/Konya\nVEKİLİ : Av. Derya Uluçay\nDAVALI : Melike Durukan\n\nDavacı vekili Av. Derya Uluçay dava dilekçesinde, müvekkili Erdem Toprakçı ile davalı Melike Durukan arasında 26 Nisan 2023 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR76 8460 4006 7911 4001 7827 46 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0 545 824 15 42 numaralı telefon ve melike.durukan55@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 3499 ada 40 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Tolga Çetinkol raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Okan Uluçay beyanında taşınmazın boş olduğunu, tanık Okan Gürsoylu ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Uluçay beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Melike Durukan tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 69,
+      "end": 83,
+      "entity": "PERSON"
+    },
+    {
+      "start": 101,
+      "end": 112,
+      "entity": "TCKN"
+    },
+    {
+      "start": 122,
+      "end": 166,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 195,
+      "end": 207,
+      "entity": "PERSON"
+    },
+    {
+      "start": 217,
+      "end": 231,
+      "entity": "PERSON"
+    },
+    {
+      "start": 251,
+      "end": 263,
+      "entity": "PERSON"
+    },
+    {
+      "start": 293,
+      "end": 307,
+      "entity": "PERSON"
+    },
+    {
+      "start": 319,
+      "end": 333,
+      "entity": "PERSON"
+    },
+    {
+      "start": 411,
+      "end": 443,
+      "entity": "IBAN"
+    },
+    {
+      "start": 512,
+      "end": 527,
+      "entity": "PHONE"
+    },
+    {
+      "start": 548,
+      "end": 580,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 634,
+      "end": 652,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 721,
+      "end": 735,
+      "entity": "PERSON"
+    },
+    {
+      "start": 806,
+      "end": 817,
+      "entity": "PERSON"
+    },
+    {
+      "start": 859,
+      "end": 872,
+      "entity": "PERSON"
+    },
+    {
+      "start": 931,
+      "end": 937,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1010,
+      "end": 1024,
+      "entity": "PERSON"
+    }
+  ]
+}

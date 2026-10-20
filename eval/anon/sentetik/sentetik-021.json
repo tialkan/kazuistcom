@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-021",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Konya 1. Sulh Hukuk Mahkemesi\nE. 2023/550 K. 2026/350\n\nDAVACI : Ahmet Aydemirli (T.C. kimlik no: 81863893398)\nAdres : Esentepe Mahallesi, Menekşe Sokak No: 15/8 Bornova/İzmir\nVEKİLİ : Av. Ebru Yıldırımoğlu\nDAVALI : Mustafa Şahinalp\n\nDavacı vekili Av. Ebru Yıldırımoğlu dava dilekçesinde, müvekkili Ahmet Aydemirli ile davalı Mustafa Şahinalp arasında 2 Eylül 2019 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR81 3384 0023 6233 5569 9643 21 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile +90 542 903 70 23 numaralı telefon ve mustafa.sahinalp18@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 1408 ada 46 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Cem Sönmezler raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Şule Çetinkol beyanında taşınmazın boş olduğunu, tanık İpek Yamaner ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Çetinkol beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Mustafa Şahinalp tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 69,
+      "end": 84,
+      "entity": "PERSON"
+    },
+    {
+      "start": 102,
+      "end": 113,
+      "entity": "TCKN"
+    },
+    {
+      "start": 123,
+      "end": 165,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 193,
+      "end": 210,
+      "entity": "PERSON"
+    },
+    {
+      "start": 220,
+      "end": 236,
+      "entity": "PERSON"
+    },
+    {
+      "start": 256,
+      "end": 273,
+      "entity": "PERSON"
+    },
+    {
+      "start": 303,
+      "end": 318,
+      "entity": "PERSON"
+    },
+    {
+      "start": 330,
+      "end": 346,
+      "entity": "PERSON"
+    },
+    {
+      "start": 423,
+      "end": 455,
+      "entity": "IBAN"
+    },
+    {
+      "start": 524,
+      "end": 541,
+      "entity": "PHONE"
+    },
+    {
+      "start": 562,
+      "end": 596,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 650,
+      "end": 668,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 737,
+      "end": 750,
+      "entity": "PERSON"
+    },
+    {
+      "start": 821,
+      "end": 834,
+      "entity": "PERSON"
+    },
+    {
+      "start": 876,
+      "end": 888,
+      "entity": "PERSON"
+    },
+    {
+      "start": 947,
+      "end": 955,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1028,
+      "end": 1044,
+      "entity": "PERSON"
+    }
+  ]
+}

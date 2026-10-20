@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-041",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Ankara 3. Asliye Hukuk Mahkemesi\nE. 2020/661 K. 2026/665\n\nDAVACI : Çağrı Tunçel (T.C. kimlik no: 70833515316)\nAdres : Esentepe Mahallesi, Söğüt Cad. No: 32/16 Kadıköy/İstanbul\nVEKİLİ : Av. Kerem Aydemirli\nDAVALI : Erdem Çetinkol\n\nDavacı vekili Av. Kerem Aydemirli dava dilekçesinde, müvekkili Çağrı Tunçel ile davalı Erdem Çetinkol arasında 8 Mayıs 2021 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR13 7138 2019 6094 6356 4696 00 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile +90 542 722 33 78 numaralı telefon ve erdem.cetinkol61@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 4653 ada 10 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Kerem Tunçel raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Kerem Yamaner beyanında taşınmazın boş olduğunu, tanık Serkan Bozdoğanlı ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Yamaner beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Erdem Çetinkol tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 72,
+      "end": 84,
+      "entity": "PERSON"
+    },
+    {
+      "start": 102,
+      "end": 113,
+      "entity": "TCKN"
+    },
+    {
+      "start": 123,
+      "end": 163,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 194,
+      "end": 209,
+      "entity": "PERSON"
+    },
+    {
+      "start": 219,
+      "end": 233,
+      "entity": "PERSON"
+    },
+    {
+      "start": 253,
+      "end": 268,
+      "entity": "PERSON"
+    },
+    {
+      "start": 298,
+      "end": 310,
+      "entity": "PERSON"
+    },
+    {
+      "start": 322,
+      "end": 336,
+      "entity": "PERSON"
+    },
+    {
+      "start": 413,
+      "end": 445,
+      "entity": "IBAN"
+    },
+    {
+      "start": 514,
+      "end": 531,
+      "entity": "PHONE"
+    },
+    {
+      "start": 552,
+      "end": 584,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 638,
+      "end": 656,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 725,
+      "end": 737,
+      "entity": "PERSON"
+    },
+    {
+      "start": 808,
+      "end": 821,
+      "entity": "PERSON"
+    },
+    {
+      "start": 863,
+      "end": 880,
+      "entity": "PERSON"
+    },
+    {
+      "start": 939,
+      "end": 946,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1019,
+      "end": 1033,
+      "entity": "PERSON"
+    }
+  ]
+}

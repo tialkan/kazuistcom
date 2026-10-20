@@ -1,0 +1,68 @@
+{
+  "id": "sentetik-015",
+  "kind": "aile",
+  "synthetic": true,
+  "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2022/841 K. 2021/537\n\nDAVACI : Selin Demirsoy\nVEKİLİ : Av. Sevgi Öztekinler\nDAVALI : Levent Demirsoy\n\nTarafların müşterek çocuğu Ahmet Demirsoy 12 yaşında olup Ihlamur İlkokulu öğrencisidir. Sosyal çalışma uzmanı Zeynep Sarıkaya raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Levent Demirsoy ile davacı Selin Demirsoy ortak ev adresi olan Karşıyaka Mahallesi, Ihlamur Sk. No: 35/16 adresinden ayrılmıştır. Davalının 0559 530 44 46 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Ahmet Demirsoy üzerindeki velayetin davacıya verilmesine karar verildi.",
+  "annotations_a": [
+    {
+      "start": 74,
+      "end": 88,
+      "entity": "PERSON"
+    },
+    {
+      "start": 102,
+      "end": 118,
+      "entity": "PERSON"
+    },
+    {
+      "start": 128,
+      "end": 143,
+      "entity": "PERSON"
+    },
+    {
+      "start": 172,
+      "end": 186,
+      "entity": "PERSON"
+    },
+    {
+      "start": 187,
+      "end": 197,
+      "entity": "CHILD_AGE"
+    },
+    {
+      "start": 203,
+      "end": 219,
+      "entity": "SCHOOL"
+    },
+    {
+      "start": 256,
+      "end": 271,
+      "entity": "PERSON"
+    },
+    {
+      "start": 350,
+      "end": 365,
+      "entity": "PERSON"
+    },
+    {
+      "start": 377,
+      "end": 391,
+      "entity": "PERSON"
+    },
+    {
+      "start": 413,
+      "end": 455,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 490,
+      "end": 504,
+      "entity": "PHONE"
+    },
+    {
+      "start": 591,
+      "end": 605,
+      "entity": "PERSON"
+    }
+  ]
+}

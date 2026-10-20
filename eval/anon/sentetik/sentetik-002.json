@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-002",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. Antalya 6. Asliye Ceza Mahkemesi\nE. 2025/757 K. 2025/271\n\nHâkim : Serkan Aydemirli\nSANIK : Zeynep Altınpınar, 04.06.1975 doğumlu, T.C. kimlik no 96299481828\nSANIK : Tolga Aydemirli, doğum tarihi: 10.04.1991\nMÜDAFİİ : Av. Serkan Yıldırımoğlu\nMAĞDUR : Mustafa Evrenli\n\nİddianamede, sanık Zeynep Altınpınar yönetimindeki 63 KC 5245 plakalı araçla 21 Mart 2023 tarihinde mağdur Mustafa Evrenli'a çarptığı, sanık Tolga Aydemirli'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun depresyon tanısıyla tedavi gördüğü raporla sabittir. Tanık Özge Özbilge olayı gördüğünü beyan etmiştir. Sanık Altınpınar'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Zeynep Altınpınar hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 71,
+      "end": 87,
+      "entity": "PERSON"
+    },
+    {
+      "start": 96,
+      "end": 113,
+      "entity": "PERSON"
+    },
+    {
+      "start": 115,
+      "end": 125,
+      "entity": "DOB"
+    },
+    {
+      "start": 150,
+      "end": 161,
+      "entity": "TCKN"
+    },
+    {
+      "start": 170,
+      "end": 185,
+      "entity": "PERSON"
+    },
+    {
+      "start": 201,
+      "end": 211,
+      "entity": "DOB"
+    },
+    {
+      "start": 226,
+      "end": 245,
+      "entity": "PERSON"
+    },
+    {
+      "start": 255,
+      "end": 270,
+      "entity": "PERSON"
+    },
+    {
+      "start": 291,
+      "end": 308,
+      "entity": "PERSON"
+    },
+    {
+      "start": 323,
+      "end": 333,
+      "entity": "PLATE"
+    },
+    {
+      "start": 379,
+      "end": 394,
+      "entity": "PERSON"
+    },
+    {
+      "start": 413,
+      "end": 428,
+      "entity": "PERSON"
+    },
+    {
+      "start": 480,
+      "end": 489,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 539,
+      "end": 551,
+      "entity": "PERSON"
+    },
+    {
+      "start": 590,
+      "end": 600,
+      "entity": "PERSON"
+    },
+    {
+      "start": 604,
+      "end": 623,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 681,
+      "end": 698,
+      "entity": "PERSON"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "sentetik-023",
+  "kind": "aile",
+  "synthetic": true,
+  "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2020/537 K. 2021/308\n\nDAVACI : Aslı Tunçel\nVEKİLİ : Av. Ahmet Albayrakoğlu\nDAVALI : Cem Altınpınar\n\nTarafların müşterek çocuğu Zeynep Tunçel 7 yaşında olup Lale İlkokulu öğrencisidir. Sosyal çalışma uzmanı Levent Sarıkaya raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Cem Altınpınar ile davacı Aslı Tunçel ortak ev adresi olan Karşıyaka Mahallesi, Lale Sokak No: 102/15 adresinden ayrılmıştır. Davalının +90 554 605 52 71 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Zeynep Tunçel üzerindeki velayetin davacıya verilmesine karar verildi.",
+  "annotations_a": [
+    {
+      "start": 74,
+      "end": 85,
+      "entity": "PERSON"
+    },
+    {
+      "start": 99,
+      "end": 117,
+      "entity": "PERSON"
+    },
+    {
+      "start": 127,
+      "end": 141,
+      "entity": "PERSON"
+    },
+    {
+      "start": 170,
+      "end": 183,
+      "entity": "PERSON"
+    },
+    {
+      "start": 184,
+      "end": 193,
+      "entity": "CHILD_AGE"
+    },
+    {
+      "start": 199,
+      "end": 212,
+      "entity": "SCHOOL"
+    },
+    {
+      "start": 249,
+      "end": 264,
+      "entity": "PERSON"
+    },
+    {
+      "start": 343,
+      "end": 357,
+      "entity": "PERSON"
+    },
+    {
+      "start": 369,
+      "end": 380,
+      "entity": "PERSON"
+    },
+    {
+      "start": 402,
+      "end": 444,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 479,
+      "end": 496,
+      "entity": "PHONE"
+    },
+    {
+      "start": 583,
+      "end": 596,
+      "entity": "PERSON"
+    }
+  ]
+}

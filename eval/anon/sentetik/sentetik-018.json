@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-018",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. İzmir 2. Ağır Ceza Mahkemesi\nE. 2025/344 K. 2025/727\n\nHâkim : Onur Tezcan\nSANIK : Ahmet Akbulut, 27.01.1984 doğumlu, T.C. kimlik no 20245783438\nSANIK : Şule Aydemirli, doğum tarihi: 07.08.1971\nMÜDAFİİ : Av. Derya Coşkunel\nMAĞDUR : Onur Yıldırımoğlu\n\nİddianamede, sanık Ahmet Akbulut yönetimindeki 02 PLE 9792 plakalı araçla 17 Nisan 2024 tarihinde mağdur Onur Yıldırımoğlu'a çarptığı, sanık Şule Aydemirli'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun epilepsi tanısıyla tedavi gördüğü raporla sabittir. Tanık Mehmet Şahinalp olayı gördüğünü beyan etmiştir. Sanık Akbulut'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Ahmet Akbulut hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 67,
+      "end": 78,
+      "entity": "PERSON"
+    },
+    {
+      "start": 87,
+      "end": 100,
+      "entity": "PERSON"
+    },
+    {
+      "start": 102,
+      "end": 112,
+      "entity": "DOB"
+    },
+    {
+      "start": 137,
+      "end": 148,
+      "entity": "TCKN"
+    },
+    {
+      "start": 157,
+      "end": 171,
+      "entity": "PERSON"
+    },
+    {
+      "start": 187,
+      "end": 197,
+      "entity": "DOB"
+    },
+    {
+      "start": 212,
+      "end": 226,
+      "entity": "PERSON"
+    },
+    {
+      "start": 236,
+      "end": 253,
+      "entity": "PERSON"
+    },
+    {
+      "start": 274,
+      "end": 287,
+      "entity": "PERSON"
+    },
+    {
+      "start": 302,
+      "end": 313,
+      "entity": "PLATE"
+    },
+    {
+      "start": 360,
+      "end": 377,
+      "entity": "PERSON"
+    },
+    {
+      "start": 396,
+      "end": 410,
+      "entity": "PERSON"
+    },
+    {
+      "start": 462,
+      "end": 470,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 520,
+      "end": 535,
+      "entity": "PERSON"
+    },
+    {
+      "start": 574,
+      "end": 581,
+      "entity": "PERSON"
+    },
+    {
+      "start": 585,
+      "end": 604,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 662,
+      "end": 675,
+      "entity": "PERSON"
+    }
+  ]
+}

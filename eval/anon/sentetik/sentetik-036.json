@@ -1,0 +1,58 @@
+{
+  "id": "sentetik-036",
+  "kind": "is",
+  "synthetic": true,
+  "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2025/366 K. 2021/111\n\nDAVACI : Erdem Öztekinler (T.C. kimlik no: 24516177520)\nVEKİLİ : Av. Melike Uluçay\nDAVALI : Ebru Toprakçı İnşaat, vergi kimlik no 9142765822\n\nDavacı Erdem Öztekinler davalıya ait şantiyede çalıştığını, ücretinin 4359 0103 0305 1385 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Zeynep Toprakçı davacının erdem.oztekinler82@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
+  "annotations_a": [
+    {
+      "start": 61,
+      "end": 77,
+      "entity": "PERSON"
+    },
+    {
+      "start": 95,
+      "end": 106,
+      "entity": "TCKN"
+    },
+    {
+      "start": 121,
+      "end": 134,
+      "entity": "PERSON"
+    },
+    {
+      "start": 144,
+      "end": 157,
+      "entity": "SOLE_PROPRIETOR"
+    },
+    {
+      "start": 182,
+      "end": 192,
+      "entity": "VKN"
+    },
+    {
+      "start": 201,
+      "end": 217,
+      "entity": "PERSON"
+    },
+    {
+      "start": 264,
+      "end": 283,
+      "entity": "CARD"
+    },
+    {
+      "start": 314,
+      "end": 327,
+      "entity": "UNION"
+    },
+    {
+      "start": 389,
+      "end": 404,
+      "entity": "PERSON"
+    },
+    {
+      "start": 415,
+      "end": 449,
+      "entity": "EMAIL"
+    }
+  ]
+}

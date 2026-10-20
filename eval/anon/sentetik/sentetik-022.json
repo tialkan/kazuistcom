@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-022",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. İzmir 2. Ağır Ceza Mahkemesi\nE. 2022/569 K. 2022/415\n\nHâkim : Levent Bozdoğanlı\nSANIK : Dilan Yıldırımoğlu, 28.01.1996 doğumlu, T.C. kimlik no 38978451678\nSANIK : Ebru Öztekinler, doğum tarihi: 23.12.1983\nMÜDAFİİ : Av. Hülya Evrenli\nMAĞDUR : Selin Çetinkol\n\nİddianamede, sanık Dilan Yıldırımoğlu yönetimindeki 08 AB 2921 plakalı araçla 20 Ekim 2021 tarihinde mağdur Selin Çetinkol'a çarptığı, sanık Ebru Öztekinler'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun depresyon tanısıyla tedavi gördüğü raporla sabittir. Tanık Mehmet Kayalıoğlu olayı gördüğünü beyan etmiştir. Sanık Yıldırımoğlu'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Dilan Yıldırımoğlu hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 67,
+      "end": 84,
+      "entity": "PERSON"
+    },
+    {
+      "start": 93,
+      "end": 111,
+      "entity": "PERSON"
+    },
+    {
+      "start": 113,
+      "end": 123,
+      "entity": "DOB"
+    },
+    {
+      "start": 148,
+      "end": 159,
+      "entity": "TCKN"
+    },
+    {
+      "start": 168,
+      "end": 183,
+      "entity": "PERSON"
+    },
+    {
+      "start": 199,
+      "end": 209,
+      "entity": "DOB"
+    },
+    {
+      "start": 224,
+      "end": 237,
+      "entity": "PERSON"
+    },
+    {
+      "start": 247,
+      "end": 261,
+      "entity": "PERSON"
+    },
+    {
+      "start": 282,
+      "end": 300,
+      "entity": "PERSON"
+    },
+    {
+      "start": 315,
+      "end": 325,
+      "entity": "PLATE"
+    },
+    {
+      "start": 371,
+      "end": 385,
+      "entity": "PERSON"
+    },
+    {
+      "start": 404,
+      "end": 419,
+      "entity": "PERSON"
+    },
+    {
+      "start": 471,
+      "end": 480,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 530,
+      "end": 547,
+      "entity": "PERSON"
+    },
+    {
+      "start": 586,
+      "end": 598,
+      "entity": "PERSON"
+    },
+    {
+      "start": 602,
+      "end": 621,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 679,
+      "end": 697,
+      "entity": "PERSON"
+    }
+  ]
+}

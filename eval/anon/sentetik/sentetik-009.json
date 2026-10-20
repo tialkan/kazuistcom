@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-009",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Konya 1. Sulh Hukuk Mahkemesi\nE. 2019/571 K. 2021/842\n\nDAVACI : Şule Evrenli (T.C. kimlik no: 78073934102)\nAdres : Yeşiltepe Mahallesi, Akasya Cad. No: 4/9 Çankaya/Ankara\nVEKİLİ : Av. Nur Ertuğrul\nDAVALI : Erdem Kocabey\n\nDavacı vekili Av. Nur Ertuğrul dava dilekçesinde, müvekkili Şule Evrenli ile davalı Erdem Kocabey arasında 26 Nisan 2023 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR20 8439 7037 4328 7492 3503 97 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0 551 159 45 18 numaralı telefon ve erdem.kocabey87@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 3555 ada 50 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Çağrı Öztekinler raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Barış Sarıkaya beyanında taşınmazın boş olduğunu, tanık Ahmet Karaduman ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Sarıkaya beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Erdem Kocabey tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 69,
+      "end": 81,
+      "entity": "PERSON"
+    },
+    {
+      "start": 99,
+      "end": 110,
+      "entity": "TCKN"
+    },
+    {
+      "start": 120,
+      "end": 160,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 189,
+      "end": 201,
+      "entity": "PERSON"
+    },
+    {
+      "start": 211,
+      "end": 224,
+      "entity": "PERSON"
+    },
+    {
+      "start": 244,
+      "end": 256,
+      "entity": "PERSON"
+    },
+    {
+      "start": 286,
+      "end": 298,
+      "entity": "PERSON"
+    },
+    {
+      "start": 310,
+      "end": 323,
+      "entity": "PERSON"
+    },
+    {
+      "start": 401,
+      "end": 433,
+      "entity": "IBAN"
+    },
+    {
+      "start": 502,
+      "end": 517,
+      "entity": "PHONE"
+    },
+    {
+      "start": 538,
+      "end": 569,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 623,
+      "end": 641,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 710,
+      "end": 726,
+      "entity": "PERSON"
+    },
+    {
+      "start": 797,
+      "end": 811,
+      "entity": "PERSON"
+    },
+    {
+      "start": 853,
+      "end": 868,
+      "entity": "PERSON"
+    },
+    {
+      "start": 927,
+      "end": 935,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1008,
+      "end": 1021,
+      "entity": "PERSON"
+    }
+  ]
+}

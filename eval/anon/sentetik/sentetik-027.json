@@ -1,0 +1,68 @@
+{
+  "id": "sentetik-027",
+  "kind": "aile",
+  "synthetic": true,
+  "text": "T.C. İstanbul Anadolu 5. Aile Mahkemesi\nE. 2019/806 K. 2024/338\n\nDAVACI : Levent Erginer\nVEKİLİ : Av. Barış Altınpınar\nDAVALI : Çağrı Evrenli\n\nTarafların müşterek çocuğu Mehmet Erginer 10 yaşında olup Menekşe İlkokulu öğrencisidir. Sosyal çalışma uzmanı Nur Akbulut raporunda çocuğun annesiyle kalmasının yararına olduğunu bildirmiştir. Davalı Çağrı Evrenli ile davacı Levent Erginer ortak ev adresi olan Yenidoğan Mahallesi, Erguvan Sk. No: 94/2 adresinden ayrılmıştır. Davalının 0536 334 86 12 numaralı telefonundan gönderilen mesajlar dosyaya sunulmuştur.\n\nHÜKÜM: Müşterek çocuk Mehmet Erginer üzerindeki velayetin davacıya verilmesine karar verildi.",
+  "annotations_a": [
+    {
+      "start": 74,
+      "end": 88,
+      "entity": "PERSON"
+    },
+    {
+      "start": 102,
+      "end": 118,
+      "entity": "PERSON"
+    },
+    {
+      "start": 128,
+      "end": 141,
+      "entity": "PERSON"
+    },
+    {
+      "start": 170,
+      "end": 184,
+      "entity": "PERSON"
+    },
+    {
+      "start": 185,
+      "end": 195,
+      "entity": "CHILD_AGE"
+    },
+    {
+      "start": 201,
+      "end": 217,
+      "entity": "SCHOOL"
+    },
+    {
+      "start": 254,
+      "end": 265,
+      "entity": "PERSON"
+    },
+    {
+      "start": 344,
+      "end": 357,
+      "entity": "PERSON"
+    },
+    {
+      "start": 369,
+      "end": 383,
+      "entity": "PERSON"
+    },
+    {
+      "start": 405,
+      "end": 446,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 481,
+      "end": 495,
+      "entity": "PHONE"
+    },
+    {
+      "start": 582,
+      "end": 596,
+      "entity": "PERSON"
+    }
+  ]
+}

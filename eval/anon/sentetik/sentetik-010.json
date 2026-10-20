@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-010",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. Antalya 6. Asliye Ceza Mahkemesi\nE. 2022/806 K. 2020/70\n\nHâkim : Sevgi Ertuğrul\nSANIK : Yiğit Altınpınar, 02.02.1981 doğumlu, T.C. kimlik no 52107151642\nSANIK : Melike Kayalıoğlu, doğum tarihi: 10.11.1975\nMÜDAFİİ : Av. Onur Yamaner\nMAĞDUR : Okan Öztekinler\n\nİddianamede, sanık Yiğit Altınpınar yönetimindeki 42 TR 2766 plakalı araçla 27 Temmuz 2021 tarihinde mağdur Okan Öztekinler'a çarptığı, sanık Melike Kayalıoğlu'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun diyabet tanısıyla tedavi gördüğü raporla sabittir. Tanık Sevgi Gökdemir olayı gördüğünü beyan etmiştir. Sanık Altınpınar'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Yiğit Altınpınar hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 70,
+      "end": 84,
+      "entity": "PERSON"
+    },
+    {
+      "start": 93,
+      "end": 109,
+      "entity": "PERSON"
+    },
+    {
+      "start": 111,
+      "end": 121,
+      "entity": "DOB"
+    },
+    {
+      "start": 146,
+      "end": 157,
+      "entity": "TCKN"
+    },
+    {
+      "start": 166,
+      "end": 183,
+      "entity": "PERSON"
+    },
+    {
+      "start": 199,
+      "end": 209,
+      "entity": "DOB"
+    },
+    {
+      "start": 224,
+      "end": 236,
+      "entity": "PERSON"
+    },
+    {
+      "start": 246,
+      "end": 261,
+      "entity": "PERSON"
+    },
+    {
+      "start": 282,
+      "end": 298,
+      "entity": "PERSON"
+    },
+    {
+      "start": 313,
+      "end": 323,
+      "entity": "PLATE"
+    },
+    {
+      "start": 371,
+      "end": 386,
+      "entity": "PERSON"
+    },
+    {
+      "start": 405,
+      "end": 422,
+      "entity": "PERSON"
+    },
+    {
+      "start": 474,
+      "end": 481,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 531,
+      "end": 545,
+      "entity": "PERSON"
+    },
+    {
+      "start": 584,
+      "end": 594,
+      "entity": "PERSON"
+    },
+    {
+      "start": 598,
+      "end": 617,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 675,
+      "end": 691,
+      "entity": "PERSON"
+    }
+  ]
+}

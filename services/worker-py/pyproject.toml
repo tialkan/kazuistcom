@@ -6,6 +6,19 @@ requires-python = ">=3.12"
 license = { text = "Proprietary" }
 dependencies = [
   "psycopg[binary]>=3.2",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+# Heavy, local only NER backends (anonymizer/ner.py). CI does not install these.
+ner = [
+  "onnxruntime>=1.20",
+  "optimum[onnxruntime]>=1.23",
+  "transformers>=4.46",
+  "gliner>=0.2.13",
+]
+presidio = [
+  "presidio-analyzer>=2.2",
 ]
 
 [dependency-groups]
@@ -18,7 +31,7 @@ dev = [
 package = false
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "anonymizer/tests"]
 pythonpath = ["."]
 
 [tool.ruff]

@@ -1,0 +1,58 @@
+{
+  "id": "sentetik-008",
+  "kind": "is",
+  "synthetic": true,
+  "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2024/442 K. 2024/24\n\nDAVACI : Derya Toprakçı (T.C. kimlik no: 15456103656)\nVEKİLİ : Av. Dilan Kayalıoğlu\nDAVALI : Zeynep Durukan İnşaat, vergi kimlik no 4526104908\n\nDavacı Derya Toprakçı davalıya ait şantiyede çalıştığını, ücretinin 4236 6681 2757 9292 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Aslı Yamaner davacının derya.toprakci30@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
+  "annotations_a": [
+    {
+      "start": 60,
+      "end": 74,
+      "entity": "PERSON"
+    },
+    {
+      "start": 92,
+      "end": 103,
+      "entity": "TCKN"
+    },
+    {
+      "start": 118,
+      "end": 134,
+      "entity": "PERSON"
+    },
+    {
+      "start": 144,
+      "end": 158,
+      "entity": "SOLE_PROPRIETOR"
+    },
+    {
+      "start": 183,
+      "end": 193,
+      "entity": "VKN"
+    },
+    {
+      "start": 202,
+      "end": 216,
+      "entity": "PERSON"
+    },
+    {
+      "start": 263,
+      "end": 282,
+      "entity": "CARD"
+    },
+    {
+      "start": 313,
+      "end": 326,
+      "entity": "UNION"
+    },
+    {
+      "start": 388,
+      "end": 400,
+      "entity": "PERSON"
+    },
+    {
+      "start": 411,
+      "end": 443,
+      "entity": "EMAIL"
+    }
+  ]
+}

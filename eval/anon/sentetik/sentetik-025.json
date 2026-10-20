@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-025",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Ankara 3. Asliye Hukuk Mahkemesi\nE. 2019/228 K. 2026/164\n\nDAVACI : Mustafa Öztekinler (T.C. kimlik no: 89268578070)\nAdres : Karşıyaka Mahallesi, Lale Sokak No: 62/1 Çankaya/Ankara\nVEKİLİ : Av. Derya Ertuğrul\nDAVALI : Kerem Kılıçarslan\n\nDavacı vekili Av. Derya Ertuğrul dava dilekçesinde, müvekkili Mustafa Öztekinler ile davalı Kerem Kılıçarslan arasında 12 Temmuz 2019 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR70 4308 2002 4234 9733 4540 71 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0 544 650 27 89 numaralı telefon ve kerem.kilicarslan74@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 5899 ada 49 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Çağrı Kılıçarslan raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Levent Altınpınar beyanında taşınmazın boş olduğunu, tanık Melike Kılıçarslan ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Altınpınar beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Kerem Kılıçarslan tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 72,
+      "end": 90,
+      "entity": "PERSON"
+    },
+    {
+      "start": 108,
+      "end": 119,
+      "entity": "TCKN"
+    },
+    {
+      "start": 129,
+      "end": 169,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 198,
+      "end": 212,
+      "entity": "PERSON"
+    },
+    {
+      "start": 222,
+      "end": 239,
+      "entity": "PERSON"
+    },
+    {
+      "start": 259,
+      "end": 273,
+      "entity": "PERSON"
+    },
+    {
+      "start": 303,
+      "end": 321,
+      "entity": "PERSON"
+    },
+    {
+      "start": 333,
+      "end": 350,
+      "entity": "PERSON"
+    },
+    {
+      "start": 429,
+      "end": 461,
+      "entity": "IBAN"
+    },
+    {
+      "start": 530,
+      "end": 545,
+      "entity": "PHONE"
+    },
+    {
+      "start": 566,
+      "end": 601,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 655,
+      "end": 673,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 742,
+      "end": 759,
+      "entity": "PERSON"
+    },
+    {
+      "start": 830,
+      "end": 847,
+      "entity": "PERSON"
+    },
+    {
+      "start": 889,
+      "end": 907,
+      "entity": "PERSON"
+    },
+    {
+      "start": 966,
+      "end": 976,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1049,
+      "end": 1066,
+      "entity": "PERSON"
+    }
+  ]
+}

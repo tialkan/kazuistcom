@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-049",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Ankara 3. Asliye Hukuk Mahkemesi\nE. 2022/935 K. 2024/451\n\nDAVACI : Zeynep Uluçay (T.C. kimlik no: 68267095238)\nAdres : Karşıyaka Mahallesi, Akasya Sokak No: 45/8 Kadıköy/İstanbul\nVEKİLİ : Av. Selin Erginer\nDAVALI : Aslı Bozdoğanlı\n\nDavacı vekili Av. Selin Erginer dava dilekçesinde, müvekkili Zeynep Uluçay ile davalı Aslı Bozdoğanlı arasında 2 Ocak 2022 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR33 5517 7087 5552 4332 9482 62 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0535 286 91 68 numaralı telefon ve asli.bozdoganli92@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 9221 ada 3 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Gülşen Uluçay raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Barış Coşkunel beyanında taşınmazın boş olduğunu, tanık Gülşen Yamaner ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Coşkunel beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Aslı Bozdoğanlı tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 72,
+      "end": 85,
+      "entity": "PERSON"
+    },
+    {
+      "start": 103,
+      "end": 114,
+      "entity": "TCKN"
+    },
+    {
+      "start": 124,
+      "end": 166,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 197,
+      "end": 210,
+      "entity": "PERSON"
+    },
+    {
+      "start": 220,
+      "end": 235,
+      "entity": "PERSON"
+    },
+    {
+      "start": 255,
+      "end": 268,
+      "entity": "PERSON"
+    },
+    {
+      "start": 298,
+      "end": 311,
+      "entity": "PERSON"
+    },
+    {
+      "start": 323,
+      "end": 338,
+      "entity": "PERSON"
+    },
+    {
+      "start": 414,
+      "end": 446,
+      "entity": "IBAN"
+    },
+    {
+      "start": 515,
+      "end": 529,
+      "entity": "PHONE"
+    },
+    {
+      "start": 550,
+      "end": 583,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 637,
+      "end": 654,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 723,
+      "end": 736,
+      "entity": "PERSON"
+    },
+    {
+      "start": 807,
+      "end": 821,
+      "entity": "PERSON"
+    },
+    {
+      "start": 863,
+      "end": 877,
+      "entity": "PERSON"
+    },
+    {
+      "start": 936,
+      "end": 944,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1017,
+      "end": 1032,
+      "entity": "PERSON"
+    }
+  ]
+}

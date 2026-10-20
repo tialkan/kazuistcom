@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-014",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. İzmir 2. Ağır Ceza Mahkemesi\nE. 2021/517 K. 2024/310\n\nHâkim : Ahmet Tezcan\nSANIK : Dilan Ilgaz, 08.02.1983 doğumlu, T.C. kimlik no 34932658190\nSANIK : Levent Gürsoylu, doğum tarihi: 10.04.1988\nMÜDAFİİ : Av. Mehmet Gürsoylu\nMAĞDUR : Sevgi Demirsoy\n\nİddianamede, sanık Dilan Ilgaz yönetimindeki 04 TR 7970 plakalı araçla 22 Nisan 2023 tarihinde mağdur Sevgi Demirsoy'a çarptığı, sanık Levent Gürsoylu'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun diyabet tanısıyla tedavi gördüğü raporla sabittir. Tanık Tolga Sönmezler olayı gördüğünü beyan etmiştir. Sanık Ilgaz'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Dilan Ilgaz hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 67,
+      "end": 79,
+      "entity": "PERSON"
+    },
+    {
+      "start": 88,
+      "end": 99,
+      "entity": "PERSON"
+    },
+    {
+      "start": 101,
+      "end": 111,
+      "entity": "DOB"
+    },
+    {
+      "start": 136,
+      "end": 147,
+      "entity": "TCKN"
+    },
+    {
+      "start": 156,
+      "end": 171,
+      "entity": "PERSON"
+    },
+    {
+      "start": 187,
+      "end": 197,
+      "entity": "DOB"
+    },
+    {
+      "start": 212,
+      "end": 227,
+      "entity": "PERSON"
+    },
+    {
+      "start": 237,
+      "end": 251,
+      "entity": "PERSON"
+    },
+    {
+      "start": 272,
+      "end": 283,
+      "entity": "PERSON"
+    },
+    {
+      "start": 298,
+      "end": 308,
+      "entity": "PLATE"
+    },
+    {
+      "start": 355,
+      "end": 369,
+      "entity": "PERSON"
+    },
+    {
+      "start": 388,
+      "end": 403,
+      "entity": "PERSON"
+    },
+    {
+      "start": 455,
+      "end": 462,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 512,
+      "end": 527,
+      "entity": "PERSON"
+    },
+    {
+      "start": 566,
+      "end": 571,
+      "entity": "PERSON"
+    },
+    {
+      "start": 575,
+      "end": 594,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 652,
+      "end": 663,
+      "entity": "PERSON"
+    }
+  ]
+}

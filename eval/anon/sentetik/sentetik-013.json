@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-013",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Ankara 3. Asliye Hukuk Mahkemesi\nE. 2020/427 K. 2023/815\n\nDAVACI : Tolga Durukan (T.C. kimlik no: 31146643288)\nAdres : Karşıyaka Mahallesi, Akasya Caddesi No: 98/19 Kadıköy/İstanbul\nVEKİLİ : Av. Barış Kocabey\nDAVALI : Ayşe Evrenli\n\nDavacı vekili Av. Barış Kocabey dava dilekçesinde, müvekkili Tolga Durukan ile davalı Ayşe Evrenli arasında 20 Kasım 2022 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR81 1346 8021 3663 4306 4985 93 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile +90 541 374 51 57 numaralı telefon ve ayse.evrenli85@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 6705 ada 68 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Ebru Demirsoy raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Yiğit Ilgaz beyanında taşınmazın boş olduğunu, tanık Fatma Ilgaz ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Ilgaz beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Ayşe Evrenli tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 72,
+      "end": 85,
+      "entity": "PERSON"
+    },
+    {
+      "start": 103,
+      "end": 114,
+      "entity": "TCKN"
+    },
+    {
+      "start": 124,
+      "end": 169,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 200,
+      "end": 213,
+      "entity": "PERSON"
+    },
+    {
+      "start": 223,
+      "end": 235,
+      "entity": "PERSON"
+    },
+    {
+      "start": 255,
+      "end": 268,
+      "entity": "PERSON"
+    },
+    {
+      "start": 298,
+      "end": 311,
+      "entity": "PERSON"
+    },
+    {
+      "start": 323,
+      "end": 335,
+      "entity": "PERSON"
+    },
+    {
+      "start": 413,
+      "end": 445,
+      "entity": "IBAN"
+    },
+    {
+      "start": 514,
+      "end": 531,
+      "entity": "PHONE"
+    },
+    {
+      "start": 552,
+      "end": 582,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 636,
+      "end": 654,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 723,
+      "end": 736,
+      "entity": "PERSON"
+    },
+    {
+      "start": 807,
+      "end": 818,
+      "entity": "PERSON"
+    },
+    {
+      "start": 860,
+      "end": 871,
+      "entity": "PERSON"
+    },
+    {
+      "start": 930,
+      "end": 935,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1008,
+      "end": 1020,
+      "entity": "PERSON"
+    }
+  ]
+}

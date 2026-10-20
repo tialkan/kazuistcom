@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-042",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. İzmir 2. Ağır Ceza Mahkemesi\nE. 2021/467 K. 2024/48\n\nHâkim : Yiğit Uluçay\nSANIK : Gülşen Akbulut, 26.03.1984 doğumlu, T.C. kimlik no 94328069078\nSANIK : Şule Akbulut, doğum tarihi: 08.11.1979\nMÜDAFİİ : Av. Hülya Özbilge\nMAĞDUR : Aslı Sarıkaya\n\nİddianamede, sanık Gülşen Akbulut yönetimindeki 19 RS 1226 plakalı araçla 8 Eylül 2022 tarihinde mağdur Aslı Sarıkaya'a çarptığı, sanık Şule Akbulut'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun epilepsi tanısıyla tedavi gördüğü raporla sabittir. Tanık Nihan Bozdoğanlı olayı gördüğünü beyan etmiştir. Sanık Akbulut'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Gülşen Akbulut hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 66,
+      "end": 78,
+      "entity": "PERSON"
+    },
+    {
+      "start": 87,
+      "end": 101,
+      "entity": "PERSON"
+    },
+    {
+      "start": 103,
+      "end": 113,
+      "entity": "DOB"
+    },
+    {
+      "start": 138,
+      "end": 149,
+      "entity": "TCKN"
+    },
+    {
+      "start": 158,
+      "end": 170,
+      "entity": "PERSON"
+    },
+    {
+      "start": 186,
+      "end": 196,
+      "entity": "DOB"
+    },
+    {
+      "start": 211,
+      "end": 224,
+      "entity": "PERSON"
+    },
+    {
+      "start": 234,
+      "end": 247,
+      "entity": "PERSON"
+    },
+    {
+      "start": 268,
+      "end": 282,
+      "entity": "PERSON"
+    },
+    {
+      "start": 297,
+      "end": 307,
+      "entity": "PLATE"
+    },
+    {
+      "start": 353,
+      "end": 366,
+      "entity": "PERSON"
+    },
+    {
+      "start": 385,
+      "end": 397,
+      "entity": "PERSON"
+    },
+    {
+      "start": 449,
+      "end": 457,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 507,
+      "end": 523,
+      "entity": "PERSON"
+    },
+    {
+      "start": 562,
+      "end": 569,
+      "entity": "PERSON"
+    },
+    {
+      "start": 573,
+      "end": 592,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 650,
+      "end": 664,
+      "entity": "PERSON"
+    }
+  ]
+}

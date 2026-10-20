@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-001",
+  "kind": "hukuk",
+  "synthetic": true,
+  "text": "T.C. Konya 1. Sulh Hukuk Mahkemesi\nE. 2024/986 K. 2022/579\n\nDAVACI : Emre Kocabey (T.C. kimlik no: 61164371290)\nAdres : Bahçelievler Mahallesi, Söğüt Sokak No: 109/18 Nilüfer/Bursa\nVEKİLİ : Av. Hülya Durukan\nDAVALI : Dilan Toprakçı\n\nDavacı vekili Av. Hülya Durukan dava dilekçesinde, müvekkili Emre Kocabey ile davalı Dilan Toprakçı arasında 28 Kasım 2021 tarihinde kira sözleşmesi kurulduğunu, kira bedelinin TR90 3524 0029 1590 9605 5794 84 numaralı hesaba yatırılması gerektiğini ileri sürmüştür. Davalı ile 0 540 356 87 23 numaralı telefon ve dilan.toprakci90@ornekposta.test adresi üzerinden yazışıldığı anlaşılmıştır. Taşınmaz 2327 ada 64 parsel sayılı yerde bulunmaktadır.\n\nMahkememizce görevlendirilen bilirkişi Mehmet Çetinkol raporunda kira bedelinin emsallere uygun olduğunu bildirmiştir. Tanık Selin Karaduman beyanında taşınmazın boş olduğunu, tanık Nur Özbilge ise davalının taşınmazda oturduğunu beyan etmiştir. Tanık Karaduman beyanı dosya kapsamıyla örtüşmektedir.\n\nHÜKÜM: Davanın kabulüne, davalı Dilan Toprakçı tarafından davacıya ödeme yapılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 69,
+      "end": 81,
+      "entity": "PERSON"
+    },
+    {
+      "start": 99,
+      "end": 110,
+      "entity": "TCKN"
+    },
+    {
+      "start": 120,
+      "end": 166,
+      "entity": "ADDRESS"
+    },
+    {
+      "start": 194,
+      "end": 207,
+      "entity": "PERSON"
+    },
+    {
+      "start": 217,
+      "end": 231,
+      "entity": "PERSON"
+    },
+    {
+      "start": 251,
+      "end": 264,
+      "entity": "PERSON"
+    },
+    {
+      "start": 294,
+      "end": 306,
+      "entity": "PERSON"
+    },
+    {
+      "start": 318,
+      "end": 332,
+      "entity": "PERSON"
+    },
+    {
+      "start": 410,
+      "end": 442,
+      "entity": "IBAN"
+    },
+    {
+      "start": 511,
+      "end": 526,
+      "entity": "PHONE"
+    },
+    {
+      "start": 547,
+      "end": 579,
+      "entity": "EMAIL"
+    },
+    {
+      "start": 633,
+      "end": 651,
+      "entity": "PARCEL"
+    },
+    {
+      "start": 720,
+      "end": 735,
+      "entity": "PERSON"
+    },
+    {
+      "start": 806,
+      "end": 821,
+      "entity": "PERSON"
+    },
+    {
+      "start": 863,
+      "end": 874,
+      "entity": "PERSON"
+    },
+    {
+      "start": 933,
+      "end": 942,
+      "entity": "PERSON"
+    },
+    {
+      "start": 1015,
+      "end": 1029,
+      "entity": "PERSON"
+    }
+  ]
+}

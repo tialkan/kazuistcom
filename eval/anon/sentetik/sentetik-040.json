@@ -1,0 +1,58 @@
+{
+  "id": "sentetik-040",
+  "kind": "is",
+  "synthetic": true,
+  "text": "T.C. Bursa 4. İş Mahkemesi\nE. 2023/498 K. 2022/285\n\nDAVACI : Hülya Yıldırımoğlu (T.C. kimlik no: 67109462320)\nVEKİLİ : Av. Okan Toprakçı\nDAVALI : Tolga Demirsoy İnşaat, vergi kimlik no 3105141936\n\nDavacı Hülya Yıldırımoğlu davalıya ait şantiyede çalıştığını, ücretinin 4755 9832 8875 8887 numaralı karta yatırıldığını, sendika üyesi olduğu için iş akdinin feshedildiğini ileri sürmüştür. Tanık Cem Çetinkol davacının hulya.yildirimoglu55@ornekposta.test adresine ihtarname gönderildiğini doğrulamıştır.\n\nHÜKÜM: Davanın kısmen kabulüne karar verildi.",
+  "annotations_a": [
+    {
+      "start": 61,
+      "end": 79,
+      "entity": "PERSON"
+    },
+    {
+      "start": 97,
+      "end": 108,
+      "entity": "TCKN"
+    },
+    {
+      "start": 123,
+      "end": 136,
+      "entity": "PERSON"
+    },
+    {
+      "start": 146,
+      "end": 160,
+      "entity": "SOLE_PROPRIETOR"
+    },
+    {
+      "start": 185,
+      "end": 195,
+      "entity": "VKN"
+    },
+    {
+      "start": 204,
+      "end": 222,
+      "entity": "PERSON"
+    },
+    {
+      "start": 269,
+      "end": 288,
+      "entity": "CARD"
+    },
+    {
+      "start": 319,
+      "end": 332,
+      "entity": "UNION"
+    },
+    {
+      "start": 394,
+      "end": 406,
+      "entity": "PERSON"
+    },
+    {
+      "start": 417,
+      "end": 453,
+      "entity": "EMAIL"
+    }
+  ]
+}

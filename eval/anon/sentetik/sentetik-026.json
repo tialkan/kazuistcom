@@ -1,0 +1,93 @@
+{
+  "id": "sentetik-026",
+  "kind": "ceza",
+  "synthetic": true,
+  "text": "T.C. Antalya 6. Asliye Ceza Mahkemesi\nE. 2024/920 K. 2020/788\n\nHâkim : Yiğit Öztekinler\nSANIK : Okan Evrenli, 18.10.1978 doğumlu, T.C. kimlik no 40894465370\nSANIK : Levent Akbulut, doğum tarihi: 24.07.2001\nMÜDAFİİ : Av. Levent Yamaner\nMAĞDUR : Şule Tunçel\n\nİddianamede, sanık Okan Evrenli yönetimindeki 57 BN 2272 plakalı araçla 6 Kasım 2023 tarihinde mağdur Şule Tunçel'a çarptığı, sanık Levent Akbulut'ın olay yerinden ayrıldığı anlatılmıştır. Mağdurun epilepsi tanısıyla tedavi gördüğü raporla sabittir. Tanık Okan Erginer olayı gördüğünü beyan etmiştir. Sanık Evrenli'in adli sicil kaydında kasıtlı suçtan mahkûmiyet bulunmamaktadır.\n\nHÜKÜM: Sanık Okan Evrenli hakkında hükmün açıklanmasının geri bırakılmasına karar verildi.",
+  "annotations_a": [
+    {
+      "start": 71,
+      "end": 87,
+      "entity": "PERSON"
+    },
+    {
+      "start": 96,
+      "end": 108,
+      "entity": "PERSON"
+    },
+    {
+      "start": 110,
+      "end": 120,
+      "entity": "DOB"
+    },
+    {
+      "start": 145,
+      "end": 156,
+      "entity": "TCKN"
+    },
+    {
+      "start": 165,
+      "end": 179,
+      "entity": "PERSON"
+    },
+    {
+      "start": 195,
+      "end": 205,
+      "entity": "DOB"
+    },
+    {
+      "start": 220,
+      "end": 234,
+      "entity": "PERSON"
+    },
+    {
+      "start": 244,
+      "end": 255,
+      "entity": "PERSON"
+    },
+    {
+      "start": 276,
+      "end": 288,
+      "entity": "PERSON"
+    },
+    {
+      "start": 303,
+      "end": 313,
+      "entity": "PLATE"
+    },
+    {
+      "start": 359,
+      "end": 370,
+      "entity": "PERSON"
+    },
+    {
+      "start": 389,
+      "end": 403,
+      "entity": "PERSON"
+    },
+    {
+      "start": 455,
+      "end": 463,
+      "entity": "HEALTH"
+    },
+    {
+      "start": 513,
+      "end": 525,
+      "entity": "PERSON"
+    },
+    {
+      "start": 564,
+      "end": 571,
+      "entity": "PERSON"
+    },
+    {
+      "start": 575,
+      "end": 594,
+      "entity": "CRIMINAL"
+    },
+    {
+      "start": 652,
+      "end": 664,
+      "entity": "PERSON"
+    }
+  ]
+}
