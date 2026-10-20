@@ -11,24 +11,14 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@better-auth/passkey": "1.7.11",
     "@kazuist/contracts": "workspace:*",
-    "@kazuist/db": "workspace:*",
     "@kazuist/i18n": "workspace:*",
     "@kazuist/ui": "workspace:*",
-    "better-auth": "1.7.11",
     "next": "16.4.2",
-    "nodemailer": "10.1.7",
-    "pg": "8.23.1",
     "react": "19.3.1",
-    "react-dom": "19.3.1",
-    "zod": "4.6.7"
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
-    "@electric-sql/pglite": "0.5.10",
-    "@electric-sql/pglite-pgvector": "0.0.11",
-    "@types/nodemailer": "8.0.2",
-    "@types/pg": "8.23.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0"
   }
