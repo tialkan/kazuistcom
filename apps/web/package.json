@@ -15,6 +15,7 @@
     "@kazuist/contracts": "workspace:*",
     "@kazuist/db": "workspace:*",
     "@kazuist/i18n": "workspace:*",
+    "@kazuist/ledger": "workspace:*",
     "@kazuist/ui": "workspace:*",
     "better-auth": "1.7.11",
     "next": "16.4.2",
