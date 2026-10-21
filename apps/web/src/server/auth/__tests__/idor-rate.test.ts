@@ -1,7 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { schema } from '../db.ts';
 import { withAuth } from '../guard.ts';
 import {
+  adminFlagsGet,
+  adminPricesGet,
+  adminQueueGet,
+  adminUsersGet,
   authHandler,
   consentsGet,
   consentsPost,
@@ -13,14 +16,11 @@ import {
   meGet,
   mePatch,
   stepUpConfirm,
-  stepUpStart,
   targetProfessionPut,
 } from '../handlers.ts';
 import { json } from '../http.ts';
-import { eq } from '../orm.ts';
 import { clientIp, MemoryRateLimitStore, RateLimiter } from '../rate-limit.ts';
-import { passkeySessionId } from '../step-up.ts';
-import { api, authReq, BASE, createHarness, signUp, type Harness } from './harness.ts';
+import { api, authReq, BASE, createHarness, params, signUp, type Harness } from './harness.ts';
 
 let h: Harness;
 let a: { token: string; id: string };
@@ -130,43 +130,24 @@ describe('IDOR: one user never reaches another user resource', () => {
   });
 });
 
-describe('roles and admin step up', () => {
-  const adminOnly = withAuth({ admin: true }, async () => json({ ok: true }));
+describe('roles: admin endpoints are closed to kullanici and misafir', () => {
   const editorOnly = withAuth({ roles: ['editor', 'yonetici'] }, async () => json({ ok: true }));
+  const adminRoutes = [
+    (t: string | null) => adminQueueGet(api('/v1/admin/queues/takedowns', t), params({ queue: 'takedowns' })),
+    (t: string | null) => adminFlagsGet(api('/v1/admin/flags', t)),
+    (t: string | null) => adminUsersGet(api('/v1/admin/users?q=abc', t)),
+    (t: string | null) => adminPricesGet(api('/v1/admin/prices', t)),
+  ];
 
-  it('role gates return 403 for kullanici', async () => {
-    expect((await editorOnly(api('/x', a.token))).status).toBe(403);
-    expect((await adminOnly(api('/x', a.token))).status).toBe(403);
-    expect((await stepUpStart(api('/auth/step-up/start', a.token, { method: 'POST' }))).status).toBe(403);
-  });
-
-  it('yonetici needs a passkey session and the second step', async () => {
-    await h.db.insert(schema.userRoles).values({ userId: b.id, roleId: 'yonetici' });
-    expect((await editorOnly(api('/x', b.token))).status).toBe(200);
-    // Role alone is not enough.
-    expect((await adminOnly(api('/x', b.token))).status).toBe(403);
-    // Without a passkey session the second step cannot even start.
-    expect((await stepUpStart(api('/auth/step-up/start', b.token, { method: 'POST' }))).status).toBe(403);
-
-    const sessions = await h.db.select().from(schema.sessions).where(eqUser(b.id));
-    for (const row of sessions) {
-      await h.db.insert(schema.verifications).values({
-        identifier: passkeySessionId(row.id),
-        value: b.id,
-        expiresAt: new Date(Date.now() + 3600_000),
-      });
+  it('misafir gets 401 and kullanici 403 on every admin route', async () => {
+    for (const r of adminRoutes) {
+      expect((await r(null)).status).toBe(401);
+      expect((await r(a.token)).status).toBe(403);
     }
-    expect((await adminOnly(api('/x', b.token))).status).toBe(403);
-    expect((await stepUpStart(api('/auth/step-up/start', b.token, { method: 'POST' }))).status).toBe(202);
-    const code = h.mailer.last('b@example.invalid', 'admin-step-up')?.code ?? '';
-    const wrong = code === '000000' ? '111111' : '000000';
+    expect((await editorOnly(api('/x', a.token))).status).toBe(403);
     expect(
-      (await stepUpConfirm(api('/auth/step-up/confirm', b.token, post('', { code: wrong })))).status,
-    ).toBe(400);
-    expect((await stepUpConfirm(api('/auth/step-up/confirm', b.token, post('', { code })))).status).toBe(200);
-    expect((await adminOnly(api('/x', b.token))).status).toBe(200);
-    // Another user's passkey marker never unlocks this session.
-    expect((await adminOnly(api('/x', a.token))).status).toBe(403);
+      (await stepUpConfirm(api('/auth/step-up/confirm', a.token, post('', { code: '123456' })))).status,
+    ).toBe(403);
   });
 });
 
@@ -226,10 +207,6 @@ describe('rate limits', () => {
           .status,
       );
     }
-    expect(statuses).toEqual([202, 202, 202, 429]);
+    expect(statuses).toEqual([204, 204, 204, 429]);
   });
 });
-
-function eqUser(id: string) {
-  return eq(schema.sessions.userId, id);
-}

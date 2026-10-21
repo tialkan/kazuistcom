@@ -1,5 +1,13 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { ApiError } from '@kazuist/contracts';
+import { z } from 'zod';
+
+const KvkkReceipt = z.object({
+  id: z.uuid(),
+  status: z.string(),
+  receivedAt: z.iso.datetime(),
+  dueAt: z.iso.datetime(),
+});
 import { schema } from '../db.ts';
 import { expireEduVerifications, isEduTrEmail } from '../edu.ts';
 import {
@@ -16,7 +24,7 @@ import {
   professionsGet,
   targetProfessionPut,
 } from '../handlers.ts';
-import { eq } from '../orm.ts';
+import { eq } from 'drizzle-orm';
 import { api, authReq, BASE, createHarness, signUp, type Harness } from './harness.ts';
 
 let h: Harness;
@@ -142,7 +150,23 @@ describe('/v1/me', () => {
       }),
     );
     expect(res.status).toBe(201);
-    expect((await body(res)).id).toMatch(/^[0-9a-f-]{36}$/);
+    const r = KvkkReceipt.parse(await body(res));
+    expect(r.status).toBe('alindi');
+    expect(Date.parse(r.dueAt) - Date.parse(r.receivedAt)).toBe(30 * 86_400_000);
+    const [row] = await h.db.select().from(schema.kvkkRequests).where(eq(schema.kvkkRequests.id, r.id));
+    expect(row?.contactEmail).toBe('kvkk@example.invalid');
+    const [q] = await h.db
+      .select()
+      .from(schema.reviewQueueItems)
+      .where(eq(schema.reviewQueueItems.subjectId, r.id));
+    expect(q?.queue).toBe('kvkk-requests');
+    const posta = await kvkkPost(
+      api('/v1/kvkk-requests', token, {
+        method: 'POST',
+        body: JSON.stringify({ kind: 'silme', detail: 'x', replyChannel: 'posta' }),
+      }),
+    );
+    expect(posta.status).toBe(400);
   });
 
   it('export returns JSON and CSV without secrets', async () => {
@@ -164,7 +188,10 @@ describe('/v1/me', () => {
     const { token } = await signUp('sil@example.invalid');
     const res = await meDelete(api('/v1/me', token, { method: 'DELETE' }));
     expect(res.status).toBe(202);
-    expect((await body(res)).jobId).toBeTruthy();
+    const { jobId } = await body(res);
+    const [job] = await h.db.select().from(schema.jobs).where(eq(schema.jobs.id, jobId));
+    expect(job?.type).toBe('account.purge');
+    expect((job?.runAfter.getTime() ?? 0) - h.clock.now.getTime()).toBe(14 * 86_400_000);
     expect((await meGet(api('/v1/me', token))).status).toBe(401);
     const again = await authHandler(
       authReq('/sign-in/email', { email: 'sil@example.invalid', password: 'parola-cok-gizli-1' }),
@@ -187,7 +214,7 @@ describe('edu.tr verification', () => {
     const start = (email: string) =>
       eduStart(api('/v1/me/edu-verification', token, { method: 'POST', body: JSON.stringify({ email }) }));
     expect((await start('ogrenci@gmail.com')).status).toBe(400);
-    expect((await start('ogrenci@ogr.ornek.edu.tr')).status).toBe(202);
+    expect((await start('ogrenci@ogr.ornek.edu.tr')).status).toBe(204);
     const code = h.mailer.last('ogrenci@ogr.ornek.edu.tr', 'edu')?.code ?? '';
     expect(code).toMatch(/^[0-9]{6}$/);
     const confirm = (c: string) =>

@@ -1,10 +1,11 @@
+import type { NotificationPrefsColumn } from '@kazuist/contracts';
 import { isCommercial, mandatoryEmailTypes, type Channel, type NotificationType } from './types.ts';
 
 /**
  * notification_prefs stores one jsonb object per channel: { "<type>": boolean }.
  * Defaults: informational messages on, commercial off (needs separate consent, plan 10.8).
  */
-export type ChannelPrefs = Partial<Record<NotificationType, boolean>>;
+export type ChannelPrefs = NotificationPrefsColumn;
 export interface Prefs {
   email: ChannelPrefs;
   web_push: ChannelPrefs;

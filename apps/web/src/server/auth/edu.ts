@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, isNotNull } from './orm.ts';
+import { and, desc, eq, gt, isNotNull } from 'drizzle-orm';
 import { writeAudit } from './audit.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';

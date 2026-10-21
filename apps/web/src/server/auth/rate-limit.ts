@@ -68,6 +68,17 @@ export const rules = {
   exportUser: { name: 'export-user', limit: 3, windowSec: 3600 },
   /** KVKK applications per user. */
   kvkkUser: { name: 'kvkk-user', limit: 5, windowSec: 86400 },
+  /** KVKK applications without an account, per IP. */
+  kvkkGuestIp: { name: 'kvkk-guest-ip', limit: 5, windowSec: 3600 },
+  /** Guest code confirmation, per IP and per application (brute force of the 6 digits). */
+  kvkkVerifyIp: { name: 'kvkk-verify-ip', limit: 20, windowSec: 3600 },
+  kvkkVerifyId: { name: 'kvkk-verify-id', limit: 5, windowSec: 3600 },
+  /** Takedown intake per IP. */
+  takedownIp: { name: 'takedown-ip', limit: 10, windowSec: 3600 },
+  /** Admin TOTP step per user. */
+  stepUpUser: { name: 'step-up-user', limit: 5, windowSec: 600 },
+  /** Admin API per user. */
+  adminUser: { name: 'admin-user', limit: 300, windowSec: 60 },
   /** Public profession list per IP. */
   publicIp: { name: 'public-ip', limit: 120, windowSec: 60 },
 } satisfies Record<string, RateRule>;

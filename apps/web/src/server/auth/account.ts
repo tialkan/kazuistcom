@@ -1,6 +1,6 @@
-import { asc, desc, eq } from './orm.ts';
+import { asc, desc, eq } from 'drizzle-orm';
 import type { z } from 'zod';
-import type { ConsentInput, KvkkRequestInput, MePatch } from '@kazuist/contracts';
+import type { AccountPurgePayload, ConsentInput, MePatch } from '@kazuist/contracts';
 import { writeAudit } from './audit.ts';
 import type { AuthContext } from './context.ts';
 import { schema } from './db.ts';
@@ -93,9 +93,8 @@ export async function setTargetProfession(
 }
 
 /**
- * Account deletion (KVKK m.7, App Store 5.1.1(v)). Marks the user deleted and ends every
- * session at once; the purge of the row (consents and audit keep only the hash via ON DELETE
- * SET NULL) runs later as a job once the schema has a job type for it (istek).
+ * Account deletion (KVKK m.7, App Store 5.1.1(v)). Marks the user deleted, ends every session at once and
+ * queues account.purge with run_after = now + grace period (ADR-0023, at most 30 days). Returns the job id.
  */
 export async function deleteMe(ctx: AuthContext, p: Principal): Promise<string> {
   const now = ctx.now();
@@ -104,12 +103,21 @@ export async function deleteMe(ctx: AuthContext, p: Principal): Promise<string> 
     .set({ deletedAt: now, updatedAt: now })
     .where(eq(schema.users.id, p.userId));
   await ctx.db.delete(schema.sessions).where(eq(schema.sessions.userId, p.userId));
-  return writeAudit(ctx.db, ctx.config.secret, {
+  const payload: AccountPurgePayload = { userId: p.userId };
+  const runAfter = new Date(now.getTime() + ctx.config.purgeGraceDays * 86_400_000);
+  const [job] = await ctx.db
+    .insert(schema.jobs)
+    .values({ type: 'account.purge', payload, runAfter, dedupeKey: `account.purge:${p.userId}` })
+    .returning({ id: schema.jobs.id });
+  if (!job) throw new Error('purge job insert failed');
+  await writeAudit(ctx.db, ctx.config.secret, {
     actorId: p.userId,
     action: 'user.deletion_requested',
     subjectType: 'user',
     subjectId: p.userId,
+    diff: { purgeJobId: job.id, runAfter: runAfter.toISOString() },
   });
+  return job.id;
 }
 
 export interface Consent {
@@ -153,25 +161,6 @@ export async function recordConsent(
     .returning();
   if (!row) throw new Error('consent insert failed');
   return { kind: row.kind, version: row.version, granted: row.granted, at: row.createdAt.toISOString() };
-}
-
-/**
- * KVKK m.11 application. Temporary store: audit_log row (subject_type kvkk_request) until a
- * kvkk_requests table exists (docs/istekler/kimlik-kvkk-basvuru-tablosu.md).
- */
-export async function createKvkkRequest(
-  ctx: AuthContext,
-  p: Principal,
-  input: z.infer<typeof KvkkRequestInput>,
-) {
-  return writeAudit(ctx.db, ctx.config.secret, {
-    actorId: p.userId,
-    action: 'kvkk.request',
-    subjectType: 'kvkk_request',
-    subjectId: p.userId,
-    reason: input.detail,
-    diff: { kind: input.kind, status: 'alindi' },
-  });
 }
 
 /** KVKK m.11 data export: everything kimlik holds about the caller. Secrets and hashes are left out. */
