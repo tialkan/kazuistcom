@@ -1,0 +1,398 @@
+/**
+ * Postgres billing store over the packages/db tables (migrations 0001 and 0003). Plain SQL through a
+ * query client (pg.Pool in production, PGlite in tests). Each method is one statement or an idempotent
+ * sequence; uniqueness lives in the database (orders_idem_uq, orders_checkout_token_uq,
+ * payments_charge_uq, payments_refund_uq, webhook_events_provider_event_uq, notices_uq,
+ * coupon_redemptions_uq).
+ */
+import type { Ledger, PriceTable } from '../index.ts';
+import { listWalletTransactions, walletRunner, type PoolLike, type SqlClient } from '../pg.ts';
+import type {
+  BillingStore,
+  Consent,
+  CouponRow,
+  Invoice,
+  LedgerPort,
+  Notice,
+  Order,
+  Payment,
+  Plan,
+  Subscription,
+  WebhookEvent,
+} from './store.ts';
+import { planRole } from './store.ts';
+
+const PROVIDER = 'iyzico';
+const PLAN_ROLES = ['plus', 'akademisyen'] as const;
+export { planRole };
+
+type Row = Record<string, unknown>;
+const d = (v: unknown): Date => (v instanceof Date ? v : new Date(String(v)));
+const dn = (v: unknown): Date | null => (v === null || v === undefined ? null : d(v));
+
+export class PgBillingStore implements BillingStore {
+  constructor(
+    private readonly db: SqlClient,
+    /** Keyed subject hash for consents.user_hash (kimlik's subjectHash). */
+    private readonly hashSubject: (userId: string) => string,
+  ) {}
+
+  private async one<T = Row>(sql: string, params: unknown[] = []): Promise<T | null> {
+    const { rows } = await this.db.query<T>(sql, params);
+    return (rows[0] as T | undefined) ?? null;
+  }
+
+  /** Seed price_tables and products from a price table version (idempotent). */
+  async ensureCatalog(t: PriceTable): Promise<void> {
+    await this.db.query(
+      `insert into price_tables (version, effective_from, operations) values ($1, $2, $3::jsonb)
+       on conflict (version) do nothing`,
+      [t.version, t.effectiveFrom, JSON.stringify(t.operations)],
+    );
+    const pt = await this.one<{ id: string }>('select id from price_tables where version = $1', [t.version]);
+    for (const p of t.products)
+      await this.db.query(
+        `insert into products (code, kind, price_table_id, price_kurus, credits, monthly_credits)
+         values ($1, $2, $3, $4, $5, $6)
+         on conflict (code) do update set price_table_id = excluded.price_table_id, price_kurus = excluded.price_kurus,
+           credits = excluded.credits, monthly_credits = excluded.monthly_credits`,
+        [p.code, p.kind, pt?.id, p.priceKurus, p.credits, p.monthlyCredits],
+      );
+  }
+
+  async walletOf(userId: string): Promise<string> {
+    await this.db.query('insert into wallets (user_id) values ($1) on conflict (user_id) do nothing', [
+      userId,
+    ]);
+    return (await this.one<{ id: string }>('select id from wallets where user_id = $1', [userId]))
+      ?.id as string;
+  }
+
+  private orderOf(r: Row): Order {
+    return {
+      id: String(r.id),
+      userId: String(r.user_id),
+      productCode: String(r.product_code),
+      couponCode: (r.coupon_code as string | null) ?? null,
+      amountKurus: Number(r.amount_kurus),
+      status: r.status as Order['status'],
+      idempotencyKey: String(r.idempotency_key),
+      consentVersions: r.consent_versions as Order['consentVersions'],
+      checkoutToken: (r.checkout_token as string | null) ?? null,
+      paymentId: (r.provider_payment_id as string | null) ?? null,
+      createdAt: d(r.created_at),
+      paidAt: dn(r.paid_at),
+    };
+  }
+  private readonly orderSql = `select o.*, p.code product_code, c.code coupon_code from orders o
+    join products p on p.id = o.product_id left join coupons c on c.id = o.coupon_id`;
+
+  async saveOrder(o: Order): Promise<void> {
+    await this.db.query(
+      `insert into orders (id, user_id, product_id, coupon_id, amount_kurus, status, idempotency_key, consent_versions,
+         checkout_token, provider_payment_id, paid_at, created_at)
+       values ($1, $2, (select id from products where code = $3), (select id from coupons where code = $4), $5, $6, $7,
+         $8::jsonb, $9, $10, $11, $12)
+       on conflict (id) do update set status = excluded.status, checkout_token = excluded.checkout_token,
+         provider_payment_id = excluded.provider_payment_id, paid_at = excluded.paid_at, updated_at = now()`,
+      [
+        o.id,
+        o.userId,
+        o.productCode,
+        o.couponCode,
+        o.amountKurus,
+        o.status,
+        o.idempotencyKey,
+        JSON.stringify(o.consentVersions),
+        o.checkoutToken,
+        o.paymentId,
+        o.paidAt,
+        o.createdAt,
+      ],
+    );
+  }
+  async getOrder(id: string) {
+    const r = await this.one(`${this.orderSql} where o.id = $1`, [id]);
+    return r ? this.orderOf(r) : null;
+  }
+  async findOrderByKey(userId: string, key: string) {
+    const r = await this.one(`${this.orderSql} where o.user_id = $1 and o.idempotency_key = $2`, [
+      userId,
+      key,
+    ]);
+    return r ? this.orderOf(r) : null;
+  }
+  async findOrderByToken(token: string) {
+    const r = await this.one(`${this.orderSql} where o.checkout_token = $1`, [token]);
+    return r ? this.orderOf(r) : null;
+  }
+
+  async addPayment(p: Payment): Promise<boolean> {
+    const { rows } = await this.db.query(
+      `insert into payments (order_id, subscription_id, provider, provider_payment_id, amount_kurus, status, kind, refund_ref, created_at)
+       values ($1, $2, $3, $4, $5, 'basarili', $6, $7, $8) on conflict do nothing returning id`,
+      [p.orderId, p.subscriptionId, PROVIDER, p.providerPaymentId, p.amountKurus, p.kind, p.refundRef, p.at],
+    );
+    return rows.length > 0;
+  }
+  private paymentOf(r: Row): Payment {
+    return {
+      orderId: (r.order_id as string | null) ?? null,
+      subscriptionId: (r.subscription_id as string | null) ?? null,
+      providerPaymentId: String(r.provider_payment_id),
+      refundRef: (r.refund_ref as string | null) ?? null,
+      amountKurus: Number(r.amount_kurus),
+      kind: r.kind as Payment['kind'],
+      at: d(r.created_at),
+    };
+  }
+  async findCharge(id: string) {
+    const r = await this.one(
+      `select * from payments where provider = $1 and provider_payment_id = $2 and kind = 'odeme'`,
+      [PROVIDER, id],
+    );
+    return r ? this.paymentOf(r) : null;
+  }
+  async paymentsOn(day: string) {
+    const { rows } = await this.db.query<Row>(
+      `select * from payments where provider = $1 and created_at >= $2::date and created_at < $2::date + 1`,
+      [PROVIDER, day],
+    );
+    return rows.map((r) => this.paymentOf(r));
+  }
+
+  private subOf(r: Row): Subscription {
+    return {
+      id: String(r.id),
+      userId: String(r.user_id),
+      planCode: String(r.product_code),
+      providerRef: String(r.provider_ref),
+      status: r.status as Subscription['status'],
+      priceKurus: Number(r.price_kurus ?? 0),
+      currentPeriodStart: d(r.current_period_start),
+      currentPeriodEnd: d(r.current_period_end),
+      cancelAtPeriodEnd: Boolean(r.cancel_at_period_end),
+      canceledAt: dn(r.canceled_at),
+      grantsDelivered: Number(r.grants_delivered),
+      lastPaymentId: (r.last_payment_id as string | null) ?? null,
+      firstFailureAt: dn(r.first_failure_at),
+      failedRetries: Number(r.failed_retries),
+      failedOrderRef: (r.failed_order_ref as string | null) ?? null,
+      pendingPrice:
+        r.pending_price_kurus === null || r.pending_price_kurus === undefined
+          ? null
+          : { priceKurus: Number(r.pending_price_kurus), effectiveAt: d(r.pending_price_effective_at) },
+    };
+  }
+  private readonly subSql = `select s.*, p.code product_code from subscriptions s join products p on p.id = s.product_id`;
+
+  async saveSubscription(s: Subscription): Promise<void> {
+    await this.db.query(
+      `insert into subscriptions (id, user_id, product_id, channel, provider_ref, status, current_period_start,
+         current_period_end, cancel_at_period_end, canceled_at, grants_delivered, price_kurus, last_payment_id,
+         first_failure_at, failed_retries, failed_order_ref, pending_price_kurus, pending_price_effective_at)
+       values ($1, $2, (select id from products where code = $3), 'iyzico', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
+         $14, $15, $16, $17)
+       on conflict (id) do update set status = excluded.status, current_period_start = excluded.current_period_start,
+         current_period_end = excluded.current_period_end, cancel_at_period_end = excluded.cancel_at_period_end,
+         canceled_at = excluded.canceled_at, grants_delivered = excluded.grants_delivered,
+         price_kurus = excluded.price_kurus, last_payment_id = excluded.last_payment_id,
+         first_failure_at = excluded.first_failure_at, failed_retries = excluded.failed_retries,
+         failed_order_ref = excluded.failed_order_ref, pending_price_kurus = excluded.pending_price_kurus,
+         pending_price_effective_at = excluded.pending_price_effective_at, updated_at = now()`,
+      [
+        s.id,
+        s.userId,
+        s.planCode,
+        s.providerRef,
+        s.status,
+        s.currentPeriodStart,
+        s.currentPeriodEnd,
+        s.cancelAtPeriodEnd,
+        s.canceledAt,
+        s.grantsDelivered,
+        s.priceKurus,
+        s.lastPaymentId,
+        s.firstFailureAt,
+        s.failedRetries,
+        s.failedOrderRef,
+        s.pendingPrice?.priceKurus ?? null,
+        s.pendingPrice?.effectiveAt ?? null,
+      ],
+    );
+  }
+  async getSubscription(id: string) {
+    const r = await this.one(`${this.subSql} where s.id = $1`, [id]);
+    return r ? this.subOf(r) : null;
+  }
+  async findSubscriptionByRef(ref: string) {
+    const r = await this.one(`${this.subSql} where s.channel = 'iyzico' and s.provider_ref = $1`, [ref]);
+    return r ? this.subOf(r) : null;
+  }
+  async listSubscriptions() {
+    const { rows } = await this.db.query<Row>(
+      `${this.subSql} where s.channel = 'iyzico' order by s.created_at`,
+    );
+    return rows.map((r) => this.subOf(r));
+  }
+
+  async addConsents(cs: Consent[]): Promise<void> {
+    for (const c of cs)
+      await this.db.query(
+        `insert into consents (user_id, user_hash, kind, version, granted, context, created_at)
+         values ($1, $2, $3::consent_kind, $4, $5, $6::jsonb, $7)`,
+        [c.userId, this.hashSubject(c.userId), c.kind, c.version, c.granted, JSON.stringify(c.context), c.at],
+      );
+  }
+
+  async addNotice(n: Notice) {
+    await this.db.query(
+      'insert into notices (user_id, kind, ref, send_at) values ($1, $2, $3, $4) on conflict do nothing',
+      [n.userId, n.kind, n.ref, n.sendAt],
+    );
+  }
+  async dropRenewalNotices(userId: string, subId: string) {
+    await this.db.query(
+      `delete from notices where user_id = $1 and sent_at is null and kind in ('odeme_7_gun', 'yillik_30_gun')
+         and ref like $2`,
+      [userId, `${subId}:%`],
+    );
+  }
+  async listNotices(userId: string) {
+    const { rows } = await this.db.query<Row>('select * from notices where user_id = $1 order by send_at', [
+      userId,
+    ]);
+    return rows.map((r) => ({ userId, kind: String(r.kind), ref: String(r.ref), sendAt: d(r.send_at) }));
+  }
+
+  async addInvoice(i: Invoice) {
+    await this.db.query(
+      `insert into invoices (id, order_id, user_id, number, kind, total_kurus, provider_ref, issued_at)
+       values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict (number) do nothing`,
+      [i.id, i.orderId, i.userId, i.number, i.kind, i.totalKurus, i.providerRef, i.issuedAt],
+    );
+  }
+  async listInvoices(userId: string) {
+    const { rows } = await this.db.query<Row>(
+      'select * from invoices where user_id = $1 order by issued_at desc',
+      [userId],
+    );
+    return rows.map((r) => ({
+      id: String(r.id),
+      userId,
+      orderId: (r.order_id as string | null) ?? null,
+      number: String(r.number),
+      kind: r.kind as Invoice['kind'],
+      totalKurus: Number(r.total_kurus),
+      providerRef: (r.provider_ref as string | null) ?? null,
+      issuedAt: d(r.issued_at),
+    }));
+  }
+
+  async getWebhook(eventId: string): Promise<WebhookEvent | null> {
+    const r = await this.one('select * from webhook_events where provider = $1 and event_id = $2', [
+      PROVIDER,
+      eventId,
+    ]);
+    if (!r) return null;
+    return {
+      provider: 'iyzico',
+      eventId,
+      eventType: String(r.event_type),
+      signatureValid: Boolean(r.signature_valid),
+      payload: r.payload,
+      processedAt: dn(r.processed_at),
+      error: (r.error as string | null) ?? null,
+    };
+  }
+  async saveWebhook(e: WebhookEvent) {
+    await this.db.query(
+      `insert into webhook_events (provider, event_id, event_type, signature_valid, payload, processed_at, error)
+       values ($1, $2, $3, $4, $5::jsonb, $6, $7)
+       on conflict (provider, event_id) do update set processed_at = excluded.processed_at, error = excluded.error`,
+      [PROVIDER, e.eventId, e.eventType, e.signatureValid, JSON.stringify(e.payload), e.processedAt, e.error],
+    );
+  }
+
+  async getCoupon(code: string): Promise<CouponRow | null> {
+    const r = await this.one('select * from coupons where code = $1', [code]);
+    if (!r) return null;
+    return {
+      code: String(r.code),
+      credits: (r.credits as number | null) ?? null,
+      percentOff: (r.percent_off as number | null) ?? null,
+      maxRedemptions: (r.max_redemptions as number | null) ?? null,
+      redeemed: Number(r.redeemed),
+      validUntil: dn(r.valid_until),
+    };
+  }
+  async redeemCoupon(
+    code: string,
+    userId: string,
+    target: { ledgerTransactionId?: string; orderId?: string },
+  ) {
+    const { rows } = await this.db.query(
+      `insert into coupon_redemptions (coupon_id, user_id, ledger_transaction_id, order_id)
+       select id, $2, $3, $4 from coupons where code = $1 on conflict do nothing returning id`,
+      [code, userId, target.ledgerTransactionId ?? null, target.orderId ?? null],
+    );
+    if (!rows.length) return false;
+    await this.db.query('update coupons set redeemed = redeemed + 1 where code = $1', [code]);
+    return true;
+  }
+
+  async setPlan(userId: string, plan: Plan) {
+    const role = planRole(plan);
+    await this.db.query('delete from user_roles where user_id = $1 and role_id = any($2::text[])', [
+      userId,
+      [...PLAN_ROLES],
+    ]);
+    if (role !== 'ucretsiz')
+      await this.db.query(
+        'insert into user_roles (user_id, role_id) values ($1, $2) on conflict do nothing',
+        [userId, role],
+      );
+  }
+  async getPlan(userId: string): Promise<Plan> {
+    const { rows } = await this.db.query<{ role_id: string }>(
+      'select role_id from user_roles where user_id = $1 and role_id = any($2::text[])',
+      [userId, [...PLAN_ROLES]],
+    );
+    const ids = rows.map((r) => r.role_id);
+    return ids.includes('akademisyen') ? 'akademisyen' : ids.includes('plus') ? 'plus' : 'ucretsiz';
+  }
+
+  async alert(kind: string, detail: unknown) {
+    await this.db.query(
+      `insert into audit_log (action, subject_type, reason, diff) values ($1, 'billing', $2, $3::jsonb)`,
+      [`billing.${kind}`, kind, JSON.stringify(detail)],
+    );
+  }
+
+  async planRefs() {
+    const { rows } = await this.db.query<{ code: string; iyzico_plan_ref: string }>(
+      'select code, iyzico_plan_ref from products where iyzico_plan_ref is not null',
+    );
+    return new Map(rows.map((r) => [r.code, r.iyzico_plan_ref]));
+  }
+  async savePlanRef(code: string, ref: string) {
+    await this.db.query('update products set iyzico_plan_ref = $2 where code = $1', [code, ref]);
+  }
+}
+
+/** Ledger port over Postgres: pool clients per wallet transaction, movements by wallet_id. */
+export class PgLedgerPort implements LedgerPort {
+  private readonly runner;
+  constructor(
+    private readonly db: SqlClient,
+    pool?: PoolLike,
+  ) {
+    this.runner = walletRunner(pool ? { pool } : { client: db });
+  }
+  run<T>(walletId: string, fn: (l: Ledger) => T): Promise<T> {
+    return this.runner.run(walletId, fn);
+  }
+  movements(walletId: string) {
+    return listWalletTransactions(this.db, walletId);
+  }
+}
