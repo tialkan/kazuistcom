@@ -64,7 +64,9 @@ class SourceRegistry:
 
     @classmethod
     def load(cls, docs_dir: Optional[Path] = None, env: Optional[Mapping[str, str]] = None) -> "SourceRegistry":
-        directory = docs_dir or DEFAULT_DOCS_DIR
+        env_map = env if env is not None else os.environ
+        override = env_map.get("KAZUIST_SOURCES_DIR")
+        directory = docs_dir or (Path(override) if override else DEFAULT_DOCS_DIR)
         files = sorted(p for p in directory.glob("*.md") if p.name != "README.md")
         return cls([load_source_file(p) for p in files], env)
 

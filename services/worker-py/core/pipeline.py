@@ -97,12 +97,12 @@ class InMemoryRepository:
 UPSERT_RECORD_SQL = """
 INSERT INTO records (type, title, court, chamber, esas_no, karar_no, decision_date, authority_class, jurisdiction,
   norm_refs, status, valid_from, valid_to, amended_by, license_basis, protocol_status, live_only, anonymized,
-  anonymization_version, source_url, source_key, fetched_at, text, openalex_cited_by)
+  anonymization_version, source_url, source_key, fetched_at, text, masked_text, openalex_cited_by)
 VALUES (%(type)s::record_type, %(title)s, %(court)s, %(chamber)s, %(esas_no)s, %(karar_no)s, %(decision_date)s,
   %(authority_class)s::authority_class, %(jurisdiction)s, %(norm_refs)s::jsonb, %(status)s::record_status,
   %(valid_from)s, %(valid_to)s, %(amended_by)s, %(license_basis)s, %(protocol_status)s::protocol_status,
   %(live_only)s, %(anonymized)s, %(anonymization_version)s, %(source_url)s, %(source_key)s, %(fetched_at)s,
-  %(text)s, %(openalex_cited_by)s)
+  %(text)s, %(masked_text)s, %(openalex_cited_by)s)
 ON CONFLICT (source_key) DO UPDATE SET
   title = EXCLUDED.title, status = EXCLUDED.status, valid_from = EXCLUDED.valid_from,
   valid_to = EXCLUDED.valid_to, amended_by = EXCLUDED.amended_by, fetched_at = EXCLUDED.fetched_at,
@@ -110,6 +110,8 @@ ON CONFLICT (source_key) DO UPDATE SET
   anonymized = CASE WHEN records.text = EXCLUDED.text THEN records.anonymized ELSE EXCLUDED.anonymized END,
   anonymization_version = CASE WHEN records.text = EXCLUDED.text THEN records.anonymization_version
                                ELSE EXCLUDED.anonymization_version END,
+  masked_text = CASE WHEN EXCLUDED.masked_text IS NOT NULL THEN EXCLUDED.masked_text
+                     WHEN records.text = EXCLUDED.text THEN records.masked_text ELSE NULL END,
   text = EXCLUDED.text
 RETURNING id, (xmax = 0) AS created
 """
