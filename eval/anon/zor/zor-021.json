@@ -1,0 +1,28 @@
+{
+  "id": "zor-021",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "soyad-once",
+    "buyuk-harf"
+  ],
+  "text": "Kayıtlarda adı YILMAZTÜRK Selçuk olarak geçen kişi ile Kayalı, Nurhan aynı adreste oturmaktadır.",
+  "annotations_a": [
+    {
+      "start": 15,
+      "end": 32,
+      "entity": "PERSON"
+    },
+    {
+      "start": 55,
+      "end": 61,
+      "entity": "PERSON"
+    },
+    {
+      "start": 63,
+      "end": 69,
+      "entity": "PERSON"
+    }
+  ]
+}

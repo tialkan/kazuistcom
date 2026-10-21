@@ -1,0 +1,38 @@
+{
+  "id": "zor-028",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "ipucusuz",
+    "ek"
+  ],
+  "text": "Selim Akgündüz iş yerinden çıktıktan sonra arkadaşı Oğuz Tanrıverdi'yi aramış, birlikte Esra Bayındır'ın evine gitmişlerdir. Tanrıverdi ve Bayındır olaydan haberdar olmadıklarını söylemişlerdir.",
+  "annotations_a": [
+    {
+      "start": 0,
+      "end": 14,
+      "entity": "PERSON"
+    },
+    {
+      "start": 52,
+      "end": 67,
+      "entity": "PERSON"
+    },
+    {
+      "start": 88,
+      "end": 101,
+      "entity": "PERSON"
+    },
+    {
+      "start": 125,
+      "end": 135,
+      "entity": "PERSON"
+    },
+    {
+      "start": 139,
+      "end": 147,
+      "entity": "PERSON"
+    }
+  ]
+}

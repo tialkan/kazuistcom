@@ -1,0 +1,17 @@
+{
+  "id": "zor-024",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "tire"
+  ],
+  "text": "Davacı Ayşe Yılmazer-Demirtaş soyadının düzeltilmesini talep etmiştir.",
+  "annotations_a": [
+    {
+      "start": 7,
+      "end": 29,
+      "entity": "PERSON"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "zor-032",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "meslek"
+  ],
+  "text": "Dr. Kaan Erim tarafından düzenlenen raporda iyileşme süresi belirtilmiş, noter Gönül Atasoy huzurunda düzenlenen vekâletname dosyaya sunulmuştur.",
+  "annotations_a": [
+    {
+      "start": 4,
+      "end": 13,
+      "entity": "PERSON"
+    },
+    {
+      "start": 79,
+      "end": 91,
+      "entity": "PERSON"
+    }
+  ]
+}

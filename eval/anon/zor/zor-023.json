@@ -1,0 +1,22 @@
+{
+  "id": "zor-023",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "yabanci"
+  ],
+  "text": "Davacı şirketin temsilcisi Maria Schneider ile tercüman John O'Neil duruşmaya katılmıştır.",
+  "annotations_a": [
+    {
+      "start": 27,
+      "end": 42,
+      "entity": "PERSON"
+    },
+    {
+      "start": 56,
+      "end": 67,
+      "entity": "PERSON"
+    }
+  ]
+}

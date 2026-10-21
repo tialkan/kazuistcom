@@ -1,6 +1,10 @@
 """anon.run job handler (core/jobs.py contract). Payload: {"recordId": "<uuid>"}; carries ids only.
 
 The returned result is stored in jobs.result and therefore holds counts and versions, never text.
+
+The NER backend comes from KAZUIST_NER_BACKEND (anonymizer/ner.py) unless one is passed in. It is loaded once
+when the handler is built; a configured but missing model raises there, so the worker never falls back to
+the rule layer alone without saying so. Unset means the rule layer only ("ner.none" in the version).
 """
 
 from __future__ import annotations
@@ -9,7 +13,7 @@ from typing import Any, Callable, Dict, Optional
 
 from core.jobs import ClaimedJob, JobType
 
-from .ner import NerBackend, NullBackend
+from .ner import NerBackend, backend_from_env
 from .pipeline import anonymize
 from .policy import Policy, default_policy
 from .store import AnonStore
@@ -28,7 +32,7 @@ def make_anon_run_handler(
     ner: Optional[NerBackend] = None,
     policy: Optional[Policy] = None,
 ) -> Callable[[ClaimedJob], Dict[str, Any]]:
-    ner = ner or NullBackend()
+    ner = ner or backend_from_env()
 
     def handle(job: ClaimedJob) -> Dict[str, Any]:
         if job.type is not JobType.ANON_RUN:

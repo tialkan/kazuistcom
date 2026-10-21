@@ -1,0 +1,17 @@
+{
+  "id": "zor-019",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "ortak-sozcuk"
+  ],
+  "text": "Tanık Deniz Yıldız olay günü deniz kenarında yürüdüğünü, havanın güneşli olduğunu beyan etmiştir.",
+  "annotations_a": [
+    {
+      "start": 6,
+      "end": 18,
+      "entity": "PERSON"
+    }
+  ]
+}

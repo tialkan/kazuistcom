@@ -1,0 +1,22 @@
+{
+  "id": "zor-010",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "meslek"
+  ],
+  "text": "Zabıt kâtibi Oya Erten ve mübaşir Kenan Yurtsever hazır bulunmuştur.",
+  "annotations_a": [
+    {
+      "start": 13,
+      "end": 22,
+      "entity": "PERSON"
+    },
+    {
+      "start": 34,
+      "end": 49,
+      "entity": "PERSON"
+    }
+  ]
+}

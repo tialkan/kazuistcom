@@ -1,0 +1,22 @@
+{
+  "id": "zor-012",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "meslek"
+  ],
+  "text": "İcra müdürü Sevda Karakum haciz tutanağını imzalamış, borçlu Nail Tepecik hazır bulunmamıştır.",
+  "annotations_a": [
+    {
+      "start": 12,
+      "end": 25,
+      "entity": "PERSON"
+    },
+    {
+      "start": 61,
+      "end": 73,
+      "entity": "PERSON"
+    }
+  ]
+}

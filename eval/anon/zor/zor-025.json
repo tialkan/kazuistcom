@@ -1,0 +1,22 @@
+{
+  "id": "zor-025",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "kucuk-harf"
+  ],
+  "text": "davacı ahmet tunalı ile davalı fikriye tunalı arasındaki boşanma davasında tanık dinlenmemiştir.",
+  "annotations_a": [
+    {
+      "start": 7,
+      "end": 19,
+      "entity": "PERSON"
+    },
+    {
+      "start": 31,
+      "end": 45,
+      "entity": "PERSON"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "zor-003",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "akrabalik"
+  ],
+  "text": "Sanığın annesi Fadime Koçer ve ağabeyi Rıza Koçer duruşmada hazır bulunmuştur.",
+  "annotations_a": [
+    {
+      "start": 15,
+      "end": 27,
+      "entity": "PERSON"
+    },
+    {
+      "start": 39,
+      "end": 49,
+      "entity": "PERSON"
+    }
+  ]
+}

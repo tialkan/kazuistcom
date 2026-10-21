@@ -1,0 +1,32 @@
+{
+  "id": "zor-015",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "liste"
+  ],
+  "text": "Mirasçılar Halil Durmaz, Saadet Durmaz, Cengiz Durmaz ve Leyla Durmaz olup her biri dörtte bir payla hak sahibidir.",
+  "annotations_a": [
+    {
+      "start": 11,
+      "end": 23,
+      "entity": "PERSON"
+    },
+    {
+      "start": 25,
+      "end": 38,
+      "entity": "PERSON"
+    },
+    {
+      "start": 40,
+      "end": 53,
+      "entity": "PERSON"
+    },
+    {
+      "start": 57,
+      "end": 69,
+      "entity": "PERSON"
+    }
+  ]
+}

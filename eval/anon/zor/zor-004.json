@@ -1,0 +1,22 @@
+{
+  "id": "zor-004",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "akrabalik"
+  ],
+  "text": "Davacının eşi Tülin Aksoylu ile kayınpederi Hamdi Aksoylu aynı evde yaşamaktadır.",
+  "annotations_a": [
+    {
+      "start": 14,
+      "end": 27,
+      "entity": "PERSON"
+    },
+    {
+      "start": 44,
+      "end": 57,
+      "entity": "PERSON"
+    }
+  ]
+}

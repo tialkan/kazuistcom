@@ -1,0 +1,28 @@
+{
+  "id": "zor-016",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "ek",
+    "ipucusuz"
+  ],
+  "text": "Volkan Erdoğdu'nun ifadesi ile Neslihan Yalçınkaya'ya ait banka kayıtları çelişmektedir. Erdoğdu'dan alınan para iade edilmemiştir.",
+  "annotations_a": [
+    {
+      "start": 0,
+      "end": 14,
+      "entity": "PERSON"
+    },
+    {
+      "start": 31,
+      "end": 50,
+      "entity": "PERSON"
+    },
+    {
+      "start": 89,
+      "end": 96,
+      "entity": "PERSON"
+    }
+  ]
+}

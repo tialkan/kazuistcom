@@ -1,0 +1,28 @@
+{
+  "id": "zor-002",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "ipucusuz",
+    "ek"
+  ],
+  "text": "Dosya kapsamına göre Nermin Ilıcalı, Tarkan Özdağ'a ait aracı izinsiz kullanmıştır. Özdağ şikâyetçi olmuştur.",
+  "annotations_a": [
+    {
+      "start": 21,
+      "end": 35,
+      "entity": "PERSON"
+    },
+    {
+      "start": 37,
+      "end": 49,
+      "entity": "PERSON"
+    },
+    {
+      "start": 84,
+      "end": 89,
+      "entity": "PERSON"
+    }
+  ]
+}

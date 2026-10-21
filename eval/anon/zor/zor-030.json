@@ -1,0 +1,23 @@
+{
+  "id": "zor-030",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": [
+    "buyuk-harf",
+    "liste"
+  ],
+  "text": "TANIKLAR : BERRİN ÖZKÖK, CAN ATILGAN",
+  "annotations_a": [
+    {
+      "start": 11,
+      "end": 23,
+      "entity": "PERSON"
+    },
+    {
+      "start": 25,
+      "end": 36,
+      "entity": "PERSON"
+    }
+  ]
+}
