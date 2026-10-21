@@ -5,7 +5,9 @@ Usage: python3 -I docs/tasarim/casuist-arsiv/donustur.py <archive dir> <output d
 
 Each output file holds {path, lang, title, description, nav, langLink, tagline, main}.
 A node is a string or [tag, {attrs}, ...children]. Only whitelisted tags and attributes survive.
-Scripts, styles, svg and canvas are dropped. Images become placeholders that keep their alt text.
+Scripts, styles, svg and canvas are dropped. Images keep their alt text, size and the original file
+path (src, with the Next.js image optimizer URL unwrapped); the page maps that path to the local
+AVIF/WebP copies made by gorselleri-donustur.mjs.
 Cloudflare email protection is decoded to plain mailto links. /tr/hukuki/* links point to /hukuki/*
 (the only link change Ek H allows besides the company particulars).
 """
@@ -14,6 +16,7 @@ import os
 import re
 import sys
 from html.parser import HTMLParser
+from urllib.parse import unquote
 
 PAGES = {
     'index': '/en', 'problem': '/problem', 'how-it-works': '/how-it-works', 'evaluation': '/evaluation',
@@ -41,6 +44,11 @@ BLOCK = {'section', 'div', 'ul', 'ol', 'dl', 'table', 'thead', 'tbody', 'tr', 'a
 def cf_decode(hexstr):
     key = int(hexstr[:2], 16)
     return ''.join(chr(int(hexstr[i:i + 2], 16) ^ key) for i in range(2, len(hexstr), 2))
+
+
+def img_src(s):
+    m = re.match(r'/_next/image\?url=([^&]+)', s)
+    return unquote(m.group(1)) if m else s
 
 
 def fix_href(h):
@@ -86,7 +94,8 @@ class Tree(HTMLParser):
             keep['href'] = fix_href(keep['href'])
         if tag == 'img':
             self.stack[-1].append(['img', {'alt': keep.get('alt', ''), 'width': keep.get('width', ''),
-                                           'height': keep.get('height', '')}])
+                                           'height': keep.get('height', ''),
+                                           'src': img_src(a.get('src', ''))}])
             return
         node = [tag if tag in TAGS else 'span', keep]
         self.stack[-1].append(node)

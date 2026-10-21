@@ -15,7 +15,6 @@ export default function FiyatlarSayfasi() {
       <header className="sayfa-ust">
         <h1>{f.baslik}</h1>
         <p className="sayfa-ust__giris">{f.giris}</p>
-        <p className="taslak-notu">{f.taslak}</p>
       </header>
       <Tablo
         baslik={f.planlar}

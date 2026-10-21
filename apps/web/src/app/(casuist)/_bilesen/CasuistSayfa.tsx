@@ -29,6 +29,7 @@ export function CasuistSayfa({
   const dil = s.lang === 'tr' ? 'tr' : 'en';
   const t = ortak(dil);
   const ev = dil === 'tr' ? '/tr' : '/en';
+  const metin = { yerTutucu: t.casuist.gorselYerTutucu, gorselAlt: t.casuist.gorselAlt };
   return (
     <div lang={dil} className="casuist">
       {s.nav.length > 0 && !gezinmesiz ? (
@@ -61,7 +62,7 @@ export function CasuistSayfa({
       <div className="casuist-govde">
         {ust}
         {s.main.map((d, i) => (
-          <DugumGoster key={i} dugum={d} yerTutucu={t.casuist.gorselYerTutucu} />
+          <DugumGoster key={i} dugum={d} metin={metin} />
         ))}
         {s.tagline ? <p className="casuist-alt">{s.tagline}</p> : null}
       </div>

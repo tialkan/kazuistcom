@@ -1,4 +1,4 @@
-/* global document, window */
+/* global document, window, setTimeout */
 // Screenshots at 375, 768 and 1440 px and an axe-core scan of each page.
 // Usage: start the production server (pnpm --filter @kazuist/web build && start), then
 //   NODE_PATH=<dir with playwright and @axe-core/playwright> node docs/tasarim/ekran-goruntusu.mjs http://localhost:3000 docs/tasarim/ekran
@@ -24,6 +24,7 @@ const pages = [
   ['casuist-partner', '/partner'],
   ['casuist-legal-notice', '/legal/notice'],
   ['casuist-tr', '/tr'],
+  ['casuist-tr-ortak', '/tr/ortak'],
   ['casuist-tr-hakkinda', '/tr/hakkinda'],
   ['eski', '/eski'],
 ];
@@ -39,6 +40,18 @@ for (const [name, path] of pages) {
     const page = await ctx.newPage();
     await page.goto(base + path, { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
+    // Lazy images load only near the viewport; load them all before the full page shot.
+    await page.evaluate(async () => {
+      for (const img of document.querySelectorAll('img[loading="lazy"]')) img.loading = 'eager';
+      const bekle = (img) =>
+        new Promise((ok) => {
+          if (img.complete) return ok();
+          img.addEventListener('load', ok, { once: true });
+          img.addEventListener('error', ok, { once: true });
+          setTimeout(ok, 5000);
+        });
+      await Promise.all([...document.images].map(bekle));
+    });
     await page.screenshot({ path: join(out, `${name}-${w}.png`), fullPage: true });
     const scrollX = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
     if (w === 1440 || w === 375) {

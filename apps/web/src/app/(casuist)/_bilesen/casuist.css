@@ -110,10 +110,36 @@
   text-align: center;
   padding: var(--kz-space-2);
 }
+.casuist-resim {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+/* Logos sit side by side like the old site's flex rows; the header image takes the full column. */
+.casuist picture {
+  display: inline-block;
+  vertical-align: middle;
+}
+.casuist picture + picture {
+  margin-left: var(--kz-space-2);
+}
+.casuist .kahraman-gorsel picture {
+  display: block;
+}
+.casuist-resim--akiskan {
+  width: 100%;
+  background: var(--kz-color-surface-muted);
+}
+.casuist .kahraman-gorsel p {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+  margin-top: var(--kz-space-2);
+}
 .casuist .program-logolari {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 8rem));
-  gap: var(--kz-space-4);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-4) var(--kz-space-8);
 }
 .casuist .dugme-sirasi {
   display: flex;

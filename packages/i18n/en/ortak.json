@@ -111,7 +111,6 @@
     "baslik": "Pricing",
     "aciklama": "Kazuist plans, credit packs and credits per operation. Prices include VAT.",
     "giris": "Search, filters, labels and viewing the citation network are free. Operations that use AI run on a daily free allowance, your own key (BYOK) or credits.",
-    "taslak": "DRAFT: Prices await approval and may change. Sales are not open yet.",
     "kdv": "All prices include VAT.",
     "planlar": "Plans",
     "paketler": "Credit packs",
@@ -150,6 +149,9 @@
     "baglayiciSurum": "The Turkish version is binding.",
     "turkceSurum": "Turkish version",
     "gorselYerTutucu": "Image placeholder",
+    "gorselAlt": {
+      "kazuistBaslik": "Abstract sculpture of interlocking arc-shaped pieces in dark blue and bronze on a grey ground"
+    },
     "ustBilgi": "Casuist research project",
     "eskiNot": "This page is an archive of the previous site and is not current."
   }

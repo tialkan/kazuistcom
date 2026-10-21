@@ -195,14 +195,6 @@
   color: var(--kz-color-accent);
   margin-bottom: var(--kz-space-2);
 }
-.taslak-notu {
-  border: 1.5px solid var(--kz-color-warning);
-  color: var(--kz-color-warning);
-  padding: var(--kz-space-3) var(--kz-space-4);
-  font-weight: 700;
-  max-width: 48rem;
-}
-
 /* Home */
 .ana-kahraman {
   display: grid;

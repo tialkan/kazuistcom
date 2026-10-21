@@ -111,7 +111,6 @@
     "baslik": "Fiyatlar",
     "aciklama": "Kazuist planları, kredi paketleri ve işlem başına kredi. Fiyatlar KDV dahildir.",
     "giris": "Arama, filtreler, etiketler ve atıf ağını görüntüleme ücretsizdir. Yapay zekâ kullanan işlemler günlük ücretsiz hakla, kendi anahtarınızla (BYOK) veya krediyle çalışır.",
-    "taslak": "TASLAK: Fiyatlar onay bekliyor ve değişebilir. Satış henüz açık değildir.",
     "kdv": "Tüm fiyatlar KDV dahildir.",
     "planlar": "Planlar",
     "paketler": "Kredi paketleri",
@@ -150,6 +149,9 @@
     "baglayiciSurum": "Bağlayıcı sürüm Türkçedir.",
     "turkceSurum": "Türkçe sürüm",
     "gorselYerTutucu": "Görsel yer tutucu",
+    "gorselAlt": {
+      "kazuistBaslik": "Gri zemin üzerinde lacivert ve bronz renkli yay biçimli parçaların birbirine geçtiği soyut heykel"
+    },
     "ustBilgi": "Casuist araştırma projesi",
     "eskiNot": "Bu sayfa önceki sitenin arşividir ve güncel değildir."
   }
