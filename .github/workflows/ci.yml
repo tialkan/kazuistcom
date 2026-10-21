@@ -151,8 +151,11 @@ jobs:
       - name: worker-py imports its entry point and the source registry
         run: >
           docker run --rm kazuist-worker-py:ci python -c
-          "import core.main, psycopg; from core.sources import DEFAULT_DOCS_DIR as d;
-          assert (d / 'README.md').exists(), d; print('ok', d)"
+          "import os, core.main, psycopg; from core.sources import SourceRegistry as R;
+          r = R.load(); n = r.names(); on = [x for x in n if r.switch_on(x)];
+          assert os.environ['KAZUIST_SOURCES_DIR'] == '/srv/docs/kaynaklar';
+          assert len(n) > 0, 'registry empty'; assert not on, on;
+          print('sources', len(n), 'all off by default')"
       - name: Runtime environment for app containers
         run: |
           set -a; . ./.env; set +a

@@ -26,7 +26,7 @@ WORKDIR /srv/services/worker-py
 COPY --from=build /opt/venv /opt/venv
 COPY --from=build --chown=app:app /src ./
 COPY --chown=app:app docs/kaynaklar /srv/docs/kaynaklar
-ENV KAZUIST_RAW_DIR=/srv/services/worker-py/.raw-store
+ENV KAZUIST_RAW_DIR=/srv/services/worker-py/.raw-store KAZUIST_SOURCES_DIR=/srv/docs/kaynaklar
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
