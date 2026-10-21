@@ -1,6 +1,11 @@
 import { createHmac } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { HttpIyzico, authorizationHeader, verifyWebhookSignature, webhookSignature } from '../iyzico.ts';
+import {
+  HttpIyzico,
+  authorizationHeader,
+  verifyWebhookSignature,
+  webhookSignature,
+} from '../../src/billing/iyzico.ts';
 
 describe('iyzico auth and signatures (docs.iyzico.com, 2026-10-19)', () => {
   it('builds IYZWSv2 header from HMAC-SHA256(randomKey + path + body)', () => {

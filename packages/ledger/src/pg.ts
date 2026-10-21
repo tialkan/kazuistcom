@@ -175,8 +175,8 @@ async function persist(db: SqlClient, ledger: Ledger, walletId: string): Promise
   }
   for (const tx of ledger.txs) {
     await db.query(
-      'insert into ledger_transactions (id, kind, idempotency_key, reverses_transaction_id, created_at) values ($1, $2, $3, $4, $5)',
-      [tx.id, tx.kind, tx.idempotencyKey, tx.reversesTransactionId || null, tx.at],
+      'insert into ledger_transactions (id, kind, idempotency_key, reverses_transaction_id, created_at, wallet_id) values ($1, $2, $3, $4, $5, $6)',
+      [tx.id, tx.kind, tx.idempotencyKey, tx.reversesTransactionId || null, tx.at, walletId],
     );
     for (const e of tx.entries) {
       await db.query(
@@ -209,4 +209,62 @@ export async function walletBalanceFromEntries(db: SqlClient, walletId: string):
     [ACCOUNTS.wallet(walletId)],
   );
   return (rows[0] as { n: number }).n;
+}
+
+/** A pool (pg.Pool) hands out a dedicated client per call; PGlite or a single client is used as is. */
+export interface PoolLike {
+  connect(): Promise<SqlClient & { release(): void }>;
+}
+
+export function walletRunner(src: { pool: PoolLike } | { client: SqlClient }) {
+  return {
+    async run<T>(walletId: string, fn: (l: Ledger) => T): Promise<T> {
+      if ('client' in src) return withWallet(src.client, walletId, fn);
+      const c = await src.pool.connect();
+      try {
+        return await withWallet(c, walletId, fn);
+      } finally {
+        c.release();
+      }
+    },
+  };
+}
+
+/** Wallet transactions with their entries, oldest first (ledger_transactions.wallet_id, migration 0003). */
+export async function listWalletTransactions(db: SqlClient, walletId: string): Promise<LedgerTx[]> {
+  const { rows } = await db.query<{
+    id: string;
+    kind: LedgerTx['kind'];
+    idempotency_key: string;
+    reverses_transaction_id: string | null;
+    created_at: Date;
+    code: string;
+    side: 'borc' | 'alacak';
+    credits: number;
+    lot_id: string | null;
+  }>(
+    `select t.id, t.kind, t.idempotency_key, t.reverses_transaction_id, t.created_at, a.code, e.side, e.credits, e.lot_id
+       from ledger_transactions t join ledger_entries e on e.transaction_id = t.id
+       join ledger_accounts a on a.id = e.account_id
+      where t.wallet_id = $1 order by t.created_at, t.id, e.id`,
+    [walletId],
+  );
+  const out = new Map<string, LedgerTx>();
+  for (const r of rows) {
+    let tx = out.get(r.id);
+    if (!tx) {
+      tx = {
+        id: r.id,
+        kind: r.kind,
+        idempotencyKey: r.idempotency_key,
+        walletId,
+        at: new Date(r.created_at),
+        entries: [],
+        reversesTransactionId: r.reverses_transaction_id,
+      };
+      out.set(r.id, tx);
+    }
+    tx.entries.push({ accountCode: r.code, side: r.side, credits: r.credits, lotId: r.lot_id });
+  }
+  return [...out.values()];
 }

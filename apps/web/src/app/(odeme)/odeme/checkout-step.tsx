@@ -40,17 +40,15 @@ export function CheckoutStep(props: { kind: CheckoutKind; productLabel: string; 
         />
         {odeme.teyitKutusu}
       </label>
-      {props.kind === 'paket' ? (
-        <label style={{ display: 'flex', gap: '0.5rem', minHeight: 44, alignItems: 'center' }}>
-          <input
-            type="checkbox"
-            name="caymaIstisnasi"
-            checked={waiver}
-            onChange={(e) => setWaiver(e.target.checked)}
-          />
-          {odeme.caymaIstisnasiKutusu}
-        </label>
-      ) : null}
+      <label style={{ display: 'flex', gap: '0.5rem', minHeight: 44, alignItems: 'center' }}>
+        <input
+          type="checkbox"
+          name="caymaIstisnasi"
+          checked={waiver}
+          onChange={(e) => setWaiver(e.target.checked)}
+        />
+        {odeme.caymaIstisnasiKutusu}
+      </label>
       <p id={hintId} aria-live="polite">
         {open ? null : odeme.odemeKapali}
       </p>
