@@ -6,16 +6,14 @@ import * as s from './schema/index.ts';
  * no real person, no real decision number, example.invalid addresses only.
  */
 export async function seed(db: PgDatabase<PgQueryResultHKT>): Promise<void> {
-  await db.insert(s.roles).values([
-    { id: 'admin', description: 'Yonetim paneli' },
-    { id: 'editor', description: 'Hukukcu editor' },
-  ]);
+  // Roles come from migration 0003 (kullanici ... yonetici); the seed only assigns them.
   const [user] = await db
     .insert(s.users)
     .values({ email: 'ornek.kullanici@example.invalid', name: 'Ornek Kullanici', emailVerified: true })
     .returning();
   if (!user) throw new Error('seed: user insert failed');
   await db.insert(s.profiles).values({ userId: user.id, targetProfession: 'akademisyen', tone: 'nazik' });
+  await db.insert(s.userRoles).values({ userId: user.id, roleId: 'kullanici' });
 
   const [record] = await db
     .insert(s.records)

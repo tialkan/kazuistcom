@@ -7,3 +7,11 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+
+# One drizzle-orm instance for the whole workspace (ADR-0023, docs/istekler/kimlik-drizzle-tek-kopya.md):
+# @kazuist/db schema objects only type check against the instance they were built with. The version is
+# pinned and peer dependents are deduped, so better-auth's kysely peer does not split it into a second
+# variant. packages/db/test/single-drizzle.test.ts fails when the lockfile has more than one snapshot.
+overrides:
+  drizzle-orm: 0.45.4
+dedupePeerDependents: true

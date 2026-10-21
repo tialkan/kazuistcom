@@ -36,3 +36,18 @@
   çözümü gelince bağlanacak (`api/v1/wallet`, `api/v1/prices`, `api/v1/checkout/*`, `api/v1/subscriptions`,
   `api/v1/refund-requests`, `api/v1/webhooks/iyzico`); bu yolların sahipliği sahiplik.md not 3'e göre
   netleştirilmeli.
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Değiştirerek kabul. Migration 0003: orders (checkout_token tekil, provider_payment_id, paid_at), subscriptions
+(price_kurus, last_payment_id, first_failure_at, failed_retries, failed_order_ref, pending_price_kurus,
+pending_price_effective_at), payments (kind, subscription_id, refund_ref; order_id NULL olabilir, sipariş ya
+da abonelik zorunlu), coupon_redemptions, notices, ledger_transactions.wallet_id. Tekil dizin önerisi
+değiştirildi: tahsilat (provider, provider_payment_id) yalnız kind = odeme, iade (provider, refund_ref);
+`created_at`'li dizin iadelerde idempotency'yi kaldırırdı. Eski dizin yenisi kurulduktan sonra düşürüldü.
+worker-node `main.ts` notify.send ve billing işleyicilerini kaydeder; PgBillingStore gelene kadar billing işleri
+`BillingStoreUnavailable` ile kapalı başarısız, günlük zamanlama (`dailyBillingTick`, `enqueueDailyBillingSql`
+ile, PGlite'ta sınandı) kapalı. `/api/v1` ödeme yolları sahiplikte size verildi. İşler:
+docs/istekler/mimar-yonlendirme-odeme.md.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.

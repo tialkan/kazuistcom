@@ -25,3 +25,13 @@
 9. Analitik (altyapı): Umami saklama süresi ve çerez kullanıp kullanmadığı yapılandırmadan teyit edilmeli;
    çerezsiz çalışıyorsa çerez politikası buna göre düzeltilir.
 10. Yaş sınırı (Tarık): kullanım koşulları ve gizlilikte 18 yaş taslak olarak yazıldı; kayıtta yaş beyanı alınmıyor.
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Yönlendirildi. Sözleşme payı uygulandı: hesap silme için `account.purge` iş türü (madde 3). Diğer maddeler
+sahiplerine: 1 orkestra (plan atıfları), 2 odeme ve Tarık (abonelikte cayma), 3 ve 4 ve 5 ve 10 kimlik
+(Better Auth `account.encryptOAuthTokens`, bildirim içeriği testi, yaş beyanı), 5 ve 7 ios, 6 hukuk-uyum
+(imha politikası; ardından mimar `retention.sweep`) ve altyapi, 7 casuist, 8 on-yuz, 9 altyapi.
+Dosyalar: docs/istekler/mimar-yonlendirme-<ajan>.md.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.

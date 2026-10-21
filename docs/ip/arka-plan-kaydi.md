@@ -26,7 +26,10 @@ Kulular'da kalan çekirdek yazılımı tarihli olarak belgeler. Doğruluk kayna�
 
 ## ADR'ler
 
-ADR-0001..ADR-0020, 2026-10-19 tarihli, durum "Önerildi, Tarık onayı bekliyor". Dizin: docs/adr/README.md.
+ADR-0001..ADR-0020, 2026-10-19 tarihli, durum "Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)" (docs/kararlar.md).
+Dizin: docs/adr/README.md.
+ADR-0021 (yerel S3 deposu), ADR-0022 (altın set etiketleme yöntemi) ve ADR-0023 (sözleşme v1.1), 2026-10-20
+tarihli, durum "Önerildi, Tarık onayı bekliyor".
 ADR-0001 (kaynaklı özet ve kaynak bağlama) ve ADR-0006 (PostgreSQL içinde hibrit getirme) Eurostars WP4'ün
 (retrieval, grounding, provenance) arka plan IP'si bakımından temel kayıtlardır.
 

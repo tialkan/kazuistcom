@@ -18,3 +18,12 @@ Garage değerlendirildi ama AGPL-3.0 olduğu için CLAUDE.md gereği ADR'siz ekl
 1. Mimar: bu seçimi ADR olarak kaydetmek (yalnız yerel geliştirme ve CI; üretim deposu Türkiye'de S3 uyumlu sağlayıcı, plan 5.5).
 2. Mimar: `.env.example` satır 43'teki "MinIO locally" ifadesini "SeaweedFS locally" yapmak.
 3. Kova oluşturma: uygulama ilk açılışta kovayı yoksa oluşturmalı ya da `infra/scripts/` altına aws-cli ile kova betiği (altyapi, sonraki PR).
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Kabul. ADR-0021 (Önerildi): yerel geliştirme ve CI için SeaweedFS. Mimar doğruladı: SeaweedFS Apache-2.0,
+son sürüm 4.48 (2026-09-28); `minio/minio` deposu arşivlenmiş (GitHub API, 2026-10-20). `.env.example`
+"SeaweedFS locally" olarak düzeltildi. Kova betiği ve plan 5.3 metni: docs/istekler/mimar-yonlendirme-altyapi.md
+ve mimar-yonlendirme-orkestra.md.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.

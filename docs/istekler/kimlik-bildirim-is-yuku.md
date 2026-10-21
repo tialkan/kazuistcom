@@ -11,3 +11,14 @@
    - Meslek listesi: plan 10.1/1 `content/meslekler.yaml` (icerik) ve yönetim tablosu; bugün apps/web/src/server/auth/professions.ts ve i18n hesap.json.
 4. Geriye uyumluluk: ekleme.
 5. Aciliyet: düşük; geçici çözümler belgelendi.
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Değiştirerek kabul. `NotifyPayload`, `notificationTypes`, `notificationChannels`, `NotificationPrefsColumn`
+ve `jobPayloadSchemas` sözleşmede; `/v1/notifications/preferences` yalnız bilinen türleri kabul eder.
+`push_subscriptions` için pg enum yerine CHECK: web_push satırında environment NULL, apns satırında production
+veya sandbox. Roller migration 0003 ile tohumlandı (kullanici, ogrenci_dogrulanmis, plus, akademisyen, editor,
+yonetici); seed artık rol yazmaz. İYS alanı ve meslekler tablosu ertelendi. notify.send worker-node'da
+kayıtlı (`APP_URL` varsa). İşler: docs/istekler/mimar-yonlendirme-kimlik.md.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.

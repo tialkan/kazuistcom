@@ -1,6 +1,6 @@
 # ADR dizini
 
-Karar kayıtları plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi. Tümü "Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)" durumundadır.
+ADR-0001..0020 plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi ve "Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)" durumundadır. ADR-0021 ve sonrası sözleşme isteklerinden (docs/istekler) doğar; durumları tabloda yazılıdır.
 
 | No | Başlık | Özet |
 |---|---|---|
@@ -24,5 +24,8 @@ Karar kayıtları plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi. T
 | [0018](0018-yayin-kapilari.md) | Yayın kapıları | Yayın; webtools robotları, RAG, anonimleştirme, ödeme ve güvenlik ölçütlerinden oluşan kapılardan geçer. |
 | [0019](0019-ip-kaydi.md) | IP: özel depo, ADR ve commit geçmişi arka plan IP kaydıdır | Kod Kulular'ın GitHub organizasyonunda özel depodadır; ADR'ler ve commit geçmişi tarihli arka plan IP kaydıdır. |
 | [0020](0020-ajan-duzeni.md) | Ajan düzeni: önce sözleşme, sonra yol sahipliğiyle paralel dalgalar | Dalga 0'da sözleşmeler yazılır; sonraki dalgalarda ajanlar yol sahipliğiyle worktree'lerde paralel çalışır; işi üretmemiş bağımsız denetçi denetler. |
+| [0021](0021-yerel-s3-seaweedfs.md) | Yerel geliştirme ve CI için S3 deposu: SeaweedFS | Önerildi, Tarık onayı bekliyor. MinIO imajları anonim çekilemiyor ve depo arşivlendi; yerel ve CI'da Apache-2.0 lisanslı SeaweedFS kullanılır, üretim deposu değişmez. |
+| [0022](0022-altin-set-etiketleme.md) | Anonimleştirme altın seti için etiketleme yöntemi | Önerildi, Tarık onayı bekliyor. Dalga 2'de Türkiye sunucusunda, iç ağdan erişilen Label Studio CE; editör kuyruğu olgunlaşınca yönetim ekranına geçiş yeniden değerlendirilir. |
+| [0023](0023-sozlesme-v1-1.md) | Sözleşme v1.1: Dalga 1 istekleri | Önerildi, Tarık onayı bekliyor. KVKK m.11 başvuruları ve hesapsız başvuru, kaldırma talebi hedefleri ve süreleri, iki adım, account.purge, rıza türleri, ödeme alanları, masked_text, hukuki metin yayın kapısı, health bağlantısı; migration 0003. |
 
 Yeni ADR: sıradaki numarayla, aynı bölüm düzeniyle; sözleşme değişikliği isteyen her istek (docs/istekler/) bir ADR ile sonuçlanır.

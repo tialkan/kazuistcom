@@ -11,3 +11,16 @@
    requester_name, hidden_at, due_at, decision_reason; records ve kampus.posts'a hidden_at veya visibility.
 4. Geriye uyumluluk: Ekleme; recordId'nin isteğe bağlı yapılması istemci açısından yıkıcı değil.
 5. Aciliyet: Yayın kapısından önce.
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Değiştirerek kabul. `takedown_requests`: kind (kisisel_veri, telif, guncellik), target_type (record,
+kampus_post, kampus_file), target_id, requester_name, rights_info, hide_due_at (72 saat), due_at (yalnız
+kisisel_veri, 30 gün), hidden_at, decision (kalici_kaldirma, ek_maskeleme, ret), decision_reason, updated_at;
+durumlar bekliyor, gecici_gizlendi, sonuclandi (CHECK). `hidden_at`: records, kampus.posts, kampus.files.
+Gövdede `recordId` yerine `targetType` ve `targetId` (v1 istemcisi olmadığı için v1.1'de); `record_id` sütunu
+kayıt hedefleri için dış anahtar olarak kaldı ve v1 satırlarında target_id ondan dolduruldu. Süreler
+`takedownDeadlines`. Kampüs profili hedef değil (profil şikâyeti kampus.reports'tan). Okuyan modüller:
+docs/istekler/mimar-yonlendirme-casuist-kampus-seo.md.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.

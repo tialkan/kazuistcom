@@ -2,12 +2,23 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 import { describe, expect, it } from 'vitest';
+import pkg from '../package.json' with { type: 'json' };
 import {
   AnswerEvent,
   ApiError,
+  CONTRACT_VERSION,
   authorityClasses,
   byokProviders,
+  consentKinds,
   errorCodes,
+  kvkkRelations,
+  kvkkReplyChannels,
+  kvkkRequestKinds,
+  kvkkRequestStatuses,
+  notificationTypes,
+  reviewQueueNames,
+  takedownKinds,
+  takedownTargetTypes,
   formatSseEvent,
   isNonceFresh,
   jobStates,
@@ -20,6 +31,7 @@ import {
 
 const spec = parse(readFileSync(fileURLToPath(new URL('../openapi.yaml', import.meta.url)), 'utf8')) as {
   openapi: string;
+  info: { version: string };
   paths: Record<string, unknown>;
   components: {
     schemas: Record<string, { enum?: string[]; discriminator?: { mapping: Record<string, string> } }>;
@@ -29,6 +41,10 @@ const enumOf = (name: string) => spec.components.schemas[name]?.enum;
 
 describe('openapi and zod stay in sync', () => {
   it('is OpenAPI 3.1', () => expect(spec.openapi).toBe('3.1.0'));
+  it('contract version is the same in openapi.yaml, package.json and CONTRACT_VERSION', () => {
+    expect(spec.info.version).toBe(CONTRACT_VERSION);
+    expect(pkg.version).toBe(CONTRACT_VERSION);
+  });
   it.each([
     ['ErrorCode', errorCodes],
     ['AuthorityClass', authorityClasses],
@@ -37,6 +53,15 @@ describe('openapi and zod stay in sync', () => {
     ['ByokProvider', byokProviders],
     ['JobType', jobTypes],
     ['JobState', jobStates],
+    ['ConsentKind', consentKinds],
+    ['KvkkRequestKind', kvkkRequestKinds],
+    ['KvkkRequestStatus', kvkkRequestStatuses],
+    ['KvkkRelation', kvkkRelations],
+    ['KvkkReplyChannel', kvkkReplyChannels],
+    ['TakedownKind', takedownKinds],
+    ['TakedownTargetType', takedownTargetTypes],
+    ['ReviewQueueName', reviewQueueNames],
+    ['NotificationType', notificationTypes],
   ])('%s enum matches', (name, values) => expect(enumOf(name)).toEqual([...values]));
   it('SSE event names match discriminator', () => {
     expect(Object.keys(spec.components.schemas.AnswerEvent?.discriminator?.mapping ?? {})).toEqual([
@@ -63,6 +88,9 @@ describe('openapi and zod stay in sync', () => {
       '/v1/webhooks/appstore',
       '/v1/push/apns-tokens',
       '/v1/takedown-requests',
+      '/v1/kvkk-requests',
+      '/v1/kvkk-requests/guest',
+      '/v1/kvkk-requests/guest/verify',
       '/v1/admin/ledger-adjustments',
     ];
     for (const p of required) expect(spec.paths, p).toHaveProperty([p]);

@@ -10,3 +10,13 @@
    - `POST /v1/me/edu-verification` ve yönetici ikinci adım başlatma 202 JobRef: gönderim eşzamanlı olduğu için `jobId` rastgele uuid; öneri 202 gövdesiz veya `{ sent: true }`.
 4. Geriye uyumluluk: ekleme; yıkıcı değil.
 5. Aciliyet: orta. Geçici: KVKK başvurusu `audit_log` satırı (subject_type `kvkk_request`, reason alanında metin) olarak tutuluyor; silme `users.deleted_at` ve oturumların sonlandırılması ile yapılıyor, kalıcı silme bekliyor.
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Değiştirerek kabul. `kvkk_requests` hukuk-uyum isteğiyle birleşik tasarlandı (`requester_hash`, `due_at`
+dahil). `account.purge` kabul (payload `{ userId }`; DELETE /v1/me bu işin kimliğini döner; bekleme önerisi 14
+gün, üst sınır 30 gün, Tarık kararı). `account.export` ret: `GET /v1/me/export` uygulamanın davranışına
+çekildi (`?format=json|csv`, 200, `MeExport`). `POST /v1/me/edu-verification` 204 döner. Yönetici ikinci adım
+başlatma ucu sözleşme dışında (Better Auth yolu); 204 önerilir.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.
