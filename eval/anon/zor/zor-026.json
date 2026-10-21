@@ -1,0 +1,20 @@
+{
+  "id": "zor-026",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["uc-sozcuk", "ek"],
+  "text": "Bilirkişi heyetinden Mehmet Ali Gündoğar ile Fatma Zehra Kuşçu'nun ortak raporu hükme esas alınmıştır.",
+  "annotations_a": [
+    {
+      "start": 21,
+      "end": 40,
+      "entity": "PERSON"
+    },
+    {
+      "start": 45,
+      "end": 62,
+      "entity": "PERSON"
+    }
+  ]
+}

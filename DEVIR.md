@@ -2,6 +2,42 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, anonimlestirme, NER karşılaştırması ve bağlama (dalga-1/anonimlestirme/ner), 2026-10-21
+
+### Durum
+
+PR açık, birleştirilmedi. Kazanan yapılandırma kural katmanı + akdeniz27 (`KAZUIST_NER_BACKEND=akdeniz27`);
+rapor `eval/anon/raporlar/dalga-1-ner.md`. Ölçüm yalnız sentetik set ve elle yazılmış zor sette yapıldı; 15.3/2
+yayın kapısı geçmedi sayılır (200 gerçek kararlık set yok).
+
+### Bilinmesi gerekenler
+
+- Ağırlıklar depo dışında: `~/.cache/kazuist-ner/src/<aday>` (sürümü sabit indirme, sha256 doğrulandı) ve
+  `~/.cache/kazuist-ner/<aday>` (ONNX, `kazuist_manifest.json`). Yeniden üretim (services/worker-py):
+  `uv sync --extra ner`, sonra `uv run python ../../eval/anon/export_ner.py`. savasy indirilmedi.
+- Hushmark'ın indirilen yükleyicisi incelendi (ağ, alt süreç, eval/exec, pickle yok); yalnız dışa aktarmada
+  eşdeğerlik referansı olarak çalıştı. Çalışma zamanı onu yüklemez; Hushmark ve akdeniz27 yalnız onnxruntime,
+  tokenizers ve numpy ister (torch gerekmez). GLiNER gliner paketini ve torch'u ister.
+- `KAZUIST_NER_BACKEND` boşsa yalnız kural katmanı çalışır (`ner.none`); verilip model ya da bağımlılık yoksa
+  işçi başlamaz (core/main.py "startup failed"), sessizce zayıf moda düşmez. `+` ile birleşim verilebilir.
+- `ENGINE_VERSION` anon-0.2.0; sürüm dizesi `anon-0.2.0+ekE-2026.10.0+ner.akdeniz27@99995f7`. Model veya
+  normalizasyon değişince kayıtlar yeniden işlenmeli (plan 6.4/7).
+- Model PERSON span'ları normalize edilir (satır sonu, "ve", "ile", virgülde bölme; unvan ve rol sözcüğü,
+  ticaret unvanı sözcüğü ayıklama). Normalizasyon hiçbir ad karakterini açmaz: altın span testi ve
+  `compare_ner.py --raw-spans` denetimi bunu gösterir.
+- `records.masked_text` (sözleşme v1.1): yayımlanabilir sonuçta span'larla aynı işlemde yazılır, editör kuyruğu
+  açıksa NULL; `embed.chunks` yalnız yazıldığında `embed:<recordId>` anahtarıyla kuyruğa girer. Editör onayı
+  sonrası masked_text yazımı (editör ekranı) henüz yok.
+- İstekler: `docs/istekler/anonimlestirme-ner-calisma-zamani.md` (orkestra: `ner-runtime` extra; altyapi:
+  model birimi ve ortam değişkenleri), `docs/istekler/anonimlestirme-embed-payload.md` (mimar: payload şeması,
+  eski parçaların silinmesi).
+
+### Sonraki adım
+
+ADR-0022 onayıyla 200 gerçek kararlık setin etiketlenmesi; modellerin Türkiye sunucusuna kurulup gecikmenin
+orada `compare_ner.py --threads <n>` ile ölçülmesi; gerçek sette kaçak analizi (Dalga 3).
+
+
 ## Dalga 1, mimar, sözleşme istekleri (dalga-1/mimar/istekler), 2026-10-20
 
 Durum: PR #10 açık, birleştirilmedi. Sözleşme v1.1; ADR-0021, ADR-0022, ADR-0023 "Önerildi, Tarık onayı bekliyor".

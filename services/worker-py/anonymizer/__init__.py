@@ -4,4 +4,4 @@ ENGINE_VERSION changes whenever detector behaviour changes; together with the po
 it forms records.anonymization_version, so a change triggers re-processing and a diff report.
 """
 
-ENGINE_VERSION = "anon-0.1.0"
+ENGINE_VERSION = "anon-0.2.0"

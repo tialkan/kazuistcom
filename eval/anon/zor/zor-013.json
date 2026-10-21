@@ -1,0 +1,20 @@
+{
+  "id": "zor-013",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["meslek"],
+  "text": "Uzman pedagog Banu Değirmenci ile psikolog Ozan Kirazlı görüşme yapmıştır.",
+  "annotations_a": [
+    {
+      "start": 14,
+      "end": 29,
+      "entity": "PERSON"
+    },
+    {
+      "start": 43,
+      "end": 55,
+      "entity": "PERSON"
+    }
+  ]
+}

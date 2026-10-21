@@ -1,0 +1,25 @@
+{
+  "id": "zor-027",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["imza"],
+  "text": "Başkan Ahmet Tevfik Sarıçam 34521\nÜye Selma Arıkoğlu 41236\nKâtip Nazlı Ertan 120934",
+  "annotations_a": [
+    {
+      "start": 7,
+      "end": 27,
+      "entity": "PERSON"
+    },
+    {
+      "start": 38,
+      "end": 52,
+      "entity": "PERSON"
+    },
+    {
+      "start": 65,
+      "end": 76,
+      "entity": "PERSON"
+    }
+  ]
+}

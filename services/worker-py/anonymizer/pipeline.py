@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 from . import ENGINE_VERSION
-from .ner import NerBackend, NullBackend
+from .ner import NerBackend, NullBackend, normalize_spans
 from .policy import Policy, default_policy
 from .roles import Labeler, find_cued_persons, infer_role, propagate, tr_fold
 from .sensitive import find_child_details, find_m6, has_child
@@ -95,10 +95,12 @@ def anonymize(
     raw += find_cued_persons(text)
     raw += find_m6(text)
     for backend in [ner, *(extra or [])]:
-        for s in backend.detect(text):
-            if s.entity == "PERSON":
-                s = s.with_(role=infer_role(text, s), key=tr_fold(text[s.start : s.end]))
-            raw.append(s)
+        for found in backend.detect(text):
+            # Backends normalise already; repeating it here (idempotent) covers third party backends.
+            for s in normalize_spans(text, found):
+                if s.entity == "PERSON":
+                    s = s.with_(role=infer_role(text, s), key=tr_fold(text[s.start : s.end]))
+                raw.append(s)
     raw += propagate(text, [s for s in raw if s.entity == "PERSON"])
     child = has_child(text)
     if child:

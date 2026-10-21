@@ -1,0 +1,25 @@
+{
+  "id": "zor-001",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["ipucusuz"],
+  "text": "Olay günü Kemal Sarıgül ile Hakan Ertürk arasında park yeri yüzünden tartışma çıkmış, Sarıgül yere düşmüştür.",
+  "annotations_a": [
+    {
+      "start": 10,
+      "end": 23,
+      "entity": "PERSON"
+    },
+    {
+      "start": 28,
+      "end": 40,
+      "entity": "PERSON"
+    },
+    {
+      "start": 86,
+      "end": 93,
+      "entity": "PERSON"
+    }
+  ]
+}

@@ -54,6 +54,8 @@ birim testle doğrulandı.
 
 ## NER adayları
 
+Güncel ölçüm (2026-10-21): `dalga-1-ner.md`. Aşağıdaki tablo indirme öncesi durumu gösterir.
+
 | Aday | Hugging Face | Lisans (model kartı, 2026-10-19) | Durum |
 |---|---|---|---|
 | Hushmark BERTurk Span 112M | lokomotifai/hushmark-berturk-112m | Apache-2.0 | ölçülemedi: model yerelde yok |

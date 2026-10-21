@@ -1,0 +1,25 @@
+{
+  "id": "zor-014",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["liste"],
+  "text": "Tanıklar Seda Ateşoğlu, Burak Ünlüsoy ve Gizem Tekinalp dinlenmiştir.",
+  "annotations_a": [
+    {
+      "start": 9,
+      "end": 22,
+      "entity": "PERSON"
+    },
+    {
+      "start": 24,
+      "end": 37,
+      "entity": "PERSON"
+    },
+    {
+      "start": 41,
+      "end": 55,
+      "entity": "PERSON"
+    }
+  ]
+}

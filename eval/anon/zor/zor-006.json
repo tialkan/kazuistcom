@@ -1,0 +1,30 @@
+{
+  "id": "zor-006",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["buyuk-harf", "baba-adi"],
+  "text": "SANIK : HÜSEYİN ÇAKIRBEY, Ali oğlu, Hatice'den olma, 03.05.1980 doğumlu.",
+  "annotations_a": [
+    {
+      "start": 8,
+      "end": 24,
+      "entity": "PERSON"
+    },
+    {
+      "start": 26,
+      "end": 29,
+      "entity": "PERSON"
+    },
+    {
+      "start": 36,
+      "end": 42,
+      "entity": "PERSON"
+    },
+    {
+      "start": 53,
+      "end": 63,
+      "entity": "DOB"
+    }
+  ]
+}

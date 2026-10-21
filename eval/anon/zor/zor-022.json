@@ -1,0 +1,20 @@
+{
+  "id": "zor-022",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["bas-harf"],
+  "text": "Sanık A.K. ile mağdur M.Ö. arasında önceye dayalı husumet bulunmaktadır.",
+  "annotations_a": [
+    {
+      "start": 6,
+      "end": 10,
+      "entity": "PERSON"
+    },
+    {
+      "start": 22,
+      "end": 26,
+      "entity": "PERSON"
+    }
+  ]
+}

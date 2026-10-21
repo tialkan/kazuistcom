@@ -1,0 +1,15 @@
+{
+  "id": "zor-033",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["olumsuz"],
+  "text": "Taşınmaz Mehmet Akif Ersoy Mahallesi, 1203. Sokak No: 5 Keçiören/Ankara adresindedir. Araç Fatih Sultan Mehmet Köprüsü üzerinde, Atatürk Bulvarı istikametinde ilerlerken kaza meydana gelmiştir.",
+  "annotations_a": [
+    {
+      "start": 9,
+      "end": 55,
+      "entity": "ADDRESS"
+    }
+  ]
+}
