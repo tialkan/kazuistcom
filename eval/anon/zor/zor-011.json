@@ -1,0 +1,20 @@
+{
+  "id": "zor-011",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["meslek", "ek"],
+  "text": "Olay yerine gelen polis memuru Murat Kandemir tutanağı düzenlemiştir. Kolluk görevlisi Kandemir'in beyanı tutanakla uyumludur.",
+  "annotations_a": [
+    {
+      "start": 31,
+      "end": 45,
+      "entity": "PERSON"
+    },
+    {
+      "start": 87,
+      "end": 95,
+      "entity": "PERSON"
+    }
+  ]
+}

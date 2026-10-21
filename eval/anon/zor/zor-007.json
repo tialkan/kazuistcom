@@ -1,0 +1,20 @@
+{
+  "id": "zor-007",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["buyuk-harf"],
+  "text": "KATILAN : GÜLSÜM YAZICIOĞLU\nSANIK : ERDAL KÖSEOĞLU\nSUÇ : Kasten yaralama",
+  "annotations_a": [
+    {
+      "start": 10,
+      "end": 27,
+      "entity": "PERSON"
+    },
+    {
+      "start": 36,
+      "end": 50,
+      "entity": "PERSON"
+    }
+  ]
+}

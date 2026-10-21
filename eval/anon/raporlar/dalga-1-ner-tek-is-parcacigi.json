@@ -1,0 +1,2032 @@
+{
+  "date": "2026-10-21",
+  "machine": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "cpu": "Apple M4",
+    "logical_cpus": 10,
+    "python": "3.12.15"
+  },
+  "onnxruntime_threads": 1,
+  "span_normalization": true,
+  "models": {
+    "hushmark-berturk-112m": {
+      "hf_id": "lokomotifai/hushmark-berturk-112m",
+      "license": "apache-2.0",
+      "kind": "hushmark-span",
+      "revision": "49ed7596936fd1ba28a26b788abcfb8c7b963a5c",
+      "note": "Özel span başlığı ve kendi yükleyicisi var (custom code, incelendi); yalnız sentetik veriyle eğitilmiş.",
+      "status": "yerelde",
+      "parity": {
+        "paragraphs": 402,
+        "skipped_over_256_subwords": 0,
+        "span_agreement_vs_reference_loader": 1.0,
+        "max_abs_score_diff": 6.973743438720703e-6
+      },
+      "onnx_sha256": {
+        "model.onnx": "4b6db0689ab2b645e34921b665d11829674add18d6d9ba810d03c925e38e8f88"
+      },
+      "export_versions": {
+        "torch": "2.14.1",
+        "transformers": "4.57.6",
+        "onnxruntime": "1.31.0",
+        "onnx": "1.23.2",
+        "gliner": "0.2.29",
+        "tokenizers": "0.22.2"
+      },
+      "onnx_mb": 426.8
+    },
+    "akdeniz27": {
+      "hf_id": "akdeniz27/bert-base-turkish-cased-ner",
+      "license": "mit",
+      "kind": "token-classification",
+      "revision": "99995f7d2be4b3a28c74f0d36ee97f8c04ee0571",
+      "note": "PER/LOC/ORG",
+      "status": "yerelde",
+      "parity": {
+        "max_abs_logit_diff": 4.482269287109375e-5,
+        "per_span_agreement_vs_transformers_pipeline": 0.990990990990991,
+        "docs": 50
+      },
+      "onnx_sha256": {
+        "model.onnx": "d2a07dbaeefe3d58930a553ce2940bff8a1e46b9d868c9dacc2cd663a0c79fd6"
+      },
+      "export_versions": {
+        "torch": "2.14.1",
+        "transformers": "4.57.6",
+        "onnxruntime": "1.31.0",
+        "onnx": "1.23.2",
+        "gliner": "0.2.29",
+        "tokenizers": "0.22.2"
+      },
+      "onnx_mb": 419.9
+    },
+    "savasy": {
+      "hf_id": "savasy/bert-base-turkish-ner-cased",
+      "license": "belirtilmemiş",
+      "kind": "token-classification",
+      "revision": "",
+      "note": "Model kartında lisans alanı yok; lisans netleşene kadar indirilmez ve kullanılmaz.",
+      "status": "indirilmedi: lisans netleşene kadar bekliyor (docs/kararlar.md, 2026-10-20)"
+    },
+    "gliner-multi-v2.1": {
+      "hf_id": "urchade/gliner_multi-v2.1",
+      "license": "apache-2.0",
+      "kind": "gliner",
+      "revision": "443d26d654e0324125a96bebd8e796c14ff2efe6",
+      "note": "urchade/gliner_multi (v1) cc-by-nc-4.0 olduğu için kullanılmaz; v2.1 Apache-2.0.",
+      "status": "yerelde",
+      "parity": {
+        "docs": 20,
+        "span_agreement_torch_vs_onnx": 1.0,
+        "max_abs_score_diff": 1.996755599975586e-5
+      },
+      "onnx_sha256": {
+        "model.onnx": "03f8a927c1c010c337bce2dfe9d25cdb41a245f4a8e26ff8cd457028beb0e3ef"
+      },
+      "export_versions": {
+        "torch": "2.14.1",
+        "transformers": "4.57.6",
+        "onnxruntime": "1.31.0",
+        "onnx": "1.23.2",
+        "gliner": "0.2.29",
+        "tokenizers": "0.22.2"
+      },
+      "onnx_mb": 1103.5
+    }
+  },
+  "results": [
+    {
+      "config": "rules",
+      "backend": "none",
+      "load_seconds": 0.0,
+      "sets": {
+        "sentetik": {
+          "documents": 50,
+          "chars": 38167,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CARD": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CHILD_AGE": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CRIMINAL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 26,
+              "caught": 26,
+              "recall": 1.0,
+              "predicted": 26,
+              "correct": 26,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "EMAIL": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "HEALTH": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "IBAN": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PARCEL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 430,
+              "caught": 418,
+              "recall": 0.9720930232558139,
+              "predicted": 419,
+              "correct": 419,
+              "precision": 1.0,
+              "missed_in": [
+                "sentetik-003",
+                "sentetik-007",
+                "sentetik-011",
+                "sentetik-015",
+                "sentetik-019",
+                "sentetik-023",
+                "sentetik-027",
+                "sentetik-031",
+                "sentetik-035",
+                "sentetik-039"
+              ]
+            },
+            "PHONE": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PLATE": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SCHOOL": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SOLE_PROPRIETOR": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "TCKN": {
+              "gold": 38,
+              "caught": 38,
+              "recall": 1.0,
+              "predicted": 38,
+              "correct": 38,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "UNION": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "VKN": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            }
+          },
+          "micro": {
+            "recall": 0.9830028328611898,
+            "precision": 1.0
+          },
+          "latency_ms_per_doc": {
+            "mean": 1.2130025029182434,
+            "p50": 1.260729506611824,
+            "p95": 1.6652909689582884,
+            "max": 1.8687500269152224
+          },
+          "cpu_ms_per_doc": 1.2135399999999996,
+          "wall_ms_per_1000_chars": 1.589072370003201,
+          "review_items_per_doc": 1.04,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 0.9720930232558139,
+              "passed": false
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 1.0,
+              "passed": true
+            }
+          }
+        },
+        "zor": {
+          "documents": 35,
+          "chars": 3525,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 69,
+              "caught": 9,
+              "recall": 0.13043478260869565,
+              "predicted": 10,
+              "correct": 10,
+              "precision": 1.0,
+              "missed_in": [
+                "zor-001",
+                "zor-002",
+                "zor-003",
+                "zor-004",
+                "zor-005",
+                "zor-006",
+                "zor-008",
+                "zor-009",
+                "zor-010",
+                "zor-011"
+              ]
+            }
+          },
+          "micro": {
+            "recall": 0.15492957746478872,
+            "precision": 1.0
+          },
+          "latency_ms_per_doc": {
+            "mean": 0.13507845578715205,
+            "p50": 0.061624974478036165,
+            "p95": 0.3477080026641488,
+            "max": 0.6078329752199352
+          },
+          "cpu_ms_per_doc": 0.13531428571428622,
+          "wall_ms_per_1000_chars": 1.3412045255461906,
+          "review_items_per_doc": 0,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 0.13043478260869565,
+              "passed": false
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 1.0,
+              "passed": true
+            }
+          },
+          "person_by_tag": {
+            "akrabalik": {
+              "gold": 4,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "baba-adi": {
+              "gold": 3,
+              "caught": 1,
+              "recall": 0.3333333333333333
+            },
+            "bas-harf": {
+              "gold": 2,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "buyuk-harf": {
+              "gold": 12,
+              "caught": 4,
+              "recall": 0.3333333333333333
+            },
+            "ek": {
+              "gold": 16,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "imza": {
+              "gold": 3,
+              "caught": 2,
+              "recall": 0.6666666666666666
+            },
+            "ipucusuz": {
+              "gold": 18,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "kucuk-harf": {
+              "gold": 2,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "liste": {
+              "gold": 9,
+              "caught": 2,
+              "recall": 0.2222222222222222
+            },
+            "meslek": {
+              "gold": 11,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "ortak-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "soyad-once": {
+              "gold": 3,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "tek-ad": {
+              "gold": 4,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "tire": {
+              "gold": 1,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "uc-sozcuk": {
+              "gold": 2,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "yabanci": {
+              "gold": 2,
+              "caught": 0,
+              "recall": 0.0
+            }
+          }
+        }
+      },
+      "memory_mb": {
+        "rss_before_load": 24.921875,
+        "rss_after_load": 24.921875,
+        "model_load_delta": 0.0,
+        "peak_rss": 26.09375
+      },
+      "status": "ölçüldü"
+    },
+    {
+      "config": "rules+akdeniz27",
+      "backend": "akdeniz27@99995f7",
+      "load_seconds": 0.42,
+      "sets": {
+        "sentetik": {
+          "documents": 50,
+          "chars": 38167,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CARD": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CHILD_AGE": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CRIMINAL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 26,
+              "caught": 26,
+              "recall": 1.0,
+              "predicted": 26,
+              "correct": 26,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "EMAIL": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "HEALTH": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "IBAN": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PARCEL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 430,
+              "caught": 430,
+              "recall": 1.0,
+              "predicted": 430,
+              "correct": 430,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PHONE": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PLATE": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SCHOOL": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SOLE_PROPRIETOR": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "TCKN": {
+              "gold": 38,
+              "caught": 38,
+              "recall": 1.0,
+              "predicted": 38,
+              "correct": 38,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "UNION": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "VKN": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            }
+          },
+          "micro": {
+            "recall": 1.0,
+            "precision": 1.0
+          },
+          "latency_ms_per_doc": {
+            "mean": 70.32001006766222,
+            "p50": 68.26177102630027,
+            "p95": 108.09933301061392,
+            "max": 130.18441700842232
+          },
+          "cpu_ms_per_doc": 68.55407999999998,
+          "wall_ms_per_1000_chars": 92.1214793770302,
+          "review_items_per_doc": 0.5,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 1.0,
+              "passed": true
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 1.0,
+              "passed": true
+            }
+          }
+        },
+        "zor": {
+          "documents": 35,
+          "chars": 3525,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 69,
+              "caught": 68,
+              "recall": 0.9855072463768116,
+              "predicted": 72,
+              "correct": 72,
+              "precision": 1.0,
+              "missed_in": ["zor-024"]
+            }
+          },
+          "micro": {
+            "recall": 0.9859154929577465,
+            "precision": 1.0
+          },
+          "latency_ms_per_doc": {
+            "mean": 13.458046373645109,
+            "p50": 12.706333014648408,
+            "p95": 18.963832990266383,
+            "max": 20.389707991853356
+          },
+          "cpu_ms_per_doc": 13.23360000000007,
+          "wall_ms_per_1000_chars": 133.62599236243372,
+          "review_items_per_doc": 0,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 0.9855072463768116,
+              "passed": false
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 1.0,
+              "passed": true
+            }
+          },
+          "person_by_tag": {
+            "akrabalik": {
+              "gold": 4,
+              "caught": 4,
+              "recall": 1.0
+            },
+            "baba-adi": {
+              "gold": 3,
+              "caught": 3,
+              "recall": 1.0
+            },
+            "bas-harf": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "buyuk-harf": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0
+            },
+            "ek": {
+              "gold": 16,
+              "caught": 16,
+              "recall": 1.0
+            },
+            "imza": {
+              "gold": 3,
+              "caught": 3,
+              "recall": 1.0
+            },
+            "ipucusuz": {
+              "gold": 18,
+              "caught": 18,
+              "recall": 1.0
+            },
+            "kucuk-harf": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "liste": {
+              "gold": 9,
+              "caught": 9,
+              "recall": 1.0
+            },
+            "meslek": {
+              "gold": 11,
+              "caught": 11,
+              "recall": 1.0
+            },
+            "ortak-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "soyad-once": {
+              "gold": 3,
+              "caught": 3,
+              "recall": 1.0
+            },
+            "tek-ad": {
+              "gold": 4,
+              "caught": 4,
+              "recall": 1.0
+            },
+            "tire": {
+              "gold": 1,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "uc-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "yabanci": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            }
+          }
+        }
+      },
+      "memory_mb": {
+        "rss_before_load": 24.890625,
+        "rss_after_load": 648.140625,
+        "model_load_delta": 623.25,
+        "peak_rss": 679.515625
+      },
+      "status": "ölçüldü"
+    },
+    {
+      "config": "rules+hushmark-berturk-112m",
+      "backend": "hushmark-berturk-112m@49ed759",
+      "load_seconds": 0.46,
+      "sets": {
+        "sentetik": {
+          "documents": 50,
+          "chars": 38167,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CARD": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CHILD_AGE": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CRIMINAL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 26,
+              "correct": 13,
+              "precision": 0.5,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 26,
+              "caught": 26,
+              "recall": 1.0,
+              "predicted": 26,
+              "correct": 26,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "EMAIL": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "HEALTH": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "IBAN": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PARCEL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 430,
+              "caught": 430,
+              "recall": 1.0,
+              "predicted": 430,
+              "correct": 430,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PHONE": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PLATE": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SCHOOL": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SOLE_PROPRIETOR": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "TCKN": {
+              "gold": 38,
+              "caught": 38,
+              "recall": 1.0,
+              "predicted": 38,
+              "correct": 38,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "UNION": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "VKN": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            }
+          },
+          "micro": {
+            "recall": 1.0,
+            "precision": 0.9819193324061196
+          },
+          "latency_ms_per_doc": {
+            "mean": 96.19474910083227,
+            "p50": 83.41533350176178,
+            "p95": 149.4769169948995,
+            "max": 168.37095899973065
+          },
+          "cpu_ms_per_doc": 95.97958000000001,
+          "wall_ms_per_1000_chars": 126.01822137033597,
+          "review_items_per_doc": 1.28,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 1.0,
+              "passed": true
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 0.9819193324061196,
+              "passed": true
+            }
+          }
+        },
+        "zor": {
+          "documents": 35,
+          "chars": 3525,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 69,
+              "caught": 60,
+              "recall": 0.8695652173913043,
+              "predicted": 61,
+              "correct": 60,
+              "precision": 0.9836065573770492,
+              "missed_in": ["zor-006", "zor-017", "zor-018", "zor-024", "zor-027", "zor-030"]
+            }
+          },
+          "micro": {
+            "recall": 0.8732394366197183,
+            "precision": 0.9841269841269841
+          },
+          "latency_ms_per_doc": {
+            "mean": 12.416187946551611,
+            "p50": 11.396582995075732,
+            "p95": 18.593415967188776,
+            "max": 21.959457953926176
+          },
+          "cpu_ms_per_doc": 12.464685714285778,
+          "wall_ms_per_1000_chars": 123.28129876008694,
+          "review_items_per_doc": 0.11428571428571428,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 0.8695652173913043,
+              "passed": false
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 0.9841269841269841,
+              "passed": true
+            }
+          },
+          "person_by_tag": {
+            "akrabalik": {
+              "gold": 4,
+              "caught": 4,
+              "recall": 1.0
+            },
+            "baba-adi": {
+              "gold": 3,
+              "caught": 1,
+              "recall": 0.3333333333333333
+            },
+            "bas-harf": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "buyuk-harf": {
+              "gold": 12,
+              "caught": 9,
+              "recall": 0.75
+            },
+            "ek": {
+              "gold": 16,
+              "caught": 16,
+              "recall": 1.0
+            },
+            "imza": {
+              "gold": 3,
+              "caught": 2,
+              "recall": 0.6666666666666666
+            },
+            "ipucusuz": {
+              "gold": 18,
+              "caught": 18,
+              "recall": 1.0
+            },
+            "kucuk-harf": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "liste": {
+              "gold": 9,
+              "caught": 8,
+              "recall": 0.8888888888888888
+            },
+            "meslek": {
+              "gold": 11,
+              "caught": 11,
+              "recall": 1.0
+            },
+            "ortak-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "soyad-once": {
+              "gold": 3,
+              "caught": 3,
+              "recall": 1.0
+            },
+            "tek-ad": {
+              "gold": 4,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "tire": {
+              "gold": 1,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "uc-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "yabanci": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            }
+          }
+        }
+      },
+      "memory_mb": {
+        "rss_before_load": 25.03125,
+        "rss_after_load": 664.734375,
+        "model_load_delta": 639.703125,
+        "peak_rss": 870.90625
+      },
+      "status": "ölçüldü"
+    },
+    {
+      "config": "rules+gliner-multi-v2.1",
+      "backend": "gliner-multi-v2.1@443d26d",
+      "load_seconds": 4.27,
+      "sets": {
+        "sentetik": {
+          "documents": 50,
+          "chars": 38167,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CARD": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CHILD_AGE": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CRIMINAL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 26,
+              "caught": 26,
+              "recall": 1.0,
+              "predicted": 49,
+              "correct": 37,
+              "precision": 0.7551020408163265,
+              "missed_in": []
+            },
+            "EMAIL": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "HEALTH": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "IBAN": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PARCEL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 430,
+              "caught": 418,
+              "recall": 0.9720930232558139,
+              "predicted": 419,
+              "correct": 419,
+              "precision": 1.0,
+              "missed_in": [
+                "sentetik-003",
+                "sentetik-007",
+                "sentetik-011",
+                "sentetik-015",
+                "sentetik-019",
+                "sentetik-023",
+                "sentetik-027",
+                "sentetik-031",
+                "sentetik-035",
+                "sentetik-039"
+              ]
+            },
+            "PHONE": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PLATE": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SCHOOL": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SOLE_PROPRIETOR": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "TCKN": {
+              "gold": 38,
+              "caught": 38,
+              "recall": 1.0,
+              "predicted": 38,
+              "correct": 38,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "UNION": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "VKN": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            }
+          },
+          "micro": {
+            "recall": 0.9830028328611898,
+            "precision": 0.983026874115983
+          },
+          "latency_ms_per_doc": {
+            "mean": 173.86700081755407,
+            "p50": 158.32412548479624,
+            "p95": 320.2783750020899,
+            "max": 405.4353749961592
+          },
+          "cpu_ms_per_doc": 692.9264000000001,
+          "wall_ms_per_1000_chars": 227.7713742468023,
+          "review_items_per_doc": 1.48,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 0.9720930232558139,
+              "passed": false
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 0.983026874115983,
+              "passed": true
+            }
+          }
+        },
+        "zor": {
+          "documents": 35,
+          "chars": 3525,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 3,
+              "correct": 2,
+              "precision": 0.6666666666666666,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 69,
+              "caught": 65,
+              "recall": 0.9420289855072463,
+              "predicted": 68,
+              "correct": 66,
+              "precision": 0.9705882352941176,
+              "missed_in": ["zor-006", "zor-021", "zor-032"]
+            },
+            "SOLE_PROPRIETOR": {
+              "gold": 0,
+              "caught": 0,
+              "recall": null,
+              "predicted": 1,
+              "correct": 0,
+              "precision": 0.0,
+              "missed_in": []
+            }
+          },
+          "micro": {
+            "recall": 0.9436619718309859,
+            "precision": 0.9452054794520548
+          },
+          "latency_ms_per_doc": {
+            "mean": 19.901100032231106,
+            "p50": 18.421457963995636,
+            "p95": 27.023541973903775,
+            "max": 37.891458021476865
+          },
+          "cpu_ms_per_doc": 98.08140000000013,
+          "wall_ms_per_1000_chars": 197.59957478811026,
+          "review_items_per_doc": 0.2,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 0.9420289855072463,
+              "passed": false
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 0.9452054794520548,
+              "passed": false
+            }
+          },
+          "person_by_tag": {
+            "akrabalik": {
+              "gold": 4,
+              "caught": 4,
+              "recall": 1.0
+            },
+            "baba-adi": {
+              "gold": 3,
+              "caught": 1,
+              "recall": 0.3333333333333333
+            },
+            "bas-harf": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "buyuk-harf": {
+              "gold": 12,
+              "caught": 9,
+              "recall": 0.75
+            },
+            "ek": {
+              "gold": 16,
+              "caught": 16,
+              "recall": 1.0
+            },
+            "imza": {
+              "gold": 3,
+              "caught": 3,
+              "recall": 1.0
+            },
+            "ipucusuz": {
+              "gold": 18,
+              "caught": 18,
+              "recall": 1.0
+            },
+            "kucuk-harf": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "liste": {
+              "gold": 9,
+              "caught": 9,
+              "recall": 1.0
+            },
+            "meslek": {
+              "gold": 11,
+              "caught": 10,
+              "recall": 0.9090909090909091
+            },
+            "ortak-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "soyad-once": {
+              "gold": 3,
+              "caught": 2,
+              "recall": 0.6666666666666666
+            },
+            "tek-ad": {
+              "gold": 4,
+              "caught": 4,
+              "recall": 1.0
+            },
+            "tire": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0
+            },
+            "uc-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "yabanci": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            }
+          }
+        }
+      },
+      "memory_mb": {
+        "rss_before_load": 24.96875,
+        "rss_after_load": 782.703125,
+        "model_load_delta": 757.734375,
+        "peak_rss": 1974.859375
+      },
+      "status": "ölçüldü"
+    },
+    {
+      "config": "rules+hushmark-berturk-112m+akdeniz27",
+      "backend": "hushmark-berturk-112m@49ed759+akdeniz27@99995f7",
+      "load_seconds": 0.59,
+      "sets": {
+        "sentetik": {
+          "documents": 50,
+          "chars": 38167,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CARD": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CHILD_AGE": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "CRIMINAL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 26,
+              "correct": 13,
+              "precision": 0.5,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 26,
+              "caught": 26,
+              "recall": 1.0,
+              "predicted": 26,
+              "correct": 26,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "EMAIL": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "HEALTH": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "IBAN": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PARCEL": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 430,
+              "caught": 430,
+              "recall": 1.0,
+              "predicted": 430,
+              "correct": 430,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PHONE": {
+              "gold": 25,
+              "caught": 25,
+              "recall": 1.0,
+              "predicted": 25,
+              "correct": 25,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PLATE": {
+              "gold": 13,
+              "caught": 13,
+              "recall": 1.0,
+              "predicted": 13,
+              "correct": 13,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SCHOOL": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "SOLE_PROPRIETOR": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "TCKN": {
+              "gold": 38,
+              "caught": 38,
+              "recall": 1.0,
+              "predicted": 38,
+              "correct": 38,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "UNION": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "VKN": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0,
+              "predicted": 12,
+              "correct": 12,
+              "precision": 1.0,
+              "missed_in": []
+            }
+          },
+          "micro": {
+            "recall": 1.0,
+            "precision": 0.9819193324061196
+          },
+          "latency_ms_per_doc": {
+            "mean": 139.31763338390738,
+            "p50": 130.520479491679,
+            "p95": 209.00337502826005,
+            "max": 220.25029198266566
+          },
+          "cpu_ms_per_doc": 139.66098000000002,
+          "wall_ms_per_1000_chars": 182.51058949342018,
+          "review_items_per_doc": 0.76,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 1.0,
+              "passed": true
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": 1.0,
+              "passed": true
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 0.9819193324061196,
+              "passed": true
+            }
+          }
+        },
+        "zor": {
+          "documents": 35,
+          "chars": 3525,
+          "per_entity": {
+            "ADDRESS": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "DOB": {
+              "gold": 1,
+              "caught": 1,
+              "recall": 1.0,
+              "predicted": 1,
+              "correct": 1,
+              "precision": 1.0,
+              "missed_in": []
+            },
+            "PERSON": {
+              "gold": 69,
+              "caught": 68,
+              "recall": 0.9855072463768116,
+              "predicted": 70,
+              "correct": 69,
+              "precision": 0.9857142857142858,
+              "missed_in": ["zor-024"]
+            }
+          },
+          "micro": {
+            "recall": 0.9859154929577465,
+            "precision": 0.9861111111111112
+          },
+          "latency_ms_per_doc": {
+            "mean": 26.799889394481266,
+            "p50": 24.992457998450845,
+            "p95": 38.5600829613395,
+            "max": 47.81362501671538
+          },
+          "cpu_ms_per_doc": 26.736257142856978,
+          "wall_ms_per_1000_chars": 266.0981925693176,
+          "review_items_per_doc": 0,
+          "gate_15_3_2_bilgi": {
+            "PERSON": {
+              "threshold": 0.995,
+              "recall": 0.9855072463768116,
+              "passed": false
+            },
+            "TCKN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "IBAN": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "PHONE": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "EMAIL": {
+              "threshold": 1.0,
+              "recall": null,
+              "passed": false
+            },
+            "precision": {
+              "threshold": 0.95,
+              "value": 0.9861111111111112,
+              "passed": true
+            }
+          },
+          "person_by_tag": {
+            "akrabalik": {
+              "gold": 4,
+              "caught": 4,
+              "recall": 1.0
+            },
+            "baba-adi": {
+              "gold": 3,
+              "caught": 3,
+              "recall": 1.0
+            },
+            "bas-harf": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "buyuk-harf": {
+              "gold": 12,
+              "caught": 12,
+              "recall": 1.0
+            },
+            "ek": {
+              "gold": 16,
+              "caught": 16,
+              "recall": 1.0
+            },
+            "imza": {
+              "gold": 3,
+              "caught": 3,
+              "recall": 1.0
+            },
+            "ipucusuz": {
+              "gold": 18,
+              "caught": 18,
+              "recall": 1.0
+            },
+            "kucuk-harf": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "liste": {
+              "gold": 9,
+              "caught": 9,
+              "recall": 1.0
+            },
+            "meslek": {
+              "gold": 11,
+              "caught": 11,
+              "recall": 1.0
+            },
+            "ortak-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "soyad-once": {
+              "gold": 3,
+              "caught": 3,
+              "recall": 1.0
+            },
+            "tek-ad": {
+              "gold": 4,
+              "caught": 4,
+              "recall": 1.0
+            },
+            "tire": {
+              "gold": 1,
+              "caught": 0,
+              "recall": 0.0
+            },
+            "uc-sozcuk": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            },
+            "yabanci": {
+              "gold": 2,
+              "caught": 2,
+              "recall": 1.0
+            }
+          }
+        }
+      },
+      "memory_mb": {
+        "rss_before_load": 24.734375,
+        "rss_after_load": 1086.875,
+        "model_load_delta": 1062.140625,
+        "peak_rss": 1321.609375
+      },
+      "status": "ölçüldü"
+    }
+  ],
+  "uyari": "Sentetik ve zor setler kuralları yazan ajan tarafından üretildi; sonuçlar iyimserdir ve 15.3/2 yayın kapısı için kanıt değildir."
+}

@@ -1,0 +1,15 @@
+{
+  "id": "zor-020",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["ortak-sozcuk"],
+  "text": "Davalı Umut Barış, barış görüşmelerine katılmadığını ve umudunu kaybettiğini belirtmiştir.",
+  "annotations_a": [
+    {
+      "start": 7,
+      "end": 17,
+      "entity": "PERSON"
+    }
+  ]
+}

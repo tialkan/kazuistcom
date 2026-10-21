@@ -1,0 +1,15 @@
+{
+  "id": "zor-005",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["buyuk-harf"],
+  "text": "Müvekkil SERKAN DUMANLI adına vekâleten dava açılmıştır.",
+  "annotations_a": [
+    {
+      "start": 9,
+      "end": 23,
+      "entity": "PERSON"
+    }
+  ]
+}

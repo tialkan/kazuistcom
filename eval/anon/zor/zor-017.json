@@ -1,0 +1,20 @@
+{
+  "id": "zor-017",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["tek-ad"],
+  "text": "Çocuk Ayşe, annesinin yanında kalmak istediğini söylemiştir. Ayşe'nin okul durumu iyidir.",
+  "annotations_a": [
+    {
+      "start": 6,
+      "end": 10,
+      "entity": "PERSON"
+    },
+    {
+      "start": 61,
+      "end": 65,
+      "entity": "PERSON"
+    }
+  ]
+}

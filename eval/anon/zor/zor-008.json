@@ -1,0 +1,15 @@
+{
+  "id": "zor-008",
+  "kind": "zor",
+  "synthetic": true,
+  "handwritten": true,
+  "tags": ["buyuk-harf", "ipucusuz", "ek"],
+  "text": "Mahkememizce İSMAİL HAKKI TOPÇUOĞLU'nun beyanına itibar edilmiştir.",
+  "annotations_a": [
+    {
+      "start": 13,
+      "end": 35,
+      "entity": "PERSON"
+    }
+  ]
+}
