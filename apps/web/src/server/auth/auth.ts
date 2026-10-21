@@ -1,16 +1,16 @@
 import { passkey } from '@better-auth/passkey';
+import { authMethods, type AuthMethod } from '@kazuist/contracts';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { createAuthMiddleware } from 'better-auth/api';
 import { nextCookies } from 'better-auth/next-js';
 import { bearer } from 'better-auth/plugins/bearer';
 import { emailOTP } from 'better-auth/plugins/email-otp';
-import { eq } from './orm.ts';
+import { twoFactor } from 'better-auth/plugins/two-factor';
+import { eq } from 'drizzle-orm';
 import { writeAudit } from './audit.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';
 import type { Mailer } from './mailer.ts';
-import { PASSKEY_SESSION_TTL_MS, passkeySessionId } from './step-up.ts';
 
 export interface AuthConfig {
   secret: string;
@@ -23,9 +23,36 @@ export interface AuthConfig {
   google?: { clientId: string; clientSecret: string };
   /** clientId is the Services ID; clientSecret the signed JWT; appBundleIdentifier for iOS id tokens. */
   apple?: { clientId: string; clientSecret: string; appBundleIdentifier?: string };
+  /** 32 byte key (base64) for personal fields such as the identity number of a KVKK application. */
+  piiKey?: string;
+  /** Days between DELETE /v1/me and account.purge (ADR-0023: at most 30; Tarik decides, default 14). */
+  purgeGraceDays: number;
 }
 
-/** Better Auth instance on the existing Drizzle schema (users, sessions, accounts, passkeys, verifications). */
+interface HookCtx {
+  path?: string;
+  params?: Record<string, string>;
+  body?: unknown;
+}
+
+/** sessions.auth_method from the Better Auth endpoint that opened the session. */
+export function authMethodFor(ctx: HookCtx | null | undefined): AuthMethod | null {
+  const path = ctx?.path ?? '';
+  if (path === '/passkey/verify-authentication') return 'passkey';
+  if (path === '/sign-in/email-otp' || path === '/email-otp/verify-email') return 'email_otp';
+  if (path === '/sign-in/email' || path === '/sign-up/email' || path === '/two-factor/verify-totp')
+    return 'password';
+  const provider =
+    path.startsWith('/callback/') || path.startsWith('/oauth2/callback/')
+      ? ctx?.params?.id
+      : path === '/sign-in/social'
+        ? (ctx?.body as { provider?: string } | undefined)?.provider
+        : undefined;
+  if (provider && (authMethods as readonly string[]).includes(provider)) return provider as AuthMethod;
+  return null;
+}
+
+/** Better Auth instance on the existing Drizzle schema. */
 export function createAuth(db: Db, config: AuthConfig, mailer: Mailer) {
   const rpID = new URL(config.baseUrl).hostname;
   const socialProviders: Record<string, unknown> = {};
@@ -51,6 +78,7 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer) {
         accounts: schema.accounts,
         verifications: schema.verifications,
         passkeys: schema.passkeys,
+        twoFactors: schema.twoFactors,
       },
     }),
     advanced: {
@@ -60,12 +88,20 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer) {
       defaultCookieAttributes: { httpOnly: true, secure: config.production, sameSite: 'lax', path: '/' },
       ipAddress: { ipAddressHeaders: ['x-real-ip'] },
     },
-    session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
+    session: {
+      expiresIn: 60 * 60 * 24 * 30,
+      updateAge: 60 * 60 * 24,
+      additionalFields: { authMethod: { type: 'string', required: false, input: false } },
+    },
     /** Rate limiting is done in front of the handler with the shared Valkey limiter (rate-limit.ts). */
     rateLimit: { enabled: false },
     emailAndPassword: { enabled: true, minPasswordLength: 10, maxPasswordLength: 128 },
     socialProviders,
-    account: { accountLinking: { enabled: true, trustedProviders: ['google', 'apple'] } },
+    account: {
+      accountLinking: { enabled: true, trustedProviders: ['google', 'apple'] },
+      // Provider tokens are only used during sign in; they are kept encrypted at rest (hukuk-uyum madde 4).
+      encryptOAuthTokens: true,
+    },
     plugins: [
       emailOTP({
         otpLength: 6,
@@ -84,6 +120,8 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer) {
         // Our schema property is credentialId (column credential_id); Better Auth calls it credentialID.
         schema: { passkey: { fields: { credentialID: 'credentialId' } } },
       }),
+      // TOTP second step for the admin panel (plan 5.6/2). Passwordless so passkey only admins can enrol.
+      twoFactor({ issuer: 'Kazuist', allowPasswordless: true }),
       bearer(),
       nextCookies(),
     ],
@@ -108,30 +146,18 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer) {
       },
       session: {
         create: {
-          /** A deleted account (deletedAt set) cannot open new sessions. */
-          before: async (session) => {
+          /** A deleted account cannot open sessions; every session records how it was opened. */
+          before: async (session, ctx) => {
             const [u] = await db
               .select({ deletedAt: schema.users.deletedAt })
               .from(schema.users)
               .where(eq(schema.users.id, session.userId));
             if (!u || u.deletedAt) return false;
-            return { data: session };
+            const prior = (session as { authMethod?: string | null }).authMethod ?? null;
+            return { data: { ...session, authMethod: prior ?? authMethodFor(ctx as HookCtx | null) } };
           },
         },
       },
-    },
-    hooks: {
-      after: createAuthMiddleware(async (ctx) => {
-        if (ctx.path !== '/passkey/verify-authentication') return;
-        const created = ctx.context.newSession;
-        if (!created) return;
-        // Remember that this session was opened with a passkey (admin step up, plan 5.6/2).
-        await db.insert(schema.verifications).values({
-          identifier: passkeySessionId(created.session.id),
-          value: created.user.id,
-          expiresAt: new Date(Date.now() + PASSKEY_SESSION_TTL_MS),
-        });
-      }),
     },
   });
 }

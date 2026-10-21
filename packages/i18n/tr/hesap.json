@@ -6,7 +6,7 @@
       "forget-password": "Kazuist parola sıfırlama kodunuz",
       "change-email": "Kazuist e-posta değişikliği kodunuz",
       "edu": "Kazuist öğrenci doğrulama kodunuz",
-      "admin-step-up": "Kazuist yönetim paneli onay kodunuz"
+      "kvkk-guest": "Kazuist KVKK başvurusu doğrulama kodunuz"
     },
     "kodMetni": "Kodunuz: {kod}\n\nKod 10 dakika geçerlidir. Bu isteği siz yapmadıysanız bu iletiyi yok sayabilirsiniz."
   },
