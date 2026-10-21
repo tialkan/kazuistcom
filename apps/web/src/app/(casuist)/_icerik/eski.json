@@ -1534,7 +1534,8 @@
               {
                 "alt": "Hacettepe Üniversitesi",
                 "width": "32",
-                "height": "32"
+                "height": "32",
+                "src": "/hacettepe-logo.png"
               }
             ],
             ["p", {}, "Doç. Dr. Merve Ayşegül Kulular İbrahim"],
@@ -1549,7 +1550,8 @@
               {
                 "alt": "Ankara Yıldırım Beyazıt Üniversitesi",
                 "width": "32",
-                "height": "32"
+                "height": "32",
+                "src": "/aybu-logo.png"
               }
             ],
             ["p", {}, "Öğr. Gör. Tarık İsmet Alkan"],
@@ -1899,7 +1901,8 @@
                 {
                   "alt": "Hacettepe Üniversitesi",
                   "width": "24",
-                  "height": "24"
+                  "height": "24",
+                  "src": "/hacettepe-logo.png"
                 }
               ],
               [
@@ -1907,7 +1910,8 @@
                 {
                   "alt": "Ankara Yıldırım Beyazıt Üniversitesi",
                   "width": "24",
-                  "height": "24"
+                  "height": "24",
+                  "src": "/aybu-logo.png"
                 }
               ]
             ]

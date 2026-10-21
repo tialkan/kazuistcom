@@ -2,6 +2,18 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## on-yuz, Tarık onayları (dalga-1/on-yuz/onaylar), 2026-10-20
+
+Kaynak: docs/kararlar.md, 2026-10-20 satırları. Durum: PR açık, birleştirilmedi.
+
+- Künye: `apps/web/src/app/(kabuk)/_kabuk/kunye.ts` içinde `dogrulandi: true`, `kaynakNotu: 'Tarık onayı 2026-10-20, mevcut site /tr/hakkinda'`. Değerler arşivlenmiş /tr/hakkinda ile birebir (test: `fiyatlar/fiyatlar.test.ts`). Alt bilgi e-postası kulularteknoloji@gmail.com.
+- /fiyatlar: TASLAK notu, `fiyatlar.taslak` i18n anahtarı ve `.taslak-notu` stili kaldırıldı; `fiyatTablosuSurumu = '2026-10-20'`. Tablo değerleri plan.md 4.2-4.4 ile test ediliyor; plan tablosu değişirse test kırılır ve `fiyatlar.ts` birlikte güncellenmeli. Hukuki metinler taslak kalır.
+- Casuist görselleri: orijinaller https://kazuist.com/<dosya> adresinden salt okunur indirildi (kazuist-baslik.webp 1600x900, tubitak.svg, eureka.png 560x147, eurostars.png 380x283, hacettepe-logo.png 1359x2000, aybu-logo.png 185x272; sha256 değerleri `gorselleri-donustur.mjs` çıktısında). `apps/web/public/casuist/` altında AVIF ve WebP (başlık 640/960/1280/1600w; Eureka 150/300w; Eurostars 78/156w; üniversite logoları 16/22/32/44w), TÜBİTAK SVG olarak değiştirilmeden. Toplam yaklaşık 290 KB.
+- Akış: `donustur.py` artık img için özgün `src`'yi (Next.js görüntü URL'si açılmış) JSON'a yazar; `_bilesen/gorseller.ts` bu yolu yerel dosyalara eşler; `Dugum.tsx` `<picture>` (AVIF kaynak, WebP img, width/height, lazy; başlık eager ve fetchpriority high) basar. Eşlemesi olmayan görsel yine yer tutucu olur. Logolar arşivdeki yükseklikte, kendi en-boy oranıyla çizilir (TÜBİTAK 47x58, Eureka 152x40, Eurostars 78x58, Hacettepe ve AYBÜ 22x32 ile 16x24). Başlık görseli alt metni i18n'de `casuist.gorselAlt.kazuistBaslik`; logolarda arşivdeki özel adlar alt metindir.
+- Görselleri yeniden üretmek için: orijinalleri boş bir klasöre indirip `NODE_PATH=<sharp içeren dizin> node docs/tasarim/casuist-arsiv/gorselleri-donustur.mjs <klasör> apps/web/public/casuist`.
+- Ekran görüntüleri: değişen sayfalar (/en, /tr, /partner, /tr/ortak (yeni), /eski, /fiyatlar) 375/768/1440 px yenilendi; axe 42 ölçümde ihlal 0, yatay taşma 0. Betik tembel görselleri çekimden önce yükler. Lighthouse bu işte çalıştırılmadı.
+- Not: başlık görselinin YZ ürünü olmadığı ve logo kullanım izni Tarık beyanına dayanır (docs/kararlar.md); `apps/web/public/casuist/**` sahiplik tablosunda yok, orkestra on-yuz'a eklemeli.
+
 ## Dalga 1, orkestra birleştirmesi, 2026-10-20
 
 PR #1-#8 main'de, CI yeşil. Kapı henüz kapanmadı (kalite-guvenlik raporu bekliyor). Aşağıdaki bölümler ajanların PR açıklamalarındaki DEVIR notlarıdır.

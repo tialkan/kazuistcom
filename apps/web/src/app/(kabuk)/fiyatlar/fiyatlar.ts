@@ -1,10 +1,11 @@
 /**
- * Price table, single source (wt.5). Copied from plan.md 4.2, 4.3 and 4.4 (draft, awaiting Tarik's approval).
+ * Price table, single source (wt.5). Copied from plan.md 4.2, 4.3 and 4.4; approved by Tarik on 2026-10-20
+ * (docs/kararlar.md).
  * All prices include VAT (plan 4.1/7). The odeme module will replace this with the versioned
  * price table from packages/ledger; until then this file is the only place prices live.
  * Plan and operation names are content, not UI strings, so they are kept here with the numbers.
  */
-export const fiyatTablosuSurumu = 'taslak-2026-10';
+export const fiyatTablosuSurumu = '2026-10-20';
 
 export type Plan = { ad: string; kime: string; fiyat: string; kredi: string; ozellik: string };
 export const planlar: Plan[] = [
