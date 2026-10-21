@@ -96,6 +96,7 @@ def test_normalize_spans() -> None:
     assert _norm("Ayşe Yılmaz Ltd. Şti.") == ["Ayşe Yılmaz"]
     # A closing dot of an initial is part of the name; a sentence dot is not.
     assert _norm("A.K.") == ["A.K."] and _norm("M. Ali Kaya") == ["M. Ali Kaya"]
+    assert _norm("Sanık A.K. ile", 7, 10) == [".K."]  # akdeniz27 splits initials as "A" and ".K."
     assert _norm("Fadime Koçer.") == ["Fadime Koçer"] and _norm("Av.") == [] and _norm("Av. Dr. Can Er") == ["Can Er"]
     # Non person spans are only trimmed.
     assert _norm(" Lale Mahallesi, Defne Sokak No: 12 ", entity="ADDRESS") == ["Lale Mahallesi, Defne Sokak No: 12"]

@@ -3,10 +3,7 @@
   "kind": "zor",
   "synthetic": true,
   "handwritten": true,
-  "tags": [
-    "soyad-once",
-    "buyuk-harf"
-  ],
+  "tags": ["soyad-once", "buyuk-harf"],
   "text": "Kayıtlarda adı YILMAZTÜRK Selçuk olarak geçen kişi ile Kayalı, Nurhan aynı adreste oturmaktadır.",
   "annotations_a": [
     {

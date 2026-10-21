@@ -106,11 +106,12 @@ _EDGE = " \t\r\n,;:()[]\"'’"
 
 
 def _trim(text: str, start: int, end: int) -> Tuple[int, int]:
-    """Strip separators at both edges. A trailing dot is removed only when it ends a sentence, never when it
-    closes an initial ("A.K."), so trimming cannot unmask part of a name."""
+    """Strip separators at both edges. Dots are kept at the start (a model may return ".K." for the second
+    initial of "A.K.") and removed at the end only when they close a sentence, never an initial, so trimming
+    cannot unmask part of a name."""
     while True:
         before = (start, end)
-        while start < end and (text[start] in _EDGE or text[start] == "."):
+        while start < end and text[start] in _EDGE:
             start += 1
         while end > start and text[end - 1] in _EDGE:
             end -= 1

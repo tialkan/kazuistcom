@@ -3,9 +3,7 @@
   "kind": "zor",
   "synthetic": true,
   "handwritten": true,
-  "tags": [
-    "tek-ad"
-  ],
+  "tags": ["tek-ad"],
   "text": "Mağdur ifadesinde \"Cem bana vurdu, Tuncay da seyretti\" demiştir.",
   "annotations_a": [
     {

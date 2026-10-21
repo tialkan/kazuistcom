@@ -10,6 +10,7 @@ Bütün adlar uydurmadır. Metinleri kuralları yazan ajan yazdı; set küçükt
 DEĞİLDİR (plan 6.7, 15.3/2). İşaretleme: [[P:ad]] kişi, [[A:adres]] adres, [[D:doğum tarihi]] doğum tarihi.
 
 Kullanım (services/worker-py içinden): uv run python ../../eval/anon/build_hard.py  (çıktı eval/anon/zor)
+ardından kökte: pnpm exec prettier --write "eval/anon/**/*.json"
 """
 
 from __future__ import annotations

@@ -11,6 +11,7 @@ Modeller yalnız yerel dizinden yüklenir (KAZUIST_NER_DIR/<aday>, export_ner.py
 Kullanım (services/worker-py içinden, ner extra kurulu):
   uv run python ../../eval/anon/compare_ner.py --out ../../eval/anon/raporlar/dalga-1-ner.json
   uv run python ../../eval/anon/compare_ner.py --only rules+hushmark-berturk-112m --threads 1
+  ardından kökte: pnpm exec prettier --write "eval/anon/**/*.json"
 """
 
 from __future__ import annotations
@@ -77,8 +78,13 @@ def machine() -> dict:
                                  check=True).stdout.strip()
         except (OSError, subprocess.CalledProcessError):
             pass
+    try:
+        load = [round(x, 1) for x in os.getloadavg()]
+    except OSError:
+        load = None
+    # Latency is only comparable on an otherwise idle machine; the load average makes a busy run visible.
     return {"platform": platform.platform(), "cpu": cpu, "logical_cpus": os.cpu_count(),
-            "python": platform.python_version()}
+            "python": platform.python_version(), "load_average_1_5_15": load}
 
 
 def person_by_tag(docs: List[dict], predict: Callable[[str], List[dict]]) -> Dict[str, dict]:
@@ -96,8 +102,16 @@ def person_by_tag(docs: List[dict], predict: Callable[[str], List[dict]]) -> Dic
 
 
 def worker(config: str) -> dict:
+    import anonymizer.ner as ner_mod
+    import anonymizer.pipeline as pipeline_mod
     from anonymizer.ner import NullBackend, load_backend
     from anonymizer.pipeline import anonymize
+
+    if os.environ.get("KAZUIST_EVAL_RAW_SPANS") == "1":
+        # Control run: model spans exactly as the model returns them (normalize_spans off), to show that the
+        # normalisation does not raise recall on these sets.
+        ner_mod.normalize_spans = lambda text, s: [s]
+        pipeline_mod.normalize_spans = ner_mod.normalize_spans
 
     base = rss_mb()
     rules = config == "rules" or config.startswith("rules+")
@@ -181,6 +195,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     ap.add_argument("--out", type=Path)
     ap.add_argument("--only", action="append", help="yalnız bu yapılandırma(lar)")
     ap.add_argument("--threads", type=int, default=0, help="onnxruntime iş parçacığı (0: varsayılan)")
+    ap.add_argument("--raw-spans", action="store_true",
+                    help="denetim ölçümü: model span'ları normalizasyonsuz (normalize_spans kapalı)")
     ap.add_argument("--worker", help=argparse.SUPPRESS)
     a = ap.parse_args(argv)
     if a.worker:
@@ -189,6 +205,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     env = dict(os.environ)
     if a.threads:
         env["KAZUIST_NER_THREADS"] = str(a.threads)
+    if a.raw_spans:
+        env["KAZUIST_EVAL_RAW_SPANS"] = "1"
     results = []
     for cfg in a.only or CONFIGS:
         p = subprocess.run([sys.executable, __file__, "--worker", cfg], capture_output=True, text=True, env=env)
@@ -208,7 +226,8 @@ def main(argv: Optional[List[str]] = None) -> int:
               file=sys.stderr)
     report = {
         "date": time.strftime("%Y-%m-%d"), "machine": machine(),
-        "onnxruntime_threads": a.threads or "varsayılan", "models": model_info(), "results": results,
+        "onnxruntime_threads": a.threads or "varsayılan", "span_normalization": not a.raw_spans,
+        "models": model_info(), "results": results,
         "uyari": "Sentetik ve zor setler kuralları yazan ajan tarafından üretildi; sonuçlar iyimserdir ve "
                  "15.3/2 yayın kapısı için kanıt değildir.",
     }

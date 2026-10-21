@@ -6,6 +6,8 @@
    - Orkestra, `pyproject.toml`: yeni isteğe bağlı grup `ner-runtime = ["onnxruntime>=1.20", "tokenizers>=0.20", "numpy>=1.26"]`. Lisanslar: onnxruntime MIT, tokenizers Apache-2.0, numpy BSD-3-Clause. Mevcut `ner` grubu (dışa aktarma ve GLiNER, torch içerir) olduğu gibi kalır. CI `uv sync` ile hafif kalır; NER testleri model yoksa atlanır.
    - Altyapi, worker-py imajı: `uv sync --extra ner-runtime`. Model dosyaları imaja ve depoya girmez; salt okunur birim olarak bağlanır (ör. `/models/ner`) ve `KAZUIST_NER_DIR=/models/ner` verilir. Dizin `eval/anon/export_ner.py` çıktısıdır; her model klasöründeki `kazuist_manifest.json` kaynak ve ONNX sha256 değerlerini taşır, kurulumda doğrulanmalıdır.
    - Ortam değişkenleri: `KAZUIST_NER_BACKEND=akdeniz27` (raporun kazananı), `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`, isteğe bağlı `KAZUIST_NER_THREADS` (onnxruntime iş parçacığı sayısı). Değişken verilip model yoksa işçi başlamaz (sessizce yalnız kural katmanına düşmez).
-   - Kaynak boyutu (raporun ölçümü, Apple M serisi dizüstü, yalnız fikir verir): akdeniz27 ONNX 420 MB disk; yükleme sonrası süreç RSS artışı ve tepe RSS raporda. Türkiye'deki sunucunun CPU'sunda `compare_ner.py --threads <n>` ile yeniden ölçülmeli.
+   - Kaynak boyutu (raporun ölçümü, Apple M4 dizüstü, yalnız fikir verir): akdeniz27 ONNX 420 MB disk, işçi
+     süreci tepe RSS yaklaşık 680 MB; tek iş parçacığında 1000 karakter başına yaklaşık 92 ms. Türkiye'deki
+     sunucunun CPU'sunda `compare_ner.py --threads <n>` ile yeniden ölçülmeli.
 4. Geriye uyumluluk: `KAZUIST_NER_BACKEND` verilmezse davranış bugünküyle aynıdır (yalnız kural katmanı, sürüm `ner.none`). Değişken verildiğinde `anonymizationVersion` değişir (`anon-0.2.0+ekE-2026.10.0+ner.akdeniz27@99995f7`); plan 6.4/7 gereği corpus yeniden işlenir ve fark raporu tutulur.
 5. Aciliyet: gerçek karar metni işlenmeden önce (Dalga 2 başı). Bu olmadan Dalga 1 ilerler; üretimde kişi adı eşiği yalnız kural katmanıyla tutturulamaz.
