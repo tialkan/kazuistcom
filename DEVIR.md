@@ -4,7 +4,7 @@ En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en 
 
 ## Dalga 1, mimar, sözleşme istekleri (dalga-1/mimar/istekler), 2026-10-20
 
-Durum: PR açık, birleştirilmedi. Sözleşme v1.1; ADR-0021, ADR-0022, ADR-0023 "Önerildi, Tarık onayı bekliyor".
+Durum: PR #10 açık, birleştirilmedi. Sözleşme v1.1; ADR-0021, ADR-0022, ADR-0023 "Önerildi, Tarık onayı bekliyor".
 Karar tablosu: docs/istekler/README.md; her istek dosyasının sonunda "Sonuç".
 
 - Sözleşme: `CONTRACT_VERSION = '1.1.0'` (openapi.yaml, package.json ile testle eşit). Yeni modüller
