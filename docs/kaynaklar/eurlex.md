@@ -38,4 +38,4 @@ tüzük ve yönlendirmesi; 0,8 MB), yani 5 sınırı aşıldı. Fikstür GDPR ma
 
 ## Tarık'tan
 
-Onay: bu dosyada `tarik_onayi: onaylandi`. Türkçe çeviri resmî olmadığından kayıtlar İngilizcedir (`jurisdiction=AB`).
+Onay: bu dosyada `tarik_onayi: onaylandi`. Türkçe çeviri resmî olmadığından kayıtlar İngilizcedir (`jurisdiction=EU`).

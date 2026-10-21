@@ -240,7 +240,7 @@ def test_eurlex_articles_and_act() -> None:
     assert [a[0] for a in arts] == ["1", "2"]
     assert arts[0][1] == "Subject-matter and objectives"
     draft = eurlex.parse_act("32016R0679", markup, NOW)
-    assert draft.jurisdiction == "AB" and draft.type == "ab_hukuku"
+    assert draft.jurisdiction == "EU" and draft.type == "ab_hukuku"
     assert draft.source_url == "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679"
     assert "protection of natural persons" in draft.text
     assert draft.license_basis == "AB yeniden kullanım kararı (2011/833/AB)"

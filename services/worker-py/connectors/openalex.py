@@ -62,7 +62,7 @@ def parse_work(data: Mapping[str, Any], fetched_at: datetime) -> RecordDraft:
         type="makale",
         title=title,
         authority_class="doktrin",
-        jurisdiction="TR" if (data.get("language") == "tr") else "INT",
+        jurisdiction="TR" if (data.get("language") == "tr") else "ZZ",
         license_basis=LICENSE_BASIS,
         source_url=oa_id,
         source_key=f"openalex:{short}",

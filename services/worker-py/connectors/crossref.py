@@ -49,7 +49,7 @@ def parse_work(payload: Mapping[str, Any], fetched_at: datetime) -> RecordDraft:
         type=kind,
         title=title,
         authority_class="doktrin",
-        jurisdiction="INT",
+        jurisdiction="ZZ",
         license_basis=LICENSE_BASIS,
         source_url=f"https://doi.org/{doi}",
         source_key=f"crossref:{doi}",

@@ -90,5 +90,6 @@ class RecordDraft:
             "source_key": self.source_key,
             "fetched_at": self.fetched_at,
             "text": self.text,
+            "masked_text": self.text if norm else None,
             "openalex_cited_by": self.openalex_cited_by,
         }
