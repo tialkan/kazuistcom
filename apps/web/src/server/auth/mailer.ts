@@ -7,7 +7,7 @@ import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
  * through notify.send jobs in apps/worker-node/src/notify.
  */
 export type CodePurpose =
-  'sign-in' | 'email-verification' | 'forget-password' | 'change-email' | 'edu' | 'admin-step-up';
+  'sign-in' | 'email-verification' | 'forget-password' | 'change-email' | 'edu' | 'kvkk-guest';
 
 export interface Mailer {
   sendCode(to: string, purpose: CodePurpose, code: string): Promise<void>;

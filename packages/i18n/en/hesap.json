@@ -6,7 +6,7 @@
       "forget-password": "Your Kazuist password reset code",
       "change-email": "Your Kazuist e-mail change code",
       "edu": "Your Kazuist student verification code",
-      "admin-step-up": "Your Kazuist admin approval code"
+      "kvkk-guest": "Your Kazuist KVKK application code"
     },
     "kodMetni": "Your code: {kod}\n\nThe code is valid for 10 minutes. If you did not request it, you can ignore this message."
   },

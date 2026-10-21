@@ -1,11 +1,15 @@
-import { drizzleNodePg as drizzle } from './orm.ts';
-import pg from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { sharedPool, sharedValkey } from '../deps.ts';
 import { createAuth, type AuthConfig, type KazuistAuth } from './auth.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';
 import { smtpMailer, unconfiguredMailer, type Mailer } from './mailer.ts';
-import { MemoryRateLimitStore, RateLimiter, type RateLimitStore } from './rate-limit.ts';
-import { roleDescriptions } from './roles.ts';
+import {
+  MemoryRateLimitStore,
+  RateLimiter,
+  ValkeyRateLimitStore,
+  type RateLimitStore,
+} from './rate-limit.ts';
 
 export interface AuthContext {
   db: Db;
@@ -35,14 +39,6 @@ export function createAuthContext(deps: ContextDeps): AuthContext {
   };
 }
 
-/** Roles referenced by user_roles must exist; the migration does not seed them (see istek). */
-export async function ensureRoles(db: Db): Promise<void> {
-  await db
-    .insert(schema.roles)
-    .values(Object.entries(roleDescriptions).map(([id, description]) => ({ id, description })))
-    .onConflictDoNothing();
-}
-
 export function configFromEnv(env: Record<string, string | undefined> = process.env): AuthConfig {
   const need = (k: string) => {
     const v = env[k];
@@ -67,35 +63,30 @@ export function configFromEnv(env: Record<string, string | undefined> = process.
             appBundleIdentifier: env.APPLE_APP_BUNDLE_IDENTIFIER,
           }
         : undefined,
+    piiKey: env.PII_ENCRYPTION_KEY,
+    purgeGraceDays: Math.min(30, Math.max(1, Number(env.ACCOUNT_PURGE_GRACE_DAYS ?? '14') || 14)),
   };
 }
 
 let current: AuthContext | undefined;
-let rolesReady: Promise<void> | undefined;
 
-/**
- * Process wide context. The Valkey store is wired by altyapi when the client lands (health
- * ping D4); until then the limiter is per process, which is documented in the PR.
- */
+/** Process wide context over the shared pool and Valkey client (server/deps.ts). */
 export async function getAuthContext(): Promise<AuthContext> {
   if (!current) {
-    const db = drizzle(new pg.Pool({ connectionString: process.env.DATABASE_URL }), {
-      schema,
-    }) as unknown as Db;
-    const url = process.env.MAIL_SMTP_URL;
+    const env = process.env;
+    const db = drizzle(sharedPool(env.DATABASE_URL ?? ''), { schema }) as unknown as Db;
+    const url = env.MAIL_SMTP_URL;
     current = createAuthContext({
       db,
-      config: configFromEnv(),
+      config: configFromEnv(env),
       mailer: url ? smtpMailer(url) : unconfiguredMailer,
+      store: env.VALKEY_URL ? new ValkeyRateLimitStore(sharedValkey(env.VALKEY_URL)) : undefined,
     });
   }
-  rolesReady ??= ensureRoles(current.db);
-  await rolesReady;
   return current;
 }
 
 /** Tests replace the process context. */
 export function setAuthContext(ctx: AuthContext | undefined): void {
   current = ctx;
-  rolesReady = ctx ? ensureRoles(ctx.db) : undefined;
 }

@@ -2,8 +2,8 @@ import { PGlite } from '@electric-sql/pglite';
 import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
 import { vector } from '@electric-sql/pglite-pgvector';
 import { migrationsFolder } from '@kazuist/db';
-import { drizzle } from '../../../../../../packages/db/node_modules/drizzle-orm/pglite/index.js';
-import { migrate } from '../../../../../../packages/db/node_modules/drizzle-orm/pglite/migrator.js';
+import { drizzle } from 'drizzle-orm/pglite';
+import { migrate } from 'drizzle-orm/pglite/migrator';
 import { createAuthContext, setAuthContext, type AuthContext } from '../context.ts';
 import { schema, type Db } from '../db.ts';
 import { authHandler } from '../handlers.ts';
@@ -38,6 +38,8 @@ export async function createHarness(): Promise<Harness> {
       trustedOrigins: [],
       production: false,
       trustedProxies: 1,
+      piiKey: Buffer.alloc(32, 7).toString('base64'),
+      purgeGraceDays: 14,
     },
   });
   setAuthContext(ctx);
@@ -74,3 +76,6 @@ export function api(path: string, token: string | null, init: RequestInit = {}):
   if (init.body) headers.set('content-type', 'application/json');
   return new Request(`${BASE}/api${path}`, { ...init, headers });
 }
+
+/** Next.js route context for handlers with dynamic segments. */
+export const params = (p: Record<string, string>) => ({ params: Promise.resolve(p) });
