@@ -1,4 +1,5 @@
 import pg from 'pg';
+import { billingDepsFromEnv } from './billing/deps.ts';
 import { buildHandlers, dailyBillingTick, unavailableBilling } from './handlers.ts';
 import {
   apnsTransport,
@@ -57,10 +58,15 @@ function notifyDeps(): NotifyDeps | undefined {
   };
 }
 
-// Billing runs against the Postgres billing store once odeme lands it; until then the jobs fail closed
-// (BillingStoreUnavailable) and the daily schedule stays off.
-const billing = unavailableBilling;
-const handlers = buildHandlers({ notify: notifyDeps(), billing });
+// Billing runs against odeme's Postgres billing store when iyzico and auth secrets are set; otherwise the
+// jobs fail closed (BillingStoreUnavailable) and the daily schedule stays off.
+const realBilling = await billingDepsFromEnv(pool);
+if (!realBilling) log('billing disabled: iyzico or auth secret not set');
+const billing = realBilling ?? unavailableBilling;
+// account.purge needs the same secret as the web side so the audit hash matches.
+const purge = env.BETTER_AUTH_SECRET ? { db: pool, secret: env.BETTER_AUTH_SECRET } : undefined;
+if (!purge) log('account.purge disabled: BETTER_AUTH_SECRET is not set');
+const handlers = buildHandlers({ notify: notifyDeps(), billing, purge });
 const consumer = createConsumer(pool, `worker-node-${process.pid}`, handlers);
 const worker = startWorker({
   db: pool,
