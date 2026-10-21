@@ -190,9 +190,54 @@ def test_sql_store_through_job_consumer() -> None:
     consumer = JobConsumer("w", {JobType.ANON_RUN: make_anon_run_handler(lambda: SqlAnonStore(cur))})
     assert consumer.run_once(cur, JobType.ANON_RUN) == 1
     verbs = [c[0] for c in cur.calls]
-    assert verbs[0] == "WITH" and "SELECT" in verbs and "DELETE" in verbs and verbs.count("INSERT") == 2
+    # two spans, then the embed.chunks job (publishable: masked_text is written)
+    assert verbs[0] == "WITH" and "SELECT" in verbs and "DELETE" in verbs and verbs.count("INSERT") == 3
+    record_update = next(p for v, p in cur.calls if v == "UPDATE" and p and "masked" in p)
+    assert record_update["anonymized"] is True and "Selin" not in record_update["masked"]
+    assert record_update["masked"] == "Davacı [Davacı], telefon [Telefon]."
+    at = next(i for i, (_, p) in enumerate(cur.calls) if p and "dedupe_key" in p)
+    embed = cur.calls[at]
+    assert cur.calls[at - 1][1] is record_update  # queued right after masked_text is written
+    assert embed[0] == "INSERT" and embed[1]["dedupe_key"] == "embed:r1"
+    assert json.loads(embed[1]["payload"]) == {"recordId": "r1"}
     final = cur.calls[-1]
     assert final[0] == "UPDATE" and "Selin" not in json.dumps(final[1], default=str)
+
+
+def test_masked_text_is_null_and_no_embed_while_review_is_open() -> None:
+    class Cur(FakeCursor):
+        def execute(self, query, params=None):
+            self.calls.append((query.split()[0], params))
+            self._rows = [("Davacı Selin Akbulut, kimlik no 12345678901.", None)] if query.startswith("SELECT") else []
+
+    cur = Cur()
+    out = make_anon_run_handler(lambda: SqlAnonStore(cur))(ClaimedJob("j", JobType.ANON_RUN, {"recordId": "r2"}, 1, 5))
+    assert out["publishable"] is False
+    record_update = next(p for v, p in cur.calls if v == "UPDATE" and p and "masked" in p)
+    assert record_update["masked"] is None and record_update["anonymized"] is False
+    assert not any(p and "dedupe_key" in p for _, p in cur.calls)  # embed.chunks is not queued
+
+    mem = MemoryAnonStore({"a": ("Davacı Selin Akbulut, kimlik no 12345678901.", None),
+                           "b": ("Davacı Selin Akbulut, telefon 0532 111 22 33.", None)})
+    handle = make_anon_run_handler(lambda: mem)
+    handle(ClaimedJob("j1", JobType.ANON_RUN, {"recordId": "a"}, 1, 5))
+    handle(ClaimedJob("j2", JobType.ANON_RUN, {"recordId": "b"}, 1, 5))
+    handle(ClaimedJob("j3", JobType.ANON_RUN, {"recordId": "b"}, 1, 5))
+    assert mem.masked_text == {"a": None, "b": "Davacı [Davacı], telefon [Telefon]."}
+    assert mem.embed_jobs == ["b"]
+
+
+def test_masked_text_matches_saved_spans() -> None:
+    """records.masked_text must equal the original text with the saved anonymization_spans applied."""
+    for path in sorted((EVAL / "sentetik").glob("*.json"))[:10]:
+        text = json.loads(path.read_text(encoding="utf-8"))["text"]
+        r = anonymize(text)
+        rebuilt, cursor = [], 0
+        for s in r.spans:
+            assert s.start >= cursor
+            rebuilt += [text[cursor : s.start], s.mask]
+            cursor = s.end
+        assert "".join(rebuilt) + text[cursor:] == r.masked_text
 
 
 def test_ner_candidates_and_missing_model(tmp_path) -> None:
