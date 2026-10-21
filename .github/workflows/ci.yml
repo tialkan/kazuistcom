@@ -148,24 +148,93 @@ jobs:
             echo "$img user=$u"
             if [ -z "$u" ] || [ "$u" = "root" ] || [ "$u" = "0" ]; then exit 1; fi
           done
-      - name: worker-py imports
-        run: docker run --rm kazuist-worker-py:ci python -c "import core.jobs, psycopg; print('ok')"
-      - name: web container answers /api/version with the build commit
+      - name: worker-py imports its entry point and the source registry
+        run: >
+          docker run --rm kazuist-worker-py:ci python -c
+          "import core.main, psycopg; from core.sources import DEFAULT_DOCS_DIR as d;
+          assert (d / 'README.md').exists(), d; print('ok', d)"
+      - name: Runtime environment for app containers
         run: |
-          docker run -d --name web --network host kazuist-web:ci
+          set -a; . ./.env; set +a
+          {
+            echo "DATABASE_URL=postgres://kazuist:${POSTGRES_PASSWORD}@127.0.0.1:5432/kazuist"
+            echo "VALKEY_URL=redis://127.0.0.1:6379"
+            echo "BETTER_AUTH_SECRET=$(openssl rand -hex 32)"
+            echo "BETTER_AUTH_URL=http://127.0.0.1:3000"
+            echo "BYOK_SIGNING_SECRET=$(openssl rand -hex 32)"
+            echo "S3_ENDPOINT=http://127.0.0.1:9000"
+            echo "S3_BUCKET=kazuist-ci"
+          } > app.env
+      - name: web /api/version commit and /api/health 200 with dependencies up
+        run: |
+          docker run -d --name web --network host --env-file app.env kazuist-web:ci
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:3000/api/version > version.json; then break; fi
             sleep 2
           done
-          cat version.json
+          cat version.json; echo
           grep -q '${{ github.sha }}' version.json
-          code=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:3000/api/health)
-          echo "health HTTP $code (503 expected until pings and env are wired)"
+          code=$(curl -s -o health.json -w '%{http_code}' http://127.0.0.1:3000/api/health)
+          echo "health HTTP $code $(cat health.json)"
+          test "$code" = "200"
+      - name: /api/health 503 when Valkey stops, 200 again when it returns
+        run: |
+          docker compose --env-file .env stop valkey
+          code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 http://127.0.0.1:3000/api/health)
+          echo "valkey down: health HTTP $code"
+          test "$code" = "503"
+          docker compose --env-file .env start valkey
+          for i in $(seq 1 20); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 http://127.0.0.1:3000/api/health)
+            [ "$code" = "200" ] && break
+            sleep 2
+          done
+          echo "valkey back: health HTTP $code"
+          test "$code" = "200"
+      - name: Workers start from their real entry points and claim jobs
+        run: |
+          q() { docker compose --env-file .env exec -T postgres psql -U kazuist -d kazuist -tA -v ON_ERROR_STOP=1 -c "$1"; }
+          node_job=$(q "INSERT INTO jobs (type, payload, max_attempts) VALUES ('billing.reconcile', '{\"day\":\"2026-01-01\"}', 1) RETURNING id" | head -1)
+          py_job=$(q "INSERT INTO jobs (type, payload, max_attempts) VALUES ('anon.run', '{}', 1) RETURNING id" | head -1)
+          docker run -d --name worker-node --network host --env-file app.env kazuist-worker-node:ci
+          docker run -d --name worker-py --network host --env-file app.env kazuist-worker-py:ci
+          ok=""
+          for i in $(seq 1 30); do
+            n=$(q "SELECT count(*) FROM jobs WHERE id IN ('$node_job','$py_job') AND (attempts >= 1 OR status <> 'queued')" | head -1)
+            if [ "$n" = "2" ]; then ok=1; break; fi
+            sleep 2
+          done
+          q "SELECT type, status, attempts FROM jobs WHERE id IN ('$node_job','$py_job')"
+          docker logs worker-node 2>&1 | tail -5
+          docker logs worker-py 2>&1 | tail -5
+          test -n "$ok"
+          test "$(docker inspect -f '{{.State.Running}}' worker-node)" = "true"
+          test "$(docker inspect -f '{{.State.Running}}' worker-py)" = "true"
+          docker exec worker-py python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:8000/healthz').read().decode())"
+      - name: Workers stop cleanly on SIGTERM
+        run: |
+          docker stop -t 20 worker-node worker-py
+          for c in worker-node worker-py; do
+            code=$(docker inspect -f '{{.State.ExitCode}}' $c)
+            echo "$c exit $code"
+            test "$code" = "0"
+          done
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: web health-deps test against the real services
+        run: |
+          pnpm install --frozen-lockfile --filter "@kazuist/web..."
+          set -a; . ./app.env; set +a
+          KAZUIST_IT_DATABASE_URL="$DATABASE_URL" KAZUIST_IT_VALKEY_URL="$VALKEY_URL" \
+            pnpm --filter @kazuist/web exec vitest run test/health-deps.test.ts
       - name: Logs on failure
         if: failure()
         run: |
           docker compose --env-file .env logs --tail 100
-          docker logs web || true
+          for c in web worker-node worker-py; do docker logs $c 2>&1 | tail -40 || true; done
       - name: Tear down
         if: always()
         run: docker compose --env-file .env down -v

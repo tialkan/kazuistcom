@@ -26,9 +26,9 @@ Kurallar:
 | İmaj | Dockerfile | Port | Kullanıcı | Sağlık |
 |---|---|---|---|---|
 | web | `infra/docker/web/Dockerfile` | 3000 | node (1000) | `/api/health` (Dockerfile HEALTHCHECK) |
-| worker-node | `infra/docker/worker-node/Dockerfile` | yok | node (1000) | süreç ayakta |
+| worker-node | `infra/docker/worker-node/Dockerfile` (`dist/main.js`, tsx yok) | yok | node (1000) | süreç ayakta, SIGTERM ile temiz kapanış |
 | migrate | aynı dosya, `--target migrate` | yok | node (1000) | exit kodu |
-| worker-py | `infra/docker/worker-py/Dockerfile` | 8000 (iç ağ) | app (10001) | giriş modülü bekleniyor |
+| worker-py | `infra/docker/worker-py/Dockerfile` | 8000 (konteyner içi) | app (10001) | `/healthz` (Dockerfile HEALTHCHECK) |
 | bakım | `infra/maintenance/Dockerfile` | 8080 | nginx (101) | `/healthz` |
 
 Derleme bağlamı her imajda depo köküdür. web için derleme argümanları: `GIT_COMMIT`, `BUILT_AT`, `APP_VERSION`. Coolify'da Advanced > Build > Source commit availability "Available during build" yapılır ve `GIT_COMMIT=$SOURCE_COMMIT` verilir.

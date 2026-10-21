@@ -17,6 +17,7 @@
 !.env.example
 **/.DS_Store
 docs
+!docs/kaynaklar
 eval
 plan.md
 DEVIR.md

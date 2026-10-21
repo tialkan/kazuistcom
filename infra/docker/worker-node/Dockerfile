@@ -2,7 +2,7 @@
 # Kazuist worker-node (jobs consumer) and the one-shot "migrate" target. Build context: repository root.
 #   docker build -f infra/docker/worker-node/Dockerfile -t kazuist-worker-node .
 #   docker build -f infra/docker/worker-node/Dockerfile --target migrate -t kazuist-migrate .
-# The worker runs TypeScript through tsx (apps/worker-node start script); see docs/istekler/altyapi-worker-giris-noktalari.md.
+# The worker runs the esbuild bundle dist/main.js (no tsx); npm dependencies come from `pnpm deploy --prod`.
 
 ARG NODE_IMAGE=node:26.12.0-trixie-slim
 ARG PNPM_VERSION=11.0.8
@@ -17,6 +17,12 @@ COPY packages ./packages
 RUN pnpm install --frozen-lockfile --filter "@kazuist/worker-node..." \
  && rm -rf packages/*/test apps/worker-node/test
 
+FROM deps AS build
+RUN pnpm --filter @kazuist/worker-node build \
+ && pnpm --filter @kazuist/worker-node deploy --prod --legacy /out \
+ && rm -rf /out/src /out/test /out/scripts \
+ && cp -r apps/worker-node/dist /out/dist
+
 FROM ${NODE_IMAGE} AS base-runtime
 ENV NODE_ENV=production
 WORKDIR /app
@@ -28,9 +34,10 @@ COPY --chown=node:node infra/scripts/migrate.mjs ./infra/scripts/migrate.mjs
 USER node
 CMD ["node", "infra/scripts/migrate.mjs"]
 
-FROM base-runtime AS runtime
+FROM ${NODE_IMAGE} AS runtime
 ARG GIT_COMMIT=unknown
-ENV GIT_COMMIT=${GIT_COMMIT}
-WORKDIR /app/apps/worker-node
+ENV NODE_ENV=production GIT_COMMIT=${GIT_COMMIT}
+WORKDIR /app
+COPY --from=build --chown=node:node /out ./
 USER node
-CMD ["node", "--import", "tsx", "src/main.ts"]
+CMD ["node", "dist/main.js"]
