@@ -71,7 +71,9 @@
       "topluluk": "Topluluk kuralları",
       "kaldirma": "Telif ve kaldırma talebi politikası",
       "basvuru": "KVKK başvuru formu"
-    }
+    },
+    "taslakBandi": "TASLAK: Bu metin onay bekliyor ve henüz yayımlanmadı. Yalnız deneme ortamında görünür.",
+    "tablo": "Tablo"
   },
   "anasayfa": {
     "baslik": "Kazuist: hukuk kaynağını bulun, dayanağını görün",

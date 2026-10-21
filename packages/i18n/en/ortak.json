@@ -71,7 +71,9 @@
       "topluluk": "Community rules",
       "kaldirma": "Copyright and takedown policy",
       "basvuru": "KVKK request form"
-    }
+    },
+    "taslakBandi": "DRAFT: This text awaits approval and is not published. It is visible only in test environments.",
+    "tablo": "Table"
   },
   "anasayfa": {
     "baslik": "Kazuist: find the legal source, see what supports it",
