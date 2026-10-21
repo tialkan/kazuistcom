@@ -5,6 +5,7 @@ export default tseslint.config(
   {
     ignores: [
       '.claude/**',
+      'docs/denetim/repro/**',
       '**/node_modules/**',
       '**/.next/**',
       '**/dist/**',
