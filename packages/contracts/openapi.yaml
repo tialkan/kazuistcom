@@ -1,12 +1,12 @@
 openapi: 3.1.0
 info:
   title: Kazuist API
-  version: 1.0.0
+  version: 1.1.0
   summary: Kazuist web and iOS API contract (single source of truth).
   description: |
-    Contract v1 for Kazuist (plan.md Ek C.1). All endpoints validate input with zod and reject unknown
-    fields. Every error body is `{code, message, requestId}` and never exposes internal structure.
-    Paths are relative to the `/api` prefix of the web application.
+    Contract v1.1 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md). All endpoints
+    validate input with zod and reject unknown fields. Every error body is `{code, message, requestId}` and
+    never exposes internal structure. Paths are relative to the `/api` prefix of the web application.
   license:
     name: Proprietary, Kulular Bilisim Teknolojileri Ltd. Sti.
     identifier: LicenseRef-Proprietary
@@ -172,7 +172,8 @@ paths:
               properties:
                 email: { type: string, format: email }
       responses:
-        '202': { $ref: '#/components/responses/Accepted' }
+        '204':
+          description: Code sent (synchronously; there is no job to poll).
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
@@ -203,14 +204,30 @@ paths:
     get:
       tags: [account]
       operationId: exportMe
-      summary: Export personal data (KVKK m.11)
+      summary: Export personal data (KVKK m.11, FR-104)
+      description: Synchronous download as an attachment (Content-Disposition). Secrets and hashes are never included.
+      parameters:
+        - name: format
+          in: query
+          required: false
+          schema: { type: string, enum: [json, csv], default: json }
       responses:
-        '202':
-          description: Export job created.
+        '200':
+          description: Export file.
+          headers:
+            Content-Disposition:
+              description: attachment; filename="kazuist-verilerim-<YYYY-MM-DD>.<json|csv>"
+              schema: { type: string }
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/JobRef' }
+              schema: { $ref: '#/components/schemas/MeExport' }
+            text/csv:
+              schema:
+                type: string
+                description: Long format with the header section,row,field,value; formula prefixes are neutralised.
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /v1/me/consents:
     get:
       tags: [account]
@@ -285,7 +302,50 @@ paths:
     post:
       tags: [account]
       operationId: createKvkkRequest
-      summary: KVKK m.11 application
+      summary: KVKK m.11 application (signed in)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/KvkkRequestInput' }
+      responses:
+        '201':
+          description: Application recorded; the thirty day period (KVKK m.13/2) runs from receivedAt.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KvkkRequestReceipt' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/kvkk-requests/guest:
+    post:
+      tags: [account]
+      operationId: createGuestKvkkRequest
+      summary: KVKK m.11 application without an account
+      description: |
+        For people without an account (for example a person named in a decision). Rate limited by IP; a six
+        digit code is sent to contactEmail and the application is confirmed with
+        /v1/kvkk-requests/guest/verify. receivedAt is the arrival time (Teblig m.5), not the confirmation time.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/KvkkGuestRequestInput' }
+      responses:
+        '202':
+          description: Recorded, waiting for e-mail confirmation.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KvkkRequestReceipt' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/kvkk-requests/guest/verify:
+    post:
+      tags: [account]
+      operationId: verifyGuestKvkkRequest
+      summary: Confirm a guest KVKK application with the e-mailed code
+      security: []
       requestBody:
         required: true
         content:
@@ -293,14 +353,19 @@ paths:
             schema:
               type: object
               additionalProperties: false
-              required: [kind, detail]
+              required: [id, code]
               properties:
-                kind: { type: string, enum: [bilgi, duzeltme, silme, itiraz, aktarim_bilgisi] }
-                detail: { type: string, maxLength: 4000 }
+                id: { type: string, format: uuid }
+                code: { type: string, pattern: '^[0-9]{6}$' }
       responses:
-        '201': { $ref: '#/components/responses/Created' }
+        '200':
+          description: Confirmed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/KvkkRequestReceipt' }
         '400': { $ref: '#/components/responses/BadRequest' }
-        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
 
   /v1/search:
     get:
@@ -1514,19 +1579,16 @@ paths:
       tags: [takedown]
       operationId: createTakedownRequest
       summary: Request removal or anonymisation of content
+      description: |
+        Record or Kampus post or file. The temporary hiding decision is due within 72 hours; personal data
+        requests are concluded within thirty days (KVKK m.13/2). v1 recordId is replaced by targetType and
+        targetId (ADR-0023).
       security: []
       requestBody:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              required: [recordId, reason, contactEmail]
-              properties:
-                recordId: { type: string, format: uuid }
-                reason: { type: string, maxLength: 4000 }
-                contactEmail: { type: string, format: email }
+            schema: { $ref: '#/components/schemas/TakedownRequestInput' }
       responses:
         '201': { $ref: '#/components/responses/Created' }
         '400': { $ref: '#/components/responses/BadRequest' }
@@ -1537,7 +1599,7 @@ paths:
       - name: queue
         in: path
         required: true
-        schema: { type: string, enum: [anonymization, citations, cards, journal-rules, takedowns, kampus-reports] }
+        schema: { $ref: '#/components/schemas/ReviewQueueName' }
     get:
       tags: [admin]
       operationId: adminListQueue
@@ -1560,7 +1622,7 @@ paths:
       - name: queue
         in: path
         required: true
-        schema: { type: string, enum: [anonymization, citations, cards, journal-rules, takedowns, kampus-reports] }
+        schema: { $ref: '#/components/schemas/ReviewQueueName' }
       - name: itemId
         in: path
         required: true
@@ -1944,6 +2006,7 @@ components:
         - kalemcik.daily
         - mevzuat.rg_daily
         - live.fetch
+        - account.purge
     Me:
       type: object
       required: [id, email, roles, eduVerified]
@@ -1984,7 +2047,18 @@ components:
         granted: { type: boolean }
     ConsentKind:
       type: string
-      enum: [aydinlatma, acik_riza_analitik, acik_riza_pazarlama, kullanim_kosullari, on_bilgilendirme, mesafeli_sozlesme, cayma_istisnasi, yz_aktarim]
+      enum:
+        - aydinlatma
+        - acik_riza_analitik
+        - acik_riza_pazarlama
+        - kullanim_kosullari
+        - on_bilgilendirme
+        - mesafeli_sozlesme
+        - cayma_istisnasi
+        - yz_aktarim
+        - abonelik_sozlesmesi
+        - yillik_taahhutname
+        - yz_ucretsiz_katman
     Profession:
       type: object
       additionalProperties: false
@@ -2452,9 +2526,27 @@ components:
       type: object
       additionalProperties: false
       properties:
-        email: { type: object, additionalProperties: { type: boolean } }
-        webPush: { type: object, additionalProperties: { type: boolean } }
-        apns: { type: object, additionalProperties: { type: boolean } }
+        email: { $ref: '#/components/schemas/NotificationPrefsMap' }
+        webPush: { $ref: '#/components/schemas/NotificationPrefsMap' }
+        apns: { $ref: '#/components/schemas/NotificationPrefsMap' }
+    NotificationPrefsMap:
+      type: object
+      description: 'Per channel: notification type to allowed. A missing type uses its default.'
+      propertyNames: { $ref: '#/components/schemas/NotificationType' }
+      additionalProperties: { type: boolean }
+    NotificationType:
+      type: string
+      description: plan 10.8. Only kampanya is a commercial electronic message (separate consent and IYS).
+      enum:
+        - teslim_hatirlatmasi
+        - kalemcik
+        - tam_metin_istegi
+        - tam_metin_cevabi
+        - takip
+        - odeme
+        - fesih_teyidi
+        - mevzuat_degisikligi
+        - kampanya
     ReviewItem:
       type: object
       required: [id, queue, createdAt]
@@ -2475,3 +2567,120 @@ components:
     RankingWeights:
       type: object
       additionalProperties: { type: number }
+    ReviewQueueName:
+      type: string
+      enum: [anonymization, citations, cards, journal-rules, takedowns, kampus-reports, kvkk-requests]
+    KvkkRequestKind:
+      type: string
+      description: |
+        KVKK m.11/1 (a) to (g with breve) in order. itiraz is m.11/1-g (objection to a result of an
+        exclusively automated analysis).
+      enum:
+        - islenip_islenmedigi
+        - bilgi
+        - amac
+        - aktarim_bilgisi
+        - duzeltme
+        - silme
+        - ucuncu_kisilere_bildirim
+        - itiraz
+        - zarar_giderimi
+    KvkkRequestStatus:
+      type: string
+      enum: [dogrulama_bekliyor, alindi, inceleniyor, kabul_edildi, reddedildi]
+    KvkkRelation:
+      type: string
+      enum: [kullanici, eski_kullanici, karar_metninde_adi_gecen, diger]
+    KvkkReplyChannel:
+      type: string
+      description: KVKK m.13/3, answer in writing (posta) or electronically (eposta).
+      enum: [eposta, posta]
+    KvkkRequestInput:
+      type: object
+      additionalProperties: false
+      required: [kind, detail]
+      properties:
+        kind: { $ref: '#/components/schemas/KvkkRequestKind' }
+        detail: { type: string, maxLength: 4000 }
+        replyChannel:
+          allOf: [{ $ref: '#/components/schemas/KvkkReplyChannel' }]
+          default: eposta
+        address: { type: string, maxLength: 500, description: Required when replyChannel is posta. }
+    KvkkGuestRequestInput:
+      type: object
+      additionalProperties: false
+      description: Teblig m.5 (RG 10.03.2018, 30356) contents of an application.
+      required:
+        [kind, detail, requesterName, nationality, identityNumber, address, contactEmail, relation, replyChannel, declaration]
+      properties:
+        kind: { $ref: '#/components/schemas/KvkkRequestKind' }
+        detail: { type: string, minLength: 1, maxLength: 4000 }
+        requesterName: { type: string, minLength: 2, maxLength: 200 }
+        nationality: { type: string, pattern: '^[A-Z]{2}$', description: ISO 3166-1 alpha-2. }
+        identityNumber:
+          type: string
+          minLength: 5
+          maxLength: 40
+          description: T.C. kimlik numarasi when nationality is TR, otherwise passport or identity number. Stored encrypted.
+        address: { type: string, minLength: 10, maxLength: 500 }
+        contactEmail: { type: string, format: email }
+        phone: { type: string, maxLength: 40 }
+        relation: { $ref: '#/components/schemas/KvkkRelation' }
+        replyChannel: { $ref: '#/components/schemas/KvkkReplyChannel' }
+        declaration: { type: boolean, const: true }
+    KvkkRequestReceipt:
+      type: object
+      required: [id, status, receivedAt, dueAt]
+      properties:
+        id: { type: string, format: uuid }
+        status: { $ref: '#/components/schemas/KvkkRequestStatus' }
+        receivedAt: { type: string, format: date-time }
+        dueAt: { type: string, format: date-time, description: receivedAt plus thirty days (KVKK m.13/2). }
+    TakedownKind:
+      type: string
+      enum: [kisisel_veri, telif, guncellik]
+    TakedownTargetType:
+      type: string
+      enum: [record, kampus_post, kampus_file]
+    TakedownRequestInput:
+      type: object
+      additionalProperties: false
+      required: [kind, targetType, targetId, reason, contactEmail]
+      properties:
+        kind: { $ref: '#/components/schemas/TakedownKind' }
+        targetType: { $ref: '#/components/schemas/TakedownTargetType' }
+        targetId: { type: string, format: uuid }
+        requesterName: { type: string, maxLength: 200 }
+        reason: { type: string, minLength: 1, maxLength: 4000 }
+        rightsInfo: { type: string, maxLength: 2000, description: 'telif: information on the claimed right.' }
+        contactEmail: { type: string, format: email }
+    MeExport:
+      type: object
+      description: Everything Kazuist holds about the caller. Module sections are added as modules ship.
+      required: [exportedAt, user]
+      properties:
+        exportedAt: { type: string, format: date-time }
+        user: { type: [object, 'null'] }
+        profile: { type: [object, 'null'] }
+        roles:
+          type: array
+          items: { type: string }
+        accounts:
+          type: array
+          items: { type: object }
+        passkeys:
+          type: array
+          items: { type: object }
+        sessions:
+          type: array
+          items: { type: object }
+        eduVerifications:
+          type: array
+          items: { type: object }
+        consents:
+          type: array
+          items: { $ref: '#/components/schemas/Consent' }
+        notificationPrefs: { type: [object, 'null'] }
+        activity:
+          type: array
+          items: { type: object }

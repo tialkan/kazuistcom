@@ -1,12 +1,13 @@
 {
   "name": "@kazuist/db",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./schema": "./src/schema/index.ts",
-    "./jobs": "./src/jobs.ts"
+    "./jobs": "./src/jobs.ts",
+    "./migrate": "./src/run-migrations.ts"
   },
   "scripts": {
     "generate": "drizzle-kit generate",

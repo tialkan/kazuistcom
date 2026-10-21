@@ -119,7 +119,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Export personal data (KVKK m.11) */
+        /**
+         * Export personal data (KVKK m.11, FR-104)
+         * @description Synchronous download as an attachment (Content-Disposition). Secrets and hashes are never included.
+         */
         get: operations["exportMe"];
         put?: never;
         post?: never;
@@ -190,8 +193,47 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** KVKK m.11 application */
+        /** KVKK m.11 application (signed in) */
         post: operations["createKvkkRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/kvkk-requests/guest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * KVKK m.11 application without an account
+         * @description For people without an account (for example a person named in a decision). Rate limited by IP; a six
+         *     digit code is sent to contactEmail and the application is confirmed with
+         *     /v1/kvkk-requests/guest/verify. receivedAt is the arrival time (Teblig m.5), not the confirmation time.
+         */
+        post: operations["createGuestKvkkRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/kvkk-requests/guest/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Confirm a guest KVKK application with the e-mailed code */
+        post: operations["verifyGuestKvkkRequest"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1156,7 +1198,12 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Request removal or anonymisation of content */
+        /**
+         * Request removal or anonymisation of content
+         * @description Record or Kampus post or file. The temporary hiding decision is due within 72 hours; personal data
+         *     requests are concluded within thirty days (KVKK m.13/2). v1 recordId is replaced by targetType and
+         *     targetId (ADR-0023).
+         */
         post: operations["createTakedownRequest"];
         delete?: never;
         options?: never;
@@ -1169,7 +1216,7 @@ export interface paths {
             query?: never;
             header?: never;
             path: {
-                queue: "anonymization" | "citations" | "cards" | "journal-rules" | "takedowns" | "kampus-reports";
+                queue: components["schemas"]["ReviewQueueName"];
             };
             cookie?: never;
         };
@@ -1188,7 +1235,7 @@ export interface paths {
             query?: never;
             header?: never;
             path: {
-                queue: "anonymization" | "citations" | "cards" | "journal-rules" | "takedowns" | "kampus-reports";
+                queue: components["schemas"]["ReviewQueueName"];
                 itemId: string;
             };
             cookie?: never;
@@ -1364,7 +1411,7 @@ export interface components {
         /** @enum {string} */
         JobState: "queued" | "running" | "done" | "failed" | "dead";
         /** @enum {string} */
-        JobType: "ingest.fetch" | "ingest.parse" | "anon.run" | "embed.chunks" | "citations.extract" | "rules.extract" | "docx.validate" | "kampus.summarize" | "kampus.poster" | "billing.monthly_grant" | "billing.reconcile" | "notify.send" | "kalemcik.daily" | "mevzuat.rg_daily" | "live.fetch";
+        JobType: "ingest.fetch" | "ingest.parse" | "anon.run" | "embed.chunks" | "citations.extract" | "rules.extract" | "docx.validate" | "kampus.summarize" | "kampus.poster" | "billing.monthly_grant" | "billing.reconcile" | "notify.send" | "kalemcik.daily" | "mevzuat.rg_daily" | "live.fetch" | "account.purge";
         Me: {
             /** Format: uuid */
             id: string;
@@ -1399,7 +1446,7 @@ export interface components {
             granted: boolean;
         };
         /** @enum {string} */
-        ConsentKind: "aydinlatma" | "acik_riza_analitik" | "acik_riza_pazarlama" | "kullanim_kosullari" | "on_bilgilendirme" | "mesafeli_sozlesme" | "cayma_istisnasi" | "yz_aktarim";
+        ConsentKind: "aydinlatma" | "acik_riza_analitik" | "acik_riza_pazarlama" | "kullanim_kosullari" | "on_bilgilendirme" | "mesafeli_sozlesme" | "cayma_istisnasi" | "yz_aktarim" | "abonelik_sozlesmesi" | "yillik_taahhutname" | "yz_ucretsiz_katman";
         Profession: {
             id: string;
             label: string;
@@ -1811,16 +1858,19 @@ export interface components {
             pdfUrl?: string | null;
         };
         NotificationPreferences: {
-            email?: {
-                [key: string]: boolean;
-            };
-            webPush?: {
-                [key: string]: boolean;
-            };
-            apns?: {
-                [key: string]: boolean;
-            };
+            email?: components["schemas"]["NotificationPrefsMap"];
+            webPush?: components["schemas"]["NotificationPrefsMap"];
+            apns?: components["schemas"]["NotificationPrefsMap"];
         };
+        /** @description Per channel: notification type to allowed. A missing type uses its default. */
+        NotificationPrefsMap: {
+            [key: string]: boolean;
+        };
+        /**
+         * @description plan 10.8. Only kampanya is a commercial electronic message (separate consent and IYS).
+         * @enum {string}
+         */
+        NotificationType: "teslim_hatirlatmasi" | "kalemcik" | "tam_metin_istegi" | "tam_metin_cevabi" | "takip" | "odeme" | "fesih_teyidi" | "mevzuat_degisikligi" | "kampanya";
         ReviewItem: {
             /** Format: uuid */
             id: string;
@@ -1838,6 +1888,92 @@ export interface components {
         };
         RankingWeights: {
             [key: string]: number;
+        };
+        /** @enum {string} */
+        ReviewQueueName: "anonymization" | "citations" | "cards" | "journal-rules" | "takedowns" | "kampus-reports" | "kvkk-requests";
+        /**
+         * @description KVKK m.11/1 (a) to (g with breve) in order. itiraz is m.11/1-g (objection to a result of an
+         *     exclusively automated analysis).
+         * @enum {string}
+         */
+        KvkkRequestKind: "islenip_islenmedigi" | "bilgi" | "amac" | "aktarim_bilgisi" | "duzeltme" | "silme" | "ucuncu_kisilere_bildirim" | "itiraz" | "zarar_giderimi";
+        /** @enum {string} */
+        KvkkRequestStatus: "dogrulama_bekliyor" | "alindi" | "inceleniyor" | "kabul_edildi" | "reddedildi";
+        /** @enum {string} */
+        KvkkRelation: "kullanici" | "eski_kullanici" | "karar_metninde_adi_gecen" | "diger";
+        /**
+         * @description KVKK m.13/3, answer in writing (posta) or electronically (eposta).
+         * @enum {string}
+         */
+        KvkkReplyChannel: "eposta" | "posta";
+        KvkkRequestInput: {
+            kind: components["schemas"]["KvkkRequestKind"];
+            detail: string;
+            /** @default eposta */
+            replyChannel: components["schemas"]["KvkkReplyChannel"];
+            /** @description Required when replyChannel is posta. */
+            address?: string;
+        };
+        /** @description Teblig m.5 (RG 10.03.2018, 30356) contents of an application. */
+        KvkkGuestRequestInput: {
+            kind: components["schemas"]["KvkkRequestKind"];
+            detail: string;
+            requesterName: string;
+            /** @description ISO 3166-1 alpha-2. */
+            nationality: string;
+            /** @description T.C. kimlik numarasi when nationality is TR, otherwise passport or identity number. Stored encrypted. */
+            identityNumber: string;
+            address: string;
+            /** Format: email */
+            contactEmail: string;
+            phone?: string;
+            relation: components["schemas"]["KvkkRelation"];
+            replyChannel: components["schemas"]["KvkkReplyChannel"];
+            /** @constant */
+            declaration: true;
+        };
+        KvkkRequestReceipt: {
+            /** Format: uuid */
+            id: string;
+            status: components["schemas"]["KvkkRequestStatus"];
+            /** Format: date-time */
+            receivedAt: string;
+            /**
+             * Format: date-time
+             * @description receivedAt plus thirty days (KVKK m.13/2).
+             */
+            dueAt: string;
+        };
+        /** @enum {string} */
+        TakedownKind: "kisisel_veri" | "telif" | "guncellik";
+        /** @enum {string} */
+        TakedownTargetType: "record" | "kampus_post" | "kampus_file";
+        TakedownRequestInput: {
+            kind: components["schemas"]["TakedownKind"];
+            targetType: components["schemas"]["TakedownTargetType"];
+            /** Format: uuid */
+            targetId: string;
+            requesterName?: string;
+            reason: string;
+            /** @description telif: information on the claimed right. */
+            rightsInfo?: string;
+            /** Format: email */
+            contactEmail: string;
+        };
+        /** @description Everything Kazuist holds about the caller. Module sections are added as modules ship. */
+        MeExport: {
+            /** Format: date-time */
+            exportedAt: string;
+            user: Record<string, never> | null;
+            profile?: Record<string, never> | null;
+            roles?: string[];
+            accounts?: Record<string, never>[];
+            passkeys?: Record<string, never>[];
+            sessions?: Record<string, never>[];
+            eduVerifications?: Record<string, never>[];
+            consents?: components["schemas"]["Consent"][];
+            notificationPrefs?: Record<string, never> | null;
+            activity?: Record<string, never>[];
         };
     };
     responses: {
@@ -2123,7 +2259,13 @@ export interface operations {
             };
         };
         responses: {
-            202: components["responses"]["Accepted"];
+            /** @description Code sent (synchronously; there is no job to poll). */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
             429: components["responses"]["TooManyRequests"];
@@ -2159,23 +2301,30 @@ export interface operations {
     };
     exportMe: {
         parameters: {
-            query?: never;
+            query?: {
+                format?: "json" | "csv";
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Export job created. */
-            202: {
+            /** @description Export file. */
+            200: {
                 headers: {
+                    /** @description attachment; filename="kazuist-verilerim-<YYYY-MM-DD>.<json|csv>" */
+                    "Content-Disposition"?: string;
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["JobRef"];
+                    "application/json": components["schemas"]["MeExport"];
+                    "text/csv": string;
                 };
             };
+            400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
+            429: components["responses"]["TooManyRequests"];
         };
     };
     listConsents: {
@@ -2284,17 +2433,79 @@ export interface operations {
         };
         requestBody: {
             content: {
+                "application/json": components["schemas"]["KvkkRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Application recorded; the thirty day period (KVKK m.13/2) runs from receivedAt. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KvkkRequestReceipt"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    createGuestKvkkRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["KvkkGuestRequestInput"];
+            };
+        };
+        responses: {
+            /** @description Recorded, waiting for e-mail confirmation. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KvkkRequestReceipt"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    verifyGuestKvkkRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
                 "application/json": {
-                    /** @enum {string} */
-                    kind: "bilgi" | "duzeltme" | "silme" | "itiraz" | "aktarim_bilgisi";
-                    detail: string;
+                    /** Format: uuid */
+                    id: string;
+                    code: string;
                 };
             };
         };
         responses: {
-            201: components["responses"]["Created"];
+            /** @description Confirmed. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["KvkkRequestReceipt"];
+                };
+            };
             400: components["responses"]["BadRequest"];
-            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            429: components["responses"]["TooManyRequests"];
         };
     };
     search: {
@@ -3955,13 +4166,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": {
-                    /** Format: uuid */
-                    recordId: string;
-                    reason: string;
-                    /** Format: email */
-                    contactEmail: string;
-                };
+                "application/json": components["schemas"]["TakedownRequestInput"];
             };
         };
         responses: {
@@ -3977,7 +4182,7 @@ export interface operations {
             };
             header?: never;
             path: {
-                queue: "anonymization" | "citations" | "cards" | "journal-rules" | "takedowns" | "kampus-reports";
+                queue: components["schemas"]["ReviewQueueName"];
             };
             cookie?: never;
         };
@@ -4001,7 +4206,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                queue: "anonymization" | "citations" | "cards" | "journal-rules" | "takedowns" | "kampus-reports";
+                queue: components["schemas"]["ReviewQueueName"];
                 itemId: string;
             };
             cookie?: never;

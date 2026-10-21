@@ -27,17 +27,26 @@ function withTimeout(ping: Ping): Promise<boolean> {
   });
 }
 
-/** Default probes until altyapi wires real clients (pg SELECT 1, Valkey PING): unreachable. */
+/**
+ * Probes are registered at server start by src/instrumentation.ts (pg SELECT 1, Valkey PING, see deps.ts).
+ * Until then they reject, so a server whose wiring failed reports 503. The slot lives on globalThis because
+ * instrumentation and route handlers may be separate module graphs in the Next.js build.
+ */
 const notWired: Ping = () => Promise.reject(new Error('not wired'));
-let deps: HealthDeps = { database: notWired, valkey: notWired };
+const SLOT = Symbol.for('kazuist.server.healthDeps');
+type Slot = typeof globalThis & { [SLOT]?: HealthDeps };
 
 export function setHealthDeps(next: HealthDeps): void {
-  deps = next;
+  (globalThis as Slot)[SLOT] = next;
+}
+
+export function currentHealthDeps(): HealthDeps {
+  return (globalThis as Slot)[SLOT] ?? { database: notWired, valkey: notWired };
 }
 
 export async function checkHealth(
   env: Record<string, string | undefined> = process.env,
-  d: HealthDeps = deps,
+  d: HealthDeps = currentHealthDeps(),
 ): Promise<{ status: number; body: Health }> {
   if (missingEnv(env).length > 0) return { status: 503, body: { status: 'degraded' } };
   const results = await Promise.all([withTimeout(d.database), withTimeout(d.valkey)]);

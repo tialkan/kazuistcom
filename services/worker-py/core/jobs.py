@@ -27,6 +27,7 @@ class JobType(str, Enum):
     KALEMCIK_DAILY = "kalemcik.daily"
     MEVZUAT_RG_DAILY = "mevzuat.rg_daily"
     LIVE_FETCH = "live.fetch"
+    ACCOUNT_PURGE = "account.purge"
 
 
 class JobState(str, Enum):
@@ -70,6 +71,11 @@ UPDATE jobs SET
   run_after = now() + make_interval(secs => least(3600, 15 * power(2, attempts))),
   locked_by = NULL, locked_at = NULL, updated_at = now()
 WHERE id = %(id)s AND status = 'running'
+"""
+
+RELEASE_STALE_JOBS_SQL = """
+UPDATE jobs SET status = 'queued', locked_by = NULL, locked_at = NULL, updated_at = now()
+WHERE status = 'running' AND locked_at < now() - make_interval(secs => %(seconds)s)
 """
 
 

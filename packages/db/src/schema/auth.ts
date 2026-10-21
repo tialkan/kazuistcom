@@ -10,6 +10,8 @@ export const users = pgTable(
     emailVerified: boolean('email_verified').notNull().default(false),
     name: text('name'),
     image: text('image'),
+    /** Better Auth two-factor plugin (TOTP for the admin panel, plan 5.6/2, ADR-0023). */
+    twoFactorEnabled: boolean('two_factor_enabled').notNull().default(false),
     deletedAt: ts('deleted_at'),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
@@ -28,6 +30,8 @@ export const sessions = pgTable(
     expiresAt: ts('expires_at').notNull(),
     ipAddress: text('ip_address'),
     userAgent: text('user_agent'),
+    /** How the session was opened; values in contracts authMethods. The admin panel requires passkey. */
+    authMethod: text('auth_method'),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
@@ -83,6 +87,28 @@ export const verifications = pgTable(
     updatedAt: updatedAt(),
   },
   (t) => [index('verifications_identifier_idx').on(t.identifier)],
+);
+
+/**
+ * Better Auth two-factor plugin table (model twoFactor, plural two_factors; fields from better-auth 1.7.11
+ * dist/plugins/two-factor/schema.mjs). secret and backup_codes are stored encrypted by Better Auth
+ * (symmetricEncrypt with the auth secret; storeBackupCodes: encrypted is the default).
+ */
+export const twoFactors = pgTable(
+  'two_factors',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    secret: text('secret').notNull(),
+    backupCodes: text('backup_codes').notNull(),
+    verified: boolean('verified').notNull().default(true),
+    failedVerificationCount: integer('failed_verification_count').notNull().default(0),
+    lockedUntil: ts('locked_until'),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex('two_factors_user_uq').on(t.userId)],
 );
 
 export const eduVerifications = pgTable('edu_verifications', {

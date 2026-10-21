@@ -82,14 +82,20 @@ export const creditLots = pgTable(
  * One row per business transaction. Request idempotency lives here (one key, one transaction), so a single
  * spend may touch several lots and accounts without colliding on a per entry unique key.
  */
-export const ledgerTransactions = pgTable('ledger_transactions', {
-  id: id(),
-  kind: text('kind').notNull(),
-  idempotencyKey: text('idempotency_key').notNull().unique(),
-  reversesTransactionId: uuid('reverses_transaction_id'),
-  memo: text('memo'),
-  createdAt: createdAt(),
-});
+export const ledgerTransactions = pgTable(
+  'ledger_transactions',
+  {
+    id: id(),
+    kind: text('kind').notNull(),
+    idempotencyKey: text('idempotency_key').notNull().unique(),
+    reversesTransactionId: uuid('reverses_transaction_id'),
+    /** Wallet the transaction belongs to, for the wallet movement list in one query (v1.1, null for pools). */
+    walletId: uuid('wallet_id').references(() => wallets.id),
+    memo: text('memo'),
+    createdAt: createdAt(),
+  },
+  (t) => [index('ledger_transactions_wallet_idx').on(t.walletId, t.createdAt)],
+);
 
 export const ledgerEntries = pgTable(
   'ledger_entries',
@@ -185,27 +191,53 @@ export const orders = pgTable(
     status: text('status').notNull().default('bekliyor'),
     idempotencyKey: text('idempotency_key').notNull(),
     consentVersions: jsonb('consent_versions').notNull(),
+    /** iyzico checkout form token, used to re-query the payment on return (plan 9.2/1). */
+    checkoutToken: text('checkout_token'),
+    providerPaymentId: text('provider_payment_id'),
+    paidAt: ts('paid_at'),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
-  (t) => [uniqueIndex('orders_idem_uq').on(t.userId, t.idempotencyKey)],
+  (t) => [
+    uniqueIndex('orders_idem_uq').on(t.userId, t.idempotencyKey),
+    uniqueIndex('orders_checkout_token_uq')
+      .on(t.checkoutToken)
+      .where(sql`${t.checkoutToken} is not null`),
+  ],
 );
 
+/**
+ * Provider money movements: payments (kind odeme) and refunds (kind iade). A renewal charge has a subscription
+ * and no order. One charge per (provider, provider_payment_id); refunds of the same charge are told apart by
+ * refund_ref (provider refund id or our refund idempotency key), unique per provider (ADR-0023).
+ */
 export const payments = pgTable(
   'payments',
   {
     id: id(),
-    orderId: uuid('order_id')
-      .notNull()
-      .references(() => orders.id),
+    orderId: uuid('order_id').references(() => orders.id),
+    subscriptionId: uuid('subscription_id').references(() => subscriptions.id),
+    kind: text('kind').notNull().default('odeme'),
     provider: text('provider').notNull(),
     providerPaymentId: text('provider_payment_id').notNull(),
+    refundRef: text('refund_ref'),
     amountKurus: integer('amount_kurus').notNull(),
     status: text('status').notNull(),
     raw: jsonb('raw'),
     createdAt: createdAt(),
   },
-  (t) => [uniqueIndex('payments_provider_uq').on(t.provider, t.providerPaymentId)],
+  (t) => [
+    uniqueIndex('payments_charge_uq')
+      .on(t.provider, t.providerPaymentId)
+      .where(sql`${t.kind} = 'odeme'`),
+    uniqueIndex('payments_refund_uq')
+      .on(t.provider, t.refundRef)
+      .where(sql`${t.kind} = 'iade'`),
+    index('payments_subscription_idx').on(t.subscriptionId),
+    check('payments_kind', sql`${t.kind} in ('odeme', 'iade')`),
+    check('payments_refund_ref', sql`(${t.kind} = 'iade') = (${t.refundRef} is not null)`),
+    check('payments_owner', sql`${t.orderId} is not null or ${t.subscriptionId} is not null`),
+  ],
 );
 
 export const subscriptions = pgTable(
@@ -226,10 +258,66 @@ export const subscriptions = pgTable(
     cancelAtPeriodEnd: boolean('cancel_at_period_end').notNull().default(false),
     canceledAt: ts('canceled_at'),
     grantsDelivered: integer('grants_delivered').notNull().default(0),
+    /** Price of the current period; a pending change applies from pending_price_effective_at (plan 4.5/9). */
+    priceKurus: integer('price_kurus'),
+    lastPaymentId: text('last_payment_id'),
+    /** Dunning (plan 4.5/10: retries on day 1, 3 and 7 after the first failure). */
+    firstFailureAt: ts('first_failure_at'),
+    failedRetries: integer('failed_retries').notNull().default(0),
+    failedOrderRef: text('failed_order_ref'),
+    pendingPriceKurus: integer('pending_price_kurus'),
+    pendingPriceEffectiveAt: ts('pending_price_effective_at'),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },
   (t) => [uniqueIndex('subscriptions_provider_uq').on(t.channel, t.providerRef)],
+);
+
+/** One redemption per user and coupon (plan 9.4). Credit coupons point at the ledger, discounts at the order. */
+export const couponRedemptions = pgTable(
+  'coupon_redemptions',
+  {
+    id: id(),
+    couponId: uuid('coupon_id')
+      .notNull()
+      .references(() => coupons.id),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    ledgerTransactionId: uuid('ledger_transaction_id').references(() => ledgerTransactions.id),
+    orderId: uuid('order_id').references(() => orders.id),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex('coupon_redemptions_uq').on(t.couponId, t.userId),
+    check('coupon_redemptions_target', sql`${t.ledgerTransactionId} is not null or ${t.orderId} is not null`),
+  ],
+);
+
+/**
+ * Scheduled billing notices (plan 4.5/8-9: 7 and 30 days before a charge, price change 30 days ahead).
+ * Delivery is a notify.send job; (user_id, kind, ref) makes scheduling idempotent.
+ */
+export const notices = pgTable(
+  'notices',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    kind: text('kind').notNull(),
+    ref: text('ref').notNull(),
+    sendAt: ts('send_at').notNull(),
+    sentAt: ts('sent_at'),
+    jobId: uuid('job_id'),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex('notices_uq').on(t.userId, t.kind, t.ref),
+    index('notices_due_idx')
+      .on(t.sendAt)
+      .where(sql`${t.sentAt} is null`),
+  ],
 );
 
 export const invoices = pgTable('invoices', {

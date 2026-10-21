@@ -1,18 +1,17 @@
 import { z } from 'zod';
+import {
+  ConsentKind,
+  KvkkRelation,
+  KvkkReplyChannel,
+  KvkkRequestKind,
+  TakedownKind,
+  TakedownTargetType,
+} from './account.ts';
+import { NotificationPrefsColumn } from './jobs.ts';
 import { AnswerRequest, PrepareRequest, VerifyRequest } from './schemas.ts';
 
 /** Request body schemas for every operation that takes a body (plan Ek C.1). Kept equal to openapi.yaml by test. */
 const uuid = z.uuid();
-const consentKinds = [
-  'aydinlatma',
-  'acik_riza_analitik',
-  'acik_riza_pazarlama',
-  'kullanim_kosullari',
-  'on_bilgilendirme',
-  'mesafeli_sozlesme',
-  'cayma_istisnasi',
-  'yz_aktarim',
-] as const;
 /** Multipart file part; the route handler checks type, size (20 MB) and content. */
 const filePart = z.unknown();
 
@@ -24,7 +23,7 @@ export const MePatch = z.strictObject({
 export const EduVerificationStart = z.strictObject({ email: z.email() });
 export const EduVerificationConfirm = z.strictObject({ code: z.string().regex(/^[0-9]{6}$/) });
 export const ConsentInput = z.strictObject({
-  kind: z.enum(consentKinds),
+  kind: ConsentKind,
   version: z.string().max(40),
   granted: z.boolean(),
 });
@@ -32,9 +31,39 @@ export const TargetProfessionInput = z.strictObject({
   professionId: z.string(),
   avatar: z.string().optional(),
 });
+/** KVKK m.11 application by a signed in user; identity comes from the session (ADR-0023). */
 export const KvkkRequestInput = z.strictObject({
-  kind: z.enum(['bilgi', 'duzeltme', 'silme', 'itiraz', 'aktarim_bilgisi']),
+  kind: KvkkRequestKind,
   detail: z.string().max(4000),
+  replyChannel: KvkkReplyChannel.default('eposta'),
+  /** Required by the server when replyChannel is posta. */
+  address: z.string().max(500).optional(),
+});
+/**
+ * KVKK m.11 application without an account (karar metninde adi gecen kisi). Fields follow the
+ * Veri Sorumlusuna Basvuru Usul ve Esaslari Hakkinda Teblig m.5 (RG 10.03.2018, 30356). The server
+ * encrypts identityNumber, sends a code to contactEmail and rate limits by IP.
+ */
+export const KvkkGuestRequestInput = z.strictObject({
+  kind: KvkkRequestKind,
+  detail: z.string().min(1).max(4000),
+  requesterName: z.string().min(2).max(200),
+  /** ISO 3166-1 alpha-2. TR means identityNumber is a T.C. kimlik numarasi (11 digits, checksum on server). */
+  nationality: z.string().regex(/^[A-Z]{2}$/),
+  /** T.C. kimlik numarasi, or passport or identity number for foreigners. */
+  identityNumber: z.string().min(5).max(40),
+  /** Tebligata esas yerlesim yeri veya is yeri adresi. */
+  address: z.string().min(10).max(500),
+  contactEmail: z.email(),
+  phone: z.string().max(40).optional(),
+  relation: KvkkRelation,
+  replyChannel: KvkkReplyChannel,
+  /** The declaration in content/hukuki/tr/basvuru.md must be accepted. */
+  declaration: z.literal(true),
+});
+export const KvkkGuestVerifyInput = z.strictObject({
+  id: uuid,
+  code: z.string().regex(/^[0-9]{6}$/),
 });
 export const LibraryItemInput = z.strictObject({ recordId: uuid, note: z.string().max(2000).optional() });
 export const GuideProgressInput = z.strictObject({ completedSteps: z.array(z.string()) });
@@ -106,11 +135,10 @@ export const CheckoutSubscriptionInput = z.strictObject({
 });
 export const CancelSubscriptionInput = z.strictObject({ mode: z.enum(['donem_sonu', 'hemen']) });
 export const RefundRequestInput = z.strictObject({ orderId: uuid, reason: z.string().max(2000).optional() });
-const channelPrefs = z.record(z.string(), z.boolean());
 export const NotificationPreferencesInput = z.strictObject({
-  email: channelPrefs.optional(),
-  webPush: channelPrefs.optional(),
-  apns: channelPrefs.optional(),
+  email: NotificationPrefsColumn.optional(),
+  webPush: NotificationPrefsColumn.optional(),
+  apns: NotificationPrefsColumn.optional(),
 });
 export const WebPushSubscriptionInput = z.strictObject({
   endpoint: z.url(),
@@ -120,9 +148,15 @@ export const ApnsTokenInput = z.strictObject({
   deviceToken: z.string().regex(/^[0-9a-f]{64,200}$/),
   environment: z.enum(['sandbox', 'production']),
 });
+/** Removal request for a record or a Kampus post or file (FR-79, FR-108, ADR-0023). */
 export const TakedownRequestInput = z.strictObject({
-  recordId: uuid,
-  reason: z.string().max(4000),
+  kind: TakedownKind,
+  targetType: TakedownTargetType,
+  targetId: uuid,
+  requesterName: z.string().max(200).optional(),
+  reason: z.string().min(1).max(4000),
+  /** telif: information on the claimed right (kaldirma.md section 2). */
+  rightsInfo: z.string().max(2000).optional(),
   contactEmail: z.email(),
 });
 export const AdminQueueDecisionInput = z.strictObject({
@@ -174,6 +208,8 @@ export const requestBodies = {
   recordConsent: ConsentInput,
   setTargetProfession: TargetProfessionInput,
   createKvkkRequest: KvkkRequestInput,
+  createGuestKvkkRequest: KvkkGuestRequestInput,
+  verifyGuestKvkkRequest: KvkkGuestVerifyInput,
   createAnswer: AnswerRequest,
   prepareAnswer: PrepareRequest,
   verifyAnswer: VerifyRequest,

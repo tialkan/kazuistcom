@@ -1,6 +1,6 @@
 import { index, integer, pgSchema, primaryKey, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 import { users } from './auth.ts';
-import { createdAt, id, updatedAt } from './_common.ts';
+import { createdAt, id, ts, updatedAt } from './_common.ts';
 
 /** Turkuaz Kampus lives in its own PostgreSQL schema (plan K-14). */
 export const kampus = pgSchema('kampus');
@@ -34,6 +34,8 @@ export const kampusFiles = kampus.table('files', {
   sizeBytes: integer('size_bytes').notNull(),
   sha256: text('sha256').notNull(),
   scanStatus: text('scan_status').notNull().default('bekliyor'),
+  /** Temporary hiding after a takedown request (FR-108, ADR-0023). */
+  hiddenAt: ts('hidden_at'),
   createdAt: createdAt(),
 });
 
@@ -48,6 +50,8 @@ export const kampusPosts = kampus.table(
     title: text('title').notNull(),
     abstract: text('abstract'),
     fileId: uuid('file_id').references(() => kampusFiles.id),
+    /** Temporary hiding after a takedown request (FR-108, ADR-0023). */
+    hiddenAt: ts('hidden_at'),
     createdAt: createdAt(),
   },
   (t) => [index('kampus_posts_profile_idx').on(t.profileId, t.createdAt)],

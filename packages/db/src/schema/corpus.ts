@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import {
   boolean,
+  check,
   date,
   halfvec,
   index,
@@ -13,7 +14,7 @@ import {
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
-import { authorityClasses, recordStatuses, recordTypes } from '@kazuist/contracts';
+import { authorityClasses, recordStatuses, recordTypes, reviewQueueNames } from '@kazuist/contracts';
 import { users } from './auth.ts';
 import { createdAt, id, ts, tsvector, updatedAt } from './_common.ts';
 
@@ -58,7 +59,16 @@ export const records = pgTable(
     sourceUrl: text('source_url').notNull(),
     sourceKey: text('source_key').notNull(),
     fetchedAt: ts('fetched_at').notNull(),
+    /** Raw text as fetched. Never served or sent out; only the anonymizer and editors read it. */
     text: text('text').notNull(),
+    /**
+     * Servable text (ADR-0023): written by anon.run with the masks of the current policy applied, or a copy of
+     * text for records that need no anonymisation (norms). API, chunking (embed.chunks) and export read only
+     * this column; a record whose masked_text is null is not served or indexed (fail closed).
+     */
+    maskedText: text('masked_text'),
+    /** Temporary hiding after a takedown request (72 hours, FR-108); search, pages and sitemap skip it. */
+    hiddenAt: ts('hidden_at'),
     titleTsv: tsvector('title_tsv').generatedAlwaysAs(sql`to_tsvector('turkish', coalesce("title", ''))`),
     openalexCitedBy: integer('openalex_cited_by'),
     createdAt: createdAt(),
@@ -210,14 +220,8 @@ export const anonymizationSpans = pgTable(
   (t) => [index('anonymization_spans_record_idx').on(t.recordId, t.policyVersion)],
 );
 
-export const reviewQueue = pgEnum('review_queue_name', [
-  'anonymization',
-  'citations',
-  'cards',
-  'journal-rules',
-  'takedowns',
-  'kampus-reports',
-]);
+/** contracts reviewQueueNames (append only); kvkk-requests added in v1.1. */
+export const reviewQueue = pgEnum('review_queue_name', reviewQueueNames);
 
 export const reviewQueueItems = pgTable(
   'review_queue',
@@ -237,6 +241,11 @@ export const reviewQueueItems = pgTable(
     index('review_queue_open_idx')
       .on(t.queue, t.priority)
       .where(sql`${t.decision} is null`),
+    // contracts reviewDecisions: editor decisions plus the system value superseded.
+    check(
+      'review_queue_decision',
+      sql`${t.decision} is null or ${t.decision} in ('onay', 'ret', 'duzelt', 'superseded')`,
+    ),
   ],
 );
 

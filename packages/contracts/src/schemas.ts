@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/** Contract version; equals openapi.yaml info.version and this package's version (ADR-0023). */
+export const CONTRACT_VERSION = '1.1.0';
+
 /** Error body for every endpoint (plan Ek C.1, wt.65). */
 export const errorCodes = [
   'bad_request',
@@ -76,7 +79,7 @@ export const byokProviders = ['anthropic', 'openrouter', 'openai', 'gemini'] as 
 export type ByokProvider = z.infer<typeof ByokProvider>;
 export const ByokProvider = z.enum(byokProviders);
 
-/** plan Ek C.3 */
+/** plan Ek C.3. Append only (pg enum job_type); account.purge added in v1.1 (ADR-0023). */
 export const jobTypes = [
   'ingest.fetch',
   'ingest.parse',
@@ -93,6 +96,7 @@ export const jobTypes = [
   'kalemcik.daily',
   'mevzuat.rg_daily',
   'live.fetch',
+  'account.purge',
 ] as const;
 export const JobType = z.enum(jobTypes);
 export type JobType = z.infer<typeof JobType>;
