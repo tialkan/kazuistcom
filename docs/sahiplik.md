@@ -22,7 +22,7 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
 |---|---|
 | mimar | `packages/contracts/**`, `packages/db/**`, `docs/adr/**`, `docs/sahiplik.md`, `docs/istekler/README.md`, `CLAUDE.md`, `.claude/agents/**`, `scripts/check-text.mjs`, `.env.example` |
 | altyapi | `infra/**`, `.github/workflows/**`, `**/Dockerfile`, `**/.dockerignore`, `docs/runbook/**` |
-| kimlik | `apps/web/src/server/auth/**`, `apps/web/src/app/(hesap)/**`, `apps/web/src/app/api/auth/**`, `apps/web/src/app/api/v1/{me,kvkk-requests,professions,notifications,push}/**`, `apps/worker-node/src/notify/**`, `apps/worker-node/src/account/**` |
+| kimlik | `apps/web/src/server/auth/**`, `apps/web/src/app/(hesap)/**`, `apps/web/src/app/api/auth/**`, `apps/web/src/app/api/v1/{me,kvkk-requests,professions,notifications,push,takedown-requests,admin}/**`, `apps/worker-node/src/notify/**`, `apps/worker-node/src/account/**` |
 | yz-gecidi | `packages/ai-gateway/**` |
 | casuist | `packages/casuist/**`, `apps/web/src/app/ara/**`, `services/worker-py/nlp/**`, `eval/rag/**`, `eval/embed/**`, `packages/i18n/{tr,en}/ara.json`, `packages/i18n/{tr,en}/ozet.json` |
 | veri-toplama | `services/worker-py/connectors/**`, `services/worker-py/core/**` (jobs.py hariç), `docs/kaynaklar/**` |
@@ -49,3 +49,5 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
 5. seo için robots kuralları yalnız `apps/web/src/app/robots.ts` ile üretilir; `public/robots.txt` kullanılmaz (iki kaynak çelişir). Plan 17.1'deki `public/robots.txt` bu yüzden listeden çıkarıldı.
 6. Plan 17.1'den bilinçli sapmalar: (a) i18n dosyaları modül ajanlarına dağıtıldı (`packages/i18n/{tr,en}/<modul>.json`), çünkü plan 17.3/9 dosya sahibini modül ajanı yapıyor; on-yuz `packages/i18n` kodunu ve `ortak.json`'u tutar. (b) `services/worker-py/core/jobs.py` veri-toplama yerine mimarda, çünkü iş kuyruğu sözleşmesinin (Ek C.3) Python tarafıdır ve sözleşme yalnız mimar ile değişir.
 7. İş kuyruğu giriş noktaları (ADR-0023): `apps/worker-node/src/{main,runner,handlers,queue}.ts` ve `apps/worker-node/scripts/**` listede olmadığı için orkestranındır; modül ajanları kendi işleyici fabrikalarını kendi yollarında yazar, kaydı orkestra yapar. `services/worker-py/core/main.py` `core/` altında olduğu için veri-toplama ajanınındır; yeni iş türü kaydı için sahibine istek yazılır. `services/worker-py/tests/test_jobs.py` ve `test_main.py` iş kuyruğu sözleşmesini sınar; değişikliği mimar yapar.
+
+- 2026-10-21, orkestra: `api/v1/takedown-requests/**` ve `api/v1/admin/**` kimlik ajanına verildi (yetki ve denetim kaydı orada); modül kuyruk işleyicileri modül ajanlarında kalır.
