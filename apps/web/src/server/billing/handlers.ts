@@ -15,7 +15,7 @@ import { withAuth, withPublic, type Principal } from '../auth/guard.ts';
 import { apiError, json } from '../auth/http.ts';
 import { clientIp } from '../auth/rate-limit.ts';
 import { schema } from '../auth/db.ts';
-import { eq } from '../auth/orm.ts';
+import { eq } from 'drizzle-orm';
 import type { AuthContext } from '../auth/context.ts';
 import { BillingUnavailable, getBillingService } from './context.ts';
 import { BillingError, type BillingService, type Buyer } from '@kazuist/ledger/billing';
