@@ -10,3 +10,14 @@
    - consents.version değeri ön bilgideki version alanından okunur.
 4. Sözleşme değişikliği gerekmez.
 5. Aciliyet: erken geçişten (plan 14.3) önce.
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Kabul. `@kazuist/contracts` `legal.ts`: `LegalFrontMatter` (ön bilgi şeması, consent_kind dahil),
+`splitFrontMatter`, `legalPublishBlockers`, `legalRenderMode` (üretimde yayımlanamayan metin 404, staging'de
+noindex ve taslak bandı), `legalBuildProblems`. CI testi `packages/contracts/test/legal.test.ts` tüm
+`content/hukuki` dosyalarının ön bilgisini doğrular ve `status: yayinda` olup `{{` veya `[DOĞRULANACAK`
+içeren metinde düşer (bugün 20 metin taslak, test geçiyor). Render ve derleme kapısı on-yuz, uçtan uca test
+kalite-guvenlik: docs/istekler/mimar-yonlendirme-on-yuz.md.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.

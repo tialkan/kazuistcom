@@ -27,3 +27,14 @@ Dalga 2 için Seçenek A (yerel Label Studio, Türkiye sunucusunda, iç ağdan e
 
 - `review_queue.decision` serbest metin. anon.run aynı kayıt yeniden işlendiğinde açık satırları `decision = 'superseded'` ile kapatıyor; mimar bu değeri izinli karar değerleri listesine almalı veya başka bir değer önermeli.
 - Maskeli metin ayrı bir sütunda tutulmuyor; `anonymization_spans` ve `records.text` ile yeniden üretilir. Dizinleme (chunks) maskeli metinden üretilmeli; mimar bunun için `records` üzerinde ayrı sütun mu yoksa chunk üretiminde span uygulaması mı istendiğini netleştirmeli.
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Değiştirerek kabul. ADR-0022 (Önerildi): Dalga 2'de Seçenek A, Label Studio CE (Apache-2.0, son sürüm 1.23.2,
+2026-09-29; GitHub API) yalnız Türkiye sunucusunda ve iç ağdan; set bitince Label Studio verisi silinir,
+kalıcı kopya ofset tabanlı etiketlerdir. `gold_annotations` tablosu eklenmedi (B'ye geçişte ayrı istek).
+Ek not kararları (ADR-0023): `superseded` izinli sistem kararı (CHECK: onay, ret, duzelt, superseded);
+maskeli metin `records.masked_text` sütununda, NULL ise kayıt sunulmaz ve dizinlenmez. İşler:
+docs/istekler/mimar-yonlendirme-anonimlestirme.md.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.

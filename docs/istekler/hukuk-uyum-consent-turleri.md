@@ -10,3 +10,12 @@
 3. Önerilen değişiklik: pgEnum'a üç değer; context alanında ürün kodu ve metin sürümü.
 4. Geriye uyumluluk: Enum'a değer ekleme yıkıcı değil.
 5. Aciliyet: odeme ve yz-gecidi ajanları onay ekranlarını yazarken.
+
+## Sonuç (mimar, 2026-10-20, dal dalga-1/mimar/istekler)
+
+Kabul. Migration 0003 `consent_kind`'e abonelik_sozlesmesi, yillik_taahhutname, yz_ucretsiz_katman ekledi
+(`consentKinds`, OpenAPI `ConsentKind`). `consents.context` biçimi `ConsentContext` (productCode, orderId,
+subscriptionId, provider, channel, userAgent); metin sürümü `consents.version`. abonelik.md ön bilgisindeki
+`consent_kind` güncellemesi: docs/istekler/mimar-yonlendirme-hukuk-uyum.md.
+
+Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.

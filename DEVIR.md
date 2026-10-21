@@ -2,6 +2,37 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, mimar, sözleşme istekleri (dalga-1/mimar/istekler), 2026-10-20
+
+Durum: PR açık, birleştirilmedi. Sözleşme v1.1; ADR-0021, ADR-0022, ADR-0023 "Önerildi, Tarık onayı bekliyor".
+Karar tablosu: docs/istekler/README.md; her istek dosyasının sonunda "Sonuç".
+
+- Sözleşme: `CONTRACT_VERSION = '1.1.0'` (openapi.yaml, package.json ile testle eşit). Yeni modüller
+  `packages/contracts/src/account.ts` (rıza, KVKK, kaldırma, kuyruk adları), `jobs.ts` (iş payload şemaları,
+  bildirim türleri), `legal.ts` (hukuki metin yayın kapısı). Üretilmiş tipler yenilendi.
+- Uyumsuz üç değişiklik (v1 hiçbir ortamda yayımlanmadı, istemci yok): `GET /v1/me/export` 200 ve dosya,
+  `POST /v1/me/edu-verification` 204, `POST /v1/takedown-requests` gövdesi `kind/targetType/targetId`.
+  v1.1 etiketinden sonra katı semver.
+- Veri tabanı: `packages/db/migrations/0003_wave1_requests.sql` yalnız ekler; iki elle düzeltme var
+  (eski `payments_provider_uq` yeni kısmi dizinden sonra düşer; `takedown_requests.target_id` önce doldurulur)
+  ve sonda rol tohumu. v1 verisi olan veri tabanında yükseltme testi `test/migration-0003.test.ts`.
+  Yeni enum değerleri aynı migration içinde kullanılmaz (ALTER TYPE ADD VALUE işlem içinde).
+- `records.masked_text`: sunulabilir tek metin; NULL ise kayıt sunulmaz ve dizinlenmez. Yazan: anon.run
+  (anonimleştirme) ve norm kayıtları için ingest (veri toplama). İkisi de yönlendirildi.
+- Drizzle tek kopya: kök `pnpm-workspace.yaml` overrides ve `dedupePeerDependents`;
+  `packages/db/test/single-drizzle.test.ts` kilit dosyasını denetler. `orm.ts` kaldırılabilir, kimlikte.
+- `/api/health`: `src/server/deps.ts` (paylaşılan pg.Pool ve iovalkey istemcisi, globalThis), `src/instrumentation.ts`.
+  Yoklamalar instrumentation kaydı olmadan "not wired" ile 503 verir; bu bilinçli.
+- worker-node: `runner.ts` (LISTEN, yoklama, bayat kilit, SIGTERM), `handlers.ts` (kayıt, `unavailableBilling`,
+  `dailyBillingTick`), `scripts/build.mjs`. Billing gerçek depo gelene kadar `BillingStoreUnavailable` ile
+  kapalı başarısız; günlük zamanlama kapalı. notify.send `APP_URL` yoksa kayıtlı değildir.
+- worker-py: `python -m core.main`; anon.run kendi işleminde. Eski `core/worker.py` kullanılmıyor (veri-toplama
+  kararı). İmaj `docs/kaynaklar`'ı içermediği için kaynak kayıt defteri imajda boştur (yönlendirildi).
+- Doğrulama sınırı: yerelde Docker ve pgvector yok; migration 0003 gerçek PostgreSQL 18'de yalnız CI docker
+  işinde uygulanır. Yerelde PGlite (PostgreSQL 18 wasm) ve Homebrew PostgreSQL 16 ile Redis 8 kullanıldı.
+- Sonraki adım: Tarık ADR onayı; orkestra `mimar-yonlendirme-*.md` işlerini dağıtır; onaydan sonra
+  `contracts-v1.1` etiketi.
+
 ## on-yuz, Tarık onayları (dalga-1/on-yuz/onaylar), 2026-10-20
 
 Kaynak: docs/kararlar.md, 2026-10-20 satırları. Durum: PR açık, birleştirilmedi.
