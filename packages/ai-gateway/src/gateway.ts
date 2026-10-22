@@ -2,7 +2,7 @@ import type { ByokProvider, ModelLine } from '@kazuist/contracts';
 import { BudgetGuard, ProviderSwitch } from './budget.ts';
 import { geminiPolicy, type ContentSensitivity, type GeminiBilling } from './gemini.ts';
 import { parseJsonLines } from './jsonl.ts';
-import type { CostEvent, LedgerReservations } from './ledger.ts';
+import { reservationErrorCode, type CostEvent, type LedgerReservations } from './ledger.ts';
 import { sanitizeMetric, type MetricSink } from './observe.ts';
 import { restore, scrub, type NameRecognizer } from './pii.ts';
 import { SOURCED_SUMMARY_SYSTEM, buildSourcedPrompt, type Passage } from './prompt.ts';
@@ -51,7 +51,8 @@ export type GatewayEvent =
 
 export class GatewayError extends Error {
   constructor(
-    readonly code: 'bad_request' | 'forbidden' | 'payload_too_large' | 'unavailable',
+    readonly code:
+      'bad_request' | 'forbidden' | 'payload_too_large' | 'unavailable' | 'insufficient_credits' | 'conflict',
     readonly status: number,
     message: string,
   ) {
@@ -113,14 +114,23 @@ export function createGateway(deps: GatewayDeps) {
       credits: platform && !input.free ? input.credits : 0,
       free: platform && input.free,
     });
-    const reservation =
-      platform && !input.free && input.credits > 0
-        ? await deps.ledger.reserve({
-            userId: input.userId,
-            credits: input.credits,
-            idempotencyKey: input.requestId,
-          })
-        : null;
+    let reservation: { reservationId: string } | null = null;
+    if (platform && !input.free && input.credits > 0) {
+      try {
+        reservation = await deps.ledger.reserve({
+          userId: input.userId,
+          credits: input.credits,
+          idempotencyKey: input.requestId,
+        });
+      } catch (e) {
+        // audit Y7: the request never ran, so the stream slot and counters are rolled back.
+        await admission.rollback();
+        const code = reservationErrorCode(e);
+        if (code === 'already_settled') throw new GatewayError('conflict', 409, 'request already settled');
+        if (code) throw new GatewayError('insufficient_credits', 402, 'not enough credits');
+        throw new GatewayError('unavailable', 503, 'ledger unavailable');
+      }
+    }
 
     let provider: ByokProvider = input.byok?.provider ?? 'anthropic';
     let model = input.byok?.model ?? route.model;

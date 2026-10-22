@@ -58,6 +58,8 @@ export interface AdmitInput {
 
 export interface Admission {
   release(): void;
+  /** Undo the counted usage and release the slot, for a request that never ran (audit Y7). */
+  rollback(): Promise<void>;
 }
 
 export class BudgetGuard {
@@ -99,7 +101,12 @@ export class BudgetGuard {
       if ((await this.store.get(userKey)) + input.credits > this.cfg.userDailyCredits)
         throw new BudgetError('kullanici_gunluk_tavan');
       await this.store.incrBy(userKey, input.credits, DAY);
-      return { release };
+      const rollback = async (): Promise<void> => {
+        release();
+        if (input.credits) await this.store.incrBy(userKey, -input.credits, DAY);
+        if (input.free) await this.store.incrBy(`free:ip:${input.ipHash}:${d}`, -1, DAY);
+      };
+      return { release, rollback };
     } catch (e) {
       release();
       throw e;

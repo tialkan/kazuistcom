@@ -13,5 +13,8 @@
   },
   "dependencies": {
     "@kazuist/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "@kazuist/ledger": "workspace:*"
   }
 }
