@@ -4,15 +4,15 @@ slug: abonelik
 route: /hukuki/abonelik
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 consent_kind: mesafeli_sozlesme
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
-Dayanak: 6502 sayılı Kanun m.52 [DOĞRULANACAK: güncel metin] ve Abonelik Sözleşmeleri Yönetmeliği
+Dayanak: 6502 sayılı Kanun m.52 (güncel metin mevzuat.gov.tr'den okundu; sözleşmenin bir nüshası kâğıtta veya kalıcı veri saklayıcısıyla verilir) ve Abonelik Sözleşmeleri Yönetmeliği
 (RG 24/1/2015, 29246). Yönetmelik m.2/2 uyarınca bu tür aboneliklere m.5, 6, 7, 8, 13, 22, 23, 24 ve 25
 uygulanır; taahhütname (m.15) Kazuist'in gönüllü olarak eklediği bir belgedir. Sözleşme en az 12 punto
 eşdeğerinde ve kalıcı veri saklayıcısıyla verilir (m.5). Abonelik adımında ön bilgilendirme formu ve
@@ -20,7 +20,7 @@ mesafeli satış sözleşmesi de onaylanır.
 
 ## Madde 1. Taraflar
 
-Hizmet sağlayıcı: Kulular Bilişim Teknolojileri Ltd. Şti., MERSİS {{MERSIS}}, {{ADRES}}, {{DESTEK_EPOSTA}}.
+Hizmet sağlayıcı: Kulular Bilişim Teknolojileri Ltd. Şti., MERSİS 0591095454600001, Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara, kulularteknoloji@gmail.com.
 Abone: {{ALICI_AD}}, {{ALICI_EPOSTA}}.
 
 ## Madde 2. Konu ve süre
@@ -56,8 +56,8 @@ Tahsilat 1., 3. ve 7. gün yeniden denenir; sonra plan Ücretsiz'e iner, mevcut 
 ## Madde 7. Cayma
 
 Krediler ödemeyle birlikte yüklendiği ve kullanılabilir olduğu için cayma kuralı ön bilgilendirme formu
-madde 5'teki gibidir. [DOĞRULANACAK: ilk dönem kredilerinden hiç kullanılmamışsa 14 gün içinde tam iade
-uygulanıp uygulanmayacağı; plan 4.5/4 yalnız paketten söz ediyor. Tarık kararı.]
+madde 5'teki gibidir. İlk dönemin kredilerinden hiç kullanılmamışsa sözleşmenin kurulduğu günden itibaren
+14 gün içinde fesih ve tam iade yapılır (varsayılan karar, Tarık itiraz etmezse geçerli).
 
 ## Yıllık plan taahhütnamesi
 
@@ -72,7 +72,7 @@ Bu taahhütname sözleşmenin ayrılmaz parçasıdır.
 | Taahhütsüz (aylık) liste fiyatı | {{AYLIK_LISTE_FIYATI_TL}} TL/ay |
 | Aylık karşılığı indirim | {{AYLIK_INDIRIM_TL}} TL |
 | Erken fesihte iade formülü | İade = yıllık bedel eksi (yüklemesi yapılmış ay sayısı x aylık liste fiyatı); sıfırın altına inmez. Ek bedel istenmez |
-| Örnek | {{ORNEK_HESAP}} |
+| Örnek | Öğrenci Plus yıllık 799 TL, aylık liste fiyatı 99 TL; 3 ay yüklemesi yapılmışken hemen fesihte iade = 799 - (3 x 99) = 502 TL |
 | İade süresi | Fesihten itibaren 15 gün |
 
 Taahhütlü fiyat, taahhütsüz fiyatın üzerinde değildir.

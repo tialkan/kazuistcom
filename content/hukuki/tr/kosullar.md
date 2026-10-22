@@ -4,16 +4,16 @@ slug: kosullar
 route: /hukuki/kosullar
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 consent_kind: kullanim_kosullari
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
 Dayanak: 6098 sayılı Türk Borçlar Kanunu (genel işlem koşulları) ve 6502 sayılı Tüketicinin Korunması
-Hakkında Kanun [DOĞRULANACAK: ilgili maddeler, mevzuat.gov.tr].
+Hakkında Kanun (m.48 mesafeli sözleşmeler, m.52 abonelik).
 
 ## 1. Taraflar ve kapsam
 
@@ -33,7 +33,7 @@ danışmanız gerekir. Kazuist belirli bir avukata veya büroya yönlendirme yap
 
 ## 4. Hesap
 
-18 yaşını doldurmuş olmanız gerekir [DOĞRULANACAK: yaş sınırı Tarık kararı]. Hesap bilgilerinizin
+18 yaşını doldurmuş olmanız gerekir; kayıtta yaşınızı beyan edersiniz (varsayılan karar, Tarık itiraz etmezse geçerli). Hesap bilgilerinizin
 güvenliğinden siz sorumlusunuz. edu.tr doğrulamasıyla verilen öğrenci hakkı yılda bir yenilenir.
 
 ## 5. Ücretsiz plan, BYOK ve krediler
@@ -53,7 +53,8 @@ tavanı, eşzamanlı işlem sınırı ve hız sınırı uygular.
 
 ## 7. Fikri haklar
 
-Resmî metinler (mevzuat, yargı kararları) FSEK m.31 kapsamındadır [DOĞRULANACAK]. Kazuist'in yazılımı,
+Resmî metinler (mevzuat, yargı kararları) FSEK m.31 uyarınca çoğaltılması ve yayılması serbesttir. Kurumların veri tabanları üzerindeki
+haklar (FSEK ek m.8) saklıdır. Kazuist'in yazılımı,
 tasarımı, derlemesi, anonimleştirilmiş veri tabanı ve özgün içerikleri (rehberler, desteler) Kulular'ındır.
 Makalelerde künye, özet ve bağlantı verilir; tam metin yalnız açık erişimde gösterilir. Atıf stilleri
 CSL projesinin lisansıyla (CC BY-SA) kullanılır.
@@ -65,18 +66,19 @@ kullanıcılarca görüntülenebilir.
 ## 8. Sorumluluk
 
 Kazuist özetlerin doğruluğu için kaynak bağlama ve doğrulama uygular; buna rağmen hata olabilir. Kazuist'in
-kasıt ve ağır ihmalinden doğan sorumluluğu saklıdır (TBK m.115) [DOĞRULANACAK]. Tüketicinin kanundan doğan
+ağır kusurundan doğan sorumluluğu sınırlanamaz (TBK m.115). Tüketicinin kanundan doğan
 hakları saklıdır.
 
 ## 9. Hesabın askıya alınması ve kapatılması
 
 Bu koşulların ağır ihlalinde hesap, gerekçesi bildirilerek askıya alınabilir. Hesabınızı dilediğiniz an
-silebilirsiniz.
+silebilirsiniz; silme talebinden sonra 14 günlük bekleme süresi içinde vazgeçebilirsiniz, süre
+bitince hesap silinir.
 
 ## 10. Değişiklik
 
 Koşullar değişirse sürüm tarihi güncellenir; esaslı değişiklikler yürürlükten en az 30 gün önce e-postayla
-bildirilir [DOĞRULANACAK: süre Tarık kararı].
+bildirilir (varsayılan süre, Tarık onayı bekliyor).
 
 ## 11. Uygulanacak hukuk
 

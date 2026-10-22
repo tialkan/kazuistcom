@@ -4,12 +4,12 @@ slug: iade-ve-kredi
 route: /hukuki/iade-ve-kredi
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026. Bu metin plan 4.5'i birebir izler; dayanak
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026. Bu metin plan 4.5'i birebir izler; dayanak
 > atıfları ayrıca doğrulanmıştır (aşağıdaki notlar).
 
 ## 1. Krediler
@@ -50,12 +50,16 @@ Yönetmeliği m.15/1-ğ ve h).
 3. Hemen fesihte aylık plan: o ayın kredisi yüklenmiş olduğundan iade yoktur, krediler hesabınızda kalır.
 4. Hemen fesihte yıllık plan: teslim edilmemiş aylık yüklemelerin bedeli 15 gün içinde iade edilir
    (Abonelik Yön. m.25). Formül: iade = ödenen yıllık bedel eksi (yüklemesi yapılmış ay sayısı çarpı aylık
-   liste fiyatı); sonuç sıfırın altına inmez. Örnek: {{ORNEK_HESAP}}.
+   liste fiyatı); sonuç sıfırın altına inmez. Örnek: Öğrenci Plus yıllık 799 TL, aylık liste fiyatı 99 TL; 3 ay yüklemesi yapılmışken hemen fesihte iade = 799 - (3 x 99) = 502 TL.
 5. Ödeme bildirimi: her otomatik tahsilattan en az 7 gün önce e-posta; yıllık yenilemede ayrıca 30 gün önce.
 6. Fiyat değişikliği: mevcut abonelere en az 30 gün önce bildirilir; yeni fiyat sonraki dönemden geçerlidir;
-   dilediğiniz an fesih edebilirsiniz.
+   dilediğiniz an fesih edebilirsiniz (fesih hakkı m.22/1; 30 günlük bildirim Kazuist taahhüdüdür).
 7. Başarısız tahsilat: 1., 3. ve 7. gün yeniden denenir; sonra plan Ücretsiz'e iner, mevcut krediler kalır.
 8. Fesih sonucu e-postayla yazılı olarak bildirilir.
+9. İlk dönemin kredilerinden hiç kullanılmamışsa, aboneliğin başladığı günden itibaren 14 gün içinde fesihte
+   ödenen bedelin tamamı iade edilir (varsayılan karar, Tarık itiraz etmezse geçerli).
+10. İade işleminin sonucu ödeme kuruluşundan alınamazsa krediler hesabınızda kalır ve talep yönetim tarafından
+   elle sonuçlandırılır; sonuç size e-postayla bildirilir.
 
 ## 7. Ters ibraz ve Apple iadesi
 
@@ -76,9 +80,15 @@ talep yönetim onayıyla sonuçlanır.
 - Mesafeli Sözleşmeler Yönetmeliği (RG 27/11/2014, 29188) m.15/1-ğ elektronik ortamda anında ifa edilen
   hizmetler ve anında teslim edilen gayrimaddi mallar, (h) cayma süresi dolmadan tüketicinin onayıyla
   ifasına başlanan hizmetler konusundadır (özgün metnin özeti, resmigazete.gov.tr/eskiler/2014/11/20141127-6.htm;
-  birebir lafız onaydan önce karşılaştırılacak). [DOĞRULANACAK: 23/8/2022 (31932) ve 4/11/2023 (32359) değişikliklerinin bu bentlere etkisi, mevzuat.gov.tr güncel metni].
+  birebir lafız onaydan önce karşılaştırılacak). 23/8/2022 tarihli ve 31932 sayılı değişiklik (resmigazete.gov.tr/eskiler/2022/08/20220823-2.htm) m.15/1'e yeni
+  bentler ekledi, (ğ) ve (h) bentlerini değiştirmedi. 4/11/2023 tarihli 32359 sayılı Resmî Gazete'deki ilgili metin
+  bu yönetmeliği değiştirmiyor.
 - Abonelik Sözleşmeleri Yönetmeliği (RG 24/1/2015, 29246) m.2/2: elektrik, su, doğal gaz ve elektronik
   haberleşme dışındaki aboneliklere yalnız m.5, 6, 7, 8, 13, 22, 23, 24 ve 25 uygulanır. Bu yüzden 7 gün
   önce ödeme bildirimi (plan 4.5/8'de m.19-20), 30 gün önce fiyat bildirimi (plan 4.5/9'da m.22) ve yıllık
   plan taahhütnamesi (m.15) Kazuist için kanuni zorunluluk değil, Kazuist'in gönüllü taahhüdü olarak yazıldı.
-  m.22 belirsiz süreli sözleşmede her an fesih hakkını düzenler. [DOĞRULANACAK: sonraki değişikliklerle m.2/2 listesinin değişip değişmediği, mevzuat.gov.tr].
+  m.22 bu aboneliğe uygulanır: belirsiz süreli sözleşmede tüketici her an, gerekçesiz ve cezasız fesih edebilir
+  (m.22/1). Fiyat değişikliği bildirimini düzenleyen bir hüküm m.2/2 listesinde yoktur; 30 gün kuralı gönüllüdür
+  (ADR-0024 taslağı). [DOĞRULANACAK: 2015 sonrası bu yönetmeliği değiştiren bir düzenleme olup olmadığı;
+  mevzuat.gov.tr'deki işlenmiş metinle karşılaştırılacak. 21/12/2023 tarihli değişiklik başka bir yönetmeliğe
+  (Abonelik Sözleşmesinden Kaynaklanan Para Alacakları) ilişkindir.]

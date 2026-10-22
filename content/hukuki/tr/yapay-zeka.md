@@ -4,13 +4,13 @@ slug: yapay-zeka
 route: /hukuki/yapay-zeka
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 alternate: /legal/ai
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026. Mevcut sayfanın güncellenmiş hâlidir.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026. Mevcut sayfanın güncellenmiş hâlidir.
 
 ## 1. Kazuist'te yapay zekânın rolü
 
@@ -42,9 +42,9 @@ olarak yazmamanızı rica ederiz.
 
 Desteklenen sağlayıcılar: Anthropic (Claude), OpenRouter, OpenAI, Google Gemini.
 
-Anthropic, ticari koşulları ve gizlilik merkezi bilgilerine göre API girdi ve çıktılarını belirli bir
-süre sonra siler; politika ihlali işaretlenen içerikleri daha uzun tutabilir [DOĞRULANACAK: güncel süreler,
-Anthropic gizlilik merkezi; plan 8.10/1'de 30 gün ve 2 yıl yazıyor]. Bu yüzden Kazuist kişisel veri göndermez.
+Anthropic'in gizlilik merkezine göre API girdi ve çıktıları alındıktan veya üretildikten sonra 30 gün içinde
+silinir; kullanım politikası ihlali olarak işaretlenen içerik 2 yıla kadar, güvenlik sınıflandırma puanları 7 yıla
+kadar tutulabilir (privacy.claude.com, 22 Ekim 2026'da okundu). Bu yüzden Kazuist kişisel veri göndermez.
 
 BYOK modunda sağlayıcıyla ilişki sizinle sağlayıcı arasındadır; sağlayıcının koşulları ve gizlilik
 politikası geçerlidir.
@@ -59,9 +59,10 @@ Zinciri'nde saklanır. Kazuist sunucusu 1.0'da anahtar saklamaz.
 
 Google'ın Gemini API koşullarına göre ücretsiz katmanda gönderilen içerik ve cevaplar Google'ın ürün
 geliştirmesinde kullanılabilir ve insan incelemesine girebilir; Google bu katmanda hassas, gizli veya
-kişisel bilgi gönderilmemesini istemektedir. Bu kural Google'ın belirttiği bölgeler (AEA, İsviçre ve
-Birleşik Krallık) dışındaki kullanıcılar için geçerlidir [DOĞRULANACAK: Gemini API Additional Terms
-güncel metni, ai.google.dev].
+kişisel bilgi gönderilmemesini istemektedir. Google, AEA, İsviçre ve Birleşik Krallık'taki kullanıcılara
+sunulan uygulamalarda yalnız ücretli hizmetin kullanılmasını ister ve bu bölgelerde ücretsiz kotaya da ücretli
+hizmetin veri kullanım koşullarını uygular (Gemini API Additional Terms of Service, ai.google.dev, son güncelleme
+28 Nisan 2026).
 
 Bu yüzden:
 
