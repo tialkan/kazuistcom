@@ -47,3 +47,27 @@ D1 deneme günleri fiilen 2-4-8; D2 boş IYZICO_BASE_URL ve eksik IYZICO_MERCHAN
 ## Durum
 
 Açık. Canlı ödeme anahtarı K1 ve K2 kapanmadan ve FakeIyzico gerçek yanıt biçimine göre düzeltilmeden istenmez. Kapatma: odeme (K1-K2, Y1-Y6, O1-O9, D1-D10), yz-gecidi ve odeme birlikte (Y7).
+
+## Yeniden denetim, 2026-10-22 (main 7e9ed6d, PR #18 ve #19 sonrası)
+
+Önceki 28 bulgu: kapandı 15 (K1, K2, Y1, Y2, Y4, Y6, O1, O2, O3, O7, D1, D2, D5, D7, D10), kısmen 11 (Y3, Y5, Y7, O4, O5, O6, O8, O9, D3, D4, D8), açık 2 (D6, D9). Kritik kalmadı.
+
+Yeni bulgular (betikler: `docs/denetim/repro/repro2-pg.mts`, `repro2-mem.mts`, `repro2-hold.mts`, `repro-pg-v2.mts`):
+
+| No | Önem | Bulgu | Yer |
+|---|---|---|---|
+| Y-N1 | Yüksek | Hemen fesihte iyzico iptal çağrısı hata verirse abonelik `iptal` yazılıyor ama iade satırı açılmıyor; tekrar istek 0 iade dönüyor. | service.ts:802-807, 829-840 (repro2-pg N1) |
+| Y-N2 | Yüksek | Dönem sonu fesihte iyzico iptali başarısızsa tekrar istek iyzico'yu çağırmıyor; abonelik ACTIVE kalıp tahsilat sürüyor. Aynı desen onAccountDeletion'da. | service.ts:661-664, 808-809, 1011-1017 (repro2-pg N2) |
+| Y-N3 | Yüksek | fraudStatus 0 ile gelen ödeme incelemeden sonra onaylansa bile kredi yüklenmiyor: IFN ucu, bekleyen siparişi yeniden sorgulayan iş ve 2 değeri yok. | service.ts:294-299 (repro2-pg N3) |
+| Y-N4 | Yüksek | Abonelik ödenip tarayıcı callback'i gelmezse abonelik hiç açılmıyor; webhook `subscription_not_found`, yeniden sorgulayan iş yok. | service.ts:518-533, 624-635 (repro2-pg N6) |
+| O-N1 | Orta | Sonucu belirsiz iadede (refund_pending) kredi harcanabilir dönüyor ve çözüm yolu yok. | service.ts:773-783, 948-954 (repro2-pg N5) |
+| O-N2 | Orta | Başarısız ödemede kupon kullanım hakkı yanıyor. | service.ts:214-221, 263-268 (repro2-pg N4) |
+| D-N1 | Düşük | Onaylar iyzico başlatmasından önce yazılıyor; başarısız başlatmada yetim consents satırı. | service.ts:224-241 |
+| D-N2 | Düşük | Mutabakatta transactionId ve paymentId eşlemesi doğrulanmadı; gün UTC, rapor +03:00. | iyzico.ts:455-480; jobs.ts:18-23 |
+| D-N3 | Düşük | Ödeme sayfası yönlendirme düzenli ifadesi FakeIyzico adres biçimini reddediyor. | apps/web/src/app/(odeme)/odeme/submit.ts:49 |
+| D-N4 | Düşük | Onay sürümü taslak metinden de alınıyor. | _hukuki/yukle.ts:61-63 |
+| D-N5 | Düşük | 5 dakikayı aşan iade çağrısında tutma süpürülüyor; iyzico fetch'inde zaman aşımı yok. | engine.ts holdLot; iyzico.ts call (repro2-hold) |
+
+Kısmen kalanlarda öne çıkanlar: Y5 bildirim metinleri genel (7 gün bildiriminde tutar ve tarih yok, dönem sonu fesihte yanlış metin); Y7 açık rezervasyonun eşzamanlı tekrarı tek ücretle iki kez çalışıyor; O5 abonelikte cayma onayı kaydedilmiyor; O6 ekranda hukuk-uyum yer tutucuları, PDF ve e-posta yok; O9 onAccountDeletion çağrılmıyor.
+
+Toplam açık: kritik 0, yüksek 7, orta 7, düşük 10. Canlı ödeme anahtarı Y-N1..Y-N4 kapanmadan istenmez.
