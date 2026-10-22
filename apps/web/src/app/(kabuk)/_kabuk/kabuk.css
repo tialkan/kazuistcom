@@ -76,8 +76,9 @@
   list-style: none;
   margin-top: 0;
   margin-bottom: 0;
-  overflow-x: auto;
-  scrollbar-width: thin;
+  /* Wrap rather than scroll: a scroll strip without focusable items fails WCAG 2.1.1 (axe scrollable-region-focusable). */
+  flex-wrap: wrap;
+  column-gap: 0;
 }
 .kabuk-moduller a {
   display: inline-flex;
@@ -100,6 +101,33 @@
 .kabuk-modul--kampus a[aria-current='page'] {
   color: var(--kz-color-kampus);
   border-bottom-color: var(--kz-color-kampus);
+}
+.kabuk-moduller .modul-kapali {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: 44px;
+  padding: 0 var(--kz-space-3);
+  white-space: nowrap;
+  font-size: var(--kz-text-sm);
+  font-weight: 600;
+  color: var(--kz-color-text-muted);
+}
+.modul-kapali__not {
+  font-size: var(--kz-text-xs);
+  font-weight: 500;
+  color: var(--kz-color-text-muted);
+}
+.kabuk-alt li .modul-kapali {
+  display: inline-block;
+  padding: 0.35rem 0;
+}
+.ana-kampus .modul-kapali {
+  font-weight: 700;
+}
+.ana-kampus .modul-kapali,
+.ana-kampus .modul-kapali__not {
+  color: var(--kz-color-kampus-contrast);
 }
 .kabuk-icerik:focus {
   outline: none;

@@ -84,13 +84,7 @@
         [
           "div",
           {},
-          [
-            "a",
-            {
-              "href": "/demo"
-            },
-            "Kazu Demo"
-          ],
+          ["span", {}, "Kazu Demo"],
           [
             "a",
             {

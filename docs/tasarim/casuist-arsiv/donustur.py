@@ -34,6 +34,7 @@ TAGS = {'section', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'span', 'a', 'strong', 'e
         'figcaption', 'abbr', 'time', 'hr', 'main'}
 DROP = {'script', 'style', 'svg', 'canvas', 'noscript', 'template', 'button', 'form', 'input'}
 VOID = {'br', 'img', 'hr', 'meta', 'link', 'input', 'source', 'path', 'rect', 'ellipse', 'circle', 'line'}
+DEAD_LINKS = {'/demo'}  # old site demo page, gone (docs/istekler/kalite-on-yuz-baglantilar.md)
 HTML_VOID = {'br', 'img', 'hr', 'meta', 'link', 'input', 'source', 'wbr', 'area', 'col', 'embed'}
 ATTRS = {'class', 'href', 'id', 'alt', 'lang', 'hreflang', 'open', 'aria-label', 'colspan', 'rowspan',
          'scope', 'datetime', 'title', 'width', 'height'}
@@ -97,6 +98,10 @@ class Tree(HTMLParser):
                                            'height': keep.get('height', ''),
                                            'src': img_src(a.get('src', ''))}])
             return
+        if tag == 'a' and keep.get('href') in DEAD_LINKS:
+            # Target no longer exists; only the link is removed, the text stays (Ek H).
+            keep.pop('href')
+            tag = 'span'
         node = [tag if tag in TAGS else 'span', keep]
         self.stack[-1].append(node)
         if tag not in VOID:
