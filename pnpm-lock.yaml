@@ -160,6 +160,10 @@ importers:
       '@kazuist/contracts':
         specifier: workspace:*
         version: link:../contracts
+    devDependencies:
+      '@kazuist/ledger':
+        specifier: workspace:*
+        version: link:../ledger
 
   packages/casuist:
     dependencies:
