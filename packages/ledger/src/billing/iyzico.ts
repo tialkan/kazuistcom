@@ -126,7 +126,9 @@ export interface CheckoutResult {
   basketId: string | null;
   conversationId: string | null;
   paidPriceKurus: number | null;
+  /** 1 approved, 0 in review (wait for the notification), -1 rejected. */
   fraudStatus: number | null;
+  currency: string | null;
 }
 export interface SubscriptionInit {
   conversationId: string;
@@ -140,13 +142,44 @@ export interface SubscriptionDetail {
   pricingPlanReferenceCode: string;
   startDate: number | null;
   endDate: number | null;
-  orders: {
-    referenceCode: string;
-    price: number;
-    paymentStatus: string;
-    startPeriod: number;
-    endPeriod: number;
+  orders: SubscriptionOrder[];
+}
+/** docs.iyzico.com subscription detail: orders[] carry orderStatus and paymentAttempts[]. */
+export interface SubscriptionOrder {
+  referenceCode: string;
+  /** Kurus. */
+  price: number;
+  currencyCode: string;
+  startPeriod: number;
+  endPeriod: number;
+  orderStatus: 'WAITING' | 'SUCCESS' | 'FAILED' | string;
+  paymentAttempts: {
+    paymentStatus: 'SUCCESS' | 'FAILED' | string;
+    paymentId: string | null;
+    createdDate: number;
   }[];
+}
+
+/** Payment id of the successful attempt of an order, or null. */
+export function successfulPaymentId(o: SubscriptionOrder | undefined): string | null {
+  if (!o || o.orderStatus !== 'SUCCESS') return null;
+  const ok = o.paymentAttempts.filter((a) => a.paymentStatus === 'SUCCESS' && a.paymentId);
+  return ok.length ? (ok[ok.length - 1]?.paymentId ?? null) : null;
+}
+
+/**
+ * definite: iyzico answered with status failure (nothing happened). Otherwise the outcome is unknown
+ * (network error, timeout, unreadable answer) and the call must not be repeated blindly.
+ */
+export class IyzicoError extends Error {
+  constructor(
+    readonly path: string,
+    readonly definite: boolean,
+    readonly errorCode: string | null = null,
+  ) {
+    super(`iyzico ${path} failed`);
+    this.name = 'IyzicoError';
+  }
 }
 export interface RefundResult {
   status: 'success' | 'failure';
@@ -216,18 +249,28 @@ export class HttpIyzico implements IyzicoApi {
     const raw = body === undefined ? '' : JSON.stringify(body);
     const rnd = `${Date.now()}${randomBytes(6).toString('hex')}`;
     const pathOnly = path.split('?')[0] as string;
-    const res = await this.fetchFn(this.cfg.baseUrl + path, {
-      method,
-      headers: {
-        Authorization: authorizationHeader(this.cfg, pathOnly, raw, rnd),
-        'x-iyzi-rnd': rnd,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: method === 'POST' ? raw : undefined,
-    });
-    const json = (await res.json()) as IyzResponse;
-    if (json.status !== 'success') throw new Error(`iyzico ${path} failed`);
+    let json: IyzResponse;
+    try {
+      const res = await this.fetchFn(this.cfg.baseUrl + path, {
+        method,
+        headers: {
+          Authorization: authorizationHeader(this.cfg, pathOnly, raw, rnd),
+          'x-iyzi-rnd': rnd,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: method === 'POST' ? raw : undefined,
+      });
+      json = (await res.json()) as IyzResponse;
+    } catch {
+      throw new IyzicoError(pathOnly, false);
+    }
+    if (json.status !== 'success')
+      throw new IyzicoError(
+        pathOnly,
+        json.status === 'failure',
+        (json.errorCode as string | undefined) ?? null,
+      );
     return json;
   }
 
@@ -279,6 +322,7 @@ export class HttpIyzico implements IyzicoApi {
       conversationId: (r.conversationId as string | undefined) ?? null,
       paidPriceKurus: r.paidPrice !== undefined ? tryToKurus(r.paidPrice as number) : null,
       fraudStatus: (r.fraudStatus as number | undefined) ?? null,
+      currency: (r.currency as string | undefined) ?? null,
     };
   }
 
@@ -360,9 +404,18 @@ export class HttpIyzico implements IyzicoApi {
       pricingPlanReferenceCode: String(d.pricingPlanReferenceCode),
       startDate: (d.startDate as number | undefined) ?? null,
       endDate: (d.endDate as number | undefined) ?? null,
-      orders: ((d.orders as SubscriptionDetail['orders'] | undefined) ?? []).map((o) => ({
-        ...o,
-        price: tryToKurus(o.price),
+      orders: ((d.orders as Record<string, unknown>[] | undefined) ?? []).map((o) => ({
+        referenceCode: String(o.referenceCode),
+        price: tryToKurus(o.price as number),
+        currencyCode: String(o.currencyCode ?? 'TRY'),
+        startPeriod: Number(o.startPeriod ?? 0),
+        endPeriod: Number(o.endPeriod ?? 0),
+        orderStatus: String(o.orderStatus),
+        paymentAttempts: ((o.paymentAttempts as Record<string, unknown>[] | undefined) ?? []).map((a) => ({
+          paymentStatus: String(a.paymentStatus),
+          paymentId: a.paymentId === undefined || a.paymentId === null ? null : String(a.paymentId),
+          createdDate: Number(a.createdDate ?? 0),
+        })),
       })),
     };
   }
@@ -375,8 +428,10 @@ export class HttpIyzico implements IyzicoApi {
     try {
       await this.call('POST', '/v2/subscription/operation/retry', { referenceCode: orderRef });
       return { status: 'success' as const };
-    } catch {
-      return { status: 'failure' as const };
+    } catch (e) {
+      // Only a definite failure counts as a failed retry; an unknown outcome is re-queried later.
+      if (e instanceof IyzicoError && e.definite) return { status: 'failure' as const };
+      throw e;
     }
   }
 
@@ -397,8 +452,32 @@ export class HttpIyzico implements IyzicoApi {
     return { status: 'success', paymentId: String(r.paymentId ?? p.paymentId), priceKurus: p.priceKurus };
   }
 
-  async listTransactions(_day: Date): Promise<ProviderTransaction[]> {
-    // Reporting API path and paging to be confirmed in the sandbox panel (Tarik step in DEVIR).
-    throw new Error('iyzico: transaction report not wired yet');
+  /**
+   * GET /v2/reporting/payment/transactions?transactionDate=YYYY-MM-DD&page=n (docs.iyzico.com, Daily
+   * Transactions Reporting). PAYMENT lines give transactionId and paidPrice; REFUND lines are returned as
+   * kind iade with the transaction id (their link to the payment is not documented, see DEVIR).
+   */
+  async listTransactions(day: Date): Promise<ProviderTransaction[]> {
+    const date = day.toISOString().slice(0, 10);
+    const out: ProviderTransaction[] = [];
+    for (let page = 1; page <= 100; page++) {
+      const r = await this.call(
+        'GET',
+        `/v2/reporting/payment/transactions?transactionDate=${date}&page=${page}`,
+      );
+      for (const t of (r.transactions as Record<string, unknown>[] | undefined) ?? []) {
+        const type = String(t.transactionType);
+        if (type !== 'PAYMENT' && type !== 'REFUND') continue;
+        out.push({
+          paymentId: String(t.transactionId),
+          conversationId: (t.conversationId as string | undefined) ?? null,
+          amountKurus: tryToKurus((t.paidPrice ?? t.price) as number),
+          kind: type === 'PAYMENT' ? 'odeme' : 'iade',
+          at: new Date(String(t.transactionDate).replace(' ', 'T') + '+03:00'),
+        });
+      }
+      if (page >= Number(r.totalPageCount ?? 1)) break;
+    }
+    return out;
   }
 }

@@ -69,8 +69,13 @@ describe('ledger on PGlite with the migration triggers', () => {
         originRef: 'order:1',
         now: t0,
       });
-      l.reserve({ operationId: 'op-1', walletId, estimatedCredits: 60, now: t0 });
     });
+    // A settled reservation is never run again with the same key (audit Y7).
+    await expect(
+      withWallet(db, walletId, (l) =>
+        l.reserve({ operationId: 'op-1', walletId, estimatedCredits: 60, now: t0 }),
+      ),
+    ).rejects.toThrow('already_settled');
     expect(await n('select count(*)::int n from ledger_transactions')).toBe(before);
   });
 

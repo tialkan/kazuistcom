@@ -155,3 +155,16 @@ export function annualGrantsDue(periodStart: Date, now: Date): number {
   while (n < 12 && addMonths(periodStart, n).getTime() <= now.getTime()) n++;
   return n;
 }
+
+/** Calendar day in Europe/Istanbul (UTC+3 all year since 2016), YYYY-MM-DD. */
+export function istanbulDay(d: Date): string {
+  return new Date(d.getTime() + 3 * 3_600_000).toISOString().slice(0, 10);
+}
+
+/**
+ * Day based due check for the daily billing job (D1): a step planned for day N after the failure runs on
+ * that calendar day whatever the hour of the tick, so retries land on day 1, 3 and 7, not 2, 4 and 8.
+ */
+export function dueToday(at: Date, now: Date): boolean {
+  return istanbulDay(at) <= istanbulDay(now);
+}

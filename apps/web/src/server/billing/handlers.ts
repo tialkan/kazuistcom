@@ -33,6 +33,7 @@ const codeOf: Record<BillingError['status'], ErrorCode> = {
   402: 'bad_request',
   404: 'not_found',
   409: 'conflict',
+  502: 'unavailable',
 };
 
 /** Run with the billing service; BillingError and an unconfigured service map to contract errors. */
@@ -130,6 +131,8 @@ export function subscriptionCancelPost(req: Request, route: { params: Promise<{ 
     withService(async (s) => {
       const { id } = await route.params;
       if (!uuidRe.test(id)) return apiError('not_found');
+      // Cancel is idempotent on the subscription itself; the key is still required (D3).
+      if (!idemKey(r)) return apiError('bad_request');
       const parsed = CancelSubscriptionInput.safeParse(await body(r));
       if (!parsed.success) return apiError('bad_request');
       return json(await s.cancel(p.userId, id, parsed.data.mode));
@@ -139,10 +142,12 @@ export function subscriptionCancelPost(req: Request, route: { params: Promise<{ 
 
 export const refundRequestPost = withAuth({ rate: rate.write }, async (req, p) =>
   withService(async (s) => {
+    if (!idemKey(req)) return apiError('bad_request');
     const parsed = RefundRequestInput.safeParse(await body(req));
     if (!parsed.success) return apiError('bad_request');
-    const r = await s.refundPackage(p.userId, parsed.data.orderId);
-    return json({ id: parsed.data.orderId, ...r }, 201);
+    // Inside the 14 day rule the refund runs at once; otherwise the request waits for approval (O9).
+    const r = await s.requestRefund(p.userId, parsed.data.orderId, parsed.data.reason);
+    return json(r, r.status === 'tamamlandi' ? 201 : 202);
   }),
 );
 

@@ -27,12 +27,18 @@ it('runs billing.reconcile and billing.monthly_grant through the job consumer', 
   const handlers = billingHandlers({
     now: () => now,
     monthlyGrant: async () => 2,
-    reconcileDay: async () => [
-      { paymentId: 'p1', kind: 'odeme', problem: 'kayitta_yok', providerKurus: 100, recordedKurus: null },
-    ],
+    reconcileDay: async () => ({
+      disabled: false,
+      diffs: [
+        { paymentId: 'p1', kind: 'odeme', problem: 'kayitta_yok', providerKurus: 100, recordedKurus: null },
+      ],
+    }),
   });
   const c = createConsumer(db, 'w', handlers);
   await c.runOnce('billing.reconcile');
   await c.runOnce('billing.monthly_grant');
-  expect(results).toEqual([{ day: '2026-10-19', differences: 1, paymentIds: ['p1'] }, { granted: 2 }]);
+  expect(results).toEqual([
+    { day: '2026-10-19', disabled: false, differences: 1, paymentIds: ['p1'] },
+    { granted: 2 },
+  ]);
 });

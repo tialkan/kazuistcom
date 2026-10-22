@@ -41,3 +41,20 @@ export class FakeEArsiv implements EArsivProvider {
     this.canceled.push(providerRef);
   }
 }
+
+export class EArsivUnavailable extends Error {
+  override name = 'EArsivUnavailable';
+}
+
+/**
+ * Production stand-in until the integrator is chosen (D5): never invents an invoice number. The billing
+ * service records an alert (fatura_bekliyor) and the payment itself is not affected.
+ */
+export class UnconfiguredEArsiv implements EArsivProvider {
+  async issue(): Promise<EArsivInvoice> {
+    throw new EArsivUnavailable();
+  }
+  async cancel(): Promise<void> {
+    throw new EArsivUnavailable();
+  }
+}

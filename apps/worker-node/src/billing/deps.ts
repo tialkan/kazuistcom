@@ -10,7 +10,7 @@ import { createHmac, randomUUID } from 'node:crypto';
 import { PRICE_TABLE_V1 } from '@kazuist/ledger';
 import {
   BillingService,
-  FakeEArsiv,
+  UnconfiguredEArsiv,
   HttpIyzico,
   IYZICO_SANDBOX_BASE_URL,
   PgBillingStore,
@@ -39,19 +39,20 @@ export async function billingDepsFromEnv(
   pool: SqlClient & PoolLike,
   env: Record<string, string | undefined> = process.env,
 ): Promise<BillingJobsDeps | undefined> {
-  const { IYZICO_API_KEY, IYZICO_SECRET_KEY, BETTER_AUTH_SECRET, BETTER_AUTH_URL } = env;
-  if (!IYZICO_API_KEY || !IYZICO_SECRET_KEY || !BETTER_AUTH_SECRET) return undefined;
+  const { IYZICO_API_KEY, IYZICO_SECRET_KEY, IYZICO_MERCHANT_ID, BETTER_AUTH_SECRET, BETTER_AUTH_URL } = env;
+  // Empty strings count as missing (D2); the merchant id verifies subscription webhooks.
+  if (!IYZICO_API_KEY || !IYZICO_SECRET_KEY || !IYZICO_MERCHANT_ID || !BETTER_AUTH_SECRET) return undefined;
   const store = new PgBillingStore(pool, (id) => subjectHash(BETTER_AUTH_SECRET, id));
   await store.ensureCatalog(PRICE_TABLE_V1);
   const svc = new BillingService({
     iyzico: new HttpIyzico({
       apiKey: IYZICO_API_KEY,
       secretKey: IYZICO_SECRET_KEY,
-      merchantId: env.IYZICO_MERCHANT_ID,
-      baseUrl: env.IYZICO_BASE_URL ?? IYZICO_SANDBOX_BASE_URL,
+      merchantId: IYZICO_MERCHANT_ID,
+      baseUrl: env.IYZICO_BASE_URL || IYZICO_SANDBOX_BASE_URL,
     }),
-    iyzicoCfg: { secretKey: IYZICO_SECRET_KEY, merchantId: env.IYZICO_MERCHANT_ID },
-    earsiv: new FakeEArsiv(),
+    iyzicoCfg: { secretKey: IYZICO_SECRET_KEY, merchantId: IYZICO_MERCHANT_ID },
+    earsiv: new UnconfiguredEArsiv(),
     store,
     ledger: new PgLedgerPort(pool, pool),
     now: () => new Date(),

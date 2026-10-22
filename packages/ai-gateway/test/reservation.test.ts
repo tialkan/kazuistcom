@@ -123,4 +123,16 @@ describe('real packages/ledger adapter (audit repro-gateway.mts)', () => {
     const ev = await drain(gw.run(input('req-9')));
     expect(ev.at(-1)).toMatchObject({ t: 'bitti', cost: { creditsCharged: 2 } });
   });
+
+  it('same requestId after settlement: already_settled from the real ledger, charged once', async () => {
+    const { Ledger, LedgerReservationsAdapter, memoryRunner } = await import('@kazuist/ledger');
+    const ledger = new Ledger();
+    ledger.grant({ key: 'g', walletId: 'w', source: 'paket', credits: 100, originRef: 'o', now: new Date() });
+    const { gw, a } = setup(new LedgerReservationsAdapter(memoryRunner(ledger), () => 'w'));
+    await drain(gw.run(input('same')));
+    const e = await drain(gw.run(input('same'))).catch((x: unknown) => x);
+    expect(e).toMatchObject({ status: 409, code: 'conflict' });
+    expect(a.calls).toHaveLength(1);
+    expect(ledger.balance('w')).toBe(98);
+  });
 });

@@ -27,7 +27,19 @@ export interface Payment {
   refundRef: string | null;
   amountKurus: number;
   kind: 'odeme' | 'iade';
+  /** Refunds are written as bekliyor before the provider call (Y2, Y3); charges are basarili. */
+  status?: PaymentStatus;
   at: Date;
+}
+export type PaymentStatus = 'bekliyor' | 'basarili' | 'basarisiz';
+export interface RefundRequest {
+  id: string;
+  userId: string;
+  orderId: string | null;
+  subscriptionId: string | null;
+  reason: string | null;
+  amountKurus: number | null;
+  status: 'bekliyor' | 'onaylandi' | 'reddedildi' | 'tamamlandi';
 }
 export type SubStatus = 'aktif' | 'odeme_bekliyor' | 'iptal' | 'sona_erdi';
 export interface Subscription {
@@ -110,26 +122,41 @@ export interface BillingStore {
   /** Returns false when the payment row already exists (idempotent). */
   addPayment(p: Payment): Promise<boolean>;
   findCharge(providerPaymentId: string): Promise<Payment | null>;
+  findRefund(refundRef: string): Promise<Payment | null>;
+  /** Conditional status change of a refund row; true only for the caller that changed it. */
+  setRefundStatus(refundRef: string, from: PaymentStatus[], to: PaymentStatus): Promise<boolean>;
   paymentsOn(day: string): Promise<Payment[]>;
   saveSubscription(s: Subscription): Promise<void>;
   getSubscription(id: string): Promise<Subscription | null>;
   findSubscriptionByRef(ref: string): Promise<Subscription | null>;
-  listSubscriptions(): Promise<Subscription[]>;
+  listSubscriptions(userId?: string): Promise<Subscription[]>;
   addConsents(c: Consent[]): Promise<void>;
   addNotice(n: Notice): Promise<void>;
   dropRenewalNotices(userId: string, subscriptionId: string): Promise<void>;
   listNotices(userId: string): Promise<Notice[]>;
-  addInvoice(i: Invoice): Promise<void>;
+  /** False when the invoice number already exists. */
+  addInvoice(i: Invoice): Promise<boolean>;
   listInvoices(userId: string): Promise<Invoice[]>;
   getWebhook(eventId: string): Promise<WebhookEvent | null>;
   saveWebhook(e: WebhookEvent): Promise<void>;
   getCoupon(code: string): Promise<CouponRow | null>;
+  hasRedeemed(code: string, userId: string): Promise<boolean>;
+  /** Take one use of the coupon if its limit allows (D10); releaseCouponSlot gives it back. */
+  claimCouponSlot(code: string): Promise<boolean>;
+  releaseCouponSlot(code: string): Promise<void>;
   /** One redemption per coupon and user; returns false if already redeemed. */
-  redeemCoupon(
+  recordRedemption(
     code: string,
     userId: string,
     target: { ledgerTransactionId?: string; orderId?: string },
   ): Promise<boolean>;
+  createRefundRequest(r: RefundRequest): Promise<void>;
+  updateRefundRequest(
+    id: string,
+    status: RefundRequest['status'],
+    amountKurus?: number | null,
+  ): Promise<void>;
+  listRefundRequests(userId: string): Promise<RefundRequest[]>;
   setPlan(userId: string, plan: Plan): Promise<void>;
   getPlan(userId: string): Promise<Plan>;
   alert(kind: string, detail: unknown): Promise<void>;
@@ -147,6 +174,7 @@ export class MemoryBillingStore implements BillingStore {
   webhooks = new Map<string, WebhookEvent>();
   coupons = new Map<string, CouponRow>();
   redemptions = new Set<string>();
+  refundRequests: RefundRequest[] = [];
   wallets = new Map<string, string>();
   plans = new Map<string, Plan>();
   refs = new Map<string, string>();
@@ -182,11 +210,22 @@ export class MemoryBillingStore implements BillingStore {
     this.payments.push(p);
     return true;
   }
+  async findRefund(ref: string) {
+    return this.payments.find((p) => p.kind === 'iade' && p.refundRef === ref) ?? null;
+  }
+  async setRefundStatus(ref: string, from: PaymentStatus[], to: PaymentStatus) {
+    const p = this.payments.find((x) => x.kind === 'iade' && x.refundRef === ref);
+    if (!p || !from.includes(p.status ?? 'basarili')) return false;
+    p.status = to;
+    return true;
+  }
   async findCharge(id: string) {
     return this.payments.find((p) => p.kind === 'odeme' && p.providerPaymentId === id) ?? null;
   }
   async paymentsOn(day: string) {
-    return this.payments.filter((p) => p.at.toISOString().slice(0, 10) === day);
+    return this.payments.filter(
+      (p) => p.at.toISOString().slice(0, 10) === day && (p.status ?? 'basarili') === 'basarili',
+    );
   }
   async saveSubscription(s: Subscription) {
     this.subscriptions.set(s.id, s);
@@ -197,8 +236,8 @@ export class MemoryBillingStore implements BillingStore {
   async findSubscriptionByRef(ref: string) {
     return [...this.subscriptions.values()].find((s) => s.providerRef === ref) ?? null;
   }
-  async listSubscriptions() {
-    return [...this.subscriptions.values()];
+  async listSubscriptions(userId?: string) {
+    return [...this.subscriptions.values()].filter((s) => !userId || s.userId === userId);
   }
   async addConsents(c: Consent[]) {
     this.consents.push(...c);
@@ -221,7 +260,9 @@ export class MemoryBillingStore implements BillingStore {
     return this.notices.filter((n) => n.userId === userId);
   }
   async addInvoice(i: Invoice) {
+    if (this.invoices.some((x) => x.number === i.number)) return false;
     this.invoices.push(i);
+    return true;
   }
   async listInvoices(userId: string) {
     return this.invoices.filter((i) => i.userId === userId);
@@ -235,13 +276,37 @@ export class MemoryBillingStore implements BillingStore {
   async getCoupon(code: string) {
     return this.coupons.get(code) ?? null;
   }
-  async redeemCoupon(code: string, userId: string) {
+  async hasRedeemed(code: string, userId: string) {
+    return this.redemptions.has(`${code}:${userId}`);
+  }
+  async claimCouponSlot(code: string) {
+    const c = this.coupons.get(code);
+    if (!c || (c.maxRedemptions !== null && c.redeemed >= c.maxRedemptions)) return false;
+    c.redeemed += 1;
+    return true;
+  }
+  async releaseCouponSlot(code: string) {
+    const c = this.coupons.get(code);
+    if (c && c.redeemed > 0) c.redeemed -= 1;
+  }
+  async recordRedemption(code: string, userId: string) {
     const k = `${code}:${userId}`;
     if (this.redemptions.has(k)) return false;
     this.redemptions.add(k);
-    const c = this.coupons.get(code);
-    if (c) c.redeemed += 1;
     return true;
+  }
+  async createRefundRequest(r: RefundRequest) {
+    this.refundRequests.push({ ...r });
+  }
+  async updateRefundRequest(id: string, status: RefundRequest['status'], amountKurus?: number | null) {
+    const r = this.refundRequests.find((x) => x.id === id);
+    if (r) {
+      r.status = status;
+      if (amountKurus !== undefined) r.amountKurus = amountKurus;
+    }
+  }
+  async listRefundRequests(userId: string) {
+    return this.refundRequests.filter((r) => r.userId === userId);
   }
   async setPlan(userId: string, plan: Plan) {
     this.plans.set(userId, planRole(plan));
