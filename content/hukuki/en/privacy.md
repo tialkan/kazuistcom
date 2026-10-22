@@ -4,19 +4,19 @@ slug: privacy
 route: /legal/privacy
 lang: en
 binding: false
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 alternate: /hukuki/aydinlatma
 ---
 
-> TASLAK, Tarık onayı bekliyor. Version date: 19 October 2026.
+> TASLAK, Tarık onayı bekliyor. Version date: 22 October 2026.
 > This English text is for information only. The binding version is Turkish:
 > [Aydınlatma metni](/hukuki/aydinlatma) and [Gizlilik politikası](/hukuki/gizlilik).
 
 ## Data controller
 
-Kulular Bilişim Teknolojileri Ltd. Şti. MERSİS: {{MERSIS}}. Address: {{ADRES}}. Contact: {{KVKK_EPOSTA}}.
+Kulular Bilişim Teknolojileri Ltd. Şti. MERSİS: 0591095454600001. Address: Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara. Contact: kulularteknoloji@gmail.com.
 
 ## What we process and why
 

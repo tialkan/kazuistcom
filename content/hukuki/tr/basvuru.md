@@ -4,29 +4,30 @@ slug: basvuru
 route: /hukuki/basvuru
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
-Dayanak: KVKK m.11 ve m.13; Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ [DOĞRULANACAK: RG
-tarih ve sayı; başvuruda bulunması gereken bilgilerin madde numarası]. Aynı form hesap içinde /hesap/kvkk
+Dayanak: KVKK m.11 ve m.13; Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ (RG 10/3/2018, 30356), başvuru usulü
+Tebliğ m.5. Aynı form hesap içinde /hesap/kvkk
 adresinde de bulunur.
 
 ## Başvuru yolları
 
 - Hesabınız varsa: /hesap/kvkk (kimliğiniz oturumla doğrulanır).
-- Hesabınız yoksa: bu form, {{KVKK_EPOSTA}} adresine kayıtlı e-postanızdan, KEP adresimize ({{KEP}}) veya
-  yazılı olarak {{ADRES}} adresine.
+- Hesabınız yoksa (Tebliğ m.5/1): bu form, daha önce bize bildirdiğiniz ve sistemimizde kayıtlı e-posta adresinizden
+  kulularteknoloji@gmail.com adresine, güvenli elektronik imza veya mobil imzayla, KEP adresimize ({{KEP}}) ya da
+  yazılı olarak Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara adresine.
 
 ## Form alanları
 
 | Alan | Zorunlu | Not |
 |---|---|---|
-| Ad soyad | Evet | |
-| T.C. kimlik numarası, yabancılar için uyruk ve pasaport veya kimlik numarası | [DOĞRULANACAK: Tebliğ'in istediği bilgiler] | Yalnız kimlik doğrulaması için; başvuru sonuçlanınca [DOĞRULANACAK: saklama süresi] |
+| Ad soyad; yazılı başvuruda imza | Evet (Tebliğ m.5/2) | |
+| T.C. kimlik numarası, yabancılar için uyruk ve pasaport numarası veya varsa kimlik numarası | Evet (Tebliğ m.5/2) | Yalnız kimlik doğrulaması için; saklama süresi imha politikasıyla belirlenir |
 | Tebligata esas yerleşim yeri veya iş yeri adresi | Evet | |
 | E-posta, telefon | Varsa | Cevap tercihi |
 | Kazuist ile ilişkiniz | Evet | Kullanıcı, eski kullanıcı, karar metninde adı geçen kişi, diğer |

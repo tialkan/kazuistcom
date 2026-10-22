@@ -4,13 +4,13 @@ slug: ai
 route: /legal/ai
 lang: en
 binding: false
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 alternate: /hukuki/yapay-zeka
 ---
 
-> TASLAK, Tarık onayı bekliyor. Version date: 19 October 2026.
+> TASLAK, Tarık onayı bekliyor. Version date: 22 October 2026.
 > This English text is for information only. The binding version is Turkish: [Yapay zekâ politikası](/hukuki/yapay-zeka).
 
 ## Role
@@ -40,8 +40,9 @@ data by default, and zero data retention in privacy-first mode.
 ## Gemini free tier
 
 Under Google's Gemini API terms, content sent on the free tier may be used to improve Google's products and may be
-reviewed by humans; Google asks users not to send sensitive, confidential or personal information. Google applies
-this to users outside the EEA, Switzerland and the UK [DOĞRULANACAK: current Gemini API terms]. Kazuist therefore
+reviewed by humans; Google asks users not to send sensitive, confidential or personal information. For users in the EEA,
+Switzerland and the UK, Google requires Paid Services and applies paid data-use terms (Gemini API Additional Terms,
+last updated 28 April 2026). Kazuist therefore
 asks whether your key is on paid billing and, if not, disables sending unpublished drafts and Campus files unless you
 explicitly opt in.
 

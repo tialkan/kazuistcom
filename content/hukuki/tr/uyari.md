@@ -4,26 +4,26 @@ slug: uyari
 route: /hukuki/uyari
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 alternate: /legal/notice
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
-> Künye bilgileri ticaret sicilinden doğrulanmadan yayımlanmaz.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
+> Unvan, MERSİS, sicil ve adres 20 Ekim 2026'da onaylandı (docs/kararlar.md). Vergi dairesi, VKN, KEP ve telefon Tarık'tan bekleniyor.
 
 ## Künye
 
 | Bilgi | Değer |
 |---|---|
-| Unvan | Kulular Bilişim Teknolojileri Ltd. Şti. (sicildeki tam yazılış: {{TAM_UNVAN}}) |
-| MERSİS numarası | {{MERSIS}} |
-| Ticaret sicil müdürlüğü ve numarası | {{SICIL}} |
+| Unvan | Kulular Bilişim Teknolojileri Limited Şirketi |
+| MERSİS numarası | 0591095454600001 |
+| Ticaret sicil müdürlüğü ve numarası | Ankara Ticaret Sicili, 550123 |
 | Vergi dairesi ve numarası | {{VERGI_DAIRESI}} / {{VKN}} |
-| Adres | {{ADRES}} |
+| Adres | Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara |
 | KEP | {{KEP}} |
-| E-posta | {{ILETISIM_EPOSTA}} |
+| E-posta | kulularteknoloji@gmail.com |
 | Telefon | {{TELEFON}} |
 | Alan adı | kazuist.com |
 | Barındırma | Türkiye'de veri merkezi bulunan sağlayıcı: {{BARINDIRMA_SAGLAYICI}} |

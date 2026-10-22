@@ -4,12 +4,12 @@ slug: acik-riza
 route: /hukuki/acik-riza
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
 Açık rıza yalnız gereken yerde istenir (plan 11). Her biri ayrı onay kutusudur, önceden işaretli gelmez,
 hizmetin şartı yapılmaz ve dilediğiniz an geri alınabilir. Onaylar sürümüyle consents tablosuna yazılır.
@@ -32,8 +32,8 @@ Not: Ödeme bildirimi, fesih teyidi, teslim hatırlatması gibi bilgilendirme il
 için Kazuist sunucusu üzerinden iletileceğini anladım. Sunucudan yalnız kişisel verilerden arındırılmış metin
 geçer, anahtarım ve içerik saklanmaz ve kayda yazılmaz. Metin, seçtiğim sağlayıcının bulunduğu ülkeye gider."
 
-[DOĞRULANACAK: bu onay hukuken açık rıza mı, yoksa bilgilendirme teyidi mi; maskeli metin kişisel veri
-taşımıyorsa açık rıza dayanağı gerekmeyebilir. Hukukçu görüşü.]
+Not: Bu onay, maskeleme sonrası metnin kişisel veri taşımaması hedeflendiği için bir bilgilendirme teyidi olarak
+kurulmuştur; yurt dışına kişisel veri aktarımının dayanağı yapılmaz (docs/kvkk/aktarim.md).
 
 ## 4. Gemini ücretsiz katmanında yayımlanmamış içerik gönderme
 
