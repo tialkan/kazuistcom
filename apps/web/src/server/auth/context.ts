@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { sharedPool, sharedValkey } from '../deps.ts';
-import { createAuth, type AuthConfig, type KazuistAuth } from './auth.ts';
+import { createAuth, noAccountHooks, type AccountHooks, type AuthConfig, type KazuistAuth } from './auth.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';
 import { smtpMailer, unconfiguredMailer, type Mailer } from './mailer.ts';
@@ -17,6 +17,7 @@ export interface AuthContext {
   limiter: RateLimiter;
   mailer: Mailer;
   config: AuthConfig;
+  hooks: AccountHooks;
   now: () => Date;
 }
 
@@ -25,13 +26,15 @@ export interface ContextDeps {
   config: AuthConfig;
   mailer: Mailer;
   store?: RateLimitStore;
+  hooks?: AccountHooks;
   now?: () => Date;
 }
 
 export function createAuthContext(deps: ContextDeps): AuthContext {
   return {
     db: deps.db,
-    auth: createAuth(deps.db, deps.config, deps.mailer),
+    auth: createAuth(deps.db, deps.config, deps.mailer, deps.hooks ?? noAccountHooks),
+    hooks: deps.hooks ?? noAccountHooks,
     limiter: new RateLimiter(deps.store ?? new MemoryRateLimitStore()),
     mailer: deps.mailer,
     config: deps.config,
@@ -68,6 +71,18 @@ export function configFromEnv(env: Record<string, string | undefined> = process.
   };
 }
 
+/** odeme's BillingService (docs/istekler/odeme-denetim-kapanisi.md D8, O9); loaded lazily. */
+const billingHooks: AccountHooks = {
+  async onSignup(userId) {
+    const { getBillingService } = await import('../billing/context.ts');
+    await (await getBillingService()).grantSignupPromo(userId);
+  },
+  async onDeletion(userId) {
+    const { getBillingService } = await import('../billing/context.ts');
+    await (await getBillingService()).onAccountDeletion(userId);
+  },
+};
+
 let current: AuthContext | undefined;
 
 /** Process wide context over the shared pool and Valkey client (server/deps.ts). */
@@ -81,6 +96,7 @@ export async function getAuthContext(): Promise<AuthContext> {
       config: configFromEnv(env),
       mailer: url ? smtpMailer(url) : unconfiguredMailer,
       store: env.VALKEY_URL ? new ValkeyRateLimitStore(sharedValkey(env.VALKEY_URL)) : undefined,
+      hooks: billingHooks,
     });
   }
   return current;

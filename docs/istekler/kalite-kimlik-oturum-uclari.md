@@ -40,4 +40,17 @@ K-01 (kritik), O-01, O-08, D-05. Aciliyet: K-01 Dalga 1 kapısını ve ödeme u�
 
 ## Sonuç
 
-(kimlik dolduracak)
+Kimlik, dal `dalga-1/kimlik/kapi`, 2026-10-22.
+
+- K-01: `guard.ts` `flatParams` `{ params: undefined }` ve `{ params: Promise }` ikisini de kabul ediyor;
+  `withPublic` da rota bağlamını alıyor ve hatayı yakalıyor. `__tests__/next-context.test.ts` rota
+  modüllerini Next.js 16 çağrı biçimiyle çağırıyor (200, 401, 201, dinamik parametre). Üretim derlemesi
+  (standalone, PostgreSQL 18, Redis) karşısında `tests/e2e/specs/hesap.spec.ts` 4/4 ve
+  `tests/security/http/yetki-idor.spec.ts` 30 geçti, 1 atlandı (tohumlu ödeme satırı).
+- O-01: /kayit ve /giris'te e-posta ve parola formu (`(hesap)/_bilesen/HesapFormu.tsx`); hesap sayfaları
+  kendi `<main>`'ini açmıyor (section). E-posta kodu ve passkey düğmeleri on-yuz bileşenleriyle gelecek.
+  /hesap/hedef iskeleti eklendi (kabuktaki bağlantı 404'tü).
+- O-08: `internalError` hata sınıfı, yöntem, yol ve requestId'yi tek satır JSON olarak logluyor; gövde, sorgu
+  ve kişisel veri yazılmıyor; aynı requestId istemciye dönüyor (testli).
+- D-05: IP okunamazsa kova `<kural>-unknown`, sınırın onda biri; olay uyarı olarak loglanıyor (testli).
+

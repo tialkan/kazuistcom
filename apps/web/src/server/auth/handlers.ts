@@ -31,11 +31,11 @@ import {
 import { decideQueueItem, listFlags, listQueue, searchUsers, setFlag } from './admin.ts';
 import { getAuthContext } from './context.ts';
 import { confirmEduVerification, startEduVerification } from './edu.ts';
-import { originAllowed, resolvePrincipal, withAuth, withPublic } from './guard.ts';
+import { checkIp, originAllowed, resolvePrincipal, withAuth, withPublic } from './guard.ts';
 import { apiError, json, rateLimited, readJson } from './http.ts';
 import { createGuestKvkkRequest, createKvkkRequest, verifyGuestKvkkRequest } from './kvkk.ts';
 import { listProfessions } from './professions.ts';
-import { clientIp, rules } from './rate-limit.ts';
+import { rules } from './rate-limit.ts';
 import type { Role } from './roles.ts';
 import { confirmSecondStep, hasPasskeySession, hasTotpEnabled } from './step-up.ts';
 import { createTakedownRequest } from './takedown.ts';
@@ -246,12 +246,11 @@ const codePaths = ['/email-otp/send-verification-otp', '/forget-password/email-o
 /** Better Auth handler behind the shared limiter. */
 export async function authHandler(req: Request): Promise<Response> {
   const ctx = await getAuthContext();
-  const ip = clientIp(req.headers, ctx.config.trustedProxies);
   const path = new URL(req.url).pathname.replace(/^\/api\/auth/, '');
-  const d = await ctx.limiter.check(rules.authIp, ip);
+  const d = await checkIp(ctx, req, rules.authIp);
   if (!d.ok) return rateLimited(d.retryAfterSec);
   if (req.method === 'POST' && codePaths.includes(path)) {
-    const c = await ctx.limiter.check(rules.codeIp, ip);
+    const c = await checkIp(ctx, req, rules.codeIp);
     if (!c.ok) return rateLimited(c.retryAfterSec);
   }
   return ctx.auth.handler(req);

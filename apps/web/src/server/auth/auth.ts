@@ -53,7 +53,33 @@ export function authMethodFor(ctx: HookCtx | null | undefined): AuthMethod | nul
 }
 
 /** Better Auth instance on the existing Drizzle schema. */
-export function createAuth(db: Db, config: AuthConfig, mailer: Mailer) {
+/** Cross module account events (odeme: promo credits on sign up, cancellation and refunds on deletion). */
+export interface AccountHooks {
+  onSignup(userId: string): Promise<void>;
+  onDeletion(userId: string): Promise<void>;
+}
+
+export const noAccountHooks: AccountHooks = { onSignup: async () => {}, onDeletion: async () => {} };
+
+/** Runs a hook without letting it fail the account flow; logs only the error class. */
+export async function runHook(name: string, fn: () => Promise<void>): Promise<boolean> {
+  try {
+    await fn();
+    return true;
+  } catch (err) {
+    console.error(
+      JSON.stringify({
+        at: 'account-hook',
+        level: 'error',
+        hook: name,
+        error: err instanceof Error ? err.name : 'Unknown',
+      }),
+    );
+    return false;
+  }
+}
+
+export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: AccountHooks = noAccountHooks) {
   const rpID = new URL(config.baseUrl).hostname;
   const socialProviders: Record<string, unknown> = {};
   if (config.google) socialProviders.google = { ...config.google, prompt: 'select_account' };
@@ -141,6 +167,8 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer) {
               subjectType: 'user',
               subjectId: user.id,
             });
+            // 50 promo credits, once per user (key kayit:<userId>, idempotent in odeme).
+            await runHook('signup', () => hooks.onSignup(user.id));
           },
         },
       },
