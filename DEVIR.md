@@ -2,6 +2,36 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, kalite-guvenlik, kapı raporu (dalga-1/kalite-guvenlik/kapi), 2026-10-22
+
+### Durum
+
+PR açık, birleştirilmedi. Rapor `docs/kalite/dalga-1.md`: Dalga 1 kapısı kapanmadı (9 maddeden 3 geçti).
+Açık kritik: K-01 (oturumlu statik uçlar üretimde 500, kimlik), ödeme denetimi K1 ve K2 (odeme). Açık
+yüksek: Y-01 (güvenlik başlıkları ve CSP yok, altyapi), ödeme denetimi Y1-Y7 (Y7 için PR #18, teyit bekliyor).
+Staging, iyzico sandbox anahtarı ve gerçek YZ sağlayıcı anahtarı olmadığı için ilgili maddeler "veri yok".
+
+### Bilinmesi gerekenler
+
+- Testler: `tests/e2e` (Playwright, axe), `tests/security/http` (başlıklar, erişim, yetki ve IDOR, CSRF,
+  hız sınırı, yükleme saldırıları), `tests/security/enjeksiyon` (vitest, sunucusuz), `tests/security/tarama`
+  (gitleaks, audit, pip-audit, lisans). `tests/e2e` ve `tests/security` workspace dışı paketlerdir:
+  `pnpm --dir <yol> install --ignore-workspace`; kök kilit dosyası değişmedi. CI'a bağlama isteği
+  `docs/istekler/kalite-ci-e2e.md`. Çalıştırma: `docs/kalite/README.md`.
+- Testler çalışan bir sunucuya karşı koşar (varsayılan http://localhost:3300). Yerelde Homebrew
+  PostgreSQL 18 ve pgvector ile geçici küme ve Redis kullanıldı; migration 0000-0003 ve db-smoke geçti.
+- Kırmızı testler bulgudur, gevşetilmedi: e2e 5, güvenlik 18, enjeksiyon 6. Yükleme saldırıları uçlar
+  (yazma, Dalga 2) açılınca kendiliğinden çalışır.
+- K-01 doğrulaması için `guard.ts` yerelde geçici olarak değiştirilip geri alındı; dala girmedi.
+- İş listesi: `docs/istekler/kalite-*.md` (kimlik oturum uçları ve kararsız test, güvenlik başlıkları,
+  yz-gecidi maskeleme, hukuk-uyum taslaklar, on-yuz bağlantılar, seo erken geçiş, CI, bağımlılık).
+
+### Sonraki adım
+
+Sahip ajanlar K-01 ve Y-01'i kapatınca `tests/e2e` ve `tests/security` yeniden koşulur ve rapor
+güncellenir; staging kurulunca aynı testler `KAZUIST_E2E_BASE_URL=https://staging.kazuist.com` ile ve
+ZAP, k6 (Dalga 2 uçlarıyla) ve Ek I robotları çalıştırılır.
+
 ## Dalga 1, anonimlestirme, NER karşılaştırması ve bağlama (dalga-1/anonimlestirme/ner), 2026-10-21
 
 ### Durum

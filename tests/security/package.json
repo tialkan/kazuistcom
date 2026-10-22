@@ -1,0 +1,16 @@
+{
+  "name": "@kazuist/tests-security",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Security gate tests (plan 5.6, 15.3/7): HTTP checks against a running server, the prompt injection set and the scan scripts. Not part of the pnpm workspace; install with: pnpm --dir tests/security install --ignore-workspace",
+  "scripts": {
+    "test": "playwright test",
+    "test:enjeksiyon": "cd ../.. && pnpm exec vitest run --config tests/security/enjeksiyon/vitest.config.ts",
+    "tarama": "sh tarama/tarama.sh"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "pg": "8.23.1"
+  }
+}
