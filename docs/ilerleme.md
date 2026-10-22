@@ -17,6 +17,7 @@ Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sür�
 | 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8 main'de; 2026-10-20 onayları (künye, fiyatlar, Casuist görselleri) dalga-1/on-yuz/onaylar PR'ında |
 | 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4 main'de |
 | 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | PR açık | PR #10 (dal dalga-1/mimar/istekler); ADR'ler Tarık onayı bekliyor; yönlendirmeler docs/istekler/mimar-yonlendirme-*.md |
+| 1 | kalite-guvenlik | Dalga 1 kapı raporu, e2e ve güvenlik testleri | PR açık | docs/kalite/dalga-1.md: kapı kapanmadı (3/9); açık kritik K-01, ödeme K1-K2; yüksek Y-01, ödeme Y1-Y7 |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |
