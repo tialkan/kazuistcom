@@ -19,7 +19,7 @@ import {
   targetProfessionPut,
 } from '../handlers.ts';
 import { json } from '../http.ts';
-import { clientIp, MemoryRateLimitStore, RateLimiter } from '../rate-limit.ts';
+import { clientIp, MemoryRateLimitStore, RateLimiter, rules } from '../rate-limit.ts';
 import { api, authReq, BASE, createHarness, params, signUp, type Harness } from './harness.ts';
 
 let h: Harness;
@@ -172,17 +172,31 @@ describe('rate limits', () => {
     expect(clientIp(new Headers({ 'x-real-ip': '9.9.9.9' }), 0)).toBe('9.9.9.9');
   });
 
-  it('auth handler returns 429 with Retry-After after 30 requests per IP', async () => {
+  it('auth handler returns 429 with Retry-After once the per IP window is full', async () => {
+    // Fill the bucket through the limiter itself: deterministic, no password hashing (O-02).
     const ip = '203.0.113.7';
-    let last: Response | undefined;
-    for (let i = 0; i < 31; i++) {
-      last = await authHandler(
-        authReq('/sign-in/email', { email: 'yok@example.invalid', password: 'yanlis-parola-00' }, ip),
-      );
+    for (let i = 0; i < rules.authIp.limit; i++) await h.ctx.limiter.check(rules.authIp, ip);
+    const last = await authHandler(
+      authReq('/sign-in/email', { email: 'yok@example.invalid', password: 'yanlis-parola-00' }, ip),
+    );
+    expect(last.status).toBe(429);
+    expect(Number(last.headers.get('retry-after'))).toBeGreaterThan(0);
+    expect((await body(last)).code).toBe('rate_limited');
+    // Another IP is unaffected.
+    const other = await authHandler(
+      authReq('/sign-in/email', { email: 'yok@example.invalid', password: 'x' }),
+    );
+    expect(other.status).not.toBe(429);
+  });
+
+  it('clients without a readable IP share a bucket of a tenth of the limit', async () => {
+    const statuses: number[] = [];
+    for (let i = 0; i < 4; i++) {
+      const r = await authHandler(new Request(`${BASE}/api/auth/ok`, { headers: { origin: BASE } }));
+      statuses.push(r.status);
     }
-    expect(last?.status).toBe(429);
-    expect(Number(last?.headers.get('retry-after'))).toBeGreaterThan(0);
-    expect((await body(last as Response)).code).toBe('rate_limited');
+    expect(statuses.slice(0, 3).every((s) => s !== 429)).toBe(true);
+    expect(statuses[3]).toBe(429);
   });
 
   it('e-mail code requests are limited to 5 per IP in 10 minutes', async () => {

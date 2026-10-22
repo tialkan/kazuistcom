@@ -59,6 +59,10 @@
     "ogrenci": {
       "baslik": "Öğrenci doğrulaması",
       "aciklama": "edu.tr uzantılı adresinize 6 haneli bir kod göndeririz. Doğrulama yılda bir yenilenir."
+    },
+    "hedef": {
+      "baslik": "Hedef meslek",
+      "aciklama": "Hedeflediğiniz mesleği ve avatarınızı seçebilirsiniz. Seçim zorunlu değildir."
     }
   },
   "bildirim": {
@@ -100,5 +104,18 @@
     },
     "altBilgi": "Bildirim tercihlerinizi Hesabım > Bildirimler bölümünden değiştirebilirsiniz.",
     "ret": "Bu tür iletileri almak istemiyorsanız ret bağlantısını kullanabilirsiniz."
+  },
+  "form": {
+    "eposta": "E-posta",
+    "parola": "Parola",
+    "parolaIpucu": "En az 10 karakter.",
+    "ad": "Adınız",
+    "kayitDugme": "Hesap oluştur",
+    "girisDugme": "Giriş yap",
+    "girisHata": "E-posta veya parola hatalı.",
+    "kayitHata": "Hesap oluşturulamadı. Bilgileri kontrol edip yeniden deneyin.",
+    "bekleyin": "Gönderiliyor",
+    "kayitBaglanti": "Hesabınız yok mu? Hesap oluşturun.",
+    "girisBaglanti": "Hesabınız var mı? Giriş yapın."
   }
 }

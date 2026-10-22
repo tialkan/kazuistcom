@@ -5,12 +5,12 @@ const s = tr.sayfa.kvkk;
 
 export const metadata: Metadata = { title: s.baslik, robots: { index: false } };
 
-/** Minimal skeleton; forms and client side Better Auth calls come with the on-yuz components. */
+/** The app shell renders the single <main>; module pages open a section (on-yuz note). */
 export default function KvkkPage() {
   return (
-    <main>
+    <section>
       <h1>{s.baslik}</h1>
       <p>{s.aciklama}</p>
-    </main>
+    </section>
   );
 }

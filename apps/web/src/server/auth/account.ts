@@ -1,6 +1,7 @@
 import { asc, desc, eq } from 'drizzle-orm';
 import type { z } from 'zod';
 import type { AccountPurgePayload, ConsentInput, MePatch } from '@kazuist/contracts';
+import { runHook } from './auth.ts';
 import { writeAudit } from './audit.ts';
 import type { AuthContext } from './context.ts';
 import { schema } from './db.ts';
@@ -103,6 +104,9 @@ export async function deleteMe(ctx: AuthContext, p: Principal): Promise<string> 
     .set({ deletedAt: now, updatedAt: now })
     .where(eq(schema.users.id, p.userId));
   await ctx.db.delete(schema.sessions).where(eq(schema.sessions.userId, p.userId));
+  // Cancel subscriptions and queue a refund review for unused purchased credits (odeme O9). A failure is
+  // logged and audited; deletion still proceeds and the admin sees billingHook=false.
+  const billingHook = await runHook('deletion', () => ctx.hooks.onDeletion(p.userId));
   const payload: AccountPurgePayload = { userId: p.userId };
   const runAfter = new Date(now.getTime() + ctx.config.purgeGraceDays * 86_400_000);
   const [job] = await ctx.db
@@ -115,7 +119,7 @@ export async function deleteMe(ctx: AuthContext, p: Principal): Promise<string> 
     action: 'user.deletion_requested',
     subjectType: 'user',
     subjectId: p.userId,
-    diff: { purgeJobId: job.id, runAfter: runAfter.toISOString() },
+    diff: { purgeJobId: job.id, runAfter: runAfter.toISOString(), billingHook },
   });
   return job.id;
 }

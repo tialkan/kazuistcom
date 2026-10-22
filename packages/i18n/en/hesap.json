@@ -59,6 +59,10 @@
     "ogrenci": {
       "baslik": "Student verification",
       "aciklama": "We send a 6 digit code to your edu.tr address. Verification is renewed every year."
+    },
+    "hedef": {
+      "baslik": "Target profession",
+      "aciklama": "Choose the profession you aim for and your avatar. The choice is optional."
     }
   },
   "bildirim": {
@@ -100,5 +104,18 @@
     },
     "altBilgi": "You can change your notification preferences under My account > Notifications.",
     "ret": "If you no longer want such messages, use the opt out link."
+  },
+  "form": {
+    "eposta": "E-mail",
+    "parola": "Password",
+    "parolaIpucu": "At least 10 characters.",
+    "ad": "Your name",
+    "kayitDugme": "Create account",
+    "girisDugme": "Sign in",
+    "girisHata": "Wrong e-mail or password.",
+    "kayitHata": "The account could not be created. Check the details and try again.",
+    "bekleyin": "Sending",
+    "kayitBaglanti": "No account yet? Create one.",
+    "girisBaglanti": "Already have an account? Sign in."
   }
 }

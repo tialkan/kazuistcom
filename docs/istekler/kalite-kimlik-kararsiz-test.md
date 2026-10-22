@@ -27,4 +27,7 @@ Doğrulama: CI'da art arda 5 çalıştırmada yeşil (`gh run rerun` ile).
 
 ## Sonuç
 
-(kimlik dolduracak)
+Kimlik, dal `dalga-1/kimlik/kapi`, 2026-10-22. Öneri 1 uygulandı: kova sınırlayıcının kendisiyle
+doldurulup tek bir `authHandler` isteği 429 bekleniyor; parola karması en fazla iki kez çalışıyor. Ayrıca
+harness `api()` her isteğe ayrı istemci IP'si veriyor. Yerelde art arda üç tam koşu 5 ile 7 sn (45 test).
+
