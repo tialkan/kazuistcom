@@ -3,12 +3,12 @@
  * idempotent: grants use ledger idempotency keys and reconciliation only reads and reports.
  * Registration in src/main.ts is done by the orchestrator (shared file).
  */
-import type { ReconDiff } from '@kazuist/ledger';
+import type { ReconcileResult } from '@kazuist/ledger/billing';
 import type { JobHandler } from '../queue.ts';
 
 export interface BillingJobsDeps {
   monthlyGrant(): Promise<number>;
-  reconcileDay(day: Date): Promise<ReconDiff[]>;
+  reconcileDay(day: Date): Promise<ReconcileResult>;
   now(): Date;
 }
 
@@ -29,10 +29,11 @@ export function billingHandlers(
     'billing.monthly_grant': async () => ({ granted: await deps.monthlyGrant() }),
     'billing.reconcile': async (job) => {
       const day = reconcileDayOf(job.payload, deps.now());
-      const diffs = await deps.reconcileDay(day);
-      // Only ids and counts leave the job; no personal data.
+      const { disabled, diffs } = await deps.reconcileDay(day);
+      // Only ids and counts leave the job; no personal data. disabled: no report call, alert raised (O8).
       return {
         day: day.toISOString().slice(0, 10),
+        disabled,
         differences: diffs.length,
         paymentIds: diffs.map((d) => d.paymentId),
       };

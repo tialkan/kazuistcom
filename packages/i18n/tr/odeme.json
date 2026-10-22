@@ -19,5 +19,11 @@
     "kontrol": "Ödemeniz iyzico'dan doğrulanıyor.",
     "basarili": "Ödeme alındı; krediler cüzdanınıza yüklendi.",
     "basarisiz": "Ödeme tamamlanmadı; hesabınızdan ücret alınmadı."
+  },
+  "yonlendiriliyor": "iyzico ödeme sayfası açılıyor.",
+  "iyzicoFormu": "iyzico ödeme formu",
+  "hata": {
+    "genel": "Ödeme başlatılamadı. Lütfen yeniden deneyin.",
+    "girisGerekli": "Ödeme için giriş yapmanız gerekiyor."
   }
 }

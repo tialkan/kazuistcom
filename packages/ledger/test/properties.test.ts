@@ -19,7 +19,9 @@ type Cmd =
   | { t: 'sweep' }
   | { t: 'refund'; ref: number }
   | { t: 'clawback'; ref: number; reason: 'ters_ibraz' | 'apple_iade' }
-  | { t: 'expire' };
+  | { t: 'expire' }
+  | { t: 'hold'; ref: number; op: number }
+  | { t: 'refundHeld'; op: number; ok: boolean };
 
 const cmd: fc.Arbitrary<Cmd> = fc.oneof(
   fc.record({
@@ -49,6 +51,16 @@ const cmd: fc.Arbitrary<Cmd> = fc.oneof(
     reason: fc.constantFrom('ters_ibraz', 'apple_iade'),
   }),
   fc.constant({ t: 'expire' as const }),
+  fc.record({
+    t: fc.constant('hold' as const),
+    ref: fc.integer({ min: 0, max: 8 }),
+    op: fc.integer({ min: 20, max: 28 }),
+  }),
+  fc.record({
+    t: fc.constant('refundHeld' as const),
+    op: fc.integer({ min: 20, max: 28 }),
+    ok: fc.boolean(),
+  }),
 );
 
 function run(cmds: Cmd[]) {
@@ -115,6 +127,13 @@ function run(cmds: Cmd[]) {
             now: at,
           });
           events.push('clawback');
+          break;
+        case 'hold':
+          l.holdLot({ operationId: `op-${c.op}`, walletId: W, originRef: `ref-${c.ref}`, now: at });
+          break;
+        case 'refundHeld':
+          if (c.ok) l.refundHeld({ walletId: W, operationId: `op-${c.op}`, now: at });
+          else l.settle({ walletId: W, operationId: `op-${c.op}`, outcome: 'teknik_hata', now: at });
           break;
         case 'expire':
           l.expirePromos(W, at);

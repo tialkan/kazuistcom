@@ -173,13 +173,16 @@ export function runScenarios(name: string, make: () => Promise<ScenarioEnv>) {
       await svc.handleWebhook(JSON.stringify(fail.body), fail.signature);
       expect((await cur(sub.id)).status).toBe('odeme_bekliyor');
       const failedAt = now;
-      for (const day of [1, 3, 7]) {
+      for (const day of [1, 3]) {
         now = addDays(failedAt, day);
         await svc.runDunning();
       }
-      expect((await cur(sub.id)).failedRetries).toBe(3);
+      expect((await cur(sub.id)).failedRetries).toBe(2);
       expect((await cur(sub.id)).status).toBe('odeme_bekliyor');
+      // The third retry fails on day 7 and the plan drops in the same daily tick (D1).
+      now = addDays(failedAt, 7);
       await svc.runDunning();
+      expect((await cur(sub.id)).failedRetries).toBe(3);
       expect((await cur(sub.id)).status).toBe('sona_erdi');
       expect(await store.getPlan(U)).toBe('ucretsiz');
       expect(await balance()).toBe(2000);
@@ -293,7 +296,7 @@ export function runScenarios(name: string, make: () => Promise<ScenarioEnv>) {
     it('daily reconciliation flags differences between iyzico and the records', async () => {
       const s = await buyPack();
       await svc.completeCheckout(s.token);
-      expect(await svc.reconcileDay(now)).toEqual([]);
+      expect(await svc.reconcileDay(now)).toEqual({ disabled: false, diffs: [] });
       iyz.transactions.push({
         paymentId: 'ghost',
         conversationId: null,
@@ -301,7 +304,7 @@ export function runScenarios(name: string, make: () => Promise<ScenarioEnv>) {
         kind: 'odeme',
         at: now,
       });
-      const diffs = await svc.reconcileDay(now);
+      const { diffs } = await svc.reconcileDay(now);
       expect(diffs).toMatchObject([{ paymentId: 'ghost', problem: 'kayitta_yok' }]);
       expect(await env.alertCount()).toBe(1);
     });

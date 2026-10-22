@@ -53,6 +53,7 @@ interface EntryRow {
   side: 'borc' | 'alacak';
   credits: number;
   lot_id: string | null;
+  rev: string | null;
 }
 
 /** Load the wallet state and the transactions already written for it. */
@@ -62,7 +63,7 @@ export async function loadWallet(
 ): Promise<{ state: WalletState; keys: [string, LedgerTx][] }> {
   const codes = [ACCOUNTS.wallet(walletId), ACCOUNTS.reserve(walletId)];
   const { rows: entries } = await db.query<EntryRow>(
-    `select t.id tx_id, t.idempotency_key key, t.kind, a.code, e.side, e.credits, e.lot_id
+    `select t.id tx_id, t.idempotency_key key, t.kind, t.reverses_transaction_id rev, a.code, e.side, e.credits, e.lot_id
        from ledger_entries e join ledger_accounts a on a.id = e.account_id
        join ledger_transactions t on t.id = e.transaction_id
       where a.code = any($1::text[]) order by e.created_at, e.id`,
@@ -86,11 +87,14 @@ export async function loadWallet(
   }>('select * from reservations where wallet_id = $1', [walletId]);
 
   const grantTx = new Map<string, string>();
+  const closed = new Map<string, NonNullable<Lot['closedBy']>>();
   let walletBal = 0;
   const keys = new Map<string, LedgerTx>();
   for (const e of entries) {
     if (e.code === codes[0]) walletBal += e.side === 'alacak' ? e.credits : -e.credits;
     if (e.kind === 'yukleme' && e.lot_id) grantTx.set(e.lot_id, e.tx_id);
+    if (e.rev && (e.kind === 'iade' || e.kind === 'ters_ibraz' || e.kind === 'apple_iade'))
+      closed.set(e.rev, e.kind as Lot['closedBy'] & string);
     if (!keys.has(e.key))
       keys.set(e.key, {
         id: e.tx_id,
@@ -112,6 +116,7 @@ export async function loadWallet(
     originRef: l.origin_ref,
     createdAt: new Date(l.created_at),
     grantTxId: grantTx.get(l.id) ?? '',
+    closedBy: closed.get(grantTx.get(l.id) ?? '') ?? null,
   }));
   const reservations: Reservation[] = res.map((r) => ({
     operationId: r.operation_id,

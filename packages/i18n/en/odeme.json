@@ -19,5 +19,11 @@
     "kontrol": "Your payment is being verified with iyzico.",
     "basarili": "Payment received; the credits are in your wallet.",
     "basarisiz": "Payment was not completed; you were not charged."
+  },
+  "yonlendiriliyor": "Opening the iyzico payment page.",
+  "iyzicoFormu": "iyzico payment form",
+  "hata": {
+    "genel": "The payment could not be started. Please try again.",
+    "girisGerekli": "Please sign in to pay."
   }
 }

@@ -16,7 +16,9 @@ import type {
   Notice,
   Order,
   Payment,
+  PaymentStatus,
   Plan,
+  RefundRequest,
   Subscription,
   WebhookEvent,
 } from './store.ts';
@@ -130,8 +132,18 @@ export class PgBillingStore implements BillingStore {
   async addPayment(p: Payment): Promise<boolean> {
     const { rows } = await this.db.query(
       `insert into payments (order_id, subscription_id, provider, provider_payment_id, amount_kurus, status, kind, refund_ref, created_at)
-       values ($1, $2, $3, $4, $5, 'basarili', $6, $7, $8) on conflict do nothing returning id`,
-      [p.orderId, p.subscriptionId, PROVIDER, p.providerPaymentId, p.amountKurus, p.kind, p.refundRef, p.at],
+       values ($1, $2, $3, $4, $5, $9, $6, $7, $8) on conflict do nothing returning id`,
+      [
+        p.orderId,
+        p.subscriptionId,
+        PROVIDER,
+        p.providerPaymentId,
+        p.amountKurus,
+        p.kind,
+        p.refundRef,
+        p.at,
+        p.status ?? 'basarili',
+      ],
     );
     return rows.length > 0;
   }
@@ -143,6 +155,7 @@ export class PgBillingStore implements BillingStore {
       refundRef: (r.refund_ref as string | null) ?? null,
       amountKurus: Number(r.amount_kurus),
       kind: r.kind as Payment['kind'],
+      status: r.status as PaymentStatus,
       at: d(r.created_at),
     };
   }
@@ -153,9 +166,23 @@ export class PgBillingStore implements BillingStore {
     );
     return r ? this.paymentOf(r) : null;
   }
+  async findRefund(ref: string) {
+    const r = await this.one(
+      `select * from payments where provider = $1 and refund_ref = $2 and kind = 'iade'`,
+      [PROVIDER, ref],
+    );
+    return r ? this.paymentOf(r) : null;
+  }
+  async setRefundStatus(ref: string, from: PaymentStatus[], to: PaymentStatus) {
+    const { rows } = await this.db.query(
+      `update payments set status = $3 where provider = $1 and refund_ref = $2 and kind = 'iade' and status = any($4::text[]) returning id`,
+      [PROVIDER, ref, to, from],
+    );
+    return rows.length > 0;
+  }
   async paymentsOn(day: string) {
     const { rows } = await this.db.query<Row>(
-      `select * from payments where provider = $1 and created_at >= $2::date and created_at < $2::date + 1`,
+      `select * from payments where provider = $1 and status = 'basarili' and created_at >= $2::date and created_at < $2::date + 1`,
       [PROVIDER, day],
     );
     return rows.map((r) => this.paymentOf(r));
@@ -229,9 +256,10 @@ export class PgBillingStore implements BillingStore {
     const r = await this.one(`${this.subSql} where s.channel = 'iyzico' and s.provider_ref = $1`, [ref]);
     return r ? this.subOf(r) : null;
   }
-  async listSubscriptions() {
+  async listSubscriptions(userId?: string) {
     const { rows } = await this.db.query<Row>(
-      `${this.subSql} where s.channel = 'iyzico' order by s.created_at`,
+      `${this.subSql} where s.channel = 'iyzico' and ($1::uuid is null or s.user_id = $1) order by s.created_at`,
+      [userId ?? null],
     );
     return rows.map((r) => this.subOf(r));
   }
@@ -266,11 +294,12 @@ export class PgBillingStore implements BillingStore {
   }
 
   async addInvoice(i: Invoice) {
-    await this.db.query(
+    const { rows } = await this.db.query(
       `insert into invoices (id, order_id, user_id, number, kind, total_kurus, provider_ref, issued_at)
-       values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict (number) do nothing`,
+       values ($1, $2, $3, $4, $5, $6, $7, $8) on conflict (number) do nothing returning id`,
       [i.id, i.orderId, i.userId, i.number, i.kind, i.totalKurus, i.providerRef, i.issuedAt],
     );
+    return rows.length > 0;
   }
   async listInvoices(userId: string) {
     const { rows } = await this.db.query<Row>(
@@ -326,7 +355,25 @@ export class PgBillingStore implements BillingStore {
       validUntil: dn(r.valid_until),
     };
   }
-  async redeemCoupon(
+  async hasRedeemed(code: string, userId: string) {
+    const r = await this.one(
+      `select 1 from coupon_redemptions r join coupons c on c.id = r.coupon_id where c.code = $1 and r.user_id = $2`,
+      [code, userId],
+    );
+    return r !== null;
+  }
+  async claimCouponSlot(code: string) {
+    const { rows } = await this.db.query(
+      `update coupons set redeemed = redeemed + 1
+        where code = $1 and (max_redemptions is null or redeemed < max_redemptions) returning id`,
+      [code],
+    );
+    return rows.length > 0;
+  }
+  async releaseCouponSlot(code: string) {
+    await this.db.query('update coupons set redeemed = greatest(redeemed - 1, 0) where code = $1', [code]);
+  }
+  async recordRedemption(
     code: string,
     userId: string,
     target: { ledgerTransactionId?: string; orderId?: string },
@@ -336,9 +383,37 @@ export class PgBillingStore implements BillingStore {
        select id, $2, $3, $4 from coupons where code = $1 on conflict do nothing returning id`,
       [code, userId, target.ledgerTransactionId ?? null, target.orderId ?? null],
     );
-    if (!rows.length) return false;
-    await this.db.query('update coupons set redeemed = redeemed + 1 where code = $1', [code]);
-    return true;
+    return rows.length > 0;
+  }
+  async createRefundRequest(r: RefundRequest) {
+    await this.db.query(
+      `insert into refund_requests (id, user_id, order_id, subscription_id, reason, amount_kurus, status)
+       values ($1, $2, $3, $4, $5, $6, $7) on conflict (id) do nothing`,
+      [r.id, r.userId, r.orderId, r.subscriptionId, r.reason, r.amountKurus, r.status],
+    );
+  }
+  async updateRefundRequest(id: string, status: RefundRequest['status'], amountKurus?: number | null) {
+    await this.db.query(
+      `update refund_requests set status = $2, amount_kurus = coalesce($3, amount_kurus),
+         decided_at = case when $2 in ('onaylandi', 'reddedildi', 'tamamlandi') then now() else decided_at end
+       where id = $1`,
+      [id, status, amountKurus ?? null],
+    );
+  }
+  async listRefundRequests(userId: string) {
+    const { rows } = await this.db.query<Row>(
+      'select * from refund_requests where user_id = $1 order by created_at',
+      [userId],
+    );
+    return rows.map((r) => ({
+      id: String(r.id),
+      userId,
+      orderId: (r.order_id as string | null) ?? null,
+      subscriptionId: (r.subscription_id as string | null) ?? null,
+      reason: (r.reason as string | null) ?? null,
+      amountKurus: (r.amount_kurus as number | null) ?? null,
+      status: r.status as RefundRequest['status'],
+    }));
   }
 
   async setPlan(userId: string, plan: Plan) {

@@ -7,12 +7,22 @@ import { randomUUID } from 'node:crypto';
 import { PRICE_TABLE_V1 } from '@kazuist/ledger';
 import pg from 'pg';
 import { subjectHash } from '../auth/hash.ts';
-import { FakeEArsiv } from '@kazuist/ledger/billing';
+import { UnconfiguredEArsiv, type ConsentVersions } from '@kazuist/ledger/billing';
+import { hukukiMetinSurumu } from '@/app/(kabuk)/_hukuki/yukle';
 import { HttpIyzico, IYZICO_SANDBOX_BASE_URL } from '@kazuist/ledger/billing';
 import { PgBillingStore, PgLedgerPort } from '@kazuist/ledger/billing';
 import { BillingService } from '@kazuist/ledger/billing';
 
 let current: BillingService | null | undefined;
+
+/** Published versions of the payment texts in content/hukuki (consents.version must match, O5). */
+export function consentVersionsFromContent(): ConsentVersions | null {
+  const on_bilgilendirme = hukukiMetinSurumu('on-bilgilendirme');
+  const mesafeli_sozlesme = hukukiMetinSurumu('mesafeli-satis');
+  const abonelik_sozlesmesi = hukukiMetinSurumu('abonelik');
+  if (!on_bilgilendirme || !mesafeli_sozlesme || !abonelik_sozlesmesi) return null;
+  return { on_bilgilendirme, mesafeli_sozlesme, abonelik_sozlesmesi };
+}
 let catalogReady: Promise<void> | undefined;
 
 export class BillingUnavailable extends Error {
@@ -23,8 +33,25 @@ export async function getBillingService(
   env: Record<string, string | undefined> = process.env,
 ): Promise<BillingService> {
   if (current === undefined) {
-    const { DATABASE_URL, IYZICO_API_KEY, IYZICO_SECRET_KEY, BETTER_AUTH_SECRET, BETTER_AUTH_URL } = env;
-    if (!DATABASE_URL || !IYZICO_API_KEY || !IYZICO_SECRET_KEY || !BETTER_AUTH_SECRET || !BETTER_AUTH_URL)
+    const {
+      DATABASE_URL,
+      IYZICO_API_KEY,
+      IYZICO_SECRET_KEY,
+      IYZICO_MERCHANT_ID,
+      BETTER_AUTH_SECRET,
+      BETTER_AUTH_URL,
+    } = env;
+    // Empty strings count as missing (D2); the merchant id is needed to verify subscription webhooks.
+    const versions = consentVersionsFromContent();
+    if (
+      !DATABASE_URL ||
+      !IYZICO_API_KEY ||
+      !IYZICO_SECRET_KEY ||
+      !IYZICO_MERCHANT_ID ||
+      !BETTER_AUTH_SECRET ||
+      !BETTER_AUTH_URL ||
+      !versions
+    )
       current = null;
     else {
       const pool = new pg.Pool({ connectionString: DATABASE_URL, max: 5 });
@@ -34,11 +61,13 @@ export async function getBillingService(
         iyzico: new HttpIyzico({
           apiKey: IYZICO_API_KEY,
           secretKey: IYZICO_SECRET_KEY,
-          merchantId: env.IYZICO_MERCHANT_ID,
-          baseUrl: env.IYZICO_BASE_URL ?? IYZICO_SANDBOX_BASE_URL,
+          merchantId: IYZICO_MERCHANT_ID,
+          baseUrl: env.IYZICO_BASE_URL || IYZICO_SANDBOX_BASE_URL,
         }),
-        iyzicoCfg: { secretKey: IYZICO_SECRET_KEY, merchantId: env.IYZICO_MERCHANT_ID },
-        earsiv: new FakeEArsiv(),
+        iyzicoCfg: { secretKey: IYZICO_SECRET_KEY, merchantId: IYZICO_MERCHANT_ID },
+        // No integrator yet: invoices are raised as fatura_bekliyor alerts, never invented (D5).
+        earsiv: new UnconfiguredEArsiv(),
+        consentVersions: versions,
         store,
         ledger: new PgLedgerPort(pool, pool),
         now: () => new Date(),

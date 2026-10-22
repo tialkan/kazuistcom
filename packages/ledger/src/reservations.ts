@@ -41,7 +41,7 @@ export class LedgerReservationsAdapter {
   /** Charge the actual credits (0 means abstention: nothing is charged, 4.5/3). */
   async consume(reservationId: string, credits: number): Promise<void> {
     const [walletId, operationId] = this.split(reservationId);
-    await this.runner.run(walletId, (l) =>
+    const r = await this.runner.run(walletId, (l) =>
       l.settle({
         walletId,
         operationId,
@@ -50,6 +50,9 @@ export class LedgerReservationsAdapter {
         now: this.now(),
       }),
     );
+    // Past 5 minutes the hold was released (and that release is committed, O1): nothing was charged.
+    if (credits > 0 && r.status === 'cozuldu' && r.actualCredits === 0)
+      throw new LedgerError('reservation_expired');
   }
 
   /** Technical error or cancel: release without charge. */

@@ -51,6 +51,8 @@ export interface Lot {
   originRef: string;
   createdAt: Date;
   grantTxId: string;
+  /** Set once the lot is refunded or clawed back; such a lot is never reversed again. */
+  closedBy: 'iade' | 'ters_ibraz' | 'apple_iade' | null;
 }
 
 export type ReservationStatus = 'acik' | 'tuketildi' | 'cozuldu';
@@ -95,7 +97,8 @@ export class LedgerError extends Error {
       | 'reservation_expired'
       | 'lot_not_found'
       | 'refund_not_allowed'
-      | 'duplicate_origin',
+      | 'duplicate_origin'
+      | 'already_settled',
     message?: string,
   ) {
     super(message ?? code);
@@ -257,18 +260,23 @@ export class Ledger {
       originRef: p.originRef,
       createdAt: p.now,
       grantTxId: tx.id,
+      closedBy: null,
     });
     return tx;
   }
 
-  /** Expire promotional lots past their date (4.1/4). */
+  private isExpired(l: Lot, now: Date): boolean {
+    return l.source === 'promosyon' && !!l.expiresAt && l.expiresAt.getTime() <= now.getTime();
+  }
+
+  /** Expire promotional lots past their date (4.1/4); also credits that came back to an expired lot (D7). */
   expirePromos(walletId: string, now: Date): LedgerTx[] {
     const w = this.wallet(walletId);
     const out: LedgerTx[] = [];
     for (const l of w.lots) {
-      if (l.source !== 'promosyon' || !l.expiresAt || l.expiresAt.getTime() > now.getTime()) continue;
-      if (l.remainingCredits <= 0) continue;
-      const key = `son_kullanma:${l.id}`;
+      if (!this.isExpired(l, now) || l.remainingCredits <= 0) continue;
+      const first = `son_kullanma:${l.id}`;
+      const key = this.byKey.has(first) ? `${first}:${now.toISOString()}` : first;
       if (this.byKey.has(key)) continue;
       const n = l.remainingCredits;
       l.remainingCredits = 0;
@@ -282,10 +290,40 @@ export class Ledger {
     return out;
   }
 
-  /** Hold the estimated credits for 5 minutes (4.5/2). A negative or insufficient balance blocks new AI work. */
+  private holdEntries(walletId: string, allocations: Reservation['allocations']): Entry[] {
+    const entries: Entry[] = [];
+    for (const a of allocations) {
+      entries.push({
+        accountCode: ACCOUNTS.wallet(walletId),
+        side: 'borc',
+        credits: a.credits,
+        lotId: a.lotId,
+      });
+      entries.push({
+        accountCode: ACCOUNTS.reserve(walletId),
+        side: 'alacak',
+        credits: a.credits,
+        lotId: a.lotId,
+      });
+    }
+    return entries;
+  }
+
+  private existing(walletId: string, operationId: string): Reservation | undefined {
+    const r = this.wallet(walletId).reservations.find((x) => x.operationId === operationId);
+    // Same key again: an open reservation is returned, a settled one never runs a second time (Y7).
+    if (r && r.status !== 'acik') throw new LedgerError('already_settled');
+    return r;
+  }
+
+  /**
+   * Hold the estimated credits for 5 minutes (4.5/2). Expired holds are released first (O1). A negative or
+   * insufficient balance blocks new AI work with a typed error.
+   */
   reserve(p: { operationId: string; walletId: string; estimatedCredits: number; now: Date }): Reservation {
     const w = this.wallet(p.walletId);
-    const existing = w.reservations.find((r) => r.operationId === p.operationId);
+    this.sweepExpired(p.walletId, p.now);
+    const existing = this.existing(p.walletId, p.operationId);
     if (existing) return existing;
     assertAmount(p.estimatedCredits);
     this.expirePromos(p.walletId, p.now);
@@ -300,22 +338,13 @@ export class Ledger {
       left -= take;
       allocations.push({ lotId: l.id, credits: take });
     }
-    const entries: Entry[] = [];
-    for (const a of allocations) {
-      entries.push({
-        accountCode: ACCOUNTS.wallet(p.walletId),
-        side: 'borc',
-        credits: a.credits,
-        lotId: a.lotId,
-      });
-      entries.push({
-        accountCode: ACCOUNTS.reserve(p.walletId),
-        side: 'alacak',
-        credits: a.credits,
-        lotId: a.lotId,
-      });
-    }
-    this.commit('rezervasyon', `rezervasyon:${p.operationId}`, p.walletId, p.now, entries);
+    this.commit(
+      'rezervasyon',
+      `rezervasyon:${p.operationId}`,
+      p.walletId,
+      p.now,
+      this.holdEntries(p.walletId, allocations),
+    );
     const r: Reservation = {
       operationId: p.operationId,
       walletId: p.walletId,
@@ -329,15 +358,89 @@ export class Ledger {
     return r;
   }
 
+  /**
+   * Hold a whole, untouched paid lot before its refund goes to the provider (Y3): the credits cannot be
+   * spent meanwhile; refundHeld finishes the refund, settle(teknik_hata) gives them back.
+   */
+  holdLot(p: { operationId: string; walletId: string; originRef: string; now: Date }): Reservation {
+    const w = this.wallet(p.walletId);
+    const existing = this.existing(p.walletId, p.operationId);
+    if (existing) return existing;
+    const lot = w.lots.find((l) => l.originRef === p.originRef);
+    if (!lot) throw new LedgerError('lot_not_found');
+    if (lot.source === 'promosyon' || lot.closedBy || lot.remainingCredits !== lot.originalCredits)
+      throw new LedgerError('refund_not_allowed');
+    const allocations = [{ lotId: lot.id, credits: lot.remainingCredits }];
+    lot.remainingCredits = 0;
+    this.commit(
+      'rezervasyon',
+      `rezervasyon:${p.operationId}`,
+      p.walletId,
+      p.now,
+      this.holdEntries(p.walletId, allocations),
+    );
+    const r: Reservation = {
+      operationId: p.operationId,
+      walletId: p.walletId,
+      estimatedCredits: allocations[0]?.credits ?? 0,
+      actualCredits: null,
+      status: 'acik',
+      expiresAt: new Date(p.now.getTime() + RESERVATION_TTL_MS),
+      allocations,
+    };
+    w.reservations.push(r);
+    return r;
+  }
+
+  /** Finish a refund held by holdLot: the held credits go to the refund account as a reversal of the grant. */
+  refundHeld(p: { walletId: string; operationId: string; now: Date }): LedgerTx {
+    const w = this.wallet(p.walletId);
+    const r = w.reservations.find((x) => x.operationId === p.operationId);
+    const prev = this.byKey.get(`rezervasyon_sonu:${p.operationId}`);
+    if (r && r.status === 'tuketildi' && prev) return prev;
+    if (!r || r.status !== 'acik') throw new LedgerError('reservation_not_open');
+    const lot = w.lots.find((l) => l.id === r.allocations[0]?.lotId);
+    const entries: Entry[] = [];
+    for (const a of r.allocations) {
+      entries.push({
+        accountCode: ACCOUNTS.reserve(p.walletId),
+        side: 'borc',
+        credits: a.credits,
+        lotId: a.lotId,
+      });
+      entries.push({ accountCode: ACCOUNTS.refund, side: 'alacak', credits: a.credits, lotId: a.lotId });
+    }
+    const tx = this.commit(
+      'iade',
+      `rezervasyon_sonu:${p.operationId}`,
+      p.walletId,
+      p.now,
+      entries,
+      lot?.grantTxId ?? null,
+    );
+    r.status = 'tuketildi';
+    r.actualCredits = r.estimatedCredits;
+    if (lot) lot.closedBy = 'iade';
+    return tx;
+  }
+
   private openReservation(walletId: string, operationId: string): Reservation {
     const r = this.wallet(walletId).reservations.find((x) => x.operationId === operationId);
     if (!r) throw new LedgerError('reservation_not_open');
     return r;
   }
 
+  /** Give back credits to their lots; credits that return to an expired promo lot expire at once (D7). */
+  private giveBack(walletId: string, lotId: string, credits: number): void {
+    const lot = this.wallet(walletId).lots.find((l) => l.id === lotId);
+    if (lot) lot.remainingCredits += credits;
+  }
+
   /**
    * Settle a reservation. outcome 'tamam' charges min(actual, estimate) in consumption order of the held
-   * allocations and releases the rest; 'cekimser' and 'teknik_hata' charge nothing (4.5/3).
+   * allocations and releases the rest; 'cekimser' and 'teknik_hata' charge nothing (4.5/3). A reservation
+   * past its 5 minutes is released instead and comes back with status 'cozuldu' (the release is committed,
+   * O1); callers that wanted to charge treat that as reservation_expired.
    */
   settle(p: {
     walletId: string;
@@ -350,14 +453,13 @@ export class Ledger {
     if (r.status !== 'acik') return r;
     if (p.now.getTime() > r.expiresAt.getTime()) {
       this.release(r, p.now);
-      throw new LedgerError('reservation_expired');
+      return r;
     }
     const charge =
       p.outcome === 'tamam'
         ? Math.min(Math.max(0, p.actualCredits ?? r.estimatedCredits), r.estimatedCredits)
         : 0;
     if (!Number.isInteger(charge)) throw new LedgerError('invalid_amount');
-    const w = this.wallet(p.walletId);
     const entries: Entry[] = [];
     let left = charge;
     for (const a of r.allocations) {
@@ -386,8 +488,7 @@ export class Ledger {
           credits: back,
           lotId: a.lotId,
         });
-        const lot = w.lots.find((l) => l.id === a.lotId);
-        if (lot) lot.remainingCredits += back;
+        this.giveBack(p.walletId, a.lotId, back);
       }
     }
     this.commit(
@@ -399,11 +500,11 @@ export class Ledger {
     );
     r.status = charge > 0 ? 'tuketildi' : 'cozuldu';
     r.actualCredits = charge;
+    this.expirePromos(p.walletId, p.now);
     return r;
   }
 
   private release(r: Reservation, now: Date): void {
-    const w = this.wallet(r.walletId);
     const entries: Entry[] = [];
     for (const a of r.allocations) {
       entries.push({
@@ -418,12 +519,12 @@ export class Ledger {
         credits: a.credits,
         lotId: a.lotId,
       });
-      const lot = w.lots.find((l) => l.id === a.lotId);
-      if (lot) lot.remainingCredits += a.credits;
+      this.giveBack(r.walletId, a.lotId, a.credits);
     }
     this.commit('rezervasyon_cozum', `rezervasyon_sonu:${r.operationId}`, r.walletId, now, entries);
     r.status = 'cozuldu';
     r.actualCredits = 0;
+    this.expirePromos(r.walletId, now);
   }
 
   /** Release every open reservation older than 5 minutes. */
@@ -444,10 +545,11 @@ export class Ledger {
     if (prev) return prev;
     const lot = this.wallet(p.walletId).lots.find((l) => l.originRef === p.originRef);
     if (!lot) throw new LedgerError('lot_not_found');
-    if (lot.remainingCredits !== lot.originalCredits || lot.source === 'promosyon')
+    if (lot.remainingCredits !== lot.originalCredits || lot.source === 'promosyon' || lot.closedBy)
       throw new LedgerError('refund_not_allowed');
     const n = lot.remainingCredits;
     lot.remainingCredits = 0;
+    lot.closedBy = 'iade';
     return this.commit(
       'iade',
       p.key,
@@ -463,7 +565,8 @@ export class Ledger {
 
   /**
    * Claw back all credits of a lot after a chargeback or an Apple refund (4.5/11). Credits already spent
-   * become debt, so the balance may go below zero; this is the only path to a negative balance.
+   * become debt, so the balance may go below zero; this is the only path to a negative balance. A lot that
+   * was already refunded or clawed back is not touched again (O3): returns null.
    */
   clawback(p: {
     key: string;
@@ -471,12 +574,13 @@ export class Ledger {
     originRef: string;
     reason: 'ters_ibraz' | 'apple_iade';
     now: Date;
-  }): LedgerTx {
+  }): LedgerTx | null {
     const prev = this.byKey.get(p.key);
     if (prev) return prev;
     const w = this.wallet(p.walletId);
     const lot = w.lots.find((l) => l.originRef === p.originRef);
     if (!lot) throw new LedgerError('lot_not_found');
+    if (lot.closedBy) return null;
     const fromLot = lot.remainingCredits;
     const owed = lot.originalCredits - fromLot;
     const entries: Entry[] = [];
@@ -494,6 +598,7 @@ export class Ledger {
       entries.push({ accountCode: ACCOUNTS.refund, side: 'alacak', credits: owed, lotId: null });
     }
     lot.remainingCredits = 0;
+    lot.closedBy = p.reason;
     // Debt is first covered by remaining credits in other lots, in consumption order.
     let debt = owed;
     const covering: Entry[] = [];
