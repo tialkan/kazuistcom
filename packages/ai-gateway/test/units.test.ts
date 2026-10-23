@@ -202,11 +202,11 @@ describe('routing, gemini and ledger fake', () => {
     });
     expect(ROUTES.derin_ozet.model).toBe('claude-sonnet-5-5');
   });
-  it('closes sensitive content on Gemini free tier unless opted in; unknown counts as free', () => {
-    expect(geminiPolicy('bilinmiyor', 'yayimlanmamis_taslak').allowed).toBe(false);
-    expect(geminiPolicy('ucretsiz', 'kampus_dosyasi', true)).toMatchObject({ allowed: true, warn: true });
-    expect(geminiPolicy('ucretsiz', 'kamu_kaynak')).toMatchObject({ allowed: true, warn: true });
-    expect(geminiPolicy('ucretli', 'kampus_dosyasi')).toEqual({ allowed: true, warn: false });
+  it('accepts Gemini BYOK only with a paid billing declaration (kararlar 2026-10-22)', () => {
+    const closed = { allowed: false, reason: 'ucretli_faturalandirma_beyani_yok' };
+    expect(geminiPolicy('bilinmiyor')).toEqual(closed);
+    expect(geminiPolicy('ucretsiz')).toEqual(closed);
+    expect(geminiPolicy('ucretli')).toEqual({ allowed: true });
   });
   it('reservation is idempotent and expires after 5 minutes', async () => {
     let t = 0;

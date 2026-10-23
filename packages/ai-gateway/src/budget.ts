@@ -1,4 +1,5 @@
 import type { ByokProvider } from '@kazuist/contracts';
+import { PLATFORM_PROVIDER_ORDER } from './routing.ts';
 
 /** Counter store; production uses Valkey INCRBY with day keys, tests use memory. */
 export interface CounterStore {
@@ -122,7 +123,8 @@ export class BudgetGuard {
 /** Provider kill switch and fallback order (plan 8.7/3). */
 export class ProviderSwitch {
   private readonly disabled = new Set<ByokProvider>();
-  constructor(private readonly order: ByokProvider[] = ['anthropic', 'openrouter']) {}
+  /** Default order per ADR-0025: OpenRouter, then Anthropic direct. */
+  constructor(private readonly order: ByokProvider[] = [...PLATFORM_PROVIDER_ORDER]) {}
   disable(p: ByokProvider): void {
     this.disabled.add(p);
   }

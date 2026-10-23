@@ -6,6 +6,25 @@ export const MODELS = {
   sonnet: 'claude-sonnet-5-5',
 } as const;
 
+/**
+ * ADR-0025: platform mode goes through OpenRouter first, Anthropic direct is the fallback.
+ * OpenRouter IDs checked against https://openrouter.ai/api/v1/models on 2026-10-23.
+ */
+export const PLATFORM_PROVIDER_ORDER = ['openrouter', 'anthropic'] as const;
+
+export const OPENROUTER_MODELS: Record<string, string> = {
+  [MODELS.haiku]: 'anthropic/claude-haiku-5.5',
+  [MODELS.sonnet]: 'anthropic/claude-sonnet-5.5',
+};
+
+/** Provider specific model ID for a routed Anthropic model. */
+export function platformModel(provider: string, model: string): string {
+  if (provider !== 'openrouter') return model;
+  const id = OPENROUTER_MODELS[model];
+  if (!id) throw new Error(`no OpenRouter ID for ${model}`);
+  return id;
+}
+
 /** USD per million tokens, plan 4.4 and Anthropic pricing page (Haiku below 100k prompt tokens). */
 export const PRICES_USD_PER_MTOK: Record<string, { input: number; output: number }> = {
   [MODELS.haiku]: { input: 0.1, output: 0.5 },
@@ -55,7 +74,8 @@ export function estimateTokens(text: string): number {
 }
 
 export function costUsd(model: string, inputTokens: number, outputTokens: number): number {
-  const p = PRICES_USD_PER_MTOK[model];
+  const base = Object.entries(OPENROUTER_MODELS).find(([, id]) => id === model)?.[0] ?? model;
+  const p = PRICES_USD_PER_MTOK[base];
   if (!p) return 0;
   return (inputTokens * p.input + outputTokens * p.output) / 1_000_000;
 }
