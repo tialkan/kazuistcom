@@ -5,3 +5,4 @@ export * from './pg-store.ts';
 export * from './iyzico.ts';
 export * from './fake-iyzico.ts';
 export * from './earsiv.ts';
+export * from './contract-doc.ts';

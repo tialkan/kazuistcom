@@ -217,7 +217,7 @@ export function runScenarios(name: string, make: () => Promise<ScenarioEnv>) {
       expect(await balance()).toBe(3000);
     });
 
-    it('immediate cancel of an annual plan refunds paid minus granted months x monthly list price', async () => {
+    it('immediate cancel of an annual plan refunds paid minus granted months x paid annual price / 12 (karar 2026-10-22)', async () => {
       const sub = await subscribe('ogrenci.yillik');
       const start = sub.currentPeriodStart;
       now = addMonths(start, 2);
@@ -225,9 +225,9 @@ export function runScenarios(name: string, make: () => Promise<ScenarioEnv>) {
       expect(await svc.monthlyGrant()).toBe(0);
       expect((await cur(sub.id)).grantsDelivered).toBe(3);
       const r = await svc.cancel(U, sub.id, 'hemen');
-      expect(r.refundAmountKurus).toBe(79900 - 3 * 9900);
-      expect(iyz.refunds.at(-1)).toMatchObject({ priceKurus: 50200 });
-      expect(earsiv.issued.at(-1)).toMatchObject({ kind: 'iade', totalKurus: 50200 });
+      expect(r.refundAmountKurus).toBe(79900 - Math.floor((3 * 79900) / 12));
+      expect(iyz.refunds.at(-1)).toMatchObject({ priceKurus: 59925 });
+      expect(earsiv.issued.at(-1)).toMatchObject({ kind: 'iade', totalKurus: 59925 });
       expect(await balance()).toBe(3000);
     });
 

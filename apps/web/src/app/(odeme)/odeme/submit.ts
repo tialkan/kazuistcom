@@ -46,7 +46,7 @@ export function nextStep(session: {
   checkoutFormContent?: string;
 }): { kind: 'redirect'; url: string } | { kind: 'frame'; html: string } | { kind: 'error' } {
   const url = session.paymentPageUrl;
-  if (url && /^https:\/\/([a-z0-9-]+\.)*iyzipay\.com\//.test(url)) return { kind: 'redirect', url };
+  if (url && /^https:\/\/([a-z0-9-]+\.)*iyzipay\.com([/?#]|$)/.test(url)) return { kind: 'redirect', url };
   if (session.checkoutFormContent) return { kind: 'frame', html: session.checkoutFormContent };
   return { kind: 'error' };
 }

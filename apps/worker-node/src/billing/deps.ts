@@ -28,6 +28,10 @@ export function depsFromService(svc: BillingService, now: () => Date = () => new
     now,
     async monthlyGrant() {
       await svc.closeEndedPeriods();
+      // Pending payments (fraud review, missed subscription callback) and iyzico cancels that failed
+      // are retried every day (Y-N2, Y-N3, Y-N4).
+      await svc.recheckPendingOrders();
+      await svc.reconcileCancellations();
       await svc.runDunning();
       return svc.monthlyGrant();
     },

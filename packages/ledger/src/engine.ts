@@ -75,6 +75,8 @@ export interface WalletState {
 }
 
 export const RESERVATION_TTL_MS = 5 * 60 * 1000;
+/** A refund hold lasts until the refund is settled; an administrator resolves unknown outcomes in 3 work days. */
+export const REFUND_HOLD_TTL_MS = 30 * 86_400_000;
 export const PROMO_TTL_DAYS = 90;
 const DAY_MS = 86_400_000;
 
@@ -362,7 +364,13 @@ export class Ledger {
    * Hold a whole, untouched paid lot before its refund goes to the provider (Y3): the credits cannot be
    * spent meanwhile; refundHeld finishes the refund, settle(teknik_hata) gives them back.
    */
-  holdLot(p: { operationId: string; walletId: string; originRef: string; now: Date }): Reservation {
+  holdLot(p: {
+    operationId: string;
+    walletId: string;
+    originRef: string;
+    now: Date;
+    ttlMs?: number;
+  }): Reservation {
     const w = this.wallet(p.walletId);
     const existing = this.existing(p.walletId, p.operationId);
     if (existing) return existing;
@@ -385,7 +393,8 @@ export class Ledger {
       estimatedCredits: allocations[0]?.credits ?? 0,
       actualCredits: null,
       status: 'acik',
-      expiresAt: new Date(p.now.getTime() + RESERVATION_TTL_MS),
+      // Refund holds outlive the provider call and an unknown outcome (D-N5, O-N1).
+      expiresAt: new Date(p.now.getTime() + (p.ttlMs ?? REFUND_HOLD_TTL_MS)),
       allocations,
     };
     w.reservations.push(r);

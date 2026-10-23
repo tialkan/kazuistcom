@@ -2,7 +2,7 @@
  * Billing persistence port. MemoryBillingStore backs fast unit tests; PgBillingStore (pg-store.ts) is the
  * production store over the packages/db billing tables (migration 0003). LedgerPort wraps the ledger.
  */
-import { Ledger, type LedgerTx } from '../index.ts';
+import { Ledger, istanbulDay, type LedgerTx } from '../index.ts';
 
 export type OrderStatus = 'bekliyor' | 'odendi' | 'basarisiz' | 'iade_edildi';
 export interface Order {
@@ -29,9 +29,12 @@ export interface Payment {
   kind: 'odeme' | 'iade';
   /** Refunds are written as bekliyor before the provider call (Y2, Y3); charges are basarili. */
   status?: PaymentStatus;
+  /** Refund bookkeeping, for example the ledger hold of a package refund ({ holdOp }). */
+  raw?: Record<string, unknown> | null;
   at: Date;
 }
-export type PaymentStatus = 'bekliyor' | 'basarili' | 'basarisiz';
+/** hazir: refund row opened, provider not called yet; bekliyor: call sent, outcome not known yet. */
+export type PaymentStatus = 'hazir' | 'bekliyor' | 'basarili' | 'basarisiz';
 export interface RefundRequest {
   id: string;
   userId: string;
@@ -124,7 +127,15 @@ export interface BillingStore {
   findCharge(providerPaymentId: string): Promise<Payment | null>;
   findRefund(refundRef: string): Promise<Payment | null>;
   /** Conditional status change of a refund row; true only for the caller that changed it. */
-  setRefundStatus(refundRef: string, from: PaymentStatus[], to: PaymentStatus): Promise<boolean>;
+  setRefundStatus(
+    refundRef: string,
+    from: PaymentStatus[],
+    to: PaymentStatus,
+    raw?: Record<string, unknown>,
+  ): Promise<boolean>;
+  listRefunds(status: PaymentStatus): Promise<Payment[]>;
+  /** Orders still waiting for a payment result, created at or after `since` (recheck job, Y-N3, Y-N4). */
+  listPendingOrders(since: Date): Promise<Order[]>;
   paymentsOn(day: string): Promise<Payment[]>;
   saveSubscription(s: Subscription): Promise<void>;
   getSubscription(id: string): Promise<Subscription | null>;
@@ -144,6 +155,8 @@ export interface BillingStore {
   /** Take one use of the coupon if its limit allows (D10); releaseCouponSlot gives it back. */
   claimCouponSlot(code: string): Promise<boolean>;
   releaseCouponSlot(code: string): Promise<void>;
+  /** Undo the redemption of a failed order (O-N2). */
+  deleteRedemption(code: string, userId: string): Promise<void>;
   /** One redemption per coupon and user; returns false if already redeemed. */
   recordRedemption(
     code: string,
@@ -213,19 +226,31 @@ export class MemoryBillingStore implements BillingStore {
   async findRefund(ref: string) {
     return this.payments.find((p) => p.kind === 'iade' && p.refundRef === ref) ?? null;
   }
-  async setRefundStatus(ref: string, from: PaymentStatus[], to: PaymentStatus) {
+  async setRefundStatus(
+    ref: string,
+    from: PaymentStatus[],
+    to: PaymentStatus,
+    raw?: Record<string, unknown>,
+  ) {
     const p = this.payments.find((x) => x.kind === 'iade' && x.refundRef === ref);
     if (!p || !from.includes(p.status ?? 'basarili')) return false;
     p.status = to;
+    if (raw) p.raw = { ...(p.raw ?? {}), ...raw };
     return true;
+  }
+  async listRefunds(status: PaymentStatus) {
+    return this.payments.filter((p) => p.kind === 'iade' && p.status === status);
+  }
+  async listPendingOrders(since: Date) {
+    return [...this.orders.values()].filter(
+      (o) => o.status === 'bekliyor' && o.checkoutToken && o.createdAt.getTime() >= since.getTime(),
+    );
   }
   async findCharge(id: string) {
     return this.payments.find((p) => p.kind === 'odeme' && p.providerPaymentId === id) ?? null;
   }
   async paymentsOn(day: string) {
-    return this.payments.filter(
-      (p) => p.at.toISOString().slice(0, 10) === day && (p.status ?? 'basarili') === 'basarili',
-    );
+    return this.payments.filter((p) => istanbulDay(p.at) === day && (p.status ?? 'basarili') === 'basarili');
   }
   async saveSubscription(s: Subscription) {
     this.subscriptions.set(s.id, s);
@@ -284,6 +309,9 @@ export class MemoryBillingStore implements BillingStore {
     if (!c || (c.maxRedemptions !== null && c.redeemed >= c.maxRedemptions)) return false;
     c.redeemed += 1;
     return true;
+  }
+  async deleteRedemption(code: string, userId: string) {
+    this.redemptions.delete(`${code}:${userId}`);
   }
   async releaseCouponSlot(code: string) {
     const c = this.coupons.get(code);

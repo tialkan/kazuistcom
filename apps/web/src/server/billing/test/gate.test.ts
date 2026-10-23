@@ -42,4 +42,14 @@ it('O6: posts the published versions with one Idempotency-Key and continues only
     nextStep({ paymentPageUrl: 'https://evil.example/x', checkoutFormContent: '<script></script>' }).kind,
   ).toBe('frame');
   expect(nextStep({}).kind).toBe('error');
+  // D-N3: the hosted page address iyzico returns has no slash before the query.
+  expect(nextStep({ paymentPageUrl: 'https://sandbox-cpp.iyzipay.com?token=t' }).kind).toBe('redirect');
+  expect(nextStep({ paymentPageUrl: 'https://iyzipay.com.evil.example/x' }).kind).toBe('error');
+});
+
+it('D-N4: production accepts only published legal texts as consent versions', async () => {
+  const { consentVersionsFromContent } = await import('../context.ts');
+  expect(consentVersionsFromContent('development')).not.toBeNull();
+  // The payment texts are drafts (status taslak) until Tarik approves them.
+  expect(consentVersionsFromContent('production')).toBeNull();
 });

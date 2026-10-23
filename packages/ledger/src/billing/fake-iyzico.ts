@@ -21,6 +21,7 @@ import {
   type SubscriptionOrder,
   type SubscriptionWebhook,
 } from './iyzico.ts';
+import { istanbulDay } from '../rules.ts';
 
 export const FAKE_CFG = {
   secretKey: 'test-secret-not-real',
@@ -31,7 +32,7 @@ export const FAKE_CFG = {
 interface FakeCheckout {
   init: CheckoutInit;
   outcome: 'success' | 'threeds_failure' | 'pending';
-  fraudStatus: 1 | 0 | -1;
+  fraudStatus: 1 | 2 | 0 | -1;
   paymentId: string;
 }
 interface FakeSub {
@@ -62,6 +63,8 @@ export class FakeIyzico implements IyzicoApi {
   nextFraudStatus: FakeCheckout['fraudStatus'] = 1;
   /** Results of upcoming subscription retries. */
   retryOutcomes: ('success' | 'failure')[] = [];
+  /** Next subscription cancel call fails: definite (iyzico said failure) or unknown (timeout, not applied). */
+  failNextCancel: 'definite' | 'unknown' | null = null;
   /** Next refund call: ok, definite failure (iyzico said failure) or unknown outcome (timeout). */
   nextRefund: 'ok' | 'definite' | 'unknown' = 'ok';
   now: () => Date = () => new Date();
@@ -124,8 +127,8 @@ export class FakeIyzico implements IyzicoApi {
     };
   }
 
-  /** Fraud review finished (fraudStatus 0 becomes 1 or -1). */
-  decideFraud(token: string, status: 1 | -1): void {
+  /** Fraud review finished (fraudStatus 0 becomes 2 approved, 1 or -1). */
+  decideFraud(token: string, status: 1 | 2 | -1): void {
     const c = this.checkouts.get(token);
     if (c) c.fraudStatus = status;
   }
@@ -225,6 +228,9 @@ export class FakeIyzico implements IyzicoApi {
   }
 
   async cancelSubscription(ref: string) {
+    const fail = this.failNextCancel;
+    this.failNextCancel = null;
+    if (fail) throw new IyzicoError('/v2/subscription/subscriptions/cancel', fail === 'definite');
     const s = this.subs.get(ref);
     if (s) s.status = 'CANCELED';
     this.canceled.push(ref);
@@ -269,9 +275,22 @@ export class FakeIyzico implements IyzicoApi {
     return r;
   }
 
-  async listTransactions(day: Date): Promise<ProviderTransaction[]> {
-    const d = day.toISOString().slice(0, 10);
-    return this.transactions.filter((t) => t.at.toISOString().slice(0, 10) === d);
+  async listTransactions(day: string): Promise<ProviderTransaction[]> {
+    return this.transactions.filter((t) => istanbulDay(t.at) === day);
+  }
+
+  /**
+   * Fraud review notification (IFN). Kazuist uses it only as a trigger: the order is re-queried, so the
+   * body carries just the identifiers iyzico sends (no signature is trusted yet).
+   */
+  fraudNotification(token: string): { paymentConversationId: string; paymentId: string; status: string } {
+    const c = this.checkouts.get(token);
+    if (!c) throw new Error('no checkout');
+    return {
+      paymentConversationId: c.init.conversationId,
+      paymentId: c.paymentId,
+      status: String(c.fraudStatus),
+    };
   }
 
   /* Simulation helpers */
@@ -316,6 +335,9 @@ export class FakeIyzico implements IyzicoApi {
   simulateRenewal(subRef: string, success: boolean): { body: SubscriptionWebhook; signature: string } {
     const s = this.subs.get(subRef);
     if (!s) throw new Error('no sub');
+    // A canceled subscription is not charged again; iyzico would at most resend the last order's event.
+    if (s.status === 'CANCELED' && s.orders.length)
+      return this.subWebhook(s, s.orders[s.orders.length - 1] as SubscriptionOrder);
     const o = this.order(s.priceKurus, success);
     s.orders.push(o);
     s.status = success ? 'ACTIVE' : 'UNPAID';

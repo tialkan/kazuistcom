@@ -88,8 +88,8 @@ describe('high', () => {
     await expect(e.svc.cancel('u1', sub.id, 'hemen')).rejects.toMatchObject({ code: 'cancel_failed' });
     expect(e.store.payments.filter((p) => p.kind === 'iade')).toHaveLength(1);
     const second = await e.svc.cancel('u1', sub.id, 'hemen');
-    expect(second.refundAmountKurus).toBe(70000);
-    expect(e.iyz.refunds.map((r) => r.priceKurus)).toEqual([70000]);
+    expect(second.refundAmountKurus).toBe(73242);
+    expect(e.iyz.refunds.map((r) => r.priceKurus)).toEqual([73242]);
     expect(e.iyz.subs.get(sub.providerRef)?.status).toBe('CANCELED');
   });
 

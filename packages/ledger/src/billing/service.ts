@@ -18,6 +18,8 @@ import {
   checkCoupon,
   decideCancel,
   dueToday,
+  istanbulDay,
+  addBusinessDays,
   effectiveTable,
   findProduct,
   nextDunningStep,
@@ -95,7 +97,6 @@ const PLAN_RANK: Record<string, number> = { ucretsiz: 0, plus: 1, akademisyen: 2
 /** Signup gift (plan 4.2): 50 promotional credits, 90 days. */
 export const SIGNUP_PROMO_CREDITS = 50;
 
-const day = (d: Date) => d.toISOString().slice(0, 10);
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 
 export interface ReconcileResult {
@@ -221,15 +222,6 @@ export class BillingService {
     }
     const orderId = this.d.newId();
     try {
-      await this.consents(
-        userId,
-        [
-          ['on_bilgilendirme', input.preInfoConsentVersion, true],
-          ['mesafeli_sozlesme', input.distanceContractConsentVersion, true],
-          ['cayma_istisnasi', input.distanceContractConsentVersion, input.withdrawalWaiver],
-        ],
-        { orderId, productCode: product.code },
-      );
       const init = await this.d.iyzico.initCheckoutForm({
         conversationId: orderId,
         basketId: orderId,
@@ -239,6 +231,16 @@ export class BillingService {
         buyer,
         item: { id: product.code, name: `Kazuist ${product.credits} kredi`, category: 'Dijital hizmet' },
       });
+      // Consents only for a checkout that iyzico opened (D-N1), still before the order row (Y4).
+      await this.consents(
+        userId,
+        [
+          ['on_bilgilendirme', input.preInfoConsentVersion, true],
+          ['mesafeli_sozlesme', input.distanceContractConsentVersion, true],
+          ['cayma_istisnasi', input.distanceContractConsentVersion, input.withdrawalWaiver],
+        ],
+        { orderId, productCode: product.code },
+      );
       const order: Order = {
         id: orderId,
         userId,
@@ -285,18 +287,15 @@ export class BillingService {
     if (order.status === 'odendi' || order.status === 'iade_edildi') return order;
     const r = await this.d.iyzico.retrieveCheckoutForm(token);
     if (r.status !== 'success' || r.paymentStatus !== 'SUCCESS' || r.paymentId === null) {
-      if (r.paymentStatus === 'FAILURE') {
-        order.status = 'basarisiz';
-        await this.s.saveOrder(order);
-      }
+      if (r.paymentStatus === 'FAILURE') await this.failOrder(order);
       return order;
     }
     if (r.fraudStatus === -1) {
-      order.status = 'basarisiz';
-      await this.s.saveOrder(order);
+      await this.failOrder(order);
       return order;
     }
-    if (r.fraudStatus !== 1) return order;
+    // 1 approved, 2 approved after review; 0 stays pending and is re-queried by recheckPendingOrders (Y-N3).
+    if (r.fraudStatus !== 1 && r.fraudStatus !== 2) return order;
     if (
       r.basketId !== order.id ||
       r.paidPriceKurus !== order.amountKurus ||
@@ -340,9 +339,70 @@ export class BillingService {
     });
     if (won) {
       await this.invoice(order.userId, order.id, 'satis', order.amountKurus, `Kazuist ${credits} kredi`);
-      await this.notify(order.userId, 'odeme_alindi', this.d.now(), order.id);
+      await this.notify(order.userId, 'odeme_alindi', this.d.now(), `${order.id}:${order.amountKurus}`);
     }
     return order;
+  }
+
+  /** A failed payment gives its coupon use back (O-N2). */
+  private async failOrder(order: Order): Promise<void> {
+    if (order.status === 'basarisiz') return;
+    order.status = 'basarisiz';
+    await this.s.saveOrder(order);
+    if (order.couponCode) {
+      await this.s.deleteRedemption(order.couponCode, order.userId);
+      await this.s.releaseCouponSlot(order.couponCode);
+    }
+  }
+
+  /**
+   * Recheck job (Y-N3, Y-N4): orders of the last 7 days still waiting for a result are re-queried at
+   * iyzico by token: a fraud review that ended (fraudStatus 2), a paid subscription whose browser callback
+   * never came. Orders older than 2 days without a payment are closed. Returns how many got paid.
+   */
+  async recheckPendingOrders(kind: 'all' | 'abonelik' = 'all'): Promise<number> {
+    const now = this.d.now().getTime();
+    let paid = 0;
+    for (const o of await this.s.listPendingOrders(new Date(now - 7 * 86_400_000))) {
+      const product = findProduct(this.table(o.createdAt), o.productCode);
+      if (!product || !o.checkoutToken) continue;
+      if (kind === 'abonelik' && product.kind !== 'abonelik') continue;
+      try {
+        if (product.kind === 'abonelik') {
+          await this.completeSubscriptionCheckout(o.checkoutToken);
+          paid++;
+          continue;
+        }
+        if ((await this.completeCheckout(o.checkoutToken)).status === 'odendi') {
+          paid++;
+          continue;
+        }
+      } catch (e) {
+        if (!(e instanceof BillingError)) throw e;
+      }
+      const fresh = await this.s.getOrder(o.id);
+      if (fresh?.status === 'bekliyor' && now - o.createdAt.getTime() > 2 * 86_400_000)
+        await this.failOrder(fresh);
+    }
+    return paid;
+  }
+
+  /**
+   * IFN (fraud review notification, Y-N3). Until its signature format is verified the body is only a
+   * trigger: the order it names is re-queried at iyzico and nothing is taken from the body itself.
+   */
+  async handleFraudNotification(rawBody: string): Promise<{ status: 200 | 400 }> {
+    let body: Record<string, unknown>;
+    try {
+      body = JSON.parse(rawBody) as Record<string, unknown>;
+    } catch {
+      return { status: 400 };
+    }
+    const id = body?.paymentConversationId ?? body?.conversationId;
+    if (typeof id !== 'string' || id.length > 100) return { status: 200 };
+    const order = await this.s.getOrder(id).catch(() => null);
+    if (order?.status === 'bekliyor' && order.checkoutToken) await this.completeCheckout(order.checkoutToken);
+    return { status: 200 };
   }
 
   /** e-Arsiv failure never undoes a payment; it raises fatura_bekliyor for the accountant (D5). */
@@ -519,11 +579,8 @@ export class BillingService {
     const order = await this.s.findOrderByToken(token);
     if (!order) throw new BillingError(404, 'order_not_found');
     const r = await this.d.iyzico.retrieveSubscriptionCheckout(token);
-    if (r.status !== 'success' || !r.subscriptionReferenceCode) {
-      order.status = 'basarisiz';
-      await this.s.saveOrder(order);
+    if (r.status !== 'success' || !r.subscriptionReferenceCode)
       throw new BillingError(402, 'subscription_failed');
-    }
     const ref = r.subscriptionReferenceCode;
     const found = await this.s.findSubscriptionByRef(ref);
     if (found) return found;
@@ -604,8 +661,18 @@ export class BillingService {
   private async scheduleRenewalNotices(sub: Subscription) {
     if (sub.cancelAtPeriodEnd || sub.status === 'iptal') return;
     const product = findProduct(this.table(), sub.planCode);
+    const price =
+      sub.pendingPrice && sub.pendingPrice.effectiveAt.getTime() <= sub.currentPeriodEnd.getTime()
+        ? sub.pendingPrice.priceKurus
+        : sub.priceKurus;
+    // ref: <subscription>:<kurus>:<charge date>, read by the notice text renderer (Y5).
     for (const n of renewalNotices(sub.currentPeriodEnd, product?.interval ?? 'aylik'))
-      await this.notify(sub.userId, n.kind, n.sendAt, `${sub.id}:${sub.currentPeriodEnd.toISOString()}`);
+      await this.notify(
+        sub.userId,
+        n.kind,
+        n.sendAt,
+        `${sub.id}:${price}:${sub.currentPeriodEnd.toISOString()}`,
+      );
   }
 
   /** Plan entitlement from every live subscription of the user, highest wins (O7). */
@@ -632,6 +699,8 @@ export class BillingService {
    * documentation describes it: orders[].orderStatus and the successful paymentAttempts[].paymentId (K1).
    */
   async onSubscriptionOrder(subRef: string, orderRef: string): Promise<Subscription> {
+    // A paid subscription whose browser callback never came is opened from its pending order (Y-N4).
+    if (!(await this.s.findSubscriptionByRef(subRef))) await this.recheckPendingOrders('abonelik');
     const sub = await this.subByRef(subRef);
     const detail = await this.d.iyzico.retrieveSubscription(subRef);
     const order = detail.orders.find((o) => o.referenceCode === orderRef);
@@ -696,7 +765,7 @@ export class BillingService {
     sub.status = 'sona_erdi';
     await this.s.saveSubscription(sub);
     await this.recomputePlan(sub.userId);
-    await this.d.iyzico.cancelSubscription(sub.providerRef);
+    await this.ensureProviderCanceled(sub);
     await this.notify(sub.userId, 'plan_ucretsize_indi', this.d.now(), sub.id);
   }
 
@@ -733,9 +802,10 @@ export class BillingService {
   }
 
   /**
-   * One provider refund per refund_ref (Y2, Y3): the row is written as bekliyor before the call; a
-   * definite failure marks it basarisiz (retry allowed), an unknown outcome leaves it bekliyor and is
-   * never sent again automatically (refund_pending, alert). Returns true for the caller that completed it.
+   * One provider refund per refund_ref (Y2, Y3, Y-N1). The row may be opened earlier as hazir; it becomes
+   * bekliyor right before the call. A definite failure marks it basarisiz (retry allowed); an unknown
+   * outcome leaves it bekliyor, raises iade_sonucu_bilinmiyor and is never resent: an administrator closes it
+   * with resolvePendingRefund within 3 work days (karar 2026-10-22). True for the caller that completed it.
    */
   private async providerRefund(p: {
     refundRef: string;
@@ -743,25 +813,15 @@ export class BillingService {
     amountKurus: number;
     orderId: string | null;
     subscriptionId: string | null;
+    raw?: Record<string, unknown>;
   }): Promise<boolean> {
     const prev = await this.s.findRefund(p.refundRef);
     if (prev?.status === 'basarili') return false;
     if (prev?.status === 'bekliyor') throw new BillingError(409, 'refund_pending');
     if (prev) {
-      if (!(await this.s.setRefundStatus(p.refundRef, ['basarisiz'], 'bekliyor')))
+      if (!(await this.s.setRefundStatus(p.refundRef, ['hazir', 'basarisiz'], 'bekliyor', p.raw)))
         throw new BillingError(409, 'refund_pending');
-    } else if (
-      !(await this.s.addPayment({
-        orderId: p.orderId,
-        subscriptionId: p.subscriptionId,
-        providerPaymentId: p.paymentId,
-        refundRef: p.refundRef,
-        amountKurus: p.amountKurus,
-        kind: 'iade',
-        status: 'bekliyor',
-        at: this.d.now(),
-      }))
-    )
+    } else if (!(await this.openRefund({ ...p, status: 'bekliyor' })))
       throw new BillingError(409, 'refund_pending');
     try {
       await this.d.iyzico.refund({
@@ -779,15 +839,59 @@ export class BillingService {
         refundRef: p.refundRef,
         paymentId: p.paymentId,
         amountKurus: p.amountKurus,
+        resolveBy: addBusinessDays(this.d.now(), 3).toISOString(),
       });
       throw new BillingError(409, 'refund_pending');
     }
     return this.s.setRefundStatus(p.refundRef, ['bekliyor'], 'basarili');
   }
 
+  private openRefund(p: {
+    refundRef: string;
+    paymentId: string;
+    amountKurus: number;
+    orderId: string | null;
+    subscriptionId: string | null;
+    raw?: Record<string, unknown>;
+    status: 'hazir' | 'bekliyor';
+  }): Promise<boolean> {
+    return this.s.addPayment({
+      orderId: p.orderId,
+      subscriptionId: p.subscriptionId,
+      providerPaymentId: p.paymentId,
+      refundRef: p.refundRef,
+      amountKurus: p.amountKurus,
+      kind: 'iade',
+      status: p.status,
+      raw: p.raw ?? null,
+      at: this.d.now(),
+    });
+  }
+
   /**
-   * POST /v1/subscriptions/{id}/cancel: one step, default at period end. The cancellation is stored before
-   * any provider call; a repeated call resumes a pending refund instead of refunding again (Y2).
+   * Make sure iyzico stops charging a canceled subscription (Y-N1, Y-N2): the state is read at iyzico and
+   * the cancel call is sent only while it is still live. A failure raises iptal_bekliyor; the daily
+   * reconcileCancellations retries it.
+   */
+  private async ensureProviderCanceled(sub: Subscription): Promise<boolean> {
+    try {
+      const detail = await this.d.iyzico.retrieveSubscription(sub.providerRef);
+      if (detail.status === 'CANCELED' || detail.status === 'EXPIRED') return true;
+      await this.d.iyzico.cancelSubscription(sub.providerRef);
+      return true;
+    } catch (e) {
+      await this.s.alert('iptal_bekliyor', {
+        subscriptionId: sub.id,
+        error: e instanceof Error ? e.name : 'Error',
+      });
+      return false;
+    }
+  }
+
+  /**
+   * POST /v1/subscriptions/{id}/cancel: one step, default at period end. Order (Y-N1, Y-N2): the
+   * cancellation and, for an annual immediate cancel, the refund row (hazir) are stored first; then iyzico
+   * is told to stop charging; then the refund is sent. A repeated call resumes every step that is missing.
    */
   async cancel(
     userId: string,
@@ -799,48 +903,59 @@ export class BillingService {
     if (sub.status === 'sona_erdi') throw new BillingError(409, 'already_ended');
     const now = this.d.now();
     const refundRef = `fesih:${sub.id}`;
-    if (sub.status === 'iptal') {
-      const refund = await this.s.findRefund(refundRef);
-      await this.d.iyzico.cancelSubscription(sub.providerRef);
-      if (refund && refund.status !== 'basarili') await this.finishCancelRefund(sub, refund.amountKurus);
-      return { status: 'iptal', refundAmountKurus: refund?.amountKurus ?? 0 };
+    const fresh = sub.status !== 'iptal' && !(mode === 'donem_sonu' && sub.cancelAtPeriodEnd);
+    if (fresh) {
+      // Monthly list price of the table in force when the period was bought (D4).
+      const product = findProduct(this.table(sub.currentPeriodStart), sub.planCode);
+      const paid = sub.lastPaymentId ? await this.s.findCharge(sub.lastPaymentId) : null;
+      const decision = decideCancel(
+        {
+          interval: product?.interval ?? 'aylik',
+          status: sub.status === 'odeme_bekliyor' ? 'odeme_bekliyor' : 'aktif',
+          paidKurus: paid?.amountKurus ?? sub.priceKurus,
+          monthlyListKurus: product?.monthlyListKurus ?? 0,
+          grantsDelivered: sub.grantsDelivered,
+          currentPeriodStart: sub.currentPeriodStart,
+          currentPeriodEnd: sub.currentPeriodEnd,
+          cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
+        },
+        mode,
+        now,
+      );
+      sub.cancelAtPeriodEnd = decision.cancelAtPeriodEnd;
+      sub.canceledAt = now;
+      if (mode === 'hemen') {
+        sub.status = 'iptal';
+        sub.currentPeriodEnd = now;
+      }
+      await this.s.saveSubscription(sub);
+      if (mode === 'hemen' && decision.refundAmountKurus > 0 && sub.lastPaymentId)
+        await this.openRefund({
+          refundRef,
+          paymentId: sub.lastPaymentId,
+          amountKurus: decision.refundAmountKurus,
+          orderId: null,
+          subscriptionId: sub.id,
+          status: 'hazir',
+        });
+      await this.s.dropRenewalNotices(sub.userId, sub.id);
+      await this.recomputePlan(sub.userId);
+      await this.notify(
+        sub.userId,
+        'fesih_teyidi',
+        now,
+        `${sub.id}:${mode}:${decision.endsAt.toISOString()}`,
+      );
     }
-    if (mode === 'donem_sonu' && sub.cancelAtPeriodEnd)
-      return { status: 'donem_sonunda_bitecek', refundAmountKurus: 0 };
-    // Monthly list price of the table in force when the period was bought (D4).
-    const product = findProduct(this.table(sub.currentPeriodStart), sub.planCode);
-    const paid = sub.lastPaymentId ? await this.s.findCharge(sub.lastPaymentId) : null;
-    const decision = decideCancel(
-      {
-        interval: product?.interval ?? 'aylik',
-        status: sub.status === 'odeme_bekliyor' ? 'odeme_bekliyor' : 'aktif',
-        paidKurus: paid?.amountKurus ?? sub.priceKurus,
-        monthlyListKurus: product?.monthlyListKurus ?? 0,
-        grantsDelivered: sub.grantsDelivered,
-        currentPeriodStart: sub.currentPeriodStart,
-        currentPeriodEnd: sub.currentPeriodEnd,
-        cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
-      },
-      mode,
-      now,
-    );
-    sub.cancelAtPeriodEnd = decision.cancelAtPeriodEnd;
-    sub.canceledAt = now;
-    if (mode === 'hemen') {
-      sub.status = 'iptal';
-      sub.currentPeriodEnd = now;
-    }
-    await this.s.saveSubscription(sub);
-    await this.s.dropRenewalNotices(sub.userId, sub.id);
-    await this.recomputePlan(sub.userId);
-    await this.notify(sub.userId, 'fesih_teyidi', now, sub.id);
     // No further charges at iyzico in either mode; entitlement stays until the period end for donem_sonu.
-    await this.d.iyzico.cancelSubscription(sub.providerRef);
-    if (mode === 'hemen' && decision.refundAmountKurus > 0)
-      await this.finishCancelRefund(sub, decision.refundAmountKurus);
+    if (!(await this.ensureProviderCanceled(sub))) throw new BillingError(502, 'cancel_failed');
+    const refund = await this.s.findRefund(refundRef);
+    if (refund && (refund.status === 'hazir' || refund.status === 'basarisiz'))
+      await this.finishCancelRefund(sub, refund.amountKurus);
+    if (refund?.status === 'bekliyor') throw new BillingError(409, 'refund_pending');
     return {
-      status: mode === 'hemen' ? 'iptal' : 'donem_sonunda_bitecek',
-      refundAmountKurus: decision.refundAmountKurus,
+      status: sub.status === 'iptal' ? 'iptal' : 'donem_sonunda_bitecek',
+      refundAmountKurus: refund?.amountKurus ?? 0,
     };
   }
 
@@ -854,6 +969,25 @@ export class BillingService {
       subscriptionId: sub.id,
     });
     if (won) await this.invoice(sub.userId, null, 'iade', amountKurus, 'Yıllık plan iadesi');
+  }
+
+  /**
+   * Daily job (Y-N2): every canceled subscription is checked at iyzico and canceled there if it is still
+   * live; immediate cancel refunds that were opened but not sent are sent.
+   */
+  async reconcileCancellations(): Promise<number> {
+    let fixed = 0;
+    for (const sub of await this.s.listSubscriptions()) {
+      if (!sub.canceledAt && sub.status !== 'sona_erdi') continue;
+      if (!(await this.ensureProviderCanceled(sub))) continue;
+      fixed++;
+      const refund = await this.s.findRefund(`fesih:${sub.id}`);
+      if (refund?.status === 'hazir')
+        await this.finishCancelRefund(sub, refund.amountKurus).catch((e: unknown) => {
+          if (!(e instanceof BillingError)) throw e;
+        });
+    }
+    return fixed;
   }
 
   /** Ends subscriptions whose period is over after a donem_sonu cancellation (also while a charge failed). */
@@ -873,9 +1007,9 @@ export class BillingService {
   }
 
   /**
-   * POST /v1/refund-requests (O9). A package inside the 14 day rule with no credit used is refunded at once
-   * (4.5/4): credits are held, the provider refund runs, then the held credits are reversed (Y3). Anything
-   * else becomes a pending request for an administrator.
+   * POST /v1/refund-requests (O9). Refunded at once: a package inside the 14 day rule with no credit used
+   * (4.5/4), and the first period of a subscription within 14 days with none of its credits used (karar
+   * 2026-10-22). Anything else becomes a pending request for an administrator.
    */
   async requestRefund(
     userId: string,
@@ -898,20 +1032,35 @@ export class BillingService {
         amountKurus: order.amountKurus,
         status: 'bekliyor',
       });
-    if (!(await this.packageRefundEligible(order)))
-      return { id, status: 'bekliyor', amountKurus: order.amountKurus };
-    await this.refundPackage(userId, orderId);
+    const target = await this.refundTarget(order);
+    if (!target) return { id, status: 'bekliyor', amountKurus: order.amountKurus };
+    await this.refundHeldLot(order, target);
     await this.s.updateRefundRequest(id, 'tamamlandi', order.amountKurus);
     return { id, status: 'tamamlandi', amountKurus: order.amountKurus };
   }
 
-  private async packageRefundEligible(order: Order): Promise<boolean> {
-    if (order.status !== 'odendi' || !order.paymentId || !order.paidAt) return false;
-    if (!findProduct(this.table(order.createdAt), order.productCode)?.credits) return false;
+  /** The untouched lot an order may be refunded against, or null when the rules do not allow it. */
+  private async refundTarget(
+    order: Order,
+  ): Promise<{ originRef: string; refundRef: string; subscription: Subscription | null } | null> {
+    if (order.status !== 'odendi' || !order.paymentId || !order.paidAt) return null;
+    const product = findProduct(this.table(order.createdAt), order.productCode);
+    let originRef = `order:${order.id}`;
+    let refundRef = `paket:${order.id}`;
+    let subscription: Subscription | null = null;
+    if (product?.kind === 'abonelik') {
+      const charge = await this.s.findCharge(order.paymentId);
+      subscription = charge?.subscriptionId ? await this.s.getSubscription(charge.subscriptionId) : null;
+      if (!subscription || subscription.grantsDelivered !== 1 || subscription.status === 'sona_erdi')
+        return null;
+      if (subscription.lastPaymentId !== order.paymentId) return null;
+      originRef = `abonelik:${subscription.id}:${subscription.currentPeriodStart.toISOString()}:ilk`;
+      refundRef = `abonelik:${subscription.id}`;
+    } else if (!product?.credits) return null;
     const walletId = await this.s.walletOf(order.userId);
     const now = this.d.now();
-    return this.d.ledger.run(walletId, (l) => {
-      const lot = l.wallet(walletId).lots.find((x) => x.originRef === `order:${order.id}`);
+    const ok = await this.d.ledger.run(walletId, (l) => {
+      const lot = l.wallet(walletId).lots.find((x) => x.originRef === originRef);
       return (
         !!lot &&
         !lot.closedBy &&
@@ -923,6 +1072,7 @@ export class BillingService {
         })
       );
     });
+    return ok ? { originRef, refundRef, subscription } : null;
   }
 
   /** 14 day unused package refund (4.5/4) with the hold, provider, reversal order of Y3. */
@@ -930,34 +1080,130 @@ export class BillingService {
     const order = await this.s.getOrder(orderId);
     if (!order || order.userId !== userId) throw new BillingError(404, 'order_not_found');
     if (order.status === 'iade_edildi') return { refunded: true, amountKurus: order.amountKurus };
-    if (!(await this.packageRefundEligible(order))) throw new BillingError(409, 'not_refundable');
-    const walletId = await this.s.walletOf(userId);
-    const op = `iade:order:${order.id}:${this.d.newId()}`;
+    const target = await this.refundTarget(order);
+    if (!target) throw new BillingError(409, 'not_refundable');
+    await this.refundHeldLot(order, target);
+    return { refunded: true, amountKurus: order.amountKurus };
+  }
+
+  /**
+   * Hold the lot for the whole refund (30 days, D-N5), refund at iyzico, then reverse the held credits.
+   * Definite failure: the credits come back. Unknown outcome: they stay locked until an administrator
+   * resolves the refund (O-N1). A subscription refund also cancels the subscription first.
+   */
+  private async refundHeldLot(
+    order: Order,
+    t: { originRef: string; refundRef: string; subscription: Subscription | null },
+  ): Promise<void> {
+    const walletId = await this.s.walletOf(order.userId);
+    const op = `iade:${t.refundRef}:${this.d.newId()}`;
     await this.d.ledger.run(walletId, (l) =>
-      l.holdLot({ operationId: op, walletId, originRef: `order:${order.id}`, now: this.d.now() }),
+      l.holdLot({ operationId: op, walletId, originRef: t.originRef, now: this.d.now() }),
     );
+    if (t.subscription) {
+      const sub = t.subscription;
+      sub.status = 'iptal';
+      sub.canceledAt = this.d.now();
+      sub.currentPeriodEnd = this.d.now();
+      sub.cancelAtPeriodEnd = false;
+      await this.s.saveSubscription(sub);
+      await this.s.dropRenewalNotices(sub.userId, sub.id);
+      await this.recomputePlan(sub.userId);
+      await this.notify(
+        sub.userId,
+        'fesih_teyidi',
+        this.d.now(),
+        `${sub.id}:hemen:${this.d.now().toISOString()}`,
+      );
+      if (!(await this.ensureProviderCanceled(sub))) {
+        await this.d.ledger.run(walletId, (l) =>
+          l.settle({ walletId, operationId: op, outcome: 'teknik_hata', now: this.d.now() }),
+        );
+        throw new BillingError(502, 'cancel_failed');
+      }
+    }
     let won: boolean;
     try {
       won = await this.providerRefund({
-        refundRef: `paket:${order.id}`,
+        refundRef: t.refundRef,
         paymentId: order.paymentId as string,
         amountKurus: order.amountKurus,
         orderId: order.id,
-        subscriptionId: null,
+        subscriptionId: t.subscription?.id ?? null,
+        raw: { holdOp: op, walletId },
       });
     } catch (e) {
-      // The credits go back in both cases. After an unknown outcome the refund row stays bekliyor with an
-      // alert (iade_sonucu_bilinmiyor) and is never resent; the administrator settles it by hand.
-      await this.d.ledger.run(walletId, (l) =>
-        l.settle({ walletId, operationId: op, outcome: 'teknik_hata', now: this.d.now() }),
-      );
+      if (!(e instanceof BillingError && e.code === 'refund_pending'))
+        await this.d.ledger.run(walletId, (l) =>
+          l.settle({ walletId, operationId: op, outcome: 'teknik_hata', now: this.d.now() }),
+        );
       throw e;
     }
+    await this.finishHeldRefund(order, walletId, op, won);
+  }
+
+  private async finishHeldRefund(order: Order, walletId: string, op: string, invoice: boolean) {
     await this.d.ledger.run(walletId, (l) => l.refundHeld({ walletId, operationId: op, now: this.d.now() }));
     order.status = 'iade_edildi';
     await this.s.saveOrder(order);
-    if (won) await this.invoice(userId, order.id, 'iade', order.amountKurus, 'Kredi paketi iadesi');
-    return { refunded: true, amountKurus: order.amountKurus };
+    if (invoice) await this.invoice(order.userId, order.id, 'iade', order.amountKurus, 'İade');
+  }
+
+  /** Refunds whose outcome is unknown, for the administrator (karar 2026-10-22: 3 work days). */
+  async listPendingRefunds(): Promise<
+    {
+      refundRef: string;
+      paymentId: string;
+      amountKurus: number;
+      orderId: string | null;
+      since: Date;
+      resolveBy: Date;
+    }[]
+  > {
+    return (await this.s.listRefunds('bekliyor')).map((p) => ({
+      refundRef: p.refundRef as string,
+      paymentId: p.providerPaymentId,
+      amountKurus: p.amountKurus,
+      orderId: p.orderId,
+      since: p.at,
+      resolveBy: addBusinessDays(p.at, 3),
+    }));
+  }
+
+  /**
+   * Administrator decision on an unknown refund outcome, after checking the iyzico panel (O-N1). basarili:
+   * the held credits are reversed and the refund is invoiced; basarisiz: the credits come back and the
+   * refund can be requested again. Wired to kimlik's admin skeleton (istek odeme-denetim-2).
+   */
+  async resolvePendingRefund(
+    refundRef: string,
+    outcome: 'basarili' | 'basarisiz',
+    actorId?: string,
+  ): Promise<void> {
+    const row = await this.s.findRefund(refundRef);
+    if (!row || row.status !== 'bekliyor') throw new BillingError(409, 'not_pending');
+    if (!(await this.s.setRefundStatus(refundRef, ['bekliyor'], outcome)))
+      throw new BillingError(409, 'not_pending');
+    const holdOp = typeof row.raw?.holdOp === 'string' ? row.raw.holdOp : null;
+    const walletId = typeof row.raw?.walletId === 'string' ? row.raw.walletId : null;
+    const order = row.orderId ? await this.s.getOrder(row.orderId) : null;
+    if (outcome === 'basarili') {
+      if (order && holdOp && walletId) await this.finishHeldRefund(order, walletId, holdOp, true);
+      else {
+        const userId =
+          order?.userId ??
+          (row.subscriptionId ? (await this.s.getSubscription(row.subscriptionId))?.userId : null);
+        if (userId) await this.invoice(userId, row.orderId, 'iade', row.amountKurus, 'İade');
+      }
+      if (order) {
+        const req = (await this.s.listRefundRequests(order.userId)).find((r) => r.orderId === order.id);
+        if (req) await this.s.updateRefundRequest(req.id, 'tamamlandi', row.amountKurus);
+      }
+    } else if (holdOp && walletId)
+      await this.d.ledger.run(walletId, (l) =>
+        l.settle({ walletId, operationId: holdOp, outcome: 'teknik_hata', now: this.d.now() }),
+      );
+    await this.s.alert('iade_cozuldu', { refundRef, outcome, actorId: actorId ?? null });
   }
 
   /**
@@ -1002,11 +1248,15 @@ export class BillingService {
   }
 
   /**
-   * Account deletion (O9, plan 4.5/12): every subscription is canceled at iyzico at once, and unused
-   * purchased credits become a pending refund request for an administrator. Billing records stay.
+   * Account deletion (O9, plan 4.5/12): every subscription is stored as canceled first, then canceled at
+   * iyzico; a failed iyzico call does not stop the others and is retried by reconcileCancellations (Y-N2).
+   * Unused purchased credits become a pending refund request for an administrator. Billing records stay.
    */
-  async onAccountDeletion(userId: string): Promise<{ canceled: number; refundRequested: boolean }> {
+  async onAccountDeletion(
+    userId: string,
+  ): Promise<{ canceled: number; providerPending: number; refundRequested: boolean }> {
     let canceled = 0;
+    let providerPending = 0;
     for (const sub of await this.s.listSubscriptions(userId)) {
       if (sub.status === 'iptal' || sub.status === 'sona_erdi') continue;
       sub.status = 'iptal';
@@ -1014,7 +1264,7 @@ export class BillingService {
       sub.currentPeriodEnd = this.d.now();
       await this.s.saveSubscription(sub);
       await this.s.dropRenewalNotices(userId, sub.id);
-      await this.d.iyzico.cancelSubscription(sub.providerRef);
+      if (!(await this.ensureProviderCanceled(sub))) providerPending++;
       canceled++;
     }
     await this.recomputePlan(userId);
@@ -1035,7 +1285,7 @@ export class BillingService {
         amountKurus: null,
         status: 'bekliyor',
       });
-    return { canceled, refundRequested: unused > 0 };
+    return { canceled, providerPending, refundRequested: unused > 0 };
   }
 
   /** billing.monthly_grant: annual plans receive their monthly credits while active (9.2/3). */
@@ -1064,24 +1314,42 @@ export class BillingService {
    * is not available the job reports disabled and raises mutabakat_devre_disi instead of failing (O8).
    */
   async reconcileDay(date: Date): Promise<ReconcileResult> {
+    // One calendar day in Europe/Istanbul, the zone of iyzico's report (D-N2).
+    const dayStr = istanbulDay(date);
     let report;
     try {
-      report = await this.d.iyzico.listTransactions(date);
+      report = await this.d.iyzico.listTransactions(dayStr);
     } catch (e) {
       await this.s.alert('mutabakat_devre_disi', {
-        day: day(date),
+        day: dayStr,
         error: e instanceof Error ? e.name : 'Error',
       });
       return { disabled: true, diffs: [] };
     }
+    const payments = (await this.s.paymentsOn(dayStr)).filter((p) => p.kind === 'odeme');
+    const known = new Set(payments.map((p) => p.providerPaymentId));
+    const byOrder = new Map(
+      payments.filter((p) => p.orderId).map((p) => [p.orderId as string, p.providerPaymentId]),
+    );
+    // transactionId is expected to equal paymentId; when it does not, the conversationId (our order id)
+    // links the line, and the mapping is reported so it can be confirmed in the sandbox (DEVIR).
+    let remapped = 0;
     const provider = report
       .filter((t) => t.kind === 'odeme')
-      .map((t) => ({ paymentId: t.paymentId, kind: t.kind, amountKurus: t.amountKurus }));
-    const recorded = (await this.s.paymentsOn(day(date)))
-      .filter((p) => p.kind === 'odeme')
-      .map((p) => ({ paymentId: p.providerPaymentId, kind: p.kind, amountKurus: p.amountKurus }));
+      .map((t) => {
+        const linked =
+          !known.has(t.paymentId) && t.conversationId ? byOrder.get(t.conversationId) : undefined;
+        if (linked) remapped++;
+        return { paymentId: linked ?? t.paymentId, kind: t.kind, amountKurus: t.amountKurus };
+      });
+    const recorded = payments.map((p) => ({
+      paymentId: p.providerPaymentId,
+      kind: p.kind,
+      amountKurus: p.amountKurus,
+    }));
     const diffs = reconcile(provider, recorded);
-    if (diffs.length) await this.s.alert('mutabakat_farki', { day: day(date), diffs });
+    if (remapped) await this.s.alert('mutabakat_eslesme', { day: dayStr, remapped });
+    if (diffs.length) await this.s.alert('mutabakat_farki', { day: dayStr, diffs });
     return { disabled: false, diffs };
   }
 
@@ -1098,7 +1366,12 @@ export class BillingService {
       if (!effectiveAt) continue;
       sub.pendingPrice = { priceKurus: newPriceKurus, effectiveAt };
       await this.s.saveSubscription(sub);
-      await this.notify(sub.userId, 'fiyat_degisikligi', now, `${sub.id}:${effectiveAt.toISOString()}`);
+      await this.notify(
+        sub.userId,
+        'fiyat_degisikligi',
+        now,
+        `${sub.id}:${newPriceKurus}:${effectiveAt.toISOString()}`,
+      );
       n++;
     }
     return n;
