@@ -158,8 +158,9 @@ describe('4.5 rules', () => {
   });
 
   it('annual refund formula never goes below zero', () => {
-    expect(annualRefundKurus({ paidKurus: 79900, grantedMonths: 3, monthlyListKurus: 9900 })).toBe(50200);
-    expect(annualRefundKurus({ paidKurus: 79900, grantedMonths: 9, monthlyListKurus: 9900 })).toBe(0);
+    expect(annualRefundKurus({ paidKurus: 79900, grantedMonths: 3 })).toBe(59925);
+    expect(annualRefundKurus({ paidKurus: 79900, grantedMonths: 1 })).toBe(73242);
+    expect(annualRefundKurus({ paidKurus: 79900, grantedMonths: 12 })).toBe(0);
   });
 
   it('cancellation modes', () => {
@@ -176,7 +177,7 @@ describe('4.5 rules', () => {
     const end = decideCancel(sub, 'donem_sonu', t0);
     expect(end).toMatchObject({ cancelAtPeriodEnd: true, refundAmountKurus: 0, status: 'aktif' });
     const now = decideCancel(sub, 'hemen', t0);
-    expect(now).toMatchObject({ status: 'iptal', refundAmountKurus: 60100 });
+    expect(now).toMatchObject({ status: 'iptal', refundAmountKurus: 66584 });
     expect(now.refundDueBy?.toISOString()).toBe(addDays(t0, 15).toISOString());
     expect(decideCancel({ ...sub, interval: 'aylik', paidKurus: 9900 }, 'hemen', t0).refundAmountKurus).toBe(
       0,

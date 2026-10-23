@@ -8,7 +8,7 @@ import { PRICE_TABLE_V1 } from '@kazuist/ledger';
 import pg from 'pg';
 import { subjectHash } from '../auth/hash.ts';
 import { UnconfiguredEArsiv, type ConsentVersions } from '@kazuist/ledger/billing';
-import { hukukiMetinSurumu } from '@/app/(kabuk)/_hukuki/yukle';
+import { hukukiMetin, kazuistOrtami, type Ortam } from '@/app/(kabuk)/_hukuki/yukle';
 import { HttpIyzico, IYZICO_SANDBOX_BASE_URL } from '@kazuist/ledger/billing';
 import { PgBillingStore, PgLedgerPort } from '@kazuist/ledger/billing';
 import { BillingService } from '@kazuist/ledger/billing';
@@ -16,10 +16,16 @@ import { BillingService } from '@kazuist/ledger/billing';
 let current: BillingService | null | undefined;
 
 /** Published versions of the payment texts in content/hukuki (consents.version must match, O5). */
-export function consentVersionsFromContent(): ConsentVersions | null {
-  const on_bilgilendirme = hukukiMetinSurumu('on-bilgilendirme');
-  const mesafeli_sozlesme = hukukiMetinSurumu('mesafeli-satis');
-  const abonelik_sozlesmesi = hukukiMetinSurumu('abonelik');
+export function consentVersionsFromContent(ortam: Ortam = kazuistOrtami()): ConsentVersions | null {
+  // In production only a published text (status yayinda) can be accepted (D-N4); drafts elsewhere.
+  const v = (slug: string) => {
+    const m = hukukiMetin('tr', slug);
+    if (!m) return null;
+    return ortam === 'production' && m.fm.status !== 'yayinda' ? null : (m.fm.version ?? null);
+  };
+  const on_bilgilendirme = v('on-bilgilendirme');
+  const mesafeli_sozlesme = v('mesafeli-satis');
+  const abonelik_sozlesmesi = v('abonelik');
   if (!on_bilgilendirme || !mesafeli_sozlesme || !abonelik_sozlesmesi) return null;
   return { on_bilgilendirme, mesafeli_sozlesme, abonelik_sozlesmesi };
 }

@@ -1,6 +1,6 @@
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
-import { ACCOUNTS, Ledger, LedgerError, isBalanced } from '../src/index.ts';
+import { ACCOUNTS, Ledger, LedgerError, REFUND_HOLD_TTL_MS, isBalanced } from '../src/index.ts';
 
 const W = 'w1';
 const T0 = Date.UTC(2026, 9, 19);
@@ -186,7 +186,8 @@ describe('ledger invariants (fast-check)', () => {
     fc.assert(
       fc.property(fc.array(cmd, { maxLength: 60 }), (cmds) => {
         const { l, now } = run(cmds);
-        l.sweepExpired(W, new Date(now + 5 * 60_000 + 1));
+        // Refund holds live for REFUND_HOLD_TTL_MS (D-N5), ordinary holds for 5 minutes.
+        l.sweepExpired(W, new Date(now + REFUND_HOLD_TTL_MS + 1));
         for (const r of l.wallet(W).reservations) {
           expect(['tuketildi', 'cozuldu']).toContain(r.status);
           const consumed = r.status === 'tuketildi' ? (r.actualCredits ?? 0) : 0;

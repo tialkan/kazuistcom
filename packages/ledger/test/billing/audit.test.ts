@@ -423,7 +423,11 @@ describe('medium', () => {
     expect(await e.svc.requestRefund('u1', a.orderId)).toMatchObject({ status: 'bekliyor' });
     expect(e.iyz.refunds).toHaveLength(0);
     const sub = await e.subscribe('ogrenci.aylik');
-    expect(await e.svc.onAccountDeletion('u1')).toEqual({ canceled: 1, refundRequested: true });
+    expect(await e.svc.onAccountDeletion('u1')).toEqual({
+      canceled: 1,
+      providerPending: 0,
+      refundRequested: true,
+    });
     expect(e.iyz.canceled).toContain(sub.providerRef);
     expect(await e.store.getPlan('u1')).toBe('ucretsiz');
   });

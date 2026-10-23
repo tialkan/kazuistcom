@@ -126,7 +126,7 @@ export interface CheckoutResult {
   basketId: string | null;
   conversationId: string | null;
   paidPriceKurus: number | null;
-  /** 1 approved, 0 in review (wait for the notification), -1 rejected. */
+  /** 1 approved, 2 approved after review, 0 in review (re-queried by the recheck job), -1 rejected. */
   fraudStatus: number | null;
   currency: string | null;
 }
@@ -223,8 +223,8 @@ export interface IyzicoApi {
     conversationId: string;
     ip: string;
   }): Promise<RefundResult>;
-  /** Daily transaction report used by billing.reconcile. */
-  listTransactions(day: Date): Promise<ProviderTransaction[]>;
+  /** Daily transaction report used by billing.reconcile; day is YYYY-MM-DD in Europe/Istanbul. */
+  listTransactions(day: string): Promise<ProviderTransaction[]>;
 }
 
 /** iyzico takes decimal TRY strings ("109.0"). */
@@ -241,6 +241,7 @@ export class HttpIyzico implements IyzicoApi {
   constructor(
     private readonly cfg: IyzicoConfig,
     private readonly fetchFn: typeof fetch = fetch,
+    private readonly timeoutMs = 20_000,
   ) {
     assertSandbox(cfg);
   }
@@ -252,6 +253,8 @@ export class HttpIyzico implements IyzicoApi {
     let json: IyzResponse;
     try {
       const res = await this.fetchFn(this.cfg.baseUrl + path, {
+        // A hanging call must not outlive the 5 minute credit hold (D-N5); a timeout is an unknown outcome.
+        signal: AbortSignal.timeout(this.timeoutMs),
         method,
         headers: {
           Authorization: authorizationHeader(this.cfg, pathOnly, raw, rnd),
@@ -457,8 +460,7 @@ export class HttpIyzico implements IyzicoApi {
    * Transactions Reporting). PAYMENT lines give transactionId and paidPrice; REFUND lines are returned as
    * kind iade with the transaction id (their link to the payment is not documented, see DEVIR).
    */
-  async listTransactions(day: Date): Promise<ProviderTransaction[]> {
-    const date = day.toISOString().slice(0, 10);
+  async listTransactions(date: string): Promise<ProviderTransaction[]> {
     const out: ProviderTransaction[] = [];
     for (let page = 1; page <= 100; page++) {
       const r = await this.call(

@@ -156,6 +156,19 @@ export const iyzicoWebhookPost = withPublic(rate.webhook, async (req) =>
   withService((s) => iyzicoWebhook(req, s)),
 );
 
+/**
+ * IFN for fraud reviews (Y-N3). Its signature format is not verified yet, so the body is only a trigger:
+ * the service re-queries the named order at iyzico and takes nothing else from the request.
+ */
+export const iyzicoFraudPost = withPublic(rate.webhook, async (req) =>
+  withService(async (s) => {
+    const raw = await req.text();
+    if (raw.length > 16_000) return apiError('payload_too_large');
+    const r = await s.handleFraudNotification(raw);
+    return r.status === 200 ? json({ ok: true }) : apiError('bad_request');
+  }),
+);
+
 export async function iyzicoWebhook(req: Request, s: BillingService): Promise<Response> {
   const raw = await req.text();
   if (raw.length > 64_000) return apiError('payload_too_large');

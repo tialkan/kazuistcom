@@ -25,5 +25,43 @@
   "hata": {
     "genel": "The payment could not be started. Please try again.",
     "girisGerekli": "Please sign in to pay."
+  },
+  "bildirim": {
+    "odeme_7_gun": {
+      "baslik": "Automatic payment reminder",
+      "metin": "{tutar} TL will be charged for your subscription on {tarih}. You can cancel in one step on your account page."
+    },
+    "yillik_30_gun": {
+      "baslik": "Annual renewal ahead",
+      "metin": "Your annual plan renews on {tarih} for {tutar} TL. You can cancel on your account page if you do not want to renew."
+    },
+    "odeme_alindi": {
+      "baslik": "Payment received",
+      "metin": "Your payment of {tutar} TL was received; the credits are in your wallet."
+    },
+    "odeme_basarisiz": {
+      "baslik": "Payment failed",
+      "metin": "Your subscription payment failed. It will be retried on day 1, 3 and 7; you can update your card on your account page."
+    },
+    "plan_ucretsize_indi": {
+      "baslik": "Your plan is now Free",
+      "metin": "After three attempts the payment could not be taken, so your plan is now Free. Your credits stay in your account."
+    },
+    "fiyat_degisikligi": {
+      "baslik": "Plan price change",
+      "metin": "Your plan will cost {tutar} TL from {tarih}. You can cancel any time on your account page."
+    },
+    "fesih_donem_sonu": {
+      "baslik": "Subscription canceled",
+      "metin": "Your subscription ends on {tarih}, at the end of the period. You can use your plan until then; no new charge will be made."
+    },
+    "fesih_hemen": {
+      "baslik": "Subscription ended",
+      "metin": "Your subscription ended on {tarih}. Loaded credits stay in your account; for annual plans the refund reaches your card within 15 days."
+    },
+    "sozlesme": {
+      "baslik": "Contract and pre-contract information",
+      "metin": "The pre-contract information form and the contract of your order are on your account page; a PDF copy is sent by e-mail."
+    }
   }
 }

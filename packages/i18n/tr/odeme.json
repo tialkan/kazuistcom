@@ -25,5 +25,43 @@
   "hata": {
     "genel": "Ödeme başlatılamadı. Lütfen yeniden deneyin.",
     "girisGerekli": "Ödeme için giriş yapmanız gerekiyor."
+  },
+  "bildirim": {
+    "odeme_7_gun": {
+      "baslik": "Otomatik ödeme hatırlatması",
+      "metin": "{tarih} tarihinde aboneliğiniz için {tutar} TL tahsil edilecek. Hesap sayfasından tek adımda feshedebilirsiniz."
+    },
+    "yillik_30_gun": {
+      "baslik": "Yıllık yenileme yaklaşıyor",
+      "metin": "Yıllık planınız {tarih} tarihinde {tutar} TL ile yenilenecek. Yenilemek istemiyorsanız hesap sayfasından feshedebilirsiniz."
+    },
+    "odeme_alindi": {
+      "baslik": "Ödemeniz alındı",
+      "metin": "{tutar} TL tutarındaki ödemeniz alındı; krediler cüzdanınıza yüklendi."
+    },
+    "odeme_basarisiz": {
+      "baslik": "Ödeme alınamadı",
+      "metin": "Abonelik ödemeniz alınamadı. 1., 3. ve 7. gün yeniden denenecek; kart bilgilerinizi hesap sayfasından güncelleyebilirsiniz."
+    },
+    "plan_ucretsize_indi": {
+      "baslik": "Planınız Ücretsiz'e indi",
+      "metin": "Üç deneme sonunda ödeme alınamadığı için planınız Ücretsiz'e indi. Mevcut kredileriniz hesabınızda duruyor."
+    },
+    "fiyat_degisikligi": {
+      "baslik": "Plan fiyatı değişiyor",
+      "metin": "Planınızın fiyatı {tarih} tarihinden itibaren {tutar} TL olacak. Dilediğiniz an hesap sayfasından feshedebilirsiniz."
+    },
+    "fesih_donem_sonu": {
+      "baslik": "Aboneliğiniz feshedildi",
+      "metin": "Aboneliğiniz {tarih} tarihinde, dönemin sonunda sona erecek. O tarihe kadar planınızı kullanabilirsiniz; yeni tahsilat yapılmayacak."
+    },
+    "fesih_hemen": {
+      "baslik": "Aboneliğiniz sona erdi",
+      "metin": "Aboneliğiniz {tarih} itibarıyla sona erdi. Yüklenmiş kredileriniz hesabınızda kalır; yıllık planda iade tutarı 15 gün içinde kartınıza yapılır."
+    },
+    "sozlesme": {
+      "baslik": "Sözleşme ve ön bilgilendirme formu",
+      "metin": "Siparişinize ait ön bilgilendirme formu ve sözleşme hesap sayfanızda; PDF kopyası e-postayla gönderilir."
+    }
   }
 }

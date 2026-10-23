@@ -131,8 +131,8 @@ export class PgBillingStore implements BillingStore {
 
   async addPayment(p: Payment): Promise<boolean> {
     const { rows } = await this.db.query(
-      `insert into payments (order_id, subscription_id, provider, provider_payment_id, amount_kurus, status, kind, refund_ref, created_at)
-       values ($1, $2, $3, $4, $5, $9, $6, $7, $8) on conflict do nothing returning id`,
+      `insert into payments (order_id, subscription_id, provider, provider_payment_id, amount_kurus, status, kind, refund_ref, created_at, raw)
+       values ($1, $2, $3, $4, $5, $9, $6, $7, $8, $10::jsonb) on conflict do nothing returning id`,
       [
         p.orderId,
         p.subscriptionId,
@@ -143,6 +143,7 @@ export class PgBillingStore implements BillingStore {
         p.refundRef,
         p.at,
         p.status ?? 'basarili',
+        p.raw ? JSON.stringify(p.raw) : null,
       ],
     );
     return rows.length > 0;
@@ -156,6 +157,7 @@ export class PgBillingStore implements BillingStore {
       amountKurus: Number(r.amount_kurus),
       kind: r.kind as Payment['kind'],
       status: r.status as PaymentStatus,
+      raw: (r.raw as Record<string, unknown> | null) ?? null,
       at: d(r.created_at),
     };
   }
@@ -173,16 +175,37 @@ export class PgBillingStore implements BillingStore {
     );
     return r ? this.paymentOf(r) : null;
   }
-  async setRefundStatus(ref: string, from: PaymentStatus[], to: PaymentStatus) {
+  async setRefundStatus(
+    ref: string,
+    from: PaymentStatus[],
+    to: PaymentStatus,
+    raw?: Record<string, unknown>,
+  ) {
     const { rows } = await this.db.query(
-      `update payments set status = $3 where provider = $1 and refund_ref = $2 and kind = 'iade' and status = any($4::text[]) returning id`,
-      [PROVIDER, ref, to, from],
+      `update payments set status = $3, raw = coalesce(raw, '{}'::jsonb) || coalesce($5::jsonb, '{}'::jsonb)
+        where provider = $1 and refund_ref = $2 and kind = 'iade' and status = any($4::text[]) returning id`,
+      [PROVIDER, ref, to, from, raw ? JSON.stringify(raw) : null],
     );
     return rows.length > 0;
   }
+  async listRefunds(status: PaymentStatus) {
+    const { rows } = await this.db.query<Row>(
+      `select * from payments where provider = $1 and kind = 'iade' and status = $2 order by created_at`,
+      [PROVIDER, status],
+    );
+    return rows.map((r) => this.paymentOf(r));
+  }
+  async listPendingOrders(since: Date) {
+    const { rows } = await this.db.query<Row>(
+      `${this.orderSql} where o.status = 'bekliyor' and o.checkout_token is not null and o.created_at >= $1
+        order by o.created_at`,
+      [since],
+    );
+    return rows.map((r) => this.orderOf(r));
+  }
   async paymentsOn(day: string) {
     const { rows } = await this.db.query<Row>(
-      `select * from payments where provider = $1 and status = 'basarili' and created_at >= $2::date and created_at < $2::date + 1`,
+      `select * from payments where provider = $1 and status = 'basarili' and (created_at at time zone 'Europe/Istanbul')::date = $2::date`,
       [PROVIDER, day],
     );
     return rows.map((r) => this.paymentOf(r));
@@ -369,6 +392,12 @@ export class PgBillingStore implements BillingStore {
       [code],
     );
     return rows.length > 0;
+  }
+  async deleteRedemption(code: string, userId: string) {
+    await this.db.query(
+      'delete from coupon_redemptions r using coupons c where c.id = r.coupon_id and c.code = $1 and r.user_id = $2',
+      [code, userId],
+    );
   }
   async releaseCouponSlot(code: string) {
     await this.db.query('update coupons set redeemed = greatest(redeemed - 1, 0) where code = $1', [code]);

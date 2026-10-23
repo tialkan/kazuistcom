@@ -41,15 +41,19 @@ export class LedgerReservationsAdapter {
   /** Charge the actual credits (0 means abstention: nothing is charged, 4.5/3). */
   async consume(reservationId: string, credits: number): Promise<void> {
     const [walletId, operationId] = this.split(reservationId);
-    const r = await this.runner.run(walletId, (l) =>
-      l.settle({
+    const r = await this.runner.run(walletId, (l) => {
+      // A second run sharing one open reservation is refused at its consume (Y7 residual): one charge,
+      // one result. Release stays tolerant because it is the clean up path.
+      const open = l.wallet(walletId).reservations.find((x) => x.operationId === operationId);
+      if (open && open.status !== 'acik') throw new LedgerError('already_settled');
+      return l.settle({
         walletId,
         operationId,
         outcome: credits > 0 ? 'tamam' : 'cekimser',
         actualCredits: credits,
         now: this.now(),
-      }),
-    );
+      });
+    });
     // Past 5 minutes the hold was released (and that release is committed, O1): nothing was charged.
     if (credits > 0 && r.status === 'cozuldu' && r.actualCredits === 0)
       throw new LedgerError('reservation_expired');

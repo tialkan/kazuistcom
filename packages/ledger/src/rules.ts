@@ -37,15 +37,14 @@ export function packageRefundAllowed(p: {
 }
 
 /**
- * 4.5/7: annual plan refund on immediate cancellation:
- * refund = paid annual price - (months already granted x monthly list price), never below zero.
+ * 4.5/7 as decided on 2026-10-22 (docs/kararlar.md, ADR-0024): annual plan refund on immediate cancellation
+ * = paid annual price - (months already granted x paid annual price / 12). The deduction is rounded down to
+ * whole kurus (in the consumer's favour) and the refund never goes below zero. The monthly list price is no
+ * longer used.
  */
-export function annualRefundKurus(p: {
-  paidKurus: number;
-  grantedMonths: number;
-  monthlyListKurus: number;
-}): number {
-  return Math.max(0, p.paidKurus - p.grantedMonths * p.monthlyListKurus);
+export function annualRefundKurus(p: { paidKurus: number; grantedMonths: number }): number {
+  const deduction = Math.floor((p.grantedMonths * p.paidKurus) / 12);
+  return Math.max(0, p.paidKurus - deduction);
 }
 
 export interface SubscriptionView {
@@ -80,11 +79,7 @@ export function decideCancel(sub: SubscriptionView, mode: 'donem_sonu' | 'hemen'
   }
   const refund =
     sub.interval === 'yillik'
-      ? annualRefundKurus({
-          paidKurus: sub.paidKurus,
-          grantedMonths: sub.grantsDelivered,
-          monthlyListKurus: sub.monthlyListKurus,
-        })
+      ? annualRefundKurus({ paidKurus: sub.paidKurus, grantedMonths: sub.grantsDelivered })
       : 0;
   return {
     status: 'iptal',
@@ -167,4 +162,16 @@ export function istanbulDay(d: Date): string {
  */
 export function dueToday(at: Date, now: Date): boolean {
   return istanbulDay(at) <= istanbulDay(now);
+}
+
+/** Add work days (Monday to Friday; public holidays are not modelled), used for the 3 work day refund rule. */
+export function addBusinessDays(d: Date, days: number): Date {
+  let out = new Date(d.getTime());
+  let left = days;
+  while (left > 0) {
+    out = new Date(out.getTime() + 86_400_000);
+    const wd = new Date(out.getTime() + 3 * 3_600_000).getUTCDay();
+    if (wd !== 0 && wd !== 6) left--;
+  }
+  return out;
 }
