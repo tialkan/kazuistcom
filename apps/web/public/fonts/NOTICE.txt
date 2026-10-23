@@ -16,7 +16,9 @@ KzMono-Regular.woff2, KzMono-Medium.woff2
   Licence: OFL-IBMPlexMono.txt.
 
 Modification: the files were downloaded from https://github.com/google/fonts (ofl/ folder)
-and subset with fontTools pyftsubset to Basic Latin, Latin-1, the Turkish letters
+and reduced with fontTools: the variable axes were limited (Source Serif 4: optical size fixed at 20,
+weight 400-700; IBM Plex Sans: width fixed at 100, weight 400-700) with fontTools.varLib.instancer, then
+subset with pyftsubset to Basic Latin, Latin-1, the Turkish letters
 (G/g breve, dotted capital I, dotless i, S/s cedilla), common punctuation and the Turkish lira sign,
 then converted to WOFF2. Because the IBM Plex fonts carry the Reserved Font Name "Plex",
 the modified files are renamed (KzSans, KzMono) as OFL section 3 requires.

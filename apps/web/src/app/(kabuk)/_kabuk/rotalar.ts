@@ -11,6 +11,14 @@ export const moduller = [
   { anahtar: 'kaydettiklerim', href: '/kaydettiklerim' },
 ] as const satisfies readonly { anahtar: keyof OrtakSozluk['gezinme']['sekme']; href: string }[];
 
+/**
+ * Modules whose routes are live. A module agent adds its href here in the PR that ships the route;
+ * closed modules render as "yakında" text instead of a link, so no link points at a 404
+ * (docs/istekler/kalite-on-yuz-baglantilar.md).
+ */
+export const acikModuller: ReadonlySet<string> = new Set<string>([]);
+export const modulAcik = (href: string) => acikModuller.has(href);
+
 /** Legal documents of plan 11 served under /hukuki/<slug>. */
 export const hukukiBelgeler = [
   'uyari',

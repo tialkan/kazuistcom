@@ -30,4 +30,18 @@ O-05 (orta), D-01, D-02, Lighthouse satırı. Aciliyet: erken geçiş (1E) önce
 
 ## Sonuç
 
-(on-yuz dolduracak)
+on-yuz, dal `dalga-1/on-yuz/kapi`, 2026-10-22:
+
+1. Kabukta (sekmeler, alt bilgi, ana sayfa modül listesi, Kampüs bandı, 404) kapalı modüller bağlantı yerine
+   "yakında" notlu metin. Açık modüller `apps/web/src/app/(kabuk)/_kabuk/rotalar.ts` içindeki `acikModuller`
+   kümesindedir; modül ajanı rotasını yayımladığı PR'da href'ini oraya ekler. Hedefim `/hesap`'a gider. Örnek
+   sorular /ara açılana kadar arama kutusunu doldurur (`#q`). Arşivde `/demo` bağlantısı kaldırıldı, metin
+   aynen kaldı (donustur.py `DEAD_LINKS`).
+2. Ana sayfa şerh `aside`'ları "Bu cümlenin kaynakları 1/2" ile ayırt ediliyor; /eski tablosundaki boş `th`
+   `td` olarak çiziliyor. Ek: sekmeler artık kaydırma yerine satır kırıyor (axe scrollable-region-focusable).
+3. Yazı tipleri değişken eksenleri kullanılan aralığa indirildi (Source Serif 4 opsz 20, wght 400-700;
+   Plex Sans wdth 100, wght 400-700): 128 KB'tan 35 KB'a ve 59 KB'tan 29 KB'a. Lighthouse 13.5.0 mobil,
+   yerel, 3 ölçüm: / 97 (LCP 2,6-2,7 sn), /fiyatlar 97-98, /en 96-97; erişilebilirlik 100.
+
+Kalan: sayfalar.spec.ts "each page has exactly one main landmark" /giris'te düşüyor, çünkü (hesap) ve (odeme)
+sayfaları kabuğun `main`'i içinde kendi `<main>`'ini açıyor (kimlik, odeme): docs/istekler/on-yuz-tekil-main.md.

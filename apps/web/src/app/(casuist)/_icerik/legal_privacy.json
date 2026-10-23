@@ -3,7 +3,7 @@
   "source": "https://kazuist.com/legal/privacy",
   "lang": "en",
   "title": "Privacy notice | Casuist",
-  "description": "Kulular Bilişim Teknolojileri Limited Şirketi is the data controller for this website. Questions may be sent to kulularteknoloji@gmail.com.",
+  "description": "Kulular Bilişim Teknolojileri Limited Şirketi is the data controller for this website. Questions may be sent to teknoloji@kulular.com.",
   "nav": [
     {
       "href": "/problem",
@@ -68,9 +68,9 @@
             [
               "a",
               {
-                "href": "mailto:kulularteknoloji@gmail.com"
+                "href": "mailto:teknoloji@kulular.com"
               },
-              "kulularteknoloji@gmail.com"
+              "teknoloji@kulular.com"
             ],
             "."
           ]
