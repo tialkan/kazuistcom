@@ -95,6 +95,10 @@ export function Kabuk({ children }: { children: ReactNode }) {
               <dd>
                 <a href={`mailto:${kunye.eposta}`}>{kunye.eposta}</a>
               </dd>
+              <dt>{t.altBilgi.telefon}</dt>
+              <dd>
+                <a href={`tel:${kunye.telefon.replace(/\s/g, '')}`}>{kunye.telefon}</a>
+              </dd>
             </dl>
           </div>
         </div>
