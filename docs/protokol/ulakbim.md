@@ -34,6 +34,6 @@ Saygılarımızla,
 
 Tarık İsmet Alkan
 Kulular Bilişim Teknolojileri Ltd. Şti. adına {{YETKILI_SIFATI}}
-Adres: {{ADRES}} | KEP: {{KEP}} | E-posta: {{ILETISIM_EPOSTA}} | Telefon: {{TELEFON}}
+Adres: {{ADRES}} | KEP: {{KEP}} | E-posta: {{ILETISIM_EPOSTA}} | Telefon: +90 505 781 48 46
 
 Ek: Kaynak gösterim ve kaldırma süreci özeti

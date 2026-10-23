@@ -4,12 +4,12 @@ slug: iade-ve-kredi
 route: /hukuki/iade-ve-kredi
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026. Bu metin plan 4.5'i birebir izler; dayanak
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026. Bu metin plan 4.5'i birebir izler; dayanak
 > atıfları ayrıca doğrulanmıştır (aşağıdaki notlar).
 
 ## 1. Krediler
@@ -49,8 +49,7 @@ Yönetmeliği m.15/1-ğ ve h).
    geç 7 gün istiyor, m.24).
 3. Hemen fesihte aylık plan: o ayın kredisi yüklenmiş olduğundan iade yoktur, krediler hesabınızda kalır.
 4. Hemen fesihte yıllık plan: teslim edilmemiş aylık yüklemelerin bedeli 15 gün içinde iade edilir
-   (Abonelik Yön. m.25). Formül: iade = ödenen yıllık bedel eksi (yüklemesi yapılmış ay sayısı çarpı aylık
-   liste fiyatı); sonuç sıfırın altına inmez. Örnek: Öğrenci Plus yıllık 799 TL, aylık liste fiyatı 99 TL; 3 ay yüklemesi yapılmışken hemen fesihte iade = 799 - (3 x 99) = 502 TL.
+   (Abonelik Yön. m.25). Formül: iade = ödenen yıllık bedel x (yüklemesi yapılmamış ay sayısı / 12); yıllık bedel aylara eşit bölünür, indirim geri alınmaz. Örnek: Öğrenci Plus yıllık 799 TL; 3 ay yüklemesi yapılmışken hemen fesihte iade = 799 x 9 / 12 = 599,25 TL.
 5. Ödeme bildirimi: her otomatik tahsilattan en az 7 gün önce e-posta; yıllık yenilemede ayrıca 30 gün önce.
 6. Fiyat değişikliği: mevcut abonelere en az 30 gün önce bildirilir; yeni fiyat sonraki dönemden geçerlidir;
    dilediğiniz an fesih edebilirsiniz (fesih hakkı m.22/1; 30 günlük bildirim Kazuist taahhüdüdür).
