@@ -1,31 +1,26 @@
 /**
- * Gemini free tier rule (plan 8.4). Free tier content may be used for product improvement and
- * human review, so operations that send unpublished drafts or Kampus files are closed there
- * unless the user explicitly opts in.
+ * Gemini BYOK rule (plan 8.4 as narrowed by docs/kararlar.md, 2026-10-22). Under the Gemini API
+ * Additional Terms, free tier content may be used for product improvement and human review. A
+ * Gemini key is therefore accepted only when the user declares paid billing; without that
+ * declaration Gemini BYOK is closed for every operation.
  */
 export type GeminiBilling = 'ucretli' | 'ucretsiz' | 'bilinmiyor';
 
+/** Kind of content an operation sends; kept for callers, no longer changes the Gemini decision. */
 export type ContentSensitivity = 'kamu_kaynak' | 'yayimlanmamis_taslak' | 'kampus_dosyasi';
 
 export interface GeminiDecision {
   allowed: boolean;
-  /** Show the free tier warning (i18n key lives with the web app). */
-  warn: boolean;
-  reason?: 'ucretsiz_katman_hassas_icerik';
+  reason?: 'ucretli_faturalandirma_beyani_yok';
 }
 
-/** Unknown billing is treated as free (plan 8.4/1). */
+/** Anything but a paid billing declaration counts as free tier. */
 export function geminiFreeTier(billing: GeminiBilling): boolean {
   return billing !== 'ucretli';
 }
 
-export function geminiPolicy(
-  billing: GeminiBilling,
-  content: ContentSensitivity,
-  explicitOptIn = false,
-): GeminiDecision {
-  if (!geminiFreeTier(billing)) return { allowed: true, warn: false };
-  if (content === 'kamu_kaynak') return { allowed: true, warn: true };
-  if (explicitOptIn) return { allowed: true, warn: true };
-  return { allowed: false, warn: true, reason: 'ucretsiz_katman_hassas_icerik' };
+export function geminiPolicy(billing: GeminiBilling): GeminiDecision {
+  return geminiFreeTier(billing)
+    ? { allowed: false, reason: 'ucretli_faturalandirma_beyani_yok' }
+    : { allowed: true };
 }

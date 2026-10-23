@@ -11,11 +11,15 @@ Bağdaştırıcıların dayandığı bilgiler; her biri resmî belgeden okundu.
 
 ## Model kimlikleri
 
-Resmî liste (https://platform.claude.com/docs/en/about-claude/models/overview): Claude Haiku 5.5 `claude-haiku-5-5` (girdi 0,10 USD'den, çıktı 0,50 USD'den başlayan fiyat, milyon token), Claude Sonnet 5.5 `claude-sonnet-5-5` (2 USD / 10 USD). OpenRouter yedeğinde `anthropic/claude-haiku-5.5` biçimi varsayıldı; OpenRouter model listesinden ayrıca doğrulanmalı.
+Resmî liste (https://platform.claude.com/docs/en/about-claude/models/overview): Claude Haiku 5.5 `claude-haiku-5-5` (girdi 0,10 USD'den, çıktı 0,50 USD'den başlayan fiyat, milyon token), Claude Sonnet 5.5 `claude-sonnet-5-5` (2 USD / 10 USD). OpenRouter (ADR-0025 ile platformun birincil sağlayıcısı) kimlikleri https://openrouter.ai/api/v1/models listesinden 23 Ekim 2026'da doğrulandı: `anthropic/claude-haiku-5.5` ve `anthropic/claude-sonnet-5.5`. Platform isteklerinde `provider.data_collection: "deny"` ve `provider.zdr: true` zorunludur.
 
 ## OpenRouter gizlilik
 
-`provider.data_collection` değerleri `allow` (varsayılan) ve `deny`; `provider.zdr: true` yalnız sıfır veri saklama uçlarına yönlendirir. Geçit her istekte `deny` gönderir; `zdr` yalnız "gizlilik öncelikli" seçeneğinde eklenir.
+`provider.data_collection` değerleri `allow` (varsayılan) ve `deny`; `provider.zdr: true` yalnız sıfır veri saklama uçlarına yönlendirir. Geçit her istekte `deny` gönderir. Platform modunda `zdr: true` her istekte zorunludur (ADR-0025); BYOK'ta yalnız "gizlilik öncelikli" seçeneğinde eklenir.
+
+## Gemini BYOK
+
+docs/kararlar.md (22 Ekim 2026): Gemini anahtarı yalnız kullanıcı ücretli faturalandırmayı beyan ederse kabul edilir; beyan yoksa Gemini BYOK her işlem için kapalıdır (plan 8.4 daraltıldı).
 
 ## Doğrulanamayanlar
 
