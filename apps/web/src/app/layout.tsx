@@ -1,16 +1,23 @@
 import type { Metadata } from 'next';
+import { connection } from 'next/server';
 import type { ReactNode } from 'react';
 import '@kazuist/ui/tokens.css';
 import '@kazuist/ui/fonts.css';
 import '@kazuist/ui/components.css';
 import { Kabuk } from './(kabuk)/_kabuk/Kabuk.tsx';
 
-export const metadata: Metadata = {
-  title: 'Kazuist',
-  robots: { index: false, follow: false },
-};
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Kazuist',
+    robots: { index: false, follow: false },
+    // plan 14.8: the deployed commit, read at run time from the image environment.
+    other: { 'kazuist-version': process.env.GIT_COMMIT ?? 'unknown' },
+  };
+}
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  // The nonce based CSP (src/proxy.ts) needs every page rendered per request: a prerendered page has no nonce.
+  await connection();
   return (
     <html lang="tr">
       <head>

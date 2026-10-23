@@ -39,6 +39,8 @@ jobs:
         run: pnpm test
       - name: Build
         run: pnpm build
+      - name: Prompt injection set (tests/security/enjeksiyon)
+        run: pnpm exec vitest run --config tests/security/enjeksiyon/vitest.config.ts
 
   python:
     runs-on: ubuntu-latest
@@ -70,6 +72,25 @@ jobs:
           sudo mv gitleaks /usr/local/bin/gitleaks
       - name: Scan full history
         run: gitleaks git --redact --verbose .
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - uses: astral-sh/setup-uv@v6
+      - name: Dependency audit and license scan (tests/security/tarama)
+        run: |
+          pnpm install --frozen-lockfile
+          (cd services/worker-py && uv sync --frozen)
+          sh tests/security/tarama/tarama.sh "$RUNNER_TEMP/tarama"
+      - name: Scan reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tarama
+          path: ${{ runner.temp }}/tarama
+          if-no-files-found: ignore
+          retention-days: 14
 
   docker:
     # Real PostgreSQL 18 + pgvector, Valkey, S3 and Mailpit from infra/docker-compose.dev.yml on the runner;
@@ -156,6 +177,10 @@ jobs:
           assert os.environ['KAZUIST_SOURCES_DIR'] == '/srv/docs/kaynaklar';
           assert len(n) > 0, 'registry empty'; assert not on, on;
           print('sources', len(n), 'all off by default')"
+      - name: worker-py image carries no optional ner extra (transformers, O-07)
+        run: >
+          docker run --rm kazuist-worker-py:ci python -c
+          "import importlib.util as u; assert u.find_spec('transformers') is None; print('no transformers')"
       - name: Runtime environment for app containers
         run: |
           set -a; . ./.env; set +a
@@ -163,10 +188,17 @@ jobs:
             echo "DATABASE_URL=postgres://kazuist:${POSTGRES_PASSWORD}@127.0.0.1:5432/kazuist"
             echo "VALKEY_URL=redis://127.0.0.1:6379"
             echo "BETTER_AUTH_SECRET=$(openssl rand -hex 32)"
-            echo "BETTER_AUTH_URL=http://127.0.0.1:3000"
+            echo "BETTER_AUTH_URL=http://localhost:3000"
             echo "BYOK_SIGNING_SECRET=$(openssl rand -hex 32)"
             echo "S3_ENDPOINT=http://127.0.0.1:9000"
             echo "S3_BUCKET=kazuist-ci"
+            # No reverse proxy in front of the container in CI: the client IP is x-real-ip.
+            echo "TRUSTED_PROXY_COUNT=0"
+            # Random placeholders against the iyzico sandbox so billing routes are configured; no real key.
+            echo "IYZICO_BASE_URL=https://sandbox-api.iyzipay.com"
+            echo "IYZICO_API_KEY=ci-$(openssl rand -hex 12)"
+            echo "IYZICO_SECRET_KEY=ci-$(openssl rand -hex 12)"
+            echo "IYZICO_MERCHANT_ID=ci"
           } > app.env
       - name: web /api/version commit and /api/health 200 with dependencies up
         run: |
@@ -233,6 +265,36 @@ jobs:
           set -a; . ./app.env; set +a
           KAZUIST_IT_DATABASE_URL="$DATABASE_URL" KAZUIST_IT_VALKEY_URL="$VALKEY_URL" \
             pnpm --filter @kazuist/web exec vitest run test/health-deps.test.ts
+      - name: Install Playwright suites (tests/e2e, tests/security)
+        run: |
+          pnpm --dir tests/e2e install --ignore-workspace --frozen-lockfile
+          pnpm --dir tests/security install --ignore-workspace --frozen-lockfile
+          pnpm --dir tests/e2e exec playwright install --with-deps chromium
+      - name: Security HTTP tests against the production image (tests/security)
+        run: |
+          set -a; . ./app.env; set +a
+          KAZUIST_SEC_BASE_URL=http://localhost:3000 KAZUIST_SEC_DATABASE_URL="$DATABASE_URL" \
+            pnpm --dir tests/security exec playwright test \
+            --grep-invert "kullanici \(signed in\)|JSON endpoints refuse oversized bodies"
+        # Open gate findings owned by other agents are excluded by test title (docs/kalite/dalga-1.md) so any
+        # new failure still blocks. K-01: signed-in endpoints answer 500 in the production build (kimlik);
+        # O-01: no form on /kayit and /giris; D-01: two main landmarks on /giris; O-05: internal links.
+        # Remove an entry when its fix lands. The header tests (Y-01) are not excluded.
+      - name: E2E smoke against the production image (tests/e2e)
+        if: success() || failure()
+        run: >
+          KAZUIST_E2E_BASE_URL=http://localhost:3000 pnpm --dir tests/e2e exec playwright test
+          --grep-invert "account UI flow|account API flow|exactly one main landmark|every same-origin link"
+      - name: Playwright reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-reports
+          path: |
+            tests/e2e/test-results
+            tests/security/test-results
+          if-no-files-found: ignore
+          retention-days: 14
       - name: Logs on failure
         if: failure()
         run: |
