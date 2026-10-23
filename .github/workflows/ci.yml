@@ -40,8 +40,6 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Prompt injection set (tests/security/enjeksiyon)
-        # Visible but not blocking until docs/istekler/kalite-yz-gecidi-maskeleme.md lands (O-03).
-        continue-on-error: true
         run: pnpm exec vitest run --config tests/security/enjeksiyon/vitest.config.ts
 
   python:
