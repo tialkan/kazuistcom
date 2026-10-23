@@ -31,4 +31,18 @@ yer tutucusu kalmamalı.
 
 ## Sonuç
 
-(hukuk-uyum dolduracak)
+hukuk-uyum, dal dalga-1/hukuk-uyum/kapi, 2026-10-22.
+
+- Künye işlendi: unvan, MERSİS 0591095454600001, Ankara Ticaret Sicili 550123, adres, iletişim
+  kulularteknoloji@gmail.com. Yer tutucu kalanlar (Tarık): content/hukuki/tr/uyari.md {{VERGI_DAIRESI}}, {{VKN}},
+  {{KEP}}, {{TELEFON}}; aynı alanlar en/notice.md, tr/on-bilgilendirme.md (KEP, TELEFON), tr/basvuru.md (KEP).
+- [DOĞRULANACAK]: 24'ten 7'ye indi. Birincil kaynakla kapananlar: Aydınlatma ve Başvuru Tebliğleri (RG 10/3/2018,
+  30356; Başvuru Tebliği m.5), 6502 m.48, 52, 68, 73, 73/A, Mesafeli Yön. m.12 (2022 değişikliği) ve m.20/1, TBK m.115,
+  FSEK m.31 ve ek m.8, Anthropic saklama süreleri, Gemini koşulları, oturum çerezi (bu isteğin 3. maddesi).
+  Varsayılan kararlarla kapananlar: yaş sınırı 18 ve yaş beyanı, abonelikte ilk dönem 14 gün tam iade, hesap silme
+  14 gün bekleme. Kalanlar (kaynağıyla): cerezler 2 (Kurum rehberi tarihi yalnız ikincil kaynakta; tercih çerezi
+  henüz uygulanmadı), gizlilik 1 (VUK ve TTK süreleri, mali müşavir), iade-ve-kredi 1 (2015 sonrası değişiklik
+  taraması), on-bilgilendirme 1 (Tüketici Bilgi Sistemi adresi), yapay-zeka 1 (AB YZ Tüzüğü, eur-lex yanıt vermedi),
+  topluluk 1 (YÖK Yönergesi resmî metni yok.gov.tr'de bulunamadı).
+- Tarık'a kalan kararlar: kosullar.md madde 10 değişiklik bildirim süresi (30 gün varsayılan); ADR-0024 yıllık iade
+  formülü.

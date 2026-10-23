@@ -6,8 +6,8 @@ Bu envanter `packages/db/src/schema` (contracts-v1) tablolarından ve `packages/
 uçlarından türetildi; şablondan değil. Kimlik, odeme ve yz-gecidi ajanlarının Dalga 1 uygulaması
 bitince satır satır yeniden doğrulanır. Bu belge uyum garantisi vermez.
 
-Veri sorumlusu: Kulular Bilişim Teknolojileri Ltd. Şti. MERSİS, adres ve KEP: [YER TUTUCU: ticaret
-sicilinden doğrulanacak, Tarık'tan].
+Veri sorumlusu: Kulular Bilişim Teknolojileri Ltd. Şti. MERSİS 0591095454600001, Ankara Ticaret Sicili 550123,
+Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara (onay 2026-10-20, docs/kararlar.md). KEP: [YER TUTUCU, Tarık'tan].
 
 ## Kaynaklar
 
@@ -30,7 +30,7 @@ sicilinden doğrulanacak, Tarık'tan].
 
 | # | Veri kategorisi | Alanlar (tablo.sütun) | Amaç | Hukuki sebep | Saklama süresi | Alıcı |
 |---|---|---|---|---|---|---|
-| 1 | Kimlik ve iletişim | users.email, users.name, users.image, users.email_verified | Hesap açma, giriş, hizmet bildirimleri | 5/2-c | Hesap süresince; silmede users.deleted_at sonrası [DOĞRULANACAK: kalıcı silme süresi, kimlik ajanından] | Barındırma (Türkiye), e-posta gönderim sağlayıcısı (bkz. aktarim.md) |
+| 1 | Kimlik ve iletişim | users.email, users.name, users.image, users.email_verified | Hesap açma, giriş, hizmet bildirimleri | 5/2-c | Hesap süresince; silme talebinden 14 gün sonra kalıcı silme (varsayılan karar; account.purge, ADR-0023) | Barındırma (Türkiye), e-posta gönderim sağlayıcısı (bkz. aktarim.md) |
 | 2 | Kimlik doğrulama | accounts (provider_id, account_id, access_token, refresh_token, id_token, password özeti), passkeys (public_key, credential_id, device_type, aaguid), verifications | Giriş güvenliği; Google ve Apple ile giriş | 5/2-c | Hesap süresince; verifications expires_at ile | Google, Apple (kullanıcı kendi seçerse, oturum açma sırasında) |
 | 3 | İşlem güvenliği | sessions.ip_address, sessions.user_agent, sessions.expires_at | Oturum yönetimi, kötüye kullanımı önleme, hız sınırı | 5/2-f ve 5/2-ç | [DOĞRULANACAK: oturum bitiminden sonra süre; 5651 sayılı Kanun kapsamı ve trafik bilgisi süresi teyit edilecek] | Barındırma (Türkiye) |
 | 4 | Eğitim bilgisi | edu_verifications.email, code_hash, verified_at; profiles.edu_verified | edu.tr doğrulamasıyla öğrenci hakkı | 5/2-c | Doğrulama yıllık yenilenir; kod expires_at ile | Yok |

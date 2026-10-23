@@ -18,6 +18,8 @@ export interface Harness {
   ctx: AuthContext;
   mailer: MemoryMailer;
   clock: { now: Date };
+  /** Account hook calls (odeme promo and deletion), in order. */
+  hookCalls: string[];
 }
 
 export async function createHarness(): Promise<Harness> {
@@ -27,9 +29,18 @@ export async function createHarness(): Promise<Harness> {
   const db = raw as unknown as Db;
   const mailer = new MemoryMailer();
   const clock = { now: new Date() };
+  const hookCalls: string[] = [];
   const ctx = createAuthContext({
     db,
     mailer,
+    hooks: {
+      onSignup: async (id) => {
+        hookCalls.push(`signup:${id}`);
+      },
+      onDeletion: async (id) => {
+        hookCalls.push(`deletion:${id}`);
+      },
+    },
     store: new MemoryRateLimitStore(() => clock.now.getTime()),
     now: () => clock.now,
     config: {
@@ -43,7 +54,7 @@ export async function createHarness(): Promise<Harness> {
     },
   });
   setAuthContext(ctx);
-  return { pg, db, ctx, mailer, clock };
+  return { pg, db, ctx, mailer, clock, hookCalls };
 }
 
 let ipSeq = 0;
@@ -74,6 +85,7 @@ export function api(path: string, token: string | null, init: RequestInit = {}):
   const headers = new Headers(init.headers);
   if (token) headers.set('authorization', `Bearer ${token}`);
   if (init.body) headers.set('content-type', 'application/json');
+  if (!headers.has('x-forwarded-for')) headers.set('x-forwarded-for', freshIp());
   return new Request(`${BASE}/api${path}`, { ...init, headers });
 }
 

@@ -28,9 +28,14 @@ const statuses: Record<ErrorCode, number> = {
 export const noStore = { 'Cache-Control': 'no-store' } as const;
 
 /** Error body per contract (components.schemas.Error); never includes internals. */
-export function apiError(code: ErrorCode, message?: string, headers: Record<string, string> = {}): Response {
+export function apiError(
+  code: ErrorCode,
+  message?: string,
+  headers: Record<string, string> = {},
+  requestId: string = randomUUID(),
+): Response {
   return Response.json(
-    { code, message: message ?? messages[code] ?? tr.hata.genel, requestId: randomUUID() },
+    { code, message: message ?? messages[code] ?? tr.hata.genel, requestId },
     { status: statuses[code], headers: { ...noStore, ...headers } },
   );
 }

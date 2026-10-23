@@ -4,12 +4,12 @@ slug: kaldirma
 route: /hukuki/kaldirma
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
 Dayanak: 5846 sayılı Fikir ve Sanat Eserleri Kanunu; KVKK m.11 ve m.13 (başvuru en geç otuz gün içinde
 ücretsiz sonuçlandırılır, m.13/2).
@@ -22,7 +22,7 @@ Dayanak: 5846 sayılı Fikir ve Sanat Eserleri Kanunu; KVKK m.11 ve m.13 (başvu
 
 ## 2. Nasıl
 
-Her karar ve paylaşım sayfasındaki "Kaldırma talebi" bağlantısı veya {{KALDIRMA_EPOSTA}}. Talepte: ilgili
+Her karar ve paylaşım sayfasındaki "Kaldırma talebi" bağlantısı veya kulularteknoloji@gmail.com. Talepte: ilgili
 sayfa bağlantısı, gerekçe, iletişim e-postası; telif talebinde hak sahipliğinize ilişkin bilgi.
 
 ## 3. Süreç ve süreler

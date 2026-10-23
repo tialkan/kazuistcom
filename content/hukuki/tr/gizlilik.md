@@ -4,13 +4,13 @@ slug: gizlilik
 route: /hukuki/gizlilik
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 alternate: /legal/privacy
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
 Bu politika, Kazuist'in kişisel verileri nasıl koruduğunu anlatır. Yasal bilgilendirme
 [aydınlatma metnindedir](/hukuki/aydinlatma); bu sayfa onu tamamlar.
@@ -31,8 +31,9 @@ işlemleri denetim kaydına yazılır. Kişisel veri ihlalinde ilgili kişilere 
 
 ## 3. Saklama ve silme
 
-Hesap verileri hesabınız açık olduğu sürece tutulur. Hesabınızı web veya iOS'tan silebilirsiniz. Mali
-kayıtlar ve onay kanıtları kanuni süreler boyunca saklanır [DOĞRULANACAK: süreler, docs/kvkk/envanter.md].
+Hesap verileri hesabınız açık olduğu sürece tutulur. Hesabınızı web veya iOS'tan silebilirsiniz; silme talebinden sonra 14 gün içinde vazgeçebilirsiniz, süre bitince hesap verileri silinir. Mali
+kayıtlar ve onay kanıtları kanuni süreler boyunca saklanır; örneğin mesafeli sözleşme kayıtları en az üç yıl (Mesafeli
+Sözleşmeler Yön. m.20/1). Mali kayıtların süresi [DOĞRULANACAK: VUK ve TTK saklama süreleri, mali müşavirle].
 Hesap silindiğinde onay ve denetim kayıtlarında kimliğiniz yerine tek yönlü özet kalır.
 
 Kullanılmamış satın alınmış krediniz varsa silme ekranında uyarı ve iade talebi seçeneği gösterilir.
@@ -52,7 +53,7 @@ nitelikli veriler genelleştirilir. Bir kararda sizinle ilgili bilgi gördüysen
 ## 6. Çocuklar
 
 Kazuist hukuk öğrencileri, akademisyenler ve meslek adayları için tasarlanmıştır; 18 yaşından küçüklere
-yönelik değildir [DOĞRULANACAK: yaş sınırı Tarık kararı].
+yönelik değildir; kayıtta 18 yaşını doldurduğunuzu beyan edersiniz.
 
 ## 7. Değişiklikler
 
@@ -60,4 +61,4 @@ Bu politika değişirse sürüm tarihi güncellenir; esaslı değişiklikler e-p
 
 ## 8. İletişim
 
-{{KVKK_EPOSTA}}. Künye: [Hukuki uyarı ve künye](/hukuki/uyari).
+kulularteknoloji@gmail.com. Künye: [Hukuki uyarı ve künye](/hukuki/uyari).

@@ -3,7 +3,7 @@
   "source": "https://kazuist.com/tr/hukuki/gizlilik",
   "lang": "tr",
   "title": "Gizlilik ve aydınlatma | Casuist",
-  "description": "Bu site bakımından veri sorumlusu Kulular Bilişim Teknolojileri Limited Şirketidir. Sorular kulularteknoloji@gmail.com adresine iletilebilir.",
+  "description": "Bu site bakımından veri sorumlusu Kulular Bilişim Teknolojileri Limited Şirketidir. Sorular teknoloji@kulular.com adresine iletilebilir.",
   "nav": [
     {
       "href": "/tr/sorun",
@@ -68,9 +68,9 @@
             [
               "a",
               {
-                "href": "mailto:kulularteknoloji@gmail.com"
+                "href": "mailto:teknoloji@kulular.com"
               },
-              "kulularteknoloji@gmail.com"
+              "teknoloji@kulular.com"
             ],
             " adresine iletilebilir."
           ]

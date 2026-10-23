@@ -4,20 +4,20 @@ slug: mesafeli-satis
 route: /hukuki/mesafeli-satis
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 consent_kind: mesafeli_sozlesme
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
-Dayanak: 6502 sayılı Tüketicinin Korunması Hakkında Kanun m.48 [DOĞRULANACAK: güncel metin] ve Mesafeli
+Dayanak: 6502 sayılı Tüketicinin Korunması Hakkında Kanun m.48 (güncel metin mevzuat.gov.tr'den okundu) ve Mesafeli
 Sözleşmeler Yönetmeliği (RG 27/11/2014, 29188).
 
 ## Madde 1. Taraflar
 
-Satıcı: Kulular Bilişim Teknolojileri Ltd. Şti. ("Kazuist"), MERSİS {{MERSIS}}, {{ADRES}}, {{DESTEK_EPOSTA}}.
+Satıcı: Kulular Bilişim Teknolojileri Ltd. Şti. ("Kazuist"), MERSİS 0591095454600001, Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara, kulularteknoloji@gmail.com.
 Alıcı: {{ALICI_AD}}, {{ALICI_EPOSTA}} ("Kullanıcı").
 
 ## Madde 2. Konu
@@ -50,7 +50,7 @@ Hizmeti tanıtıldığı şekilde sunmak; teknik hata nedeniyle tamamlanmayan ve
 
 ## Madde 7. Kullanıcının yükümlülükleri
 
-[Kullanım koşullarına](/hukuki/kosullar) uymak; hesabını başkasına kullandırmamak.
+[Kullanım koşullarına](https://kazuist.com/hukuki/kosullar) uymak; hesabını başkasına kullandırmamak.
 
 ## Madde 8. Ters ibraz
 
@@ -63,5 +63,5 @@ Tüketici hakem heyetleri ve tüketici mahkemeleri yetkilidir (ön bilgilendirme
 ## Madde 10. Yürürlük
 
 Kullanıcı, ön bilgilendirme formunu ve bu sözleşmeyi elektronik ortamda onaylamıştır. Sözleşme onay anında
-kurulur; bir kopyası PDF olarak e-posta adresine gönderilir ve Kazuist tarafından saklanır
-[DOĞRULANACAK: Mesafeli Sözleşmeler Yön. kayıt saklama süresi].
+kurulur; bir kopyası PDF olarak e-posta adresine gönderilir ve Kazuist tarafından en az
+üç yıl saklanır (Mesafeli Sözleşmeler Yön. m.20/1).

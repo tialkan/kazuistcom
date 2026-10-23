@@ -4,12 +4,12 @@ slug: topluluk
 route: /hukuki/topluluk
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
 Turkuaz Kampüs, hukuk öğrencileri ve akademisyenlerin çalışmalarını paylaştığı bir alandır.
 

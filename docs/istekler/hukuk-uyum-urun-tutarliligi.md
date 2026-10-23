@@ -35,3 +35,9 @@ sahiplerine: 1 orkestra (plan atıfları), 2 odeme ve Tarık (abonelikte cayma),
 Dosyalar: docs/istekler/mimar-yonlendirme-<ajan>.md.
 
 Sözleşme v1.1; ADR'ler Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md.
+11. Gemini AEA, İsviçre ve Birleşik Krallık (yz-gecidi, Tarık): Gemini API Additional Terms (son güncelleme
+    28 Nisan 2026) bu bölgelerdeki kullanıcılara sunulan uygulamalarda yalnız ücretli hizmetin kullanılmasını
+    istiyor. Kazuist'in BYOK istemcisi bu bölgelerden kullanılırsa ücretsiz katman anahtarının kabul edilmemesi
+    değerlendirilmeli.
+12. Yıllık plan iade formülü (odeme, Tarık): Abonelik Yön. m.16 uygulanmadığı için liste fiyatıyla mahsup m.25
+    "kesintisiz iade" karşısında riskli (ADR-0024 taslağı).

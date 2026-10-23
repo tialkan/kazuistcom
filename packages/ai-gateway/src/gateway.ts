@@ -6,7 +6,7 @@ import { reservationErrorCode, type CostEvent, type LedgerReservations } from '.
 import { sanitizeMetric, type MetricSink } from './observe.ts';
 import { restore, scrub, type NameRecognizer } from './pii.ts';
 import { SOURCED_SUMMARY_SYSTEM, buildSourcedPrompt, type Passage } from './prompt.ts';
-import { ROUTES, costUsd, estimateTokens } from './routing.ts';
+import { ROUTES, costUsd, estimateTokens, platformModel } from './routing.ts';
 import {
   ProviderError,
   type GatewayMode,
@@ -24,8 +24,8 @@ export interface ByokRelay {
   /** Lives only in this request object; never stored, logged or put into errors. */
   apiKey: string;
   openRouter?: OpenRouterOptions;
+  /** Only 'ucretli' (declared paid billing) opens Gemini BYOK. */
   geminiBilling?: GeminiBilling;
-  geminiOptIn?: boolean;
 }
 
 export interface RunInput {
@@ -78,10 +78,7 @@ export interface GatewayDeps {
 
 export function createGateway(deps: GatewayDeps) {
   const now = deps.now ?? Date.now;
-  const modelFor =
-    deps.platformModelFor ??
-    ((p: ByokProvider, m: string) =>
-      p === 'openrouter' ? `anthropic/${m.replace(/-(\d+)-(\d+)$/, '-$1.$2')}` : m);
+  const modelFor = deps.platformModelFor ?? platformModel;
 
   async function* run(input: RunInput): AsyncGenerator<GatewayEvent> {
     const route = ROUTES[input.operation];
@@ -89,12 +86,8 @@ export function createGateway(deps: GatewayDeps) {
     if (input.mode === 'byok_aktarma' && !input.byok)
       throw new GatewayError('bad_request', 400, 'byok required');
     if (input.byok?.provider === 'gemini') {
-      const d = geminiPolicy(
-        input.byok.geminiBilling ?? 'bilinmiyor',
-        input.content ?? 'kamu_kaynak',
-        input.byok.geminiOptIn,
-      );
-      if (!d.allowed) throw new GatewayError('forbidden', 403, 'gemini free tier blocks this content');
+      const d = geminiPolicy(input.byok.geminiBilling ?? 'bilinmiyor');
+      if (!d.allowed) throw new GatewayError('forbidden', 403, 'gemini byok requires paid billing');
     }
 
     // plan 8.5: scrub question and passages together so labels are consistent.
@@ -132,7 +125,7 @@ export function createGateway(deps: GatewayDeps) {
       }
     }
 
-    let provider: ByokProvider = input.byok?.provider ?? 'anthropic';
+    let provider: ByokProvider = input.byok?.provider ?? 'openrouter';
     let model = input.byok?.model ?? route.model;
     let inputTokens = 0;
     let outputTokens = 0;
@@ -147,7 +140,10 @@ export function createGateway(deps: GatewayDeps) {
         platform
           ? deps.switches.candidates().flatMap((p) => {
               const key = deps.platformKeys[p];
-              return key ? [{ provider: p, model: modelFor(p, route.model), key }] : [];
+              if (!key) return [];
+              // ADR-0025: every platform OpenRouter call denies data collection and requires ZDR.
+              const or: OpenRouterOptions | undefined = p === 'openrouter' ? { zdr: true } : undefined;
+              return [{ provider: p, model: modelFor(p, route.model), key, ...(or ? { or } : {}) }];
             })
           : input.byok && deps.switches.isEnabled(input.byok.provider)
             ? [

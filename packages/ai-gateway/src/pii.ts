@@ -20,7 +20,11 @@ export interface ScrubResult {
   counts: Record<string, number>;
 }
 
-export function isValidTckn(s: string): boolean {
+/** Separators people type inside numbers: whitespace (incl. line breaks), dot, dash. */
+const stripSeparators = (s: string): string => s.replace(/[\s.-]/g, '');
+
+export function isValidTckn(raw: string): boolean {
+  const s = stripSeparators(raw);
   if (!/^[1-9]\d{10}$/.test(s)) return false;
   const d = [...s].map(Number) as number[];
   const at = (i: number): number => d[i] ?? 0;
@@ -33,7 +37,7 @@ export function isValidTckn(s: string): boolean {
 }
 
 export function isValidIban(raw: string): boolean {
-  const s = raw.replace(/\s+/g, '').toUpperCase();
+  const s = stripSeparators(raw).toUpperCase();
   if (!/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(s)) return false;
   if (s.startsWith('TR') && s.length !== 26) return false;
   const moved = s.slice(4) + s.slice(0, 4);
@@ -46,7 +50,7 @@ export function isValidIban(raw: string): boolean {
 }
 
 export function isValidLuhn(raw: string): boolean {
-  const s = raw.replace(/[\s-]/g, '');
+  const s = stripSeparators(raw);
   if (!/^\d{13,19}$/.test(s)) return false;
   let sum = 0;
   let dbl = false;
@@ -72,6 +76,8 @@ interface Rule {
 
 const B = '(?<![\\p{L}\\p{N}])';
 const E = '(?![\\p{L}\\p{N}])';
+/** At most one separator between digit groups (quality gate O-03); checksums guard false positives. */
+const S = '(?:[ \\t.\\-]|\\r?\\n)?';
 
 // Order matters: longer and checksummed identifiers first.
 const RULES: Rule[] = [
@@ -85,34 +91,34 @@ const RULES: Rule[] = [
     kind: 'iban',
     label: 'IBAN',
     numbered: true,
-    re: new RegExp(`${B}[A-Z]{2}\\d{2}(?: ?[A-Z0-9]{4}){3,7}(?: ?[A-Z0-9]{1,4})?${E}`, 'gu'),
+    re: new RegExp(`${B}[A-Za-z]{2}\\d{2}(?:${S}[A-Za-z0-9]{4}){3,7}(?:${S}[A-Za-z0-9]{1,4})?${E}`, 'gu'),
     check: isValidIban,
   },
   {
     kind: 'kart',
     label: 'KART',
     numbered: true,
-    re: new RegExp(`${B}\\d{4}(?:[ -]?\\d{4}){2}[ -]?\\d{1,7}${E}`, 'gu'),
+    re: new RegExp(`${B}\\d{4}(?:${S}\\d{4}){2}${S}\\d{1,7}${E}`, 'gu'),
     check: isValidLuhn,
   },
   {
     kind: 'tckn',
     label: 'KİMLİK NO',
     numbered: true,
-    re: new RegExp(`${B}[1-9]\\d{10}${E}`, 'gu'),
+    re: new RegExp(`${B}[1-9](?:${S}\\d){10}${E}`, 'gu'),
     check: isValidTckn,
   },
   {
     kind: 'telefon',
     label: 'TELEFON',
     numbered: true,
-    re: new RegExp(`${B}(?:\\+90[ -]?|0)?\\(?5\\d{2}\\)?[ -]?\\d{3}[ -]?\\d{2}[ -]?\\d{2}${E}`, 'gu'),
+    re: new RegExp(`${B}(?:\\+90${S}|0)?\\(?5\\d{2}\\)?${S}\\d{3}${S}\\d{2}${S}\\d{2}${E}`, 'gu'),
   },
   {
     kind: 'telefon',
     label: 'TELEFON',
     numbered: true,
-    re: new RegExp(`${B}(?:\\+90[ -]?|0)\\(?[2-4]\\d{2}\\)?[ -]?\\d{3}[ -]?\\d{2}[ -]?\\d{2}${E}`, 'gu'),
+    re: new RegExp(`${B}(?:\\+90${S}|0)\\(?[2-4]\\d{2}\\)?${S}\\d{3}${S}\\d{2}${S}\\d{2}${E}`, 'gu'),
   },
   {
     kind: 'plaka',

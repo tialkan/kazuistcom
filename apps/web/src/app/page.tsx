@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ortak } from '@kazuist/i18n';
 import { Dugme, FormAlani, KaynakCipi, SerhliMetin, SerhSatiri } from '@kazuist/ui';
+import { ModulBagi } from './(kabuk)/_kabuk/ModulBagi.tsx';
+import { OrnekSoru } from './(kabuk)/_kabuk/OrnekSoru.tsx';
+import { modulAcik } from './(kabuk)/_kabuk/rotalar.ts';
 
 const t = ortak('tr');
 const a = t.anasayfa;
@@ -39,7 +42,7 @@ export default function Home() {
           <ul className="ana-ornekler">
             {ornekler.map((s) => (
               <li key={s}>
-                <Link href={{ pathname: '/ara', query: { q: s } }}>{s}</Link>
+                <OrnekSoru soru={s} araAcik={modulAcik('/ara')} />
               </li>
             ))}
           </ul>
@@ -56,7 +59,7 @@ export default function Home() {
           <p className="ana-serh__not">{a.serhOrnekNotu}</p>
           <SerhliMetin>
             <SerhSatiri
-              serhEtiketi={a.serhKaynak}
+              serhEtiketi={`${a.serhKaynak} 1`}
               serh={
                 <KaynakCipi
                   no={1}
@@ -69,7 +72,7 @@ export default function Home() {
               <p>{a.serhOrnek1}</p>
             </SerhSatiri>
             <SerhSatiri
-              serhEtiketi={a.serhKaynak}
+              serhEtiketi={`${a.serhKaynak} 2`}
               serh={
                 <>
                   <KaynakCipi
@@ -106,7 +109,7 @@ export default function Home() {
           ).map(([href, ad, metin]) => (
             <div key={href}>
               <dt>
-                <Link href={href}>{ad}</Link>
+                <ModulBagi href={href}>{ad}</ModulBagi>
               </dt>
               <dd>{metin}</dd>
             </div>
@@ -118,7 +121,7 @@ export default function Home() {
         <div className="sayfa">
           <h2 id="kampus-baslik">{a.kampusBaslik}</h2>
           <p>{a.kampusMetin}</p>
-          <Link href="/kampus">{a.kampusBag}</Link>
+          <ModulBagi href="/kampus">{a.kampusBag}</ModulBagi>
         </div>
       </section>
     </>

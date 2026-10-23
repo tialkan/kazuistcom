@@ -4,25 +4,26 @@ slug: cerezler
 route: /hukuki/cerezler
 lang: tr
 binding: true
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 consent_kind: acik_riza_analitik
 alternate: /legal/cookies
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 19 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
 
 Dayanak: KVKK ve Kişisel Verileri Koruma Kurumu'nun çerez uygulamalarına ilişkin rehberi
-[DOĞRULANACAK: rehberin adı ve yayım tarihi, kvkk.gov.tr].
+"Çerez Uygulamaları Hakkında Rehber" [DOĞRULANACAK: yayım 20/6/2022 ve sonraki güncelleme tarihi
+ikincil kaynaklardan; kvkk.gov.tr'deki güncel sürümle karşılaştırılacak].
 
 ## 1. Kullandığımız çerezler
 
 | Tür | Ne işe yarar | Süre | İzin |
 |---|---|---|---|
-| Zorunlu: oturum çerezi | Girişinizi korur | Oturum süresi [DOĞRULANACAK: kimlik ajanından] | Gerekmez |
-| Zorunlu: güvenlik ve tercih | Çerez tercihinizi, dil seçiminizi hatırlar | [DOĞRULANACAK] | Gerekmez |
-| Analitik (Umami, kendi sunucumuzda) | Hangi sayfaların kullanıldığını kişisel veri tutmadan ölçer | [DOĞRULANACAK: Umami yapılandırması] | Açık rızanız gerekir |
+| Zorunlu: oturum çerezi (kazuist.session_token; üretimde __Secure- ön ekli; HttpOnly, Secure, SameSite=Lax) | Girişinizi korur | 30 gün | Gerekmez |
+| Zorunlu: tercih | Çerez tercihinizi hatırlar | [DOĞRULANACAK: tercih kaydı henüz uygulanmadı; on-yuz ajanı uygularken süre yazılır] | Gerekmez |
+| Analitik (Umami, kendi sunucumuzda) | Hangi sayfaların kullanıldığını kişisel veri tutmadan ölçer | Analitik henüz etkin değildir; etkinleştirilmeden önce bu satır yapılandırmadan güncellenir | Açık rızanız gerekir |
 
 Reklam ve üçüncü taraf izleme çerezi kullanılmaz.
 

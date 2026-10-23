@@ -4,13 +4,13 @@ slug: cookies
 route: /legal/cookies
 lang: en
 binding: false
-version: 2026-10-19.1
-date: 2026-10-19
+version: 2026-10-22.1
+date: 2026-10-22
 status: taslak
 alternate: /hukuki/cerezler
 ---
 
-> TASLAK, Tarık onayı bekliyor. Version date: 19 October 2026.
+> TASLAK, Tarık onayı bekliyor. Version date: 22 October 2026.
 > This English text is for information only. The binding version is Turkish: [Çerez politikası](/hukuki/cerezler).
 
 - Necessary cookies: the session cookie (HttpOnly, Secure, SameSite=Lax) and your cookie and language choice. No consent needed.
