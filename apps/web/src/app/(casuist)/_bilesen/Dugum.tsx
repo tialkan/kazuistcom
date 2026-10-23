@@ -117,6 +117,8 @@ export function DugumGoster({ dugum, metin }: { dugum: Dugum; metin: DugumMetinl
   const kids = cocuklar.map((c, i) => <DugumGoster key={i} dugum={c} metin={metin} />);
   if (etiket === 'img') return <Gorsel oz={oz} metin={metin} />;
   if (!izinli.has(etiket)) return <>{kids}</>;
+  // An empty header cell (corner of a comparison table) is a data cell, not a nameless header.
+  if (etiket === 'th' && cocuklar.length === 0) return <td />;
   // An icon-only link of the old site lost its icon; without text it would be an unnamed link.
   if (etiket === 'a' && cocuklar.length === 0) return null;
   const props: Record<string, unknown> = {};

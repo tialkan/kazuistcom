@@ -4,13 +4,13 @@ slug: gizlilik
 route: /hukuki/gizlilik
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 alternate: /legal/privacy
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
 
 Bu politika, Kazuist'in kişisel verileri nasıl koruduğunu anlatır. Yasal bilgilendirme
 [aydınlatma metnindedir](/hukuki/aydinlatma); bu sayfa onu tamamlar.
@@ -20,7 +20,7 @@ Bu politika, Kazuist'in kişisel verileri nasıl koruduğunu anlatır. Yasal bil
 - Verileriniz Türkiye'deki sunucularda tutulur; veri tabanı, dosya deposu ve yedekler Türkiye'dedir.
 - Reklam yoktur; verileriniz satılmaz ve reklam amacıyla paylaşılmaz.
 - Üçüncü taraf izleme betiği kullanılmaz. Analitik yalnız onayınızla ve kendi sunucumuzda çalışır.
-- Yapay zekâ sağlayıcısına yalnız anonim veya maskelenmiş metin gider; içerik kayıtlara (log) yazılmaz,
+- Yapay zekâ sağlayıcısına (platform modunda OpenRouter, sıfır veri saklama koşuluyla) yalnız anonim veya maskelenmiş metin gider; içerik kayıtlara (log) yazılmaz,
   yalnız işlem türü, model, token sayısı, süre ve maliyet gibi meta veri tutulur.
 
 ## 2. Güvenlik
@@ -61,4 +61,4 @@ Bu politika değişirse sürüm tarihi güncellenir; esaslı değişiklikler e-p
 
 ## 8. İletişim
 
-kulularteknoloji@gmail.com. Künye: [Hukuki uyarı ve künye](/hukuki/uyari).
+teknoloji@kulular.com. Künye: [Hukuki uyarı ve künye](/hukuki/uyari).

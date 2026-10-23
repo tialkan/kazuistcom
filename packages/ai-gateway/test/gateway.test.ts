@@ -162,19 +162,38 @@ describe('gateway BYOK relay mode', () => {
     expect(JSON.stringify(metrics) + JSON.stringify(costs)).not.toContain(key);
   });
 
-  it('blocks Gemini free tier for unpublished drafts', async () => {
-    const { gw } = setup({ gemini: fakeAdapter('gemini', OK) });
-    await expect(
-      collect(
-        gw.run(
-          base({
-            mode: 'byok_aktarma',
-            content: 'yayimlanmamis_taslak',
-            byok: { provider: 'gemini', model: 'g', apiKey: 'k' },
-          }),
+  it('closes Gemini BYOK without a paid billing declaration, even for public sources', async () => {
+    const g = fakeAdapter('gemini', OK);
+    const { gw } = setup({ gemini: g });
+    for (const geminiBilling of [undefined, 'ucretsiz', 'bilinmiyor'] as const) {
+      await expect(
+        collect(
+          gw.run(
+            base({
+              mode: 'byok_aktarma',
+              content: 'kamu_kaynak',
+              byok: {
+                provider: 'gemini',
+                model: 'g',
+                apiKey: 'k',
+                ...(geminiBilling ? { geminiBilling } : {}),
+              },
+            }),
+          ),
         ),
+      ).rejects.toMatchObject({ status: 403 });
+    }
+    expect(g.calls).toHaveLength(0);
+    await collect(
+      gw.run(
+        base({
+          mode: 'byok_aktarma',
+          content: 'yayimlanmamis_taslak',
+          byok: { provider: 'gemini', model: 'g', apiKey: 'k', geminiBilling: 'ucretli' },
+        }),
       ),
-    ).rejects.toMatchObject({ status: 403 });
+    );
+    expect(g.calls).toHaveLength(1);
   });
 });
 

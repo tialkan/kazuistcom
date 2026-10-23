@@ -4,19 +4,19 @@ slug: privacy
 route: /legal/privacy
 lang: en
 binding: false
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 alternate: /hukuki/aydinlatma
 ---
 
-> TASLAK, Tarık onayı bekliyor. Version date: 22 October 2026.
+> TASLAK, Tarık onayı bekliyor. Version date: 23 October 2026.
 > This English text is for information only. The binding version is Turkish:
 > [Aydınlatma metni](/hukuki/aydinlatma) and [Gizlilik politikası](/hukuki/gizlilik).
 
 ## Data controller
 
-Kulular Bilişim Teknolojileri Ltd. Şti. MERSİS: 0591095454600001. Address: Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara. Contact: kulularteknoloji@gmail.com.
+Kulular Bilişim Teknolojileri Ltd. Şti. MERSİS: 0591095454600001. Address: Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara. Contact: teknoloji@kulular.com.
 
 ## What we process and why
 
@@ -32,7 +32,7 @@ collected by the payment institution iyzico.
 Application, database, file storage and backups are in Türkiye. Recipients: hosting providers in Türkiye,
 iyzico, the e-invoice integrator, our accountant, competent public authorities, the email delivery provider,
 Apple for iOS purchases, and Google or Apple if you sign in with them. AI providers receive only masked text
-in platform mode; with your own key (BYOK) the request goes from your device to the provider you chose.
+in platform mode, routed through OpenRouter with zero data retention; with your own key (BYOK) the request goes from your device to the provider you chose.
 
 ## Court decisions
 

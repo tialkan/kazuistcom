@@ -2,6 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ortak } from '@kazuist/i18n';
 import { kunye } from './kunye.ts';
+import { ModulBagi } from './ModulBagi.tsx';
 import { ModulGezinmesi } from './ModulGezinmesi.tsx';
 import { hukukiBelgeler, moduller } from './rotalar.ts';
 import './kabuk.css';
@@ -24,7 +25,7 @@ export function Kabuk({ children }: { children: ReactNode }) {
             <Link href="/fiyatlar">{t.gezinme.fiyatlar}</Link>
             <Link href="/tr">{t.gezinme.arge}</Link>
           </nav>
-          <Link href="/hesap/hedef" className="kabuk-hedefim" title={t.hedefim.aciklama}>
+          <Link href="/hesap" className="kabuk-hedefim" title={t.hedefim.aciklama}>
             <span className="kabuk-hedefim__avatar" aria-hidden="true" />
             <span className="kabuk-hedefim__metin">
               <span className="kabuk-hedefim__etiket">{t.hedefim.etiket}</span>
@@ -50,7 +51,7 @@ export function Kabuk({ children }: { children: ReactNode }) {
             <ul>
               {moduller.map((m) => (
                 <li key={m.href}>
-                  <Link href={m.href}>{t.gezinme.sekme[m.anahtar]}</Link>
+                  <ModulBagi href={m.href}>{t.gezinme.sekme[m.anahtar]}</ModulBagi>
                 </li>
               ))}
               <li>
@@ -93,6 +94,10 @@ export function Kabuk({ children }: { children: ReactNode }) {
               <dt>{t.altBilgi.eposta}</dt>
               <dd>
                 <a href={`mailto:${kunye.eposta}`}>{kunye.eposta}</a>
+              </dd>
+              <dt>{t.altBilgi.telefon}</dt>
+              <dd>
+                <a href={`tel:${kunye.telefon.replace(/\s/g, '')}`}>{kunye.telefon}</a>
               </dd>
             </dl>
           </div>

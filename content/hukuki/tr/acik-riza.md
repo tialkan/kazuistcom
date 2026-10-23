@@ -4,12 +4,12 @@ slug: acik-riza
 route: /hukuki/acik-riza
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
 
 Açık rıza yalnız gereken yerde istenir (plan 11). Her biri ayrı onay kutusudur, önceden işaretli gelmez,
 hizmetin şartı yapılmaz ve dilediğiniz an geri alınabilir. Onaylar sürümüyle consents tablosuna yazılır.
@@ -35,13 +35,15 @@ geçer, anahtarım ve içerik saklanmaz ve kayda yazılmaz. Metin, seçtiğim sa
 Not: Bu onay, maskeleme sonrası metnin kişisel veri taşımaması hedeflendiği için bir bilgilendirme teyidi olarak
 kurulmuştur; yurt dışına kişisel veri aktarımının dayanağı yapılmaz (docs/kvkk/aktarim.md).
 
-## 4. Gemini ücretsiz katmanında yayımlanmamış içerik gönderme
+## 4. Gemini anahtarı: ücretli faturalandırma beyanı
 
-"Gemini anahtarımın ücretsiz katmanda olduğunu veya bunu bilmediğimi biliyorum. Google'ın koşullarına göre
-ücretsiz katmanda gönderilen içerik ve cevaplar ürün geliştirmede kullanılabilir ve insan incelemesine
-girebilir. Yayımlanmamış taslağımı veya Kampüs dosyamı yine de bu sağlayıcıya göndermek istiyorum."
+Gemini anahtarı yalnız bu beyanla kabul edilir; ücretsiz katman anahtarı kullanılamaz (2026-10-23 kararı).
 
-Bu onay için şemada ayrı bir consent_kind değeri yoktur (istek: docs/istekler/hukuk-uyum-consent-turleri.md).
+"Girdiğim Gemini API anahtarının Google hesabımda ücretli faturalandırmaya bağlı olduğunu beyan ederim. Beyanım
+doğru değilse içeriğimin Google'ın ücretsiz katman koşullarına tabi olabileceğini biliyorum."
+
+Bu beyan bir açık rıza değil, bilgilendirme teyididir; consents tablosunda yz_ucretsiz_katman türüyle
+kaydedilir (sözleşme v1.1, ADR-0023).
 
 ## 5. 2.0: ilgi alanı analizi
 

@@ -4,20 +4,20 @@ slug: mesafeli-satis
 route: /hukuki/mesafeli-satis
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 consent_kind: mesafeli_sozlesme
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
 
 Dayanak: 6502 sayılı Tüketicinin Korunması Hakkında Kanun m.48 (güncel metin mevzuat.gov.tr'den okundu) ve Mesafeli
 Sözleşmeler Yönetmeliği (RG 27/11/2014, 29188).
 
 ## Madde 1. Taraflar
 
-Satıcı: Kulular Bilişim Teknolojileri Ltd. Şti. ("Kazuist"), MERSİS 0591095454600001, Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara, kulularteknoloji@gmail.com.
+Satıcı: Kulular Bilişim Teknolojileri Ltd. Şti. ("Kazuist"), MERSİS 0591095454600001, Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara, teknoloji@kulular.com.
 Alıcı: {{ALICI_AD}}, {{ALICI_EPOSTA}} ("Kullanıcı").
 
 ## Madde 2. Konu

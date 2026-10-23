@@ -46,7 +46,8 @@ describe('/fiyatlar matches plan.md 4.2-4.4 (approved 2026-10-20)', () => {
 describe('company particulars', () => {
   it('are approved and match the archived /tr/hakkinda page', () => {
     expect(kunye.dogrulandi).toBe(true);
-    expect(kunye.eposta).toBe('kulularteknoloji@gmail.com');
+    expect(kunye.eposta).toBe('teknoloji@kulular.com');
+    expect(kunye.telefon).toBe('+90 505 781 48 46');
     const arsiv = readFileSync(kok('docs/tasarim/casuist-arsiv/tr_hakkinda.html'), 'utf8');
     for (const v of [kunye.tamUnvan, kunye.mersis, '550123', 'Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16']) {
       expect(arsiv, v).toContain(v);

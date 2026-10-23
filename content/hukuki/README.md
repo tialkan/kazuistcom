@@ -14,7 +14,7 @@ slug: aydinlatma            # rota parçası
 route: /hukuki/aydinlatma   # yayın yolu
 lang: tr                    # tr veya en
 binding: true               # Türkçe sürüm bağlayıcıdır; en dosyalarında false
-version: 2026-10-22.1       # sürüm; consents.version alanına yazılan değer
+version: 2026-10-23.1       # sürüm; consents.version alanına yazılan değer
 date: 2026-10-19            # sürüm tarihi
 status: taslak              # taslak veya yayinda; taslak durumundaki sayfa yayımlanmaz
 consent_kind: aydinlatma    # varsa packages/db consent_kind değeri
@@ -37,7 +37,7 @@ Sözleşmeleri Yön. m.5). Yapı kuralları:
   - tr/on-bilgilendirme.md: AYLIK_KREDI, INDIRIM, IOS_SURUM, KREDI, ODEME_DONEMI, TUTAR_TL, URUN_ACIKLAMASI, URUN_ADI, URUN_TURU
   - tr/mesafeli-satis.md: ALICI_AD, ALICI_EPOSTA, SIPARIS_TARIHI, TUTAR_TL, URUN_ADI
   - tr/abonelik.md: ALICI_AD, ALICI_EPOSTA, AYLIK_INDIRIM_TL, AYLIK_KREDI, AYLIK_LISTE_FIYATI_TL, DONEM_BASLANGIC, DONEM_BITIS, ODEME_DONEMI, PLAN_ADI, SOZLESME_TARIHI, TUTAR_TL, YILLIK_TUTAR_TL
-  Şirket alanlarından henüz bilinmeyenler ({{KEP}}, {{TELEFON}}) yayın kapısında kapanır.
+  Şirket alanlarından henüz bilinmeyenler ({{KEP}}) yayın kapısında kapanır.
 - Bağlantılar tam adresle (https://kazuist.com/...) yazılır; PDF'te tıklanmadan okunabilir.
 - Ön bilgiden sonraki ilk alıntı bloğu (TASLAK notu) ve on-bilgilendirme'deki "Gösterim kuralları" paragrafı
   PDF'e girmez; PDF'in başına metin sürümü (version) ve sipariş kimliği yazılır, consents kaydıyla eşleşir.

@@ -4,13 +4,13 @@ slug: abonelik
 route: /hukuki/abonelik
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 consent_kind: mesafeli_sozlesme
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
 
 Dayanak: 6502 sayılı Kanun m.52 (güncel metin mevzuat.gov.tr'den okundu; sözleşmenin bir nüshası kâğıtta veya kalıcı veri saklayıcısıyla verilir) ve Abonelik Sözleşmeleri Yönetmeliği
 (RG 24/1/2015, 29246). Yönetmelik m.2/2 uyarınca bu tür aboneliklere m.5, 6, 7, 8, 13, 22, 23, 24 ve 25
@@ -20,7 +20,7 @@ mesafeli satış sözleşmesi de onaylanır.
 
 ## Madde 1. Taraflar
 
-Hizmet sağlayıcı: Kulular Bilişim Teknolojileri Ltd. Şti., MERSİS 0591095454600001, Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara, kulularteknoloji@gmail.com.
+Hizmet sağlayıcı: Kulular Bilişim Teknolojileri Ltd. Şti., MERSİS 0591095454600001, Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara, teknoloji@kulular.com.
 Abone: {{ALICI_AD}}, {{ALICI_EPOSTA}}.
 
 ## Madde 2. Konu ve süre
@@ -71,8 +71,8 @@ Bu taahhütname sözleşmenin ayrılmaz parçasıdır.
 | Yıllık toplam bedel (KDV dahil) | {{YILLIK_TUTAR_TL}} TL |
 | Taahhütsüz (aylık) liste fiyatı | {{AYLIK_LISTE_FIYATI_TL}} TL/ay |
 | Aylık karşılığı indirim | {{AYLIK_INDIRIM_TL}} TL |
-| Erken fesihte iade formülü | İade = yıllık bedel eksi (yüklemesi yapılmış ay sayısı x aylık liste fiyatı); sıfırın altına inmez. Ek bedel istenmez |
-| Örnek | Öğrenci Plus yıllık 799 TL, aylık liste fiyatı 99 TL; 3 ay yüklemesi yapılmışken hemen fesihte iade = 799 - (3 x 99) = 502 TL |
+| Erken fesihte iade formülü | İade = ödenen yıllık bedel x (yüklemesi yapılmamış ay sayısı / 12); yıllık bedel aylara eşit bölünür, indirim geri alınmaz. Ek bedel istenmez |
+| Örnek | Öğrenci Plus yıllık 799 TL; 3 ay yüklemesi yapılmışken hemen fesihte iade = 799 x 9 / 12 = 599,25 TL |
 | İade süresi | Fesihten itibaren 15 gün |
 
 Taahhütlü fiyat, taahhütsüz fiyatın üzerinde değildir.

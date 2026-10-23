@@ -35,3 +35,23 @@ DNS kaydı oluşturma için ayrı ve geçici bir `DNS Edit` token'ı gerekir; o,
 - MX, SPF, DKIM, DMARC ve e-posta alt alanları (`mail`, `autoconfig`, `autodiscover`) değiştirilmez; DNS only kalır.
 - `staging` ve uygulama kayıtları DNS only (K-04).
 - Geri dönüş: yedekteki önceki değerler elle yazılır (`geri-alma.md`).
+
+## Token olmadan: panelden elle (Tarık)
+
+Cloudflare API token'ı şimdilik yok; aynı yedek ve staging kaydı panelden şöyle yapılır.
+
+### DNS yedeği
+
+1. https://dash.cloudflare.com adresine girin, hesabı ve `kazuist.com` bölgesini seçin.
+2. Sol menü DNS > Records.
+3. Kayıt listesinin üstündeki "Import and Export" düğmesi > Export. İnen BIND dosyasını
+   `docs/runbook/dns-yedek-<YYYY-AA-GG>.zone` adıyla bana iletin (kayıtlar gizli değildir).
+4. Aynı sayfanın ekran görüntüsünü (Proxy status sütunu görünür olacak şekilde) ekleyin; dosyada proxied bilgisi yoktur.
+
+### staging kaydı (VPS-1 IP'si belli olunca, onayınızla)
+
+1. DNS > Records > Add record.
+2. Type `A`, Name `staging`, IPv4 address `<VPS-1 IP>`, Proxy status kapalı (gri bulut, "DNS only"), TTL Auto.
+3. Save. MX, SPF, DKIM, DMARC ve e-posta kayıtlarına dokunmayın.
+4. Doğrulama (ajan yapar): `dig +short staging.kazuist.com @1.1.1.1` VPS-1 IP'sini döndürmeli.
+5. Geri alma: aynı kaydı Delete; önceki durum yedek dosyasındadır.
