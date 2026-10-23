@@ -4,13 +4,13 @@ slug: erisilebilirlik
 route: /hukuki/erisilebilirlik
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 alternate: /legal/accessibility
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026. Mevcut sayfanın güncellenmiş hâlidir.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026. Mevcut sayfanın güncellenmiş hâlidir.
 
 ## Hedef
 
@@ -36,5 +36,5 @@ gelmeden "tam uygun" ifadesiyle yayımlanmaz.
 
 ## Geri bildirim
 
-Erişilebilirlik sorunlarını kulularteknoloji@gmail.com adresine bildirebilirsiniz; en geç {{CEVAP_SURESI}} iş günü
+Erişilebilirlik sorunlarını teknoloji@kulular.com adresine bildirebilirsiniz; en geç {{CEVAP_SURESI}} iş günü
 içinde dönüş yapılır.

@@ -4,14 +4,14 @@ slug: uyari
 route: /hukuki/uyari
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 alternate: /legal/notice
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
-> Unvan, MERSİS, sicil ve adres 20 Ekim 2026'da onaylandı (docs/kararlar.md). Vergi dairesi, VKN, KEP ve telefon Tarık'tan bekleniyor.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> Unvan, MERSİS, sicil ve adres 20 Ekim 2026'da onaylandı (docs/kararlar.md). İletişim bilgileri 23 Ekim 2026'da güncellendi (kaynak kulular.com.tr). Vergi dairesi, VKN ve KEP Tarık'tan bekleniyor.
 
 ## Künye
 
@@ -23,8 +23,8 @@ alternate: /legal/notice
 | Vergi dairesi ve numarası | {{VERGI_DAIRESI}} / {{VKN}} |
 | Adres | Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara |
 | KEP | {{KEP}} |
-| E-posta | kulularteknoloji@gmail.com |
-| Telefon | {{TELEFON}} |
+| E-posta | teknoloji@kulular.com |
+| Telefon | +90 505 781 48 46 |
 | Alan adı | kazuist.com |
 | Barındırma | Türkiye'de veri merkezi bulunan sağlayıcı: {{BARINDIRMA_SAGLAYICI}} |
 

@@ -4,13 +4,13 @@ slug: notice
 route: /legal/notice
 lang: en
 binding: false
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 alternate: /hukuki/uyari
 ---
 
-> TASLAK, Tarık onayı bekliyor. Version date: 22 October 2026.
+> TASLAK, Tarık onayı bekliyor. Version date: 23 October 2026.
 > This English text is for information only. The binding version is Turkish: [Hukuki uyarı ve künye](/hukuki/uyari).
 
 | | |
@@ -21,7 +21,7 @@ alternate: /hukuki/uyari
 | Tax office and number | {{VERGI_DAIRESI}} / {{VKN}} |
 | Address | Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara |
 | Registered email (KEP) | {{KEP}} |
-| Contact | kulularteknoloji@gmail.com |
+| Contact | teknoloji@kulular.com |
 
 Kazuist is a research and learning tool. Summaries, guides and games are for information and education; they are
 not individual legal opinions and do not replace legal services. Kazuist does not offer legal services, does not

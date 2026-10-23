@@ -4,14 +4,14 @@ slug: aydinlatma
 route: /hukuki/aydinlatma
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 consent_kind: aydinlatma
 alternate: /legal/privacy
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
 
 Bu metin 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun ("KVKK") 10. maddesi ve Aydınlatma
 Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ (RG 10/3/2018, 30356)
@@ -20,7 +20,7 @@ uyarınca hazırlanmıştır.
 ## 1. Veri sorumlusu
 
 Kulular Bilişim Teknolojileri Ltd. Şti. ("Kazuist"). MERSİS: 0591095454600001. Adres: Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara.
-KEP: {{KEP}}. İletişim: kulularteknoloji@gmail.com.
+KEP: {{KEP}}. İletişim: teknoloji@kulular.com.
 
 ## 2. Hangi verileri, hangi amaçla ve hangi hukuki sebeple işliyoruz
 
@@ -57,7 +57,8 @@ Google veya Apple ile giriş seçtiğinizde bu sağlayıcılar ve çerezler yolu
 - Ödeme kuruluşu iyzico ve e-Arşiv fatura entegratörü (Türkiye), mali müşavir; kanunen yetkili kamu kurumları.
 - E-posta gönderim sağlayıcısı {{EPOSTA_SAGLAYICI_VE_KONUMU}}.
 - iOS'ta satın alma yaparsanız Apple; Google veya Apple ile giriş seçerseniz ilgili sağlayıcı.
-- Yapay zekâ sağlayıcıları: platform modunda yalnız kişisel verilerden arındırılmış (maskelenmiş) metin gönderilir.
+- Yapay zekâ sağlayıcıları: platform modunda yalnız kişisel verilerden arındırılmış (maskelenmiş) metin, OpenRouter, Inc. (ABD) üzerinden
+  sıfır veri saklama koşuluyla modele gönderilir; yedek olarak doğrudan Anthropic kullanılabilir.
   Kendi anahtarınızı kullandığınızda (BYOK) içerik sizin cihazınızdan sizin seçtiğiniz sağlayıcıya gider.
   Ayrıntı: [Yapay zekâ politikası](/hukuki/yapay-zeka).
 - Kampüs'te herkese açık paylaştığınız içerik diğer kullanıcılarca görülür.

@@ -4,13 +4,13 @@ slug: kosullar
 route: /hukuki/kosullar
 lang: tr
 binding: true
-version: 2026-10-22.1
-date: 2026-10-22
+version: 2026-10-23.1
+date: 2026-10-23
 status: taslak
 consent_kind: kullanim_kosullari
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 22 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
 
 Dayanak: 6098 sayılı Türk Borçlar Kanunu (genel işlem koşulları) ve 6502 sayılı Tüketicinin Korunması
 Hakkında Kanun (m.48 mesafeli sözleşmeler, m.52 abonelik).
