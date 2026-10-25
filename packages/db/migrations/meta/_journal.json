@@ -36,6 +36,13 @@
       "when": 1792936377582,
       "tag": "0004_v1_2_ledger_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1792946517162,
+      "tag": "0005_frozen_legal_documents",
+      "breakpoints": true
     }
   ]
 }

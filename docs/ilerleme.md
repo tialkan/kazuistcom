@@ -22,6 +22,7 @@ kanıt CI40202875693 ve docs/kalite/dalga-1.md. Dalga 2 başlamadı.
 | 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main’de; sözleşme 1.1/migration 0003; ADR-0021/0022/0023 onayı bekliyor |
 | 1 | mimar | İkinci istek turu (7), sözleşme v1.2, migration 0004, ADR-0024 güncellemesi, ADR-0026 | kapı bekliyor | PR #31 main’de; sözleşme 1.2/migration 0004, ADR-0024/0026 öneri; 27 migration testi geçti |
 | 1 | kalite-guvenlik | Dalga 1 kapısının yeniden ölçümü | kapı bekliyor | 25 Ekim: 5/9; main219b903 ile ürün ağacı aynı 4457292 CI40202875693 yeşil. HTTP72/E2E108, hedefli207; O-07/O-09 açık |
+| 1 | mimar | Kalıcı sipariş belgeleri, D4 daraltma ve silmede iade tercihi, sözleşme1.3, migration0005, ADR0027 | PR açık | DB35/contracts121 ve typecheck/lint temiz; ödemePR35 önce birleşmeli, tam suite yeniden koşulacak; buildCI bekleniyor |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |

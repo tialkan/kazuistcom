@@ -2,6 +2,21 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, mimar, kalıcı belgeler ve ürün sürümleri (codex/mimar-kalici-belge), 2026-10-25
+
+PR hazır, birleştirilmedi. Sözleşme/db 1.3.0; ADR-0027 öneri, Tarık onayı bekliyor.
+Migration0005: ürün kodu tekilliği kalkar, birleşik sürüm tekilliği ve eski ürün UUID ilişkileri kalır;
+ürün finansal sürüm alanları değişmez. Kalıcı sipariş belgeleri, SHA-256/sürüm/sahiplik denetimi,
+değişmez sağlayıcı kabul kanıtı ve silmede kalıcı iade tercihi eklendi.
+
+`@kazuist/db` freezeOrderLegalDocuments ve recordOrderLegalDocumentDelivery mevcut transaction client alır.
+Entegrasyon ayrıntısı `docs/istekler/mimar-kalici-belge-entegrasyonu.md`.
+Hedefli testler: DB35/35, contracts121/121; tüm typecheck, lint, OpenAPI lint ve check:text geçti.
+Tam pnpm test kırmızı:25 eski ON CONFLICT(code) ödeme uyumsuzluğu ve1 rastgele defter testi;
+ödeme PR35 uyumu önce birleşmeli, sonra0005. Saf karşıörnek ödeme ajanına bildirildi.
+Build, disk kısıtı nedeniyle CI'ya bırakıldı; yeşil sonucu henüz yok.
+Canlı migration, hukuki yayın ve eski5ADR onay dosyalarında değişiklik yapılmadı.
+
 ## Orkestra devralma ve Dalga 1 yeniden ölçümü, 25 Ekim 2026
 
 Devir alındı. Önceki iki ajanın günlükleri kullanım sınırında durduklarını gösterdi; mimarın kaydedilmemiş
