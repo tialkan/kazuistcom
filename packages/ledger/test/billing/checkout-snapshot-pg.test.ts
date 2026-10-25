@@ -6,7 +6,7 @@ import { FakeIyzico, FAKE_CFG } from '../../src/billing/fake-iyzico.ts';
 import { FakeEArsiv } from '../../src/billing/earsiv.ts';
 import { pgBillingEnv } from './pg-env.ts';
 
-async function env(badHash = false) {
+async function env(badHash = false, refusePreparation = false) {
   const e = await pgBillingEnv();
   const iyz = new FakeIyzico();
   const buyer = {
@@ -30,22 +30,25 @@ async function env(badHash = false) {
     newId: randomUUID,
     callbackBaseUrl: 'https://k.test',
     webAddress: 'https://k.test',
-    prepareLegalDocuments: (order) => [
-      {
-        slug: 'on-bilgilendirme',
-        version: String(order.consentVersions.preInfo),
-        text: 'Frozen info',
-        sha256: createHash('sha256').update('Frozen info').digest('hex'),
-        fields: { ALICI_AD: 'A B' },
-      },
-      {
-        slug: order.productCode.startsWith('kredi.') ? 'mesafeli-satis' : 'abonelik',
-        version: String(order.consentVersions.distance),
-        text: 'Frozen contract',
-        sha256: badHash ? '0'.repeat(64) : createHash('sha256').update('Frozen contract').digest('hex'),
-        fields: { ALICI_AD: 'A B' },
-      },
-    ],
+    prepareLegalDocuments: (order) => {
+      if (refusePreparation) throw new Error('legal preflight refused');
+      return [
+        {
+          slug: 'on-bilgilendirme',
+          version: String(order.consentVersions.preInfo),
+          text: 'Frozen info',
+          sha256: createHash('sha256').update('Frozen info').digest('hex'),
+          fields: { ALICI_AD: 'A B' },
+        },
+        {
+          slug: order.productCode.startsWith('kredi.') ? 'mesafeli-satis' : 'abonelik',
+          version: String(order.consentVersions.distance),
+          text: 'Frozen contract',
+          sha256: badHash ? '0'.repeat(64) : createHash('sha256').update('Frozen contract').digest('hex'),
+          fields: { ALICI_AD: 'A B' },
+        },
+      ];
+    },
   });
   return {
     ...e,
@@ -108,5 +111,52 @@ it('account deletion false cancels live subscriptions without creating a refund,
   expect((await e.store.getSubscription(sub.id))?.status).toBe('iptal');
   expect(await e.store.listRefundRequests(e.userId)).toHaveLength(0);
   expect(await e.svc.reconcileDeletedAccounts()).toBe(0);
+  await e.pg.close();
+}, 60000);
+
+it('a failed legal preflight never opens an external checkout', async () => {
+  const e = await env(false, true);
+  await expect(e.buy()).rejects.toThrow('legal preflight refused');
+  expect(e.iyz.checkouts.size).toBe(0);
+  await e.pg.close();
+}, 60000);
+it('subscription checkout persists its own complete document set and all accepted consents', async () => {
+  const e = await env();
+  await e.svc.setupSubscriptionCatalog();
+  const a = await e.svc.startSubscription(
+    e.userId,
+    randomUUID(),
+    {
+      planCode: 'ogrenci.yillik',
+      withdrawalWaiver: true,
+      preInfoConsentVersion: 'onb',
+      distanceContractConsentVersion: 'abo',
+      annualCommitmentVersion: 'abo',
+    },
+    e.buyer,
+  );
+  const docs = await e.pg.query<{ slug: string; version: string }>(
+    'select slug,version from order_legal_documents where order_id=$1 order by slug',
+    [a.orderId],
+  );
+  expect(docs.rows).toEqual([
+    { slug: 'abonelik', version: 'abo' },
+    { slug: 'on-bilgilendirme', version: 'onb' },
+  ]);
+  const consents = await e.pg.query<{ count: number }>(
+    "select count(*)::int as count from consents where context->>'orderId'=$1",
+    [a.orderId],
+  );
+  expect(consents.rows[0]?.count).toBe(4);
+  await e.pg.close();
+}, 60000);
+it('explicit deletion false preserves unused paid credits and never creates a refund request', async () => {
+  const e = await env();
+  const a = await e.buy();
+  await e.svc.completeCheckout((await e.store.getOrder(a.orderId))?.checkoutToken as string);
+  const result = await e.svc.onAccountDeletion(e.userId, { requestRefund: false });
+  expect(result.refundRequested).toBe(false);
+  expect(await e.store.listRefundRequests(e.userId)).toHaveLength(0);
+  expect((await e.svc.wallet(e.userId)).balance).toBe(300);
   await e.pg.close();
 }, 60000);

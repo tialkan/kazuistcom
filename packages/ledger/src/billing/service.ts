@@ -168,6 +168,15 @@ export class BillingService {
     }));
   }
 
+  private async saveCheckout(order: Order, consents: Consent[], documents: readonly PreparedLegalDocument[]) {
+    try {
+      await this.s.saveCheckout(order, consents, documents);
+    } catch {
+      // SQL constraint details can contain an entire private snapshot row. Keep those out of API/log errors.
+      throw new BillingError(502, 'checkout_persistence_failed');
+    }
+  }
+
   private checkVersions(
     preInfo: string,
     contract: string,
@@ -267,7 +276,7 @@ export class BillingService {
         buyer,
         item: { id: product.code, name: `Kazuist ${product.credits} kredi`, category: 'Dijital hizmet' },
       });
-      // Consents only for a checkout that iyzico opened (D-N1), still before the order row (Y4).
+      // Persist consents only after iyzico initialization, atomically with the order and snapshots.
       const consentRows = this.consents(
         userId,
         [
@@ -280,7 +289,7 @@ export class BillingService {
       order.checkoutToken = init.token;
       order.consentVersions.form = init.checkoutFormContent;
       if (init.paymentPageUrl) order.consentVersions.pageUrl = init.paymentPageUrl;
-      await this.s.saveCheckout(order, consentRows, documents);
+      await this.saveCheckout(order, consentRows, documents);
       if (couponCode && !(await this.s.recordRedemption(couponCode, userId, { orderId }))) {
         order.status = 'basarisiz';
         await this.s.saveOrder(order);
@@ -627,7 +636,7 @@ export class BillingService {
     order.checkoutToken = init.token;
     order.consentVersions.form = init.checkoutFormContent;
     if (init.paymentPageUrl) order.consentVersions.pageUrl = init.paymentPageUrl;
-    await this.s.saveCheckout(order, consentRows, documents);
+    await this.saveCheckout(order, consentRows, documents);
     await this.notify(userId, 'sozlesme', this.d.now(), orderId);
     return { orderId, checkoutFormContent: init.checkoutFormContent, paymentPageUrl: init.paymentPageUrl };
   }

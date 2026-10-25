@@ -242,9 +242,10 @@ export class MemoryBillingStore implements BillingStore {
     return this.deletionRefundPreferences.get(userId) ?? true;
   }
   async saveCheckout(order: Order, consents: Consent[], documents: readonly PreparedLegalDocument[]) {
-    await this.saveOrder(order);
-    await this.addConsents(consents);
-    this.frozenDocuments.set(order.id, structuredClone(documents));
+    const snapshots = structuredClone(documents);
+    this.orders.set(order.id, order);
+    this.consents.push(...consents);
+    this.frozenDocuments.set(order.id, snapshots);
   }
   orders = new Map<string, Order>();
   payments: Payment[] = [];
