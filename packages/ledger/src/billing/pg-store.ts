@@ -5,7 +5,7 @@
  * payments_charge_uq, payments_refund_uq, webhook_events_provider_event_uq, notices_uq,
  * coupon_redemptions_uq).
  */
-import { freezeOrderLegalDocuments } from '@kazuist/db';
+import { freezeOrderLegalDocuments } from '@kazuist/db/legal-documents';
 import type { Ledger, PriceTable } from '../index.ts';
 import { listWalletTransactions, walletRunner, type PoolLike, type SqlClient } from '../pg.ts';
 import type {
