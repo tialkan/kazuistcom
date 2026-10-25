@@ -5,6 +5,9 @@
  */
 import {
   CancelSubscriptionInput,
+  CouponRedeemInput,
+  AdminChargebackInput,
+  AdminPriceChangeInput,
   CheckoutSubscriptionInput,
   CheckoutTopupInput,
   RefundRequestInput,
@@ -13,6 +16,7 @@ import {
 import { toPublicPriceTable } from '@kazuist/ledger';
 import { withAuth, withPublic, type Principal } from '../auth/guard.ts';
 import { apiError, json } from '../auth/http.ts';
+import { writeAudit } from '../auth/audit.ts';
 import { clientIp } from '../auth/rate-limit.ts';
 import { schema } from '../auth/db.ts';
 import { eq } from 'drizzle-orm';
@@ -149,11 +153,11 @@ export function subscriptionCancelPost(req: Request, route: { params: Promise<{ 
     const { id } = await route.params;
     if (!(await owns(ctx, 'subscriptions', id, p.userId))) return apiError('not_found');
     return withService(async (s) => {
-      // Cancel is idempotent on the subscription itself; the key is still required (D3).
-      if (!idemKey(r)) return apiError('bad_request');
+      const key = idemKey(r);
+      if (!key) return apiError('bad_request');
       const parsed = CancelSubscriptionInput.safeParse(await body(r));
       if (!parsed.success) return apiError('bad_request');
-      return json(await s.cancel(p.userId, id, parsed.data.mode));
+      return json(await s.cancel(p.userId, id, parsed.data.mode, key));
     });
   })(req);
 }
@@ -164,11 +168,12 @@ export const refundRequestPost = withAuth({ rate: rate.write }, async (req, p, c
   if (typeof orderId === 'string' && !(await owns(ctx, 'orders', orderId, p.userId)))
     return apiError('not_found');
   return withService(async (s) => {
-    if (!idemKey(req)) return apiError('bad_request');
+    const key = idemKey(req);
+    if (!key) return apiError('bad_request');
     const parsed = RefundRequestInput.safeParse(raw);
     if (!parsed.success) return apiError('bad_request');
     // Inside the 14 day rule the refund runs at once; otherwise the request waits for approval (O9).
-    const r = await s.requestRefund(p.userId, parsed.data.orderId, parsed.data.reason);
+    const r = await s.requestRefund(p.userId, parsed.data.orderId, parsed.data.reason, key);
     return json(r, r.status === 'tamamlandi' ? 201 : 202);
   });
 });
@@ -233,4 +238,47 @@ export const subscriptionCallbackPost = withPublic(rate.webhook, async (req, ctx
       throw e;
     }
   }),
+);
+
+export const couponRedeemPost = withAuth({ rate: rate.write }, async (req, p) => {
+  const input = CouponRedeemInput.safeParse(await body(req));
+  if (!input.success) return apiError('bad_request');
+  return withService(async (s) => json({ credits: await s.redeemCoupon(p.userId, input.data.code) }));
+});
+export const adminChargebackPost = withAuth(
+  { admin: true, rate: { name: 'admin-chargebacks', limit: 10, windowSec: 60 } },
+  async (req, p, ctx) => {
+    const key = idemKey(req);
+    const input = AdminChargebackInput.safeParse(await body(req));
+    if (!key || !input.success) return apiError('bad_request');
+    return withService(async (s) => {
+      const result = await s.adminChargeback(p.userId, key, input.data);
+      await writeAudit(ctx.db, ctx.config.secret, {
+        actorId: p.userId,
+        action: 'billing.chargeback',
+        subjectType: 'order',
+        subjectId: input.data.orderId,
+        diff: { balance: result.balance },
+      });
+      return json(result);
+    });
+  },
+);
+export const adminPriceChangePost = withAuth(
+  { admin: true, rate: { name: 'admin-price-changes', limit: 10, windowSec: 60 } },
+  async (req, p, ctx) => {
+    const key = idemKey(req);
+    const input = AdminPriceChangeInput.safeParse(await body(req));
+    if (!key || !input.success) return apiError('bad_request');
+    return withService(async (s) => {
+      const result = await s.adminPriceChange(p.userId, key, input.data);
+      await writeAudit(ctx.db, ctx.config.secret, {
+        actorId: p.userId,
+        action: 'billing.price_change',
+        subjectType: 'plan',
+        diff: { ...input.data, notified: result.notified },
+      });
+      return json(result);
+    });
+  },
 );

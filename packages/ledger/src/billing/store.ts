@@ -10,6 +10,7 @@ export interface Order {
   id: string;
   userId: string;
   productCode: string;
+  productId?: string;
   couponCode: string | null;
   amountKurus: number;
   status: OrderStatus;
@@ -50,6 +51,7 @@ export interface Subscription {
   id: string;
   userId: string;
   planCode: string;
+  productId?: string;
   providerRef: string;
   status: SubStatus;
   priceKurus: number;
@@ -117,7 +119,17 @@ export function planRole(code: Plan): 'ucretsiz' | 'plus' | 'akademisyen' {
   return 'ucretsiz';
 }
 
+export type OperationClaim =
+  { state: 'claimed' } | { state: 'conflict' } | { state: 'pending' } | { state: 'done'; result: unknown };
 export interface BillingStore {
+  claimOperation(
+    userId: string,
+    operation: string,
+    key: string,
+    requestHash: string,
+  ): Promise<OperationClaim>;
+  finishOperation(userId: string, operation: string, key: string, result: unknown): Promise<void>;
+  releaseOperation(userId: string, operation: string, key: string): Promise<void>;
   walletOf(userId: string): Promise<string>;
   saveOrder(o: Order): Promise<void>;
   getOrder(id: string): Promise<Order | null>;
@@ -177,11 +189,43 @@ export interface BillingStore {
   setPlan(userId: string, plan: Plan): Promise<void>;
   getPlan(userId: string): Promise<Plan>;
   alert(kind: string, detail: unknown): Promise<void>;
-  planRefs(): Promise<Map<string, string>>;
-  savePlanRef(planCode: string, ref: string): Promise<void>;
+  planRefs(version?: string): Promise<Map<string, string>>;
+  savePlanRef(planCode: string, ref: string, version?: string): Promise<void>;
 }
 
 export class MemoryBillingStore implements BillingStore {
+  private operations = new Map<string, { hash: string; result?: unknown; active: boolean }>();
+  async claimOperation(
+    userId: string,
+    operation: string,
+    key: string,
+    requestHash: string,
+  ): Promise<OperationClaim> {
+    const id = JSON.stringify([userId, operation, key]);
+    const row = this.operations.get(id);
+    if (row)
+      return row.hash !== requestHash
+        ? { state: 'conflict' }
+        : row.result === undefined
+          ? row.active
+            ? { state: 'pending' }
+            : ((row.active = true), { state: 'claimed' })
+          : { state: 'done', result: structuredClone(row.result) };
+    this.operations.set(id, { hash: requestHash, active: true });
+    return { state: 'claimed' };
+  }
+  async finishOperation(userId: string, operation: string, key: string, result: unknown) {
+    const row = this.operations.get(JSON.stringify([userId, operation, key]));
+    if (row) {
+      row.result = structuredClone(result);
+      row.active = false;
+    }
+  }
+  async releaseOperation(userId: string, operation: string, key: string) {
+    const row = this.operations.get(JSON.stringify([userId, operation, key]));
+    if (row) row.active = false;
+  }
+
   orders = new Map<string, Order>();
   payments: Payment[] = [];
   subscriptions = new Map<string, Subscription>();
@@ -368,11 +412,16 @@ export class MemoryBillingStore implements BillingStore {
   async alert(kind: string, detail: unknown) {
     this.alerts.push({ kind, detail });
   }
-  async planRefs() {
-    return new Map(this.refs);
+  async planRefs(version?: string) {
+    const prefix = version ? `${version}:` : '';
+    return new Map(
+      [...this.refs]
+        .filter(([code]) => !version || code.startsWith(prefix))
+        .map(([code, ref]) => [version ? code.slice(prefix.length) : code, ref]),
+    );
   }
-  async savePlanRef(code: string, ref: string) {
-    this.refs.set(code, ref);
+  async savePlanRef(code: string, ref: string, version?: string) {
+    this.refs.set(version ? `${version}:${code}` : code, ref);
   }
 }
 
