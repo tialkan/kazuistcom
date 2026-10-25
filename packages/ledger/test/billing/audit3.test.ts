@@ -29,7 +29,12 @@ const V: ConsentVersions = {
   abonelik_sozlesmesi: 'abo-1',
 };
 const pack = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'mss-1' };
-const plan = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'abo-1' };
+const plan = {
+  preInfoConsentVersion: 'onb-1',
+  distanceContractConsentVersion: 'abo-1',
+  withdrawalWaiver: true,
+  annualCommitmentVersion: 'abo-1',
+};
 
 function env() {
   let now = new Date('2026-10-20T09:00:00Z');
@@ -98,53 +103,56 @@ describe('high', () => {
     expect(await balance(e)).toBe(300);
   });
 
-  it('Y-N6: a failed card answer (status failure) closes the order and gives the coupon back', async () => {
-    const fetchStub = (async (url: string) => {
-      const path = new URL(String(url)).pathname;
-      if (path.endsWith('/initialize/auth/ecom'))
+  it.each(['10051', '10005'])(
+    'Y-N6: declined card %s closes the order and gives the coupon back',
+    async (errorCode) => {
+      const fetchStub = (async (url: string) => {
+        const path = new URL(String(url)).pathname;
+        if (path.endsWith('/initialize/auth/ecom'))
+          return new Response(
+            JSON.stringify({
+              status: 'success',
+              token: 'tok-x',
+              checkoutFormContent: '<script></script>',
+              paymentPageUrl: 'https://sandbox-cpp.iyzipay.com?token=tok-x',
+            }),
+          );
         return new Response(
-          JSON.stringify({
-            status: 'success',
-            token: 'tok-x',
-            checkoutFormContent: '<script></script>',
-            paymentPageUrl: 'https://sandbox-cpp.iyzipay.com?token=tok-x',
-          }),
+          JSON.stringify({ status: 'failure', errorCode, paymentStatus: 'FAILURE', token: 'tok-x' }),
         );
-      return new Response(
-        JSON.stringify({ status: 'failure', errorCode: '10051', paymentStatus: 'FAILURE', token: 'tok-x' }),
+      }) as unknown as typeof fetch;
+      const store = new MemoryBillingStore();
+      store.coupons.set('YUZDE50', {
+        code: 'YUZDE50',
+        credits: null,
+        percentOff: 50,
+        maxRedemptions: 1,
+        redeemed: 0,
+        validUntil: null,
+      });
+      const now = new Date('2026-10-20T09:00:00Z');
+      const svc = new BillingService({
+        iyzico: new HttpIyzico({ apiKey: 'k', secretKey: 's', baseUrl: IYZICO_SANDBOX_BASE_URL }, fetchStub),
+        iyzicoCfg: { secretKey: 's', merchantId: 'm' },
+        earsiv: new FakeEArsiv(() => now),
+        store,
+        ledger: new MemoryLedgerPort(),
+        now: () => now,
+        newId: randomUUID,
+        callbackBaseUrl: 'https://k.test',
+        webAddress: 'https://k.test',
+      });
+      const s = await svc.startTopup(
+        'u1',
+        randomUUID(),
+        { productCode: 'kredi.300', couponCode: 'YUZDE50', withdrawalWaiver: true, ...pack },
+        buyer,
       );
-    }) as unknown as typeof fetch;
-    const store = new MemoryBillingStore();
-    store.coupons.set('YUZDE50', {
-      code: 'YUZDE50',
-      credits: null,
-      percentOff: 50,
-      maxRedemptions: 1,
-      redeemed: 0,
-      validUntil: null,
-    });
-    const now = new Date('2026-10-20T09:00:00Z');
-    const svc = new BillingService({
-      iyzico: new HttpIyzico({ apiKey: 'k', secretKey: 's', baseUrl: IYZICO_SANDBOX_BASE_URL }, fetchStub),
-      iyzicoCfg: { secretKey: 's', merchantId: 'm' },
-      earsiv: new FakeEArsiv(() => now),
-      store,
-      ledger: new MemoryLedgerPort(),
-      now: () => now,
-      newId: randomUUID,
-      callbackBaseUrl: 'https://k.test',
-      webAddress: 'https://k.test',
-    });
-    const s = await svc.startTopup(
-      'u1',
-      randomUUID(),
-      { productCode: 'kredi.300', couponCode: 'YUZDE50', withdrawalWaiver: true, ...pack },
-      buyer,
-    );
-    expect((await svc.completeCheckout('tok-x')).status).toBe('basarisiz');
-    expect(store.orders.get(s.orderId)?.status).toBe('basarisiz');
-    expect(store.coupons.get('YUZDE50')?.redeemed).toBe(0);
-  });
+      expect((await svc.completeCheckout('tok-x')).status).toBe('basarisiz');
+      expect(store.orders.get(s.orderId)?.status).toBe('basarisiz');
+      expect(store.coupons.get('YUZDE50')?.redeemed).toBe(0);
+    },
+  );
 
   it('Y-N6: one failing re-query does not stop the daily chain; every step runs and failures are reported', async () => {
     const e = env();
@@ -271,4 +279,59 @@ describe('medium and low', () => {
     expect(e.store.subscriptions.get(sub.id)?.status).toBe('iptal');
     expect(e.iyz.subs.get(sub.providerRef)?.status).toBe('CANCELED');
   });
+});
+
+it('Y-N7: technical or unknown failure preserves paid fraud review until IFN approval', async () => {
+  for (const code of ['100001', '1000', '10214', 'unknown']) {
+    const e = env();
+    e.iyz.nextFraudStatus = 0;
+    const a = await e.buy();
+    await e.svc.completeCheckout(a.token);
+    const retrieve = e.iyz.retrieveCheckoutForm.bind(e.iyz);
+    e.iyz.retrieveCheckoutForm = async () => {
+      throw new IyzicoError('/detail', true, code);
+    };
+    await e.svc.recheckPendingOrders();
+    expect(e.store.orders.get(a.orderId)?.status).toBe('inceleniyor');
+    expect(e.store.alerts.some((x) => x.kind === 'yeniden_sorgu_hatasi')).toBe(true);
+    e.iyz.retrieveCheckoutForm = retrieve;
+    e.iyz.decideFraud(a.token, 2);
+    const pid = e.iyz.checkouts.get(a.token)?.paymentId;
+    await e.svc.handleFraudNotification(JSON.stringify({ paymentId: Number(pid), fraudStatus: 2 }));
+    expect(await balance(e)).toBe(300);
+  }
+});
+
+it('O5: subscription consent rejects absent waiver and annual version and records accepted versions', async () => {
+  const e = env();
+  await e.svc.setupSubscriptionCatalog();
+  await expect(
+    e.svc.startSubscription(
+      'u1',
+      randomUUID(),
+      { ...plan, planCode: 'ogrenci.aylik', withdrawalWaiver: undefined },
+      buyer,
+    ),
+  ).rejects.toMatchObject({ code: 'withdrawal_waiver_required' });
+  await expect(
+    e.svc.startSubscription(
+      'u1',
+      randomUUID(),
+      { ...plan, planCode: 'ogrenci.yillik', annualCommitmentVersion: 'stale' },
+      buyer,
+    ),
+  ).rejects.toMatchObject({ code: 'annual_commitment_version_mismatch' });
+  await expect(
+    e.svc.startSubscription(
+      'u1',
+      randomUUID(),
+      { ...plan, planCode: 'ogrenci.yillik', annualCommitmentVersion: undefined },
+      buyer,
+    ),
+  ).rejects.toMatchObject({ code: 'annual_commitment_version_mismatch' });
+  await e.svc.startSubscription('u1', randomUUID(), { ...plan, planCode: 'ogrenci.yillik' }, buyer);
+  expect(e.store.consents.filter((c) => c.kind === 'cayma_istisnasi' && c.granted)).toHaveLength(1);
+  expect(
+    e.store.consents.filter((c) => c.kind === 'yillik_taahhutname' && c.version === 'abo-1'),
+  ).toHaveLength(1);
 });

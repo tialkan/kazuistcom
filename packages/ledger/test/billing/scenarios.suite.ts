@@ -91,7 +91,17 @@ export function runScenarios(name: string, make: () => Promise<ScenarioEnv>) {
     async function subscribe(
       planCode: 'ogrenci.aylik' | 'ogrenci.yillik' | 'akademisyen.aylik' | 'akademisyen.yillik',
     ) {
-      const s = await svc.startSubscription(U, `idem-${++seq}`, { planCode, ...consents }, buyer);
+      const s = await svc.startSubscription(
+        U,
+        `idem-${++seq}`,
+        {
+          planCode,
+          ...consents,
+          withdrawalWaiver: true,
+          annualCommitmentVersion: consents.distanceContractConsentVersion,
+        },
+        buyer,
+      );
       return svc.completeSubscriptionCheckout(await tokenOf(s.orderId));
     }
 

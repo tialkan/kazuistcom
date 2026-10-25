@@ -25,7 +25,12 @@ const V: ConsentVersions = {
   abonelik_sozlesmesi: 'abo-1',
 };
 const pack = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'mss-1' };
-const plan = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'abo-1' };
+const plan = {
+  preInfoConsentVersion: 'onb-1',
+  distanceContractConsentVersion: 'abo-1',
+  withdrawalWaiver: true,
+  annualCommitmentVersion: 'abo-1',
+};
 
 function env(start = new Date('2026-10-20T09:00:00Z')) {
   let now = start;
@@ -378,12 +383,7 @@ describe('medium', () => {
         buyer,
       ),
     ).rejects.toMatchObject({ code: 'coupon_not_supported' });
-    await e.svc.startSubscription(
-      'u1',
-      randomUUID(),
-      { planCode: 'ogrenci.yillik', withdrawalWaiver: true, ...plan },
-      buyer,
-    );
+    await e.svc.startSubscription('u1', randomUUID(), { planCode: 'ogrenci.yillik', ...plan }, buyer);
     expect(e.store.consents.map((c) => c.kind).sort()).toEqual([
       'abonelik_sozlesmesi',
       'cayma_istisnasi',
