@@ -1,6 +1,7 @@
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
 import type { ClaimedJob } from '@kazuist/db/jobs';
 import type { SqlClient } from '../queue.ts';
+import { renderBillingNotice } from '../billing/notice-text.ts';
 import { channelAllows, commercialAllowed, type Prefs } from './prefs.ts';
 import { isQuietHour, nextSendTime } from './quiet-hours.ts';
 import {
@@ -52,7 +53,11 @@ const paths: Record<NotificationType, string> = {
   kampanya: '/',
 };
 
-export function render(type: NotificationType): Message {
+export function render(type: NotificationType, refId?: string): Message {
+  if (refId && (type === 'odeme' || type === 'fesih_teyidi')) {
+    const billing = renderBillingNotice(refId);
+    if (billing !== null) return billing;
+  }
   const t = tr.bildirim[type];
   return { title: t.baslik, body: t.metin, path: paths[type] };
 }
@@ -103,7 +108,7 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
   const prefs = asPrefs(prefRows[0]);
   const wanted = (c: Channel) =>
     (!payload.channels || payload.channels.includes(c)) && channelAllows(prefs, c, payload.type);
-  const m = render(payload.type);
+  const m = render(payload.type, payload.refId);
   const sent: Channel[] = [];
 
   if (deps.email && wanted('email')) {

@@ -22,6 +22,16 @@ Karar tablosu: docs/istekler/README.md (ikinci tur).
 - Orkestra talimatıyla değişen sahip dışı dosyalar: `apps/web/src/app/(odeme)/odeme/page.tsx`,
   `odeme/donus/page.tsx` (tekil main), `services/worker-py/pyproject.toml` ve `uv.lock` (ner-runtime).
 
+## Dalga 1, kimlik, ödeme bildirimleri ve bekleyen iadeler, 2026-10-25
+
+Y5: notify dispatch ödeme referansını gerçek tutar/tarih ve hemen veya dönem sonu fesih metnine bağlar;
+yalnız renderer null dönerse genel metne düşer. O-N1: sözleşme 1.2 bekleyen iade listesi ve karar uçları
+kimlik guard üzerinden yönetici, passkey, ikinci adım ve hız sınırıyla bağlıdır. Karar servisinde aktör
+kimliği denetim kaydına aktarılır; sonuçlanmış iadede 409 döner.
+
+Doğrulama: web 86 test geçti, 1 mevcut atlandı; worker 33 test geçti. Her iki uygulamada typecheck
+ve üretim derlemesi, değişen kodda ESLint/Prettier geçti. O6 PDF eki bu işte uygulanmadı.
+
 ## Orkestra devri, 2026-10-25
 
 Orkestra yeni oturuma devredildi. Devralan oturum önce `docs/ORKESTRA-DEVIR.md`'yi okur; başlangıç metni o dosyanın 11. bölümündedir.
