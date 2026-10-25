@@ -32,3 +32,7 @@ Kimden: mimar, dal `dalga-1/mimar/istekler`. Kime: odeme. Dayanak: ADR-0023, ist
 ## Aciliyet
 
 1 ve 2: Dalga 2 başında; 3 ve 4: canlı ödeme anahtarından önce.
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Sahibinin PR'ları: #15 (Postgres faturalama deposu ve uçlar), #19 ve #27 (denetim kapanışı); billing kaydı #17. Madde bazında doğrulama kalite-guvenlik kapısındadır.

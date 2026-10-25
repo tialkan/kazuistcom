@@ -12,12 +12,18 @@ import {
   uniqueIndex,
   uuid,
 } from 'drizzle-orm/pg-core';
+import { noticeKinds, paymentStatuses } from '@kazuist/contracts';
 import { users } from './auth.ts';
 import { createdAt, id, ts, updatedAt } from './_common.ts';
 
+/** SQL literal list of contract values for CHECK constraints ('a', 'b'); values are fixed identifiers. */
+const inList = (values: readonly string[]) => sql.raw(values.map((v) => `'${v}'`).join(', '));
+
 /**
  * Double entry credit ledger (plan 9.1). ledger_entries is append only (UPDATE and DELETE are blocked by a
- * trigger) and every transaction must balance (deferred constraint trigger), see migration 0002.
+ * trigger) and every transaction must balance (deferred constraint trigger), see migration 0002. Migration
+ * 0004 (ADR-0026, audit D6) makes ledger_transactions append only too and lets credit_lots change only in
+ * remaining_credits.
  */
 export const ledgerAccountKind = pgEnum('ledger_account_kind', [
   'kullanici_cuzdani',
@@ -150,20 +156,29 @@ export const priceTables = pgTable('price_tables', {
   createdAt: createdAt(),
 });
 
-export const products = pgTable('products', {
-  id: id(),
-  code: text('code').notNull().unique(),
-  kind: text('kind').notNull(),
-  priceTableId: uuid('price_table_id')
-    .notNull()
-    .references(() => priceTables.id),
-  priceKurus: integer('price_kurus').notNull(),
-  credits: integer('credits'),
-  monthlyCredits: integer('monthly_credits'),
-  appleProductId: text('apple_product_id'),
-  iyzicoPlanRef: text('iyzico_plan_ref'),
-  active: boolean('active').notNull().default(true),
-});
+/**
+ * One row per product and price table version (audit D4, ADR-0026). Expand step: (code, price_table_id) is
+ * unique; the code-only unique constraint stays until the billing store writes and reads versions, then a
+ * later migration drops it and orders.product_id points at the version that was sold.
+ */
+export const products = pgTable(
+  'products',
+  {
+    id: id(),
+    code: text('code').notNull().unique(),
+    kind: text('kind').notNull(),
+    priceTableId: uuid('price_table_id')
+      .notNull()
+      .references(() => priceTables.id),
+    priceKurus: integer('price_kurus').notNull(),
+    credits: integer('credits'),
+    monthlyCredits: integer('monthly_credits'),
+    appleProductId: text('apple_product_id'),
+    iyzicoPlanRef: text('iyzico_plan_ref'),
+    active: boolean('active').notNull().default(true),
+  },
+  (t) => [uniqueIndex('products_code_price_table_uq').on(t.code, t.priceTableId)],
+);
 
 export const coupons = pgTable('coupons', {
   id: id(),
@@ -237,6 +252,8 @@ export const payments = pgTable(
     check('payments_kind', sql`${t.kind} in ('odeme', 'iade')`),
     check('payments_refund_ref', sql`(${t.kind} = 'iade') = (${t.refundRef} is not null)`),
     check('payments_owner', sql`${t.orderId} is not null or ${t.subscriptionId} is not null`),
+    // contracts paymentStatuses (v1.2); added NOT VALID in 0004, so only new and changed rows are checked.
+    check('payments_status', sql`${t.status} in (${inList(paymentStatuses)})`),
   ],
 );
 
@@ -317,6 +334,8 @@ export const notices = pgTable(
     index('notices_due_idx')
       .on(t.sendAt)
       .where(sql`${t.sentAt} is null`),
+    // contracts noticeKinds (v1.2); added NOT VALID in 0004.
+    check('notices_kind', sql`${t.kind} in (${inList(noticeKinds)})`),
   ],
 );
 

@@ -49,3 +49,18 @@ bekliyor"). Ayrıntı her istek dosyasının sonundaki "Sonuç" bölümündedir.
 | kimlik-kvkk-basvuru-tablosu | Değiştirerek kabul | Tablo hukuk-uyum isteğiyle birleşti. `account.purge` kabul; `account.export` ret (dışa aktarım eşzamanlı 200, sözleşme uygulamaya çekildi); edu doğrulaması 204. |
 | odeme-abonelik-ve-siparis-alanlari | Değiştirerek kabul | Tüm sütun ve tablolar eklendi; iade tekilliği `(provider, refund_ref)` ile (istenen `created_at`'li dizin idempotency'yi kaldırırdı). Billing işleyicileri worker-node'da kayıtlı, PgBillingStore gelene kadar kapalı başarısız. |
 | on-yuz-yonlendirme | Uygulandı, kapatıldı | Orkestra `next.config.ts`'e `statusCode: 301` yönlendirmesini ekledi; sözleşme değişikliği gerekmedi. |
+
+## Karar tablosu: ikinci tur (2026-10-25, sözleşme v1.2, ADR-0026)
+
+ADR-0026 ve güncellenen ADR-0024 "Önerildi, Tarık onayı bekliyor". Yönlendirmeler `mimar-yonlendirme-2-*.md`.
+
+| İstek | Karar | Gerekçe ve uygulama |
+|---|---|---|
+| odeme-abonelik-onay-alanlari | Kabul | `withdrawalWaiver` ve `annualCommitmentVersion` isteğe bağlı alanlar; iki iyzico dönüş ucu OpenAPI'de (form gövdesi, 303; 2XX olmadığı için Redocly'de açık istisna). |
+| odeme-denetim-kapanisi | Değiştirerek kabul | D6 tetikleyicileri (migration 0004); D4 iki adımlı (bu turda `(code, price_table_id)` tekil, koda bağlı kısıt depo geçince kalkar); D3 Idempotency-Key ve 201/202 `RefundRequestResult`; O5 kabul; Y5 yeni tür yerine `NotifyPayload.subtype`; D8 uçları sözleşmede. |
+| odeme-denetim-2 | Kabul | IFN ucu yalnız tetikleyici olarak sözleşmede; `payments.status` CHECK (NOT VALID); O-N1 yönetim uçları sözleşmede; ADR-0024 eşit bölüşüme göre güncellendi. |
+| hukuk-uyum-pdf-on-bilgi | Kabul | `pdf` ve `pdf_fields`; bildirilen alanlar sayfayı engellemez, PDF'te zorunludur; CI alanların gövdede geçtiğini denetler. |
+| on-yuz-tekil-main | Uygulandı | Kimlik sayfaları main'de düzeltilmişti; iki ödeme sayfası bu dalda `<div className="sayfa">`. |
+| anonimlestirme-embed-payload | Kabul | `EmbedChunksPayload`; parçaları veri tabanı tetikleyicisi siler (`masked_text` değişince veya NULL olunca) ve işi kuyruğa atar; tüketici md5 karşılaştırması ve casuist uzlaştırma işi. |
+| anonimlestirme-ner-calisma-zamani | Kabul | `ner-runtime` ekstrası (torch'suz) ve kilit dosyası; ortam değişkenleri `.env.example`'da; imaj ve birim altyapıda. |
+| kalite-* (9 istek) | Mimara değil | Muhatapları orkestra, altyapi, seo, yz-gecidi, kimlik, on-yuz, hukuk-uyum; sözleşme değişikliği istemiyorlar. |

@@ -26,3 +26,7 @@ MIT veya Apache-2.0; esbuild MIT (zaten ağaçtaydı).
 2. Hesap silme bekleme süresi: önerilen 14 gün, üst sınır 30 gün.
 3. Abonelikte cayma: ilk dönem kredisi hiç kullanılmamış abonelikte ne olacağı (madde 2).
 4. Yaş sınırı: kullanım koşullarında 18 yaş taslak; kayıtta yaş beyanı alınacak mı (madde 10).
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Orkestra: #17 (account.purge ve billing kaydı), takedown ve admin yolları kimliğe atandı; Tarık kararları docs/kararlar.md 2026-10-22. Madde bazında doğrulama kalite-guvenlik kapısındadır.

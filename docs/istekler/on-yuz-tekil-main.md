@@ -11,3 +11,12 @@ bir `<main>` açıyor; sayfada iki main landmark oluyor:
 
 İstenen: `<main>` yerine `<div className="sayfa">` (kabuk sayfa kapsayıcısı; aynı genişlik ve boşluklar).
 Kabul: sayfalar.spec.ts ilgili test yerelde geçer.
+
+## Sonuç (mimar, 2026-10-25, dal dalga-1/mimar/istekler-2)
+
+Uygulandı. Kimlik sayfaları main'de zaten düzeltilmişti (`<section>`). Kalan iki ödeme sayfası
+(`apps/web/src/app/(odeme)/odeme/page.tsx`, `odeme/donus/page.tsx`) orkestranın talimatıyla bu dalda
+`<div className="sayfa">` oldu. `tests/e2e/specs/sayfalar.spec.ts` listesine `/odeme/donus` eklenmesi
+kalite-guvenlik'e önerildi; uçtan uca test bu dalda yerelde çalıştırılmadı.
+
+Sözleşme v1.2; ADR-0026 Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md (ikinci tur).

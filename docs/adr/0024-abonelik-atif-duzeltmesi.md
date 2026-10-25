@@ -1,6 +1,6 @@
 # ADR-0024: Plan 4.5 abonelik atıflarının düzeltilmesi
 
-- Tarih: 2026-10-22
+- Tarih: 2026-10-22 (güncelleme 2026-10-25: yıllık plan iade formülü docs/kararlar.md 2026-10-22 satırına göre)
 - Karar kodu: yok (plan 4.5, 11; istek: docs/istekler/hukuk-uyum-urun-tutarliligi.md madde 1)
 - Durum: Önerildi, Tarık onayı bekliyor
 
@@ -33,20 +33,28 @@ karşılaştırılacak; 21/12/2023 tarihli değişiklik başka bir yönetmeliğe
    değişikliği bildirimi, yıllık plan iade formülü) ürün davranışı olarak aynen korunur.
 2. Kanuni dayanak olarak yalnız m.5, 6, 13, 22, 23, 24 ve 25 gösterilir; 6502 sayılı Kanun m.52 ve Mesafeli
    Sözleşmeler Yönetmeliği hükümleri saklıdır.
-3. Yıllık plan iade formülü m.25'in "kullanılmayan ön ödemenin kesintisiz iadesi" kuralıyla uyumlu kurulur:
-   yüklemesi yapılmamış aylar kullanılmamış sayılır. Risk: formül, yüklemesi yapılmış ayları indirimli değil aylık
-   liste fiyatıyla mahsup ediyor; plan bunu m.16'daki indirim mahsubu sınırına dayandırıyordu, m.16 ise
-   uygulanmıyor. m.25'in "kesintisiz iade" ifadesi karşısında bu mahsubun savunulabilirliği hukukçu görüşüyle
-   değerlendirilmeli; tüketici lehine seçenek, ödenen yıllık bedelin aylara eşit bölünmesidir. Tarık kararı.
+3. Yıllık plan hemen fesih iadesi eşit bölüşümle hesaplanır (docs/kararlar.md, 2026-10-22, orkestra
+   varsayılanı): iade = ödenen yıllık bedel - (kredi yüklemesi yapılmış ay sayısı x ödenen yıllık bedel / 12).
+   Kesinti kuruşa aşağı yuvarlanır (tüketici lehine) ve iade sıfırın altına inmez. Yüklemesi yapılmamış aylar
+   m.25 anlamında kullanılmamış ön ödemedir ve kesintisiz iade edilir. Aylık liste fiyatıyla mahsup kullanılmaz;
+   önceki taslaktaki mahsup uygulanmayan m.16'ya dayanıyordu. Uygulama: packages/ledger
+   `annualRefundKurus({ paidKurus, grantedMonths })`. Örnek (varsayımsal tutar): 1.200,00 TL ödenmiş ve 3 ayı
+   yüklenmiş planda kesinti 300,00 TL, iade 900,00 TL.
+4. Koşul ve fiyat değişikliği abonelere en az 30 gün önce bildirilir; yeni fiyat sonraki dönemden geçerlidir.
+   Bu bildirim gönüllü taahhüttür (m.22 fiyat değişikliği bildirimi düzenlemez).
 
 ## Gerekçe
 
 Uygulanmayan hükme dayanak olarak atıf yapmak denetimde ve uyuşmazlıkta yanıltıcıdır; taahhütlerin gönüllü
-olduğunu açıkça yazmak tüketici lehine davranışı değiştirmeden metni doğru kılar.
+olduğunu açıkça yazmak tüketici lehine davranışı değiştirmeden metni doğru kılar. Eşit bölüşüm, yüklenmemiş
+aylar için hiçbir kesinti bırakmadığından m.25'in kesintisiz iade kuralıyla çatışmaz ve uyuşmazlık riskini
+düşürür; liste fiyatıyla mahsup ise ancak uygulanmayan m.16'ya dayanabiliyordu.
 
 ## Sonuçlar
 
-- content/hukuki/tr/iade-ve-kredi.md ve abonelik.md bu ADR'ye göre yazıldı.
+- content/hukuki/tr/iade-ve-kredi.md ve abonelik.md bu ADR'ye göre yazıldı. abonelik.md'deki
+  {{AYLIK_LISTE_FIYATI_TL}} ve {{AYLIK_INDIRIM_TL}} alanları eşit bölüşümde gerekmez; metin ve PDF alan listesi
+  hukuk-uyum tarafından güncellenir (docs/istekler/odeme-denetim-2.md).
 - plan.md 4.5 metni orkestra tarafından düzeltilir (plan.md orkestranındır).
 - docs/adr/README.md dizinine satır mimar tarafından eklenir.
 

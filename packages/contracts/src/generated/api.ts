@@ -1050,6 +1050,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/checkout/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * iyzico checkout form return (credit pack)
+         * @description iyzico posts the checkout token as a form. The server re-queries the payment and redirects the browser
+         *     to /odeme/donus with only an outcome flag; no payment data reaches the browser.
+         */
+        post: operations["checkoutCallback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/checkout/subscription-callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * iyzico subscription checkout return
+         * @description Same as /v1/checkout/callback for the subscription checkout form.
+         */
+        post: operations["subscriptionCheckoutCallback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/subscriptions/{id}/cancel": {
         parameters: {
             query?: never;
@@ -1061,7 +1102,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Cancel a subscription in one step */
+        /**
+         * Cancel a subscription in one step
+         * @description Repeating the call with the same key resumes any step that is missing (refund, provider stop).
+         */
         post: operations["cancelSubscription"];
         delete?: never;
         options?: never;
@@ -1080,6 +1124,23 @@ export interface paths {
         put?: never;
         /** Request a refund */
         post: operations["createRefundRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/coupons/redeem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Redeem a credit coupon (90 day promotional lot, once per coupon and user) */
+        post: operations["redeemCoupon"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1114,6 +1175,27 @@ export interface paths {
         put?: never;
         /** iyzico notification (signature verified, idempotent, re-queried) */
         post: operations["iyzicoWebhook"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/webhooks/iyzico-fraud": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * iyzico fraud review notification (IFN), trigger only
+         * @description The signature format is not verified yet, so the body is only a trigger: the server takes the order id
+         *     (paymentConversationId or conversationId) and re-queries that order at iyzico; nothing else is read.
+         */
+        post: operations["iyzicoFraudNotification"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1350,6 +1432,77 @@ export interface paths {
         put?: never;
         /** Manual ledger adjustment (reversal entry, reason and audit required) */
         post: operations["adminLedgerAdjustment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/chargebacks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record a chargeback and claw back the order's credits (once per order) */
+        post: operations["adminChargeback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/price-changes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Announce a plan price change to active subscribers (applies from a period at least 30 days away) */
+        post: operations["adminPriceChange"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/refunds/pending": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Refunds whose outcome is unknown (resolve within 3 work days) */
+        get: operations["adminListPendingRefunds"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/refunds/{refundRef}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description payments.refund_ref, for example fesih:<subscription id>. */
+                refundRef: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Close an unknown refund outcome after checking the iyzico panel */
+        post: operations["adminResolveRefund"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1975,8 +2128,49 @@ export interface components {
             notificationPrefs?: Record<string, never> | null;
             activity?: Record<string, never>[];
         };
+        /** @enum {string} */
+        PlanCode: "ogrenci.aylik" | "ogrenci.yillik" | "akademisyen.aylik" | "akademisyen.yillik";
+        /** @description Form fields posted by iyzico; only token is read. */
+        CheckoutCallbackForm: {
+            token: string;
+        };
+        CancelSubscriptionResult: {
+            status: string;
+            refundAmountKurus?: number;
+        };
+        /** @enum {string} */
+        RefundRequestStatus: "bekliyor" | "tamamlandi";
+        RefundRequestResult: {
+            /** Format: uuid */
+            id: string;
+            status: components["schemas"]["RefundRequestStatus"];
+            amountKurus: number | null;
+        };
+        PendingRefund: {
+            refundRef: string;
+            paymentId: string;
+            amountKurus: number;
+            /** Format: uuid */
+            orderId: string | null;
+            /** Format: date-time */
+            since: string;
+            /**
+             * Format: date-time
+             * @description since plus 3 work days.
+             */
+            resolveBy: string;
+        };
     };
     responses: {
+        /** @description Redirect to the result page; the query carries only durum=basarili or durum=basarisiz. */
+        CheckoutResultRedirect: {
+            headers: {
+                /** @description /odeme/donus?durum=basarili|basarisiz on the web origin. */
+                Location?: string;
+                [name: string]: unknown;
+            };
+            content?: never;
+        };
         /** @description OK. */
         Generic: {
             headers: {
@@ -3917,11 +4111,15 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /** @enum {string} */
-                    planCode: "ogrenci.aylik" | "ogrenci.yillik" | "akademisyen.aylik" | "akademisyen.yillik";
+                    planCode: components["schemas"]["PlanCode"];
                     couponCode?: string;
                     preInfoConsentVersion: string;
+                    /** @description Version of the subscription contract text, recorded as abonelik_sozlesmesi. */
                     distanceContractConsentVersion: string;
+                    /** @description Withdrawal exception box, recorded as cayma_istisnasi; the server may require it. */
+                    withdrawalWaiver?: boolean;
+                    /** @description Annual commitment text version (yillik_taahhutname); required for annual plans. */
+                    annualCommitmentVersion?: string;
                 };
             };
         };
@@ -3939,10 +4137,47 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
         };
     };
-    cancelSubscription: {
+    checkoutCallback: {
         parameters: {
             query?: never;
             header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["CheckoutCallbackForm"];
+            };
+        };
+        responses: {
+            303: components["responses"]["CheckoutResultRedirect"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    subscriptionCheckoutCallback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["CheckoutCallbackForm"];
+            };
+        };
+        responses: {
+            303: components["responses"]["CheckoutResultRedirect"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    cancelSubscription: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
             path: {
                 id: components["parameters"]["Id"];
             };
@@ -3963,20 +4198,23 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        status: string;
-                        refundAmountKurus?: number;
-                    };
+                    "application/json": components["schemas"]["CancelSubscriptionResult"];
                 };
             };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
             404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
         };
     };
     createRefundRequest: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
             path?: never;
             cookie?: never;
         };
@@ -3990,9 +4228,61 @@ export interface operations {
             };
         };
         responses: {
-            201: components["responses"]["Created"];
+            /** @description Refunded at once (package inside the 14 day rule, unused first subscription period). */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestResult"];
+                };
+            };
+            /** @description Waiting for an administrator. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestResult"];
+                };
+            };
             400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
             409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    redeemCoupon: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    code: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Credits granted (the same answer when the coupon was already redeemed by the caller). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        credits: number;
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
         };
     };
     listInvoices: {
@@ -4038,6 +4328,31 @@ export interface operations {
             };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
+        };
+    };
+    iyzicoFraudNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": Record<string, never>;
+            };
+        };
+        responses: {
+            /** @description Accepted. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            413: components["responses"]["PayloadTooLarge"];
+            429: components["responses"]["TooManyRequests"];
         };
     };
     appStoreWebhook: {
@@ -4436,6 +4751,128 @@ export interface operations {
             201: components["responses"]["Created"];
             400: components["responses"]["BadRequest"];
             403: components["responses"]["Forbidden"];
+        };
+    };
+    adminChargeback: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    orderId: string;
+                    caseRef: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Wallet balance after the clawback (may be negative). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        balance: number;
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminPriceChange: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    planCode: components["schemas"]["PlanCode"];
+                    newPriceKurus: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Number of subscribers notified. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        notified: number;
+                    };
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminListPendingRefunds: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Pending refunds, oldest first. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PendingRefund"][];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminResolveRefund: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description payments.refund_ref, for example fesih:<subscription id>. */
+                refundRef: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    outcome: "basarili" | "basarisiz";
+                };
+            };
+        };
+        responses: {
+            /** @description Resolved; the decision is in the audit log. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
         };
     };
     adminGetReports: {

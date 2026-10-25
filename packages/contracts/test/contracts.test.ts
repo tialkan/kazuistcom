@@ -16,6 +16,8 @@ import {
   kvkkRequestKinds,
   kvkkRequestStatuses,
   notificationTypes,
+  planCodes,
+  refundRequestStatuses,
   reviewQueueNames,
   takedownKinds,
   takedownTargetTypes,
@@ -62,6 +64,8 @@ describe('openapi and zod stay in sync', () => {
     ['TakedownTargetType', takedownTargetTypes],
     ['ReviewQueueName', reviewQueueNames],
     ['NotificationType', notificationTypes],
+    ['PlanCode', planCodes],
+    ['RefundRequestStatus', refundRequestStatuses],
   ])('%s enum matches', (name, values) => expect(enumOf(name)).toEqual([...values]));
   it('SSE event names match discriminator', () => {
     expect(Object.keys(spec.components.schemas.AnswerEvent?.discriminator?.mapping ?? {})).toEqual([
@@ -91,6 +95,14 @@ describe('openapi and zod stay in sync', () => {
       '/v1/kvkk-requests',
       '/v1/kvkk-requests/guest',
       '/v1/kvkk-requests/guest/verify',
+      '/v1/checkout/callback',
+      '/v1/checkout/subscription-callback',
+      '/v1/coupons/redeem',
+      '/v1/webhooks/iyzico-fraud',
+      '/v1/admin/chargebacks',
+      '/v1/admin/price-changes',
+      '/v1/admin/refunds/pending',
+      '/v1/admin/refunds/{refundRef}/resolve',
       '/v1/admin/ledger-adjustments',
     ];
     for (const p of required) expect(spec.paths, p).toHaveProperty([p]);

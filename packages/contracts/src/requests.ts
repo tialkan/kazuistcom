@@ -7,6 +7,7 @@ import {
   TakedownKind,
   TakedownTargetType,
 } from './account.ts';
+import { PlanCode } from './billing.ts';
 import { NotificationPrefsColumn } from './jobs.ts';
 import { AnswerRequest, PrepareRequest, VerifyRequest } from './schemas.ts';
 
@@ -128,11 +129,30 @@ export const CheckoutTopupInput = z.strictObject({
   withdrawalWaiver: z.boolean(),
 });
 export const CheckoutSubscriptionInput = z.strictObject({
-  planCode: z.enum(['ogrenci.aylik', 'ogrenci.yillik', 'akademisyen.aylik', 'akademisyen.yillik']),
+  planCode: PlanCode,
   couponCode: z.string().max(40).optional(),
   preInfoConsentVersion: z.string(),
+  /** Version of the subscription contract text (abonelik.md), written as abonelik_sozlesmesi. */
   distanceContractConsentVersion: z.string(),
+  /** Withdrawal exception box (cayma_istisnasi); the server may require it (v1.2, ADR-0026). */
+  withdrawalWaiver: z.boolean().optional(),
+  /** Annual commitment text version (yillik_taahhutname); the server requires it for annual plans. */
+  annualCommitmentVersion: z.string().max(40).optional(),
 });
+/** POST /v1/coupons/redeem: credit coupon as a 90 day promotional lot, once per coupon and user. */
+export const CouponRedeemInput = z.strictObject({ code: z.string().min(1).max(40) });
+export const AdminChargebackInput = z.strictObject({
+  orderId: uuid,
+  /** iyzico case reference. */
+  caseRef: z.string().min(1).max(100),
+});
+/** Announce a plan price change; the new price applies from a period at least 30 days away (plan 4.5/9). */
+export const AdminPriceChangeInput = z.strictObject({
+  planCode: PlanCode,
+  newPriceKurus: z.number().int().min(1).max(10_000_000),
+});
+/** Outcome of a refund whose result was unknown, after checking the iyzico panel (karar 2026-10-22). */
+export const AdminRefundResolveInput = z.strictObject({ outcome: z.enum(['basarili', 'basarisiz']) });
 export const CancelSubscriptionInput = z.strictObject({ mode: z.enum(['donem_sonu', 'hemen']) });
 export const RefundRequestInput = z.strictObject({ orderId: uuid, reason: z.string().max(2000).optional() });
 export const NotificationPreferencesInput = z.strictObject({
@@ -200,7 +220,7 @@ export const AdminLedgerAdjustmentInput = z.strictObject({
   reason: z.string().min(10).max(2000),
 });
 
-/** operationId to request body schema. Exempt: authPost (Better Auth), iyzicoWebhook and appStoreWebhook (provider shape, signature verified). */
+/** operationId to request body schema. Operations in requestBodyExempt have a provider shaped body. */
 export const requestBodies = {
   updateMe: MePatch,
   startEduVerification: EduVerificationStart,
@@ -235,6 +255,10 @@ export const requestBodies = {
   checkoutSubscription: CheckoutSubscriptionInput,
   cancelSubscription: CancelSubscriptionInput,
   createRefundRequest: RefundRequestInput,
+  redeemCoupon: CouponRedeemInput,
+  adminChargeback: AdminChargebackInput,
+  adminPriceChange: AdminPriceChangeInput,
+  adminResolveRefund: AdminRefundResolveInput,
   setNotificationPreferences: NotificationPreferencesInput,
   registerWebPush: WebPushSubscriptionInput,
   registerApnsToken: ApnsTokenInput,
@@ -246,4 +270,16 @@ export const requestBodies = {
   adminSetWeights: AdminWeightsInput,
   adminLedgerAdjustment: AdminLedgerAdjustmentInput,
 } as const;
-export const requestBodyExempt = ['authPost', 'iyzicoWebhook', 'appStoreWebhook'] as const;
+/**
+ * Provider shaped bodies (signature verified or re-queried; the handler reads only the documented fields):
+ * Better Auth, the iyzico webhook and fraud notification, the App Store webhook and the two iyzico checkout
+ * callbacks (form body with token).
+ */
+export const requestBodyExempt = [
+  'authPost',
+  'iyzicoWebhook',
+  'iyzicoFraudNotification',
+  'appStoreWebhook',
+  'checkoutCallback',
+  'subscriptionCheckoutCallback',
+] as const;

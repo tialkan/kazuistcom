@@ -29,6 +29,13 @@
       "when": 1792528888424,
       "tag": "0003_wave1_requests",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792936377582,
+      "tag": "0004_v1_2_ledger_guards",
+      "breakpoints": true
     }
   ]
 }

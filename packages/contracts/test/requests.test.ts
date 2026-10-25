@@ -63,6 +63,10 @@ function closedEverywhere(input: Schema, path: string, out: string[]): void {
 }
 
 describe('request bodies', () => {
+  it('every exempt operation exists and takes a body', () => {
+    const withBody = new Set(ops.map((o) => o.operationId));
+    for (const id of requestBodyExempt) expect(withBody, id).toContain(id);
+  });
   it('every non exempt operation has a zod schema and nothing extra', () => {
     expect(Object.keys(requestBodies).sort()).toEqual(checked.map((o) => o.operationId).sort());
   });

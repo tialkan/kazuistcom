@@ -29,3 +29,7 @@ Kimden: mimar, dal `dalga-1/mimar/istekler`. Kime: hukuk-uyum. Dayanak: ADR-0023
 ## Aciliyet
 
 Yayın kapısından önce.
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Sahibinin PR'ı: #23 (yayın kapısı bulguları, künye, ADR-0024 taslağı, PDF yapısı); PDF alanları ikinci turda. Madde bazında doğrulama kalite-guvenlik kapısındadır.

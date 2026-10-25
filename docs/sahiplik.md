@@ -31,7 +31,7 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
 | yazma | `apps/web/src/app/yazma/**`, `apps/web/src/app/kalemcik/**`, `apps/worker-node/src/kalemcik/**`, `services/worker-py/docxcheck/**`, `eval/rules/**`, `packages/i18n/{tr,en}/yazma.json`, `packages/i18n/{tr,en}/kalemcik.json` |
 | pratik | `apps/web/src/app/pratik/**`, `content/desteler/**`, `packages/i18n/{tr,en}/pratik.json` |
 | kampus | `apps/web/src/app/kampus/**`, `apps/web/src/server/kampus/**`, `packages/i18n/{tr,en}/kampus.json` |
-| odeme | `packages/ledger/**`, `apps/web/src/server/billing/**`, `apps/web/src/app/(odeme)/**`, `apps/web/src/app/api/v1/{wallet,prices,checkout,subscriptions,refund-requests,invoices,webhooks}/**`, `apps/worker-node/src/billing/**`, `packages/i18n/{tr,en}/odeme.json` |
+| odeme | `packages/ledger/**`, `apps/web/src/server/billing/**`, `apps/web/src/app/(odeme)/**`, `apps/web/src/app/api/v1/{wallet,prices,checkout,subscriptions,refund-requests,invoices,webhooks,coupons}/**`, `apps/worker-node/src/billing/**`, `packages/i18n/{tr,en}/odeme.json` |
 | on-yuz | `packages/ui/**`, `packages/i18n/src/**`, `packages/i18n/test/**`, `packages/i18n/{tr,en}/ortak.json`, `apps/web/src/app/(kabuk)/**`, `apps/web/src/app/(casuist)/**`, `apps/web/src/app/page.tsx`, `apps/web/public/fonts/**`, `apps/web/public/casuist/**` |
 | icerik | `content/**` (`content/desteler/**` ve `content/hukuki/**` hariç), `apps/web/src/app/rehberler/**`, `packages/i18n/{tr,en}/rehberler.json` |
 | seo | `apps/web/src/app/(seo)/**`, `apps/web/src/app/robots.ts`, `apps/web/src/app/sitemap.ts`, `apps/web/public/llms.txt` |

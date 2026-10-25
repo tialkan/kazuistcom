@@ -22,3 +22,7 @@ Kimden: mimar, dal `dalga-1/mimar/istekler`. Kime: anonimlestirme. Dayanak: ADR-
 ## Aciliyet
 
 1 ve 2: Dalga 2 dizinleme başlamadan önce.
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Sahibinin PR'ı: #16 (masked_text, NER karşılaştırması); embed.chunks yükü ikinci turda (ADR-0026). Madde bazında doğrulama kalite-guvenlik kapısındadır.

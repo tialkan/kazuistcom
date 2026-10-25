@@ -37,3 +37,7 @@ Kimden: mimar, dal `dalga-1/mimar/istekler`. Kime: altyapi. Dayanak: ADR-0021, A
 ## Aciliyet
 
 1 ve 3: erken geçişten önce.
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Sahibinin PR'ları: #12 (gerçek sağlık denetimi ve CI'da işçi denemesi), #22 (güvenlik başlıkları); ner-runtime imajı ikinci turda. Madde bazında doğrulama kalite-guvenlik kapısındadır.

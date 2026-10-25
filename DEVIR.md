@@ -2,6 +2,26 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, mimar, ikinci istek turu (dalga-1/mimar/istekler-2), 2026-10-25
+
+Durum: PR açık, birleştirilmedi. Sözleşme v1.2; ADR-0026 ve güncellenen ADR-0024 "Önerildi, Tarık onayı bekliyor".
+Karar tablosu: docs/istekler/README.md (ikinci tur).
+
+- Migration `0004_v1_2_ledger_guards.sql`: D6 tetikleyicileri (`ledger_transactions` değişmez, `credit_lots` yalnız
+  `remaining_credits`), `products (code, price_table_id)` tekil (D4 genişletme adımı), `payments.status` ve
+  `notices.kind` CHECK'leri NOT VALID, `records.masked_text` tetikleyicisi (parçaları siler, `embed.chunks` atar).
+  v1.1 verisinden yükseltme testi `packages/db/test/migration-0004.test.ts`.
+- Dikkat: `credit_lots` ve `ledger_transactions` üzerinde UPDATE, DELETE veya TRUNCATE yapan kod ya da test artık
+  hata alır; düzeltme ters kayıtla yapılır.
+- Dikkat: `records.masked_text` her değiştiğinde o kaydın parçaları silinir; masked_text yazan her üretici bunu
+  bilmeli (aynı metni yeniden yazmak tetiklemez).
+- D4 daraltma adımı ve iki CHECK'in VALIDATE edilmesi sonraki migration'lardır (odeme deposu ve staging verisi).
+- OpenAPI: iki iyzico dönüş ucu yalnız 303 döndüğü için `.redocly.lint-ignore.yaml` (lint) ve `redocly.generate.yaml`
+  (üretici) içinde açık istisna; başka istisna eklenmemeli.
+- worker-py `ner-runtime` ekstrası kilitli; imaj işi altyapıda.
+- Orkestra talimatıyla değişen sahip dışı dosyalar: `apps/web/src/app/(odeme)/odeme/page.tsx`,
+  `odeme/donus/page.tsx` (tekil main), `services/worker-py/pyproject.toml` ve `uv.lock` (ner-runtime).
+
 ## Dalga 1, kalite-guvenlik, kapı raporu (dalga-1/kalite-guvenlik/kapi), 2026-10-22
 
 ### Durum

@@ -11,3 +11,14 @@
      sunucunun CPU'sunda `compare_ner.py --threads <n>` ile yeniden ölçülmeli.
 4. Geriye uyumluluk: `KAZUIST_NER_BACKEND` verilmezse davranış bugünküyle aynıdır (yalnız kural katmanı, sürüm `ner.none`). Değişken verildiğinde `anonymizationVersion` değişir (`anon-0.2.0+ekE-2026.10.0+ner.akdeniz27@99995f7`); plan 6.4/7 gereği corpus yeniden işlenir ve fark raporu tutulur.
 5. Aciliyet: gerçek karar metni işlenmeden önce (Dalga 2 başı). Bu olmadan Dalga 1 ilerler; üretimde kişi adı eşiği yalnız kural katmanıyla tutturulamaz.
+
+## Sonuç (mimar, 2026-10-25, dal dalga-1/mimar/istekler-2)
+
+Kabul. Orkestranın talimatıyla `services/worker-py/pyproject.toml`'a `ner-runtime` ekstrası eklendi
+(onnxruntime>=1.20, tokenizers>=0.20, numpy>=1.26) ve `uv.lock` yenilendi: onnxruntime 1.31.0 (MIT), tokenizers
+0.22.2 (Apache-2.0), numpy 2.4.6 (BSD-3-Clause ve paketlenen alt bileşenler için 0BSD, MIT, Zlib, CC0-1.0; PyPI'dan
+doğrulandı). `uv export --extra ner-runtime` torch, transformers veya gliner içermez; varsayılan kurulum değişmedi.
+`.env.example`'a KAZUIST_NER_THREADS, KAZUIST_NER_QUANTIZED, HF_HUB_OFFLINE, TRANSFORMERS_OFFLINE eklendi. İmaj ve
+birim işleri: mimar-yonlendirme-2-casuist-anonimlestirme-altyapi.md.
+
+Sözleşme v1.2; ADR-0026 Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md (ikinci tur).

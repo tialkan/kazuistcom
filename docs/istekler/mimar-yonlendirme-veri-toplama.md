@@ -20,3 +20,7 @@ veri-toplama notları), istek `altyapi-worker-giris-noktalari.md`.
 ## Aciliyet
 
 1 ve 4: kaynaklar staging'de açılmadan önce.
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Sahibinin PR'ı: #11 (normlar için masked_text, EU ve ZZ, KAZUIST_SOURCES_DIR, core/worker.py kaldırıldı). Madde bazında doğrulama kalite-guvenlik kapısındadır.

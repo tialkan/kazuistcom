@@ -1,10 +1,11 @@
 openapi: 3.1.0
 info:
   title: Kazuist API
-  version: 1.1.0
+  version: 1.2.0
   summary: Kazuist web and iOS API contract (single source of truth).
   description: |
-    Contract v1.1 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md). All endpoints
+    Contract v1.2 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md and
+    docs/adr/0026-sozlesme-v1-2.md). All endpoints
     validate input with zod and reject unknown fields. Every error body is `{code, message, requestId}` and
     never exposes internal structure. Paths are relative to the `/api` prefix of the web application.
   license:
@@ -1389,10 +1390,19 @@ paths:
               additionalProperties: false
               required: [planCode, preInfoConsentVersion, distanceContractConsentVersion]
               properties:
-                planCode: { type: string, enum: [ogrenci.aylik, ogrenci.yillik, akademisyen.aylik, akademisyen.yillik] }
+                planCode: { $ref: '#/components/schemas/PlanCode' }
                 couponCode: { type: string, maxLength: 40 }
                 preInfoConsentVersion: { type: string }
-                distanceContractConsentVersion: { type: string }
+                distanceContractConsentVersion:
+                  type: string
+                  description: Version of the subscription contract text, recorded as abonelik_sozlesmesi.
+                withdrawalWaiver:
+                  type: boolean
+                  description: Withdrawal exception box, recorded as cayma_istisnasi; the server may require it.
+                annualCommitmentVersion:
+                  type: string
+                  maxLength: 40
+                  description: Annual commitment text version (yillik_taahhutname); required for annual plans.
       responses:
         '201':
           description: Checkout started.
@@ -1401,6 +1411,38 @@ paths:
               schema: { $ref: '#/components/schemas/CheckoutSession' }
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/checkout/callback:
+    post:
+      tags: [billing]
+      operationId: checkoutCallback
+      summary: iyzico checkout form return (credit pack)
+      description: |
+        iyzico posts the checkout token as a form. The server re-queries the payment and redirects the browser
+        to /odeme/donus with only an outcome flag; no payment data reaches the browser.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { $ref: '#/components/schemas/CheckoutCallbackForm' }
+      responses:
+        '303': { $ref: '#/components/responses/CheckoutResultRedirect' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/checkout/subscription-callback:
+    post:
+      tags: [billing]
+      operationId: subscriptionCheckoutCallback
+      summary: iyzico subscription checkout return
+      description: Same as /v1/checkout/callback for the subscription checkout form.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema: { $ref: '#/components/schemas/CheckoutCallbackForm' }
+      responses:
+        '303': { $ref: '#/components/responses/CheckoutResultRedirect' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /v1/subscriptions/{id}/cancel:
     parameters:
       - $ref: '#/components/parameters/Id'
@@ -1408,6 +1450,9 @@ paths:
       tags: [billing]
       operationId: cancelSubscription
       summary: Cancel a subscription in one step
+      description: Repeating the call with the same key resumes any step that is missing (refund, provider stop).
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
         content:
@@ -1423,19 +1468,19 @@ paths:
           description: Cancellation result, including refund amount for annual plans.
           content:
             application/json:
-              schema:
-                type: object
-                required: [status]
-                properties:
-                  status: { type: string }
-                  refundAmountKurus: { type: integer }
+              schema: { $ref: '#/components/schemas/CancelSubscriptionResult' }
         '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /v1/refund-requests:
     post:
       tags: [billing]
       operationId: createRefundRequest
       summary: Request a refund
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
         content:
@@ -1448,9 +1493,50 @@ paths:
                 orderId: { type: string, format: uuid }
                 reason: { type: string, maxLength: 2000 }
       responses:
-        '201': { $ref: '#/components/responses/Created' }
+        '201':
+          description: Refunded at once (package inside the 14 day rule, unused first subscription period).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestResult' }
+        '202':
+          description: Waiting for an administrator.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestResult' }
         '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/coupons/redeem:
+    post:
+      tags: [wallet]
+      operationId: redeemCoupon
+      summary: Redeem a credit coupon (90 day promotional lot, once per coupon and user)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [code]
+              properties:
+                code: { type: string, minLength: 1, maxLength: 40 }
+      responses:
+        '200':
+          description: Credits granted (the same answer when the coupon was already redeemed by the caller).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [credits]
+                properties:
+                  credits: { type: integer, minimum: 0 }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /v1/invoices:
     get:
       tags: [billing]
@@ -1481,6 +1567,25 @@ paths:
         '200': { description: 'Accepted or already processed.' }
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/webhooks/iyzico-fraud:
+    post:
+      tags: [webhooks]
+      operationId: iyzicoFraudNotification
+      summary: iyzico fraud review notification (IFN), trigger only
+      description: |
+        The signature format is not verified yet, so the body is only a trigger: the server takes the order id
+        (paymentConversationId or conversationId) and re-queries that order at iyzico; nothing else is read.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object }
+      responses:
+        '200': { description: 'Accepted.' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /v1/webhooks/appstore:
     post:
       tags: [webhooks]
@@ -1817,6 +1922,112 @@ paths:
         '201': { $ref: '#/components/responses/Created' }
         '400': { $ref: '#/components/responses/BadRequest' }
         '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/chargebacks:
+    post:
+      tags: [admin]
+      operationId: adminChargeback
+      x-kazuist-requires: [passkey, second-factor]
+      summary: Record a chargeback and claw back the order's credits (once per order)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [orderId, caseRef]
+              properties:
+                orderId: { type: string, format: uuid }
+                caseRef: { type: string, minLength: 1, maxLength: 100 }
+      responses:
+        '200':
+          description: Wallet balance after the clawback (may be negative).
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [balance]
+                properties:
+                  balance: { type: integer }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/admin/price-changes:
+    post:
+      tags: [admin]
+      operationId: adminPriceChange
+      x-kazuist-requires: [passkey, second-factor]
+      summary: Announce a plan price change to active subscribers (applies from a period at least 30 days away)
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [planCode, newPriceKurus]
+              properties:
+                planCode: { $ref: '#/components/schemas/PlanCode' }
+                newPriceKurus: { type: integer, minimum: 1, maximum: 10000000 }
+      responses:
+        '200':
+          description: Number of subscribers notified.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [notified]
+                properties:
+                  notified: { type: integer, minimum: 0 }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/refunds/pending:
+    get:
+      tags: [admin]
+      operationId: adminListPendingRefunds
+      x-kazuist-requires: [passkey, second-factor]
+      summary: Refunds whose outcome is unknown (resolve within 3 work days)
+      responses:
+        '200':
+          description: Pending refunds, oldest first.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PendingRefund' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/refunds/{refundRef}/resolve:
+    parameters:
+      - name: refundRef
+        in: path
+        required: true
+        description: payments.refund_ref, for example fesih:<subscription id>.
+        schema: { type: string, pattern: '^[a-z_]{1,30}:[0-9a-f-]{36}$' }
+    post:
+      tags: [admin]
+      operationId: adminResolveRefund
+      x-kazuist-requires: [passkey, second-factor]
+      summary: Close an unknown refund outcome after checking the iyzico panel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [outcome]
+              properties:
+                outcome: { type: string, enum: [basarili, basarisiz] }
+      responses:
+        '204':
+          description: Resolved; the decision is in the audit log.
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
   /v1/admin/reports:
     get:
       tags: [admin]
@@ -1871,6 +2082,12 @@ components:
       description: Client generated request id, unique per user and operation.
       schema: { type: string, minLength: 8, maxLength: 100 }
   responses:
+    CheckoutResultRedirect:
+      description: Redirect to the result page; the query carries only durum=basarili or durum=basarisiz.
+      headers:
+        Location:
+          description: /odeme/donus?durum=basarili|basarisiz on the web origin.
+          schema: { type: string }
     Generic:
       description: OK.
       content:
@@ -2684,3 +2901,38 @@ components:
         activity:
           type: array
           items: { type: object }
+    PlanCode:
+      type: string
+      enum: [ogrenci.aylik, ogrenci.yillik, akademisyen.aylik, akademisyen.yillik]
+    CheckoutCallbackForm:
+      type: object
+      description: Form fields posted by iyzico; only token is read.
+      required: [token]
+      properties:
+        token: { type: string, pattern: '^[A-Za-z0-9_-]{1,200}$' }
+    CancelSubscriptionResult:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string }
+        refundAmountKurus: { type: integer }
+    RefundRequestStatus:
+      type: string
+      enum: [bekliyor, tamamlandi]
+    RefundRequestResult:
+      type: object
+      required: [id, status, amountKurus]
+      properties:
+        id: { type: string, format: uuid }
+        status: { $ref: '#/components/schemas/RefundRequestStatus' }
+        amountKurus: { type: [integer, 'null'] }
+    PendingRefund:
+      type: object
+      required: [refundRef, paymentId, amountKurus, orderId, since, resolveBy]
+      properties:
+        refundRef: { type: string }
+        paymentId: { type: string }
+        amountKurus: { type: integer }
+        orderId: { type: [string, 'null'], format: uuid }
+        since: { type: string, format: date-time }
+        resolveBy: { type: string, format: date-time, description: since plus 3 work days. }

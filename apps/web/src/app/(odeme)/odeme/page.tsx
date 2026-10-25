@@ -18,7 +18,7 @@ export default async function OdemePage(props: { searchParams: Promise<{ urun?: 
   const preInfo = hukukiMetinSurumu('on-bilgilendirme');
   const contract = hukukiMetinSurumu(product.kind === 'paket' ? 'mesafeli-satis' : 'abonelik');
   return (
-    <main>
+    <div className="sayfa">
       <h1>{odeme.baslik}</h1>
       <CheckoutStep
         kind={product.kind}
@@ -27,6 +27,6 @@ export default async function OdemePage(props: { searchParams: Promise<{ urun?: 
         priceLabel={tl(product.priceKurus)}
         versions={preInfo && contract ? { preInfo, contract } : null}
       />
-    </main>
+    </div>
   );
 }
