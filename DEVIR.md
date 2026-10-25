@@ -2,6 +2,10 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, kalite-guvenlik, yeniden ölçüm, 2026-10-25
+
+Dalga 1 kapısı kapanmadı: 5/9 geçti. Güncel kanıt ve dokuz hüküm `docs/kalite/dalga-1.md` en üstünde; 22 Ekim ölçümü tarihsel korundu. Son ürün main219b903; aynı ürün ağacındaki birleşik4457292 CI40202875693 dört işte yeşil, HTTP72/E2E108 geçti, yükleme20 atlandı. Birleşik 4457292 yerel kalite kontrolü ledger120, notify16, web gate3/admin8 ve enjeksiyon60 geçti. Gerçek staging, uygulama uçtan uca sandbox, beş bağlayıcının staging çalışması ve hukuki hazırlık açık. O-07 Python runtime/extra bağımlılık bulguları ile O-09 tarama exit-kodu açığı raporlandı; yeşil CI bu açıklıkları kapatmaz. Yeni ürün kodu değiştirilmedi.
+
 ## Dalga 1, ödeme, dördüncü denetim düzeltmeleri, 2026-10-25
 
 Durum: `codex/odeme-denetim4`, PR açılacak; birleştirme orkestrada ve yeşil CI sonrasında.
