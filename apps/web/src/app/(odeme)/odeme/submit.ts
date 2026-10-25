@@ -7,6 +7,7 @@ import type { CheckoutKind } from './gate.ts';
 export interface PaymentVersions {
   preInfo: string;
   contract: string;
+  annualCommitment?: string;
 }
 
 export function checkoutRequest(p: {
@@ -26,6 +27,8 @@ export function checkoutRequest(p: {
         }
       : {
           planCode: p.code,
+          withdrawalWaiver: p.withdrawalWaiver,
+          ...(p.versions.annualCommitment ? { annualCommitmentVersion: p.versions.annualCommitment } : {}),
           preInfoConsentVersion: p.versions.preInfo,
           distanceContractConsentVersion: p.versions.contract,
         };

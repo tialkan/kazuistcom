@@ -168,7 +168,8 @@ export function successfulPaymentId(o: SubscriptionOrder | undefined): string | 
 }
 
 /**
- * definite: iyzico answered with status failure (nothing happened). Otherwise the outcome is unknown
+ * definite: iyzico answered with status failure. This alone does not prove a payment rejection.
+ * Otherwise the outcome is unknown
  * (network error, timeout, unreadable answer) and the call must not be repeated blindly.
  */
 export class IyzicoError extends Error {

@@ -25,7 +25,17 @@ export default async function OdemePage(props: { searchParams: Promise<{ urun?: 
         code={product.code}
         productLabel={product.code}
         priceLabel={tl(product.priceKurus)}
-        versions={preInfo && contract ? { preInfo, contract } : null}
+        versions={
+          preInfo && contract
+            ? {
+                preInfo,
+                contract,
+                ...(product.kind === 'abonelik' && product.interval === 'yillik'
+                  ? { annualCommitment: contract }
+                  : {}),
+              }
+            : null
+        }
       />
     </div>
   );

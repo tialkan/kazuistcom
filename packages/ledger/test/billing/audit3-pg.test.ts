@@ -20,7 +20,12 @@ const buyer: Buyer = {
   address: 'x',
 };
 const pack = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'mss-1' };
-const plan = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'abo-1' };
+const plan = {
+  preInfoConsentVersion: 'onb-1',
+  distanceContractConsentVersion: 'abo-1',
+  withdrawalWaiver: true,
+  annualCommitmentVersion: 'abo-1',
+};
 
 async function env() {
   const base = await pgBillingEnv();
@@ -108,6 +113,25 @@ it('O9 on Postgres: a deleted account with a live subscription is canceled by th
   await e.pg.query('update users set deleted_at = now() where id = $1', [e.userId]);
   expect(await e.svc.reconcileDeletedAccounts()).toBe(1);
   expect((await e.store.getSubscription(sub.id))?.status).toBe('iptal');
+  expect(await e.svc.reconcileDeletedAccounts()).toBe(0);
+  await e.pg.close();
+}, 60_000);
+
+it('O9 recovery: deleted package-only account gets exactly one refund request', async () => {
+  const e = await env();
+  const a = await e.svc.startTopup(
+    e.userId,
+    randomUUID(),
+    { productCode: 'kredi.300', withdrawalWaiver: true, ...pack },
+    buyer,
+  );
+  await e.svc.completeCheckout((await e.store.getOrder(a.orderId))?.checkoutToken as string);
+  await e.pg.query('update users set deleted_at = now() where id = $1', [e.userId]);
+  expect(await e.svc.reconcileDeletedAccounts()).toBe(1);
+  await Promise.all([e.svc.onAccountDeletion(e.userId), e.svc.onAccountDeletion(e.userId)]);
+  expect(
+    (await e.store.listRefundRequests(e.userId)).filter((r) => r.reason?.startsWith('hesap_silme:')),
+  ).toHaveLength(1);
   expect(await e.svc.reconcileDeletedAccounts()).toBe(0);
   await e.pg.close();
 }, 60_000);

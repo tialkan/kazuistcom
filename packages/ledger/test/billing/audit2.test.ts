@@ -27,7 +27,12 @@ const V: ConsentVersions = {
   abonelik_sozlesmesi: 'abo-1',
 };
 const pack = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'mss-1' };
-const plan = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'abo-1' };
+const plan = {
+  preInfoConsentVersion: 'onb-1',
+  distanceContractConsentVersion: 'abo-1',
+  withdrawalWaiver: true,
+  annualCommitmentVersion: 'abo-1',
+};
 
 function env() {
   let now = new Date('2026-10-20T09:00:00Z');
@@ -261,12 +266,7 @@ describe('low', () => {
   it('O5: the subscription step records the withdrawal exception consent', async () => {
     const e = env();
     await e.svc.setupSubscriptionCatalog();
-    await e.svc.startSubscription(
-      'u1',
-      randomUUID(),
-      { planCode: 'ogrenci.aylik', withdrawalWaiver: true, ...plan },
-      buyer,
-    );
+    await e.svc.startSubscription('u1', randomUUID(), { planCode: 'ogrenci.aylik', ...plan }, buyer);
     expect(e.store.consents.map((c) => c.kind)).toContain('cayma_istisnasi');
   });
 

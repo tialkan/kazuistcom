@@ -125,7 +125,7 @@ export interface BillingStore {
   findOrderByToken(token: string): Promise<Order | null>;
   findOrderByPaymentId(paymentId: string): Promise<Order | null>;
   /** Deleted accounts that still have a live subscription (O9 retry). */
-  listDeletedUsersWithLiveSubscriptions(): Promise<string[]>;
+  listDeletedUsersNeedingBillingRecovery(): Promise<string[]>;
   /** Returns false when the payment row already exists (idempotent). */
   addPayment(p: Payment): Promise<boolean>;
   findCharge(providerPaymentId: string): Promise<Payment | null>;
@@ -256,11 +256,18 @@ export class MemoryBillingStore implements BillingStore {
   async findOrderByPaymentId(pid: string) {
     return [...this.orders.values()].find((o) => o.paymentId === pid) ?? null;
   }
-  async listDeletedUsersWithLiveSubscriptions() {
+  async listDeletedUsersNeedingBillingRecovery() {
     const live = [...this.subscriptions.values()].filter(
       (s) => this.deletedUsers.has(s.userId) && (s.status === 'aktif' || s.status === 'odeme_bekliyor'),
     );
-    return [...new Set(live.map((s) => s.userId))];
+    const packages = [...this.orders.values()].filter(
+      (o) =>
+        this.deletedUsers.has(o.userId) &&
+        o.status === 'odendi' &&
+        o.productCode.startsWith('kredi.') &&
+        !this.refundRequests.some((r) => r.userId === o.userId && r.reason?.startsWith('hesap_silme:')),
+    );
+    return [...new Set([...live.map((s) => s.userId), ...packages.map((o) => o.userId)])];
   }
   async findCharge(id: string) {
     return this.payments.find((p) => p.kind === 'odeme' && p.providerPaymentId === id) ?? null;
@@ -340,7 +347,7 @@ export class MemoryBillingStore implements BillingStore {
     return true;
   }
   async createRefundRequest(r: RefundRequest) {
-    this.refundRequests.push({ ...r });
+    if (!this.refundRequests.some((x) => x.id === r.id)) this.refundRequests.push({ ...r });
   }
   async updateRefundRequest(id: string, status: RefundRequest['status'], amountKurus?: number | null) {
     const r = this.refundRequests.find((x) => x.id === id);

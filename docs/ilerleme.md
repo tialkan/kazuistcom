@@ -13,7 +13,7 @@ Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sür�
 | 1 | yz-gecidi | Sağlayıcılar, BYOK, maskeleme, bütçe | kapı bekliyor | PR #1 main'de |
 | 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7 main'de |
 | 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü; NER karşılaştırması ve bağlama, masked_text | PR açık | PR #3 main'de; NER: dal dalga-1/anonimlestirme/ner, kazanan kural katmanı + akdeniz27 (sentetik ve zor set, kapı kanıtı değil) |
-| 1 | odeme | Defter, iyzico sandbox | kapı bekliyor | PR #5 main'de |
+| 1 | odeme | Defter, iyzico sandbox | yeniden denetim bekliyor | Y-N7, O9 paket-only kurtarma ve O5 form/servis düzeltmesi; codex/odeme-denetim4. 120 ledger, 3 gate testi; lint/typecheck/build temiz |
 | 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8 main'de; 2026-10-20 onayları (künye, fiyatlar, Casuist görselleri) dalga-1/on-yuz/onaylar PR'ında |
 | 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4 main'de |
 | 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main'de; ADR'ler Tarık onayı bekliyor |

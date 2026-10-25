@@ -20,7 +20,12 @@ const buyer: Buyer = {
   address: 'x',
 };
 const pack = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'mss-1' };
-const plan = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'abo-1' };
+const plan = {
+  preInfoConsentVersion: 'onb-1',
+  distanceContractConsentVersion: 'abo-1',
+  withdrawalWaiver: true,
+  annualCommitmentVersion: 'abo-1',
+};
 
 async function env() {
   const base = await pgBillingEnv();

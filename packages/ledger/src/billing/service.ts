@@ -99,6 +99,9 @@ export const SIGNUP_PROMO_CREDITS = 50;
 
 /** iyzico error codes meaning "no payment for this token yet" (sandbox answers of 2026-10-25). */
 const NOT_PAID_YET = new Set(['5122', '5124']);
+// Explicit bank rejections verified in docs.iyzico.com/ek-bilgiler/hata-kodlari.
+// Never infer rejection from a numeric range or a generic status failure.
+const PAYMENT_DECLINED = new Set(['10051', '10005']);
 
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 
@@ -296,9 +299,8 @@ export class BillingService {
       // status failure with errorCode 5122 (5124: unknown token). That is not a failed payment yet; the
       // recheck job closes it after 2 days.
       if (e instanceof IyzicoError && e.definite && NOT_PAID_YET.has(e.errorCode ?? '')) return order;
-      // Any other status failure (declined card, 10051, 10005): a failed payment, not a server error
-      // (Y-N6, O-N2).
-      if (e instanceof IyzicoError && e.definite) {
+      // Only verified rejection codes close the order; technical/unknown errors are retried and alerted.
+      if (e instanceof IyzicoError && e.definite && PAYMENT_DECLINED.has(e.errorCode ?? '')) {
         await this.failOrder(order);
         return order;
       }
@@ -542,6 +544,7 @@ export class BillingService {
       preInfoConsentVersion: string;
       distanceContractConsentVersion: string;
       withdrawalWaiver?: boolean;
+      annualCommitmentVersion?: string;
     },
     buyer: Buyer,
   ) {
@@ -550,6 +553,7 @@ export class BillingService {
       c: input.couponCode ?? null,
       v: [input.preInfoConsentVersion, input.distanceContractConsentVersion],
       w: input.withdrawalWaiver ?? null,
+      annual: input.annualCommitmentVersion ?? null,
     });
     const again = await this.replay(userId, idempotencyKey, requestHash);
     if (again) return again;
@@ -563,7 +567,14 @@ export class BillingService {
       input.distanceContractConsentVersion,
       'abonelik_sozlesmesi',
     );
+    if (!input.withdrawalWaiver) throw new BillingError(400, 'withdrawal_waiver_required');
+    if (
+      product.interval === 'yillik' &&
+      input.annualCommitmentVersion !== input.distanceContractConsentVersion
+    )
+      throw new BillingError(400, 'annual_commitment_version_mismatch');
     const orderId = this.d.newId();
+    // The annual commitment is an integral section of the same published abonelik text.
     // Subscription step: abonelik_sozlesmesi, yillik_taahhutname for annual plans (ADR-0023) and the
     // withdrawal exception box until Tarik decides the unused first period case.
     const items: [Consent['kind'], string, boolean][] = [
@@ -571,9 +582,8 @@ export class BillingService {
       ['abonelik_sozlesmesi', input.distanceContractConsentVersion, true],
     ];
     if (product.interval === 'yillik')
-      items.push(['yillik_taahhutname', input.distanceContractConsentVersion, true]);
-    if (input.withdrawalWaiver !== undefined)
-      items.push(['cayma_istisnasi', input.distanceContractConsentVersion, input.withdrawalWaiver]);
+      items.push(['yillik_taahhutname', input.annualCommitmentVersion as string, true]);
+    items.push(['cayma_istisnasi', input.distanceContractConsentVersion, true]);
     const init = await this.d.iyzico.initSubscriptionCheckout({
       conversationId: orderId,
       pricingPlanReferenceCode: planRef,
@@ -1050,12 +1060,12 @@ export class BillingService {
   }
 
   /**
-   * Accounts deleted while the deletion hook failed (O9): every deleted user with a live subscription is
+   * Accounts deleted while the deletion hook failed (O9): deleted users with live subscriptions or unused package credits are
    * run through onAccountDeletion by the daily job.
    */
   async reconcileDeletedAccounts(): Promise<number> {
     let n = 0;
-    for (const userId of await this.s.listDeletedUsersWithLiveSubscriptions())
+    for (const userId of await this.s.listDeletedUsersNeedingBillingRecovery())
       if (await this.isolate('silme_kancasi_hatasi', { userId }, () => this.onAccountDeletion(userId))) n++;
     return n;
   }
@@ -1359,9 +1369,16 @@ export class BillingService {
         .lots.filter((x) => x.source === 'paket' && !x.closedBy)
         .reduce((s, x) => s + x.remainingCredits, 0),
     );
-    if (unused > 0)
+    const alreadyRequested = (await this.s.listRefundRequests(userId)).some((r) =>
+      r.reason?.startsWith('hesap_silme:'),
+    );
+    if (unused > 0 && !alreadyRequested)
       await this.s.createRefundRequest({
-        id: this.d.newId(),
+        id: createHash('sha256')
+          .update(`account-deletion-refund:${userId}`)
+          .digest('hex')
+          .slice(0, 32)
+          .replace(/^(........)(....).(...).(...)(............)$/, '$1-$2-5$3-8$4-$5'),
         userId,
         orderId: null,
         subscriptionId: null,
