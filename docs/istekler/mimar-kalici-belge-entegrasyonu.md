@@ -7,7 +7,7 @@ Mimar, 2026-10-25. ADR-0027 önerildi, onay bekliyor. Kaynak: kimlik kalıcı be
 - D4 uyumu 0004 üzerinde önce birleşsin: upsert `(code,price_table_id)`, kayıtlı ürün UUID'siyle okuma.
   Ardından 0005 koda bağlı tekilliği kaldırır. Eski fiyat/kredi/version alanları değiştirilemez;
   yalnız `active` ve `iyzico_plan_ref` değişebilir. Tarihe dayalı backfill yok, eski FK'ler korunuyor.
-- `@kazuist/db` export `freezeOrderLegalDocuments(tx, orderId, userId, documents)`.
+- `@kazuist/db/legal-documents` export `freezeOrderLegalDocuments(tx, orderId, userId, documents)`.
   `tx` checkout'un mevcut PostgreSQL transaction client'ı olmalı; pool değildir. Order ve consent'lerle
   aynı işlemde çağır. Belge: `{slug,version,text,sha256,sourceSha256?,fields}`. Ön bilgi sürümü
   `order.consent_versions.preInfo`, mesafeli/abonelik sürümü `distance` ile eşleşir.
@@ -28,3 +28,6 @@ Mimar, 2026-10-25. ADR-0027 önerildi, onay bekliyor. Kaynak: kimlik kalıcı be
   Worker retry/sabit mesaj kimliği kullanmalı; dış gönderim ile DB yazımı atomik değildir.
 - Özel içerikler Türkiye DB'sinde; dış push/genel log/kuyrukta yalnız kimlikler. Saklama süreleri
   hukuk-uyum tarafından kararlaştırılmalı; yeni ADR onayı yayın onayı yerine geçmez.
+
+Runtime importları `@kazuist/db/legal-documents` alt yolunu kullanır. Kök paket exportu migration
+klasörünü de dışa aktardığından Next.js/Turbopack içinde kullanılmaz.
