@@ -1,12 +1,51 @@
+## 25 Ekim 2026, güvenlik bağımlılık düzeltmesi (codex/guvenlik-bagimlilik)
+
+O-09 tarama hataları artık kapıyı kapatır; CLI ikizleriyle kırmızı/yeşil regresyon kanıtı var. pypdf6.21.2,
+setuptools84.2.1 ve optimum bağımlılığı kaldırılarak transformers5.16.1: gerçek all-extras pip-audit 0.
+Python145 geçti/1 optional skip; küçük offline ONNX dinamik şekil testi yeşil. Akdeniz50belge eski/yeni
+runtime PERSON440/440 eş; Hushmark402paragraf span1.0. GLiNER yeni-yığın tam export disk28 nedeniyle
+geçmedi; yeni Torch vs mevcut ONNX20belge span1.0 (150span), skor fark2e-5. CI/final tam tarama ve bağımsız denetim bekleniyor, birleşmedi.
+Kanıt ve açık işler: docs/istekler/kalite-bagimlilik.md. Eski model cache ve runtime kodu değişmedi.
+
 # Devir kaydı
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
-## Orkestra, ADR onayları ve teknik açıklar, 25 Ekim 2026
+## Orkestra, ADR onayları ve teknik açıklar, 26 Ekim 2026
 
 Kullanıcı ADR-0021/0022/0023/0024/0026 kararlarını ve runbook'taki iyzico aktivasyon taslağının gönderimini açıkça onayladı. ADR durumları ve plan 4.5 eşit bölüşüm/gönüllü bildirim atıfları güncellendi. Hukuki yayım onayı verilmedi; künye kullanıcı tarafından doldurulacak. İleti henüz gönderilmedi: sandbox kayıtlı gönderen hesabı doğrulanıyor.
 
-Teknik işler ayrı worktree'lerde sürüyor: PR #35 ödeme idempotency ve yönetim uçları, mimarda kalıcı belge/fiyat sürümleme migration 0005 ve ADR-0027 önerisi, güvenlikte hata yutan tarama ve Python bağımlılık düzeltmeleri, kimlikte PDF/hesap silme entegrasyonu. Yeni ADR-0027 onaylanmış sayılmaz; üretim migration'ı uygulanmaz. Dalga 1 kapısı son ölçümde 5/9, sonraki dalga başlamadı. Biten PR'lar yalnız dört CI işi yeşil tamamlanınca birleştirilecek.
+PR #35 (8ee22e9) ve #37 (ef4479a), dörder tamamlanmış yeşil CI işiyle main'e alındı. PR #37 beş ADR kabulünü ve plan düzeltmesini de içerir. Teknik işler ayrı worktree'lerde sürüyor: mimarda kalıcı belge/fiyat sürümleme migration 0005 ve ADR-0027 önerisi, güvenlikte hata yutan tarama ve Python bağımlılık düzeltmeleri, kimlikte PDF/hesap silme entegrasyonu. Yeni ADR-0027 onaylanmış sayılmaz; üretim migration'ı uygulanmaz. Dalga 1 kapısı son ölçümde 5/9, sonraki dalga başlamadı. Biten PR'lar yalnız dört CI işi yeşil tamamlanınca birleştirilecek.
+## Dalga 1, ödeme, D3 ve D8 teknik kapanış, 2026-10-25
+
+Durum: `codex/odeme-aciklar`, PR #35 açık; main `1ffbe56` tabanı. Plan 4 ve 9.
+D3: fesih/iade istemci anahtarı kullanıcı+işlem bazında kalıcı `idempotency_keys` kaydına ve
+hedef dahil gövde SHA-256 özetine bağlandı. Başarılı aynı istek özgün sonucu döndürür; farklı
+hedef/mod/gerekçe 409. Çalışan aynı istek 409 verir, tamamlanınca tekrar özgün sonucu alır.
+PostgreSQL'de özel havuz oturumunda advisory lock işlem süresince tutulur; süreç ölünce PG
+kilidi bırakır, aynı gövdeli sahipsiz pending kayıt iş akışının mevcut iade/fesih korumalarıyla
+sürdürülür. Hata sonrası gövde bağı kaybolmaz. Havuzda defter/iş sorguları için bağlantı ayrılır.
+Kaynak: https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS
+
+D8: `/v1/coupons/redeem`, `/v1/admin/chargebacks`, `/v1/admin/price-changes` gerçek servise bağlı.
+Admin işlemlerinde yönetici rolü+passkey+TOTP, actor denetim kaydı, hız sınırı, strict zod ve
+kalıcı istek anahtarı vardır. Kupon mevcut defter idempotency ve tüketim limitiyle işler.
+D4 ikinci migration isteği `docs/istekler/odeme-d4-urun-fiyat-surumu.md`; DB/contracts değişmedi.
+Mimar 0005 öncesinde ödeme uyumu bu PR'da: katalog `(code,price_table_id)` çatışma anahtarını kullanır,
+aynı sürümün fiyat/kredi/işlem içerik değişimini reddeder; eski order/sub product UUID'si korunur,
+yeni sipariş işlem tarihindeki sürümü seçer. İlk abonelik ürünü siparişten taşınır; planRef sürüm bazlıdır.
+D4 önce iki yeni test kırmızıydı; son odaklı test 23/23 ve ledger typecheck geçti.
+0005 ve hesap silme tercihi/PDF snapshot bağlantıları sonraki ayrı entegrasyondadır.
+
+Kanıt: önce D3 hedefli regresyon 2 başarısız/14; D8 route henüz yokken import hatası.
+Düzeltme sonrası odaklı memory 14/14, PGlite 7/7, gerçek guard+servis route 2/2 geçti.
+Sahipsiz pending, ayrı depo örnekleri, replay, gövde çatışması, havuz kapasitesi ve kilit bırakma sınandı.
+Tam test turu (son iki lock recovery testi öncesi) 601 geçti, 3 ortam testi atlandı;
+`pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm build` geçti. Son lock değişikliğinde
+ledger typecheck ve küçük hedefli testler yeniden geçti. Disk sınırı nedeniyle yeni büyük build koşulmadı.
+Gerçek PostgreSQL session termination testi yerelde yapılmadı; pool yolu protokol taklidi/PGlite ile sınandı.
+O8 gerçek sağlayıcı rapor çağrısı orkestradadır; sır veya ağ ödeme çağrısı yapılmadı.
+PDF/sözleşme ve worker notice dosyalarına dokunulmadı. Tarık'tan yeni adım gerekmiyor.
 
 ## Orkestra devralma ve Dalga 1 yeniden ölçümü, 25 Ekim 2026
 

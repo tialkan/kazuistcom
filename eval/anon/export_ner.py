@@ -50,7 +50,7 @@ def sha256(p: Path) -> str:
 
 def versions() -> Dict[str, str]:
     out = {}
-    for mod in ("torch", "transformers", "onnxruntime", "onnx", "optimum", "gliner", "tokenizers"):
+    for mod in ("torch", "transformers", "onnxruntime", "onnx", "gliner", "tokenizers"):
         try:
             out[mod] = __import__(mod).__version__
         except Exception:  # noqa: BLE001
@@ -83,21 +83,49 @@ def quantize(out: Path) -> None:
 # ---------------------------------------------------------------------------------------------------------
 
 
+def export_token_classifier(ref, inputs, path: Path) -> None:
+    """Export logits with dynamic batch/token axes, independent of Optimum.
+
+    Explicit TorchScript export matches the established Hushmark export path.
+    """
+    import torch
+
+    class Logits(torch.nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+
+        def forward(self, input_ids, attention_mask, token_type_ids):
+            return self.model(input_ids=input_ids, attention_mask=attention_mask,
+                              token_type_ids=token_type_ids).logits
+
+
+    names = ["input_ids", "attention_mask", "token_type_ids"]
+    args = tuple(inputs[name] for name in names)
+    torch.onnx.export(
+        Logits(ref).eval(), args, str(path), dynamo=False, opset_version=17,
+        input_names=names, output_names=["logits"],
+        dynamic_axes={name: {0: "batch", 1: "tokens"} for name in names + ["logits"]},
+    )
+
+
 def export_akdeniz(src: Path, out: Path) -> dict:
     import numpy as np
     import torch
-    from optimum.onnxruntime import ORTModelForTokenClassification
     from transformers import AutoModelForTokenClassification, AutoTokenizer, pipeline
 
     from anonymizer.ner import OnnxTokenClassificationBackend
 
-    ORTModelForTokenClassification.from_pretrained(str(src), export=True, provider="CPUExecutionProvider") \
-        .save_pretrained(str(out))
+    tok = AutoTokenizer.from_pretrained(str(src), local_files_only=True)
+    ref = AutoModelForTokenClassification.from_pretrained(
+        str(src), local_files_only=True, use_safetensors=True, attn_implementation="eager"
+    ).eval()
+
+    export_token_classifier(ref, tok("Örnek metin", return_tensors="pt"), out / "model.onnx")
+    ref.config.save_pretrained(str(out))
     for f in ("tokenizer.json", "tokenizer_config.json", "special_tokens_map.json", "vocab.txt", "README.md"):
         shutil.copy2(src / f, out / f)
 
-    tok = AutoTokenizer.from_pretrained(str(src), local_files_only=True)
-    ref = AutoModelForTokenClassification.from_pretrained(str(src), local_files_only=True, use_safetensors=True).eval()
     import onnxruntime as ort
 
     sess = ort.InferenceSession(str(out / "model.onnx"), providers=["CPUExecutionProvider"])
@@ -222,7 +250,7 @@ def export_gliner(src: Path, out: Path) -> dict:
     from gliner import GLiNER
 
     deb = SRC / "mdeberta-v3-base"  # backbone tokenizer and config (MIT), no weights
-    prep = SRC / "gliner-multi-v2.1-prepared"
+    prep = out / "_prepared"
     prep.mkdir(exist_ok=True)
     cfg = json.loads((src / "gliner_config.json").read_text(encoding="utf-8"))
     cfg["model_name"] = str(deb)
