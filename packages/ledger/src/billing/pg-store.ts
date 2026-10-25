@@ -9,6 +9,7 @@ import type { Ledger, PriceTable } from '../index.ts';
 import { listWalletTransactions, walletRunner, type PoolLike, type SqlClient } from '../pg.ts';
 import type {
   BillingStore,
+  OperationClaim,
   Consent,
   CouponRow,
   Invoice,
@@ -24,6 +25,9 @@ import type {
 } from './store.ts';
 import { planRole } from './store.ts';
 
+// PGlite has one connection. Production uses a dedicated pool connection per active operation.
+const localOperationLocks = new WeakMap<SqlClient, Set<string>>();
+const activePoolLocks = new WeakMap<SqlClient, number>();
 const PROVIDER = 'iyzico';
 const PLAN_ROLES = ['plus', 'akademisyen'] as const;
 export { planRole };
@@ -33,6 +37,121 @@ const d = (v: unknown): Date => (v instanceof Date ? v : new Date(String(v)));
 const dn = (v: unknown): Date | null => (v === null || v === undefined ? null : d(v));
 
 export class PgBillingStore implements BillingStore {
+  private operationLocks = new Map<string, () => Promise<void>>();
+  private async lockOperation(id: string): Promise<(() => Promise<void>) | null> {
+    if ('connect' in this.db && typeof this.db.connect === 'function') {
+      // Keep a pool connection available for the business operation and ledger transaction.
+      const max = (this.db as SqlClient & { options?: { max?: number } }).options?.max ?? 10;
+      const active = activePoolLocks.get(this.db) ?? 0;
+      if (active >= Math.max(0, max - 1)) return null;
+      activePoolLocks.set(this.db, active + 1);
+      let client;
+      try {
+        client = await (this.db as SqlClient & PoolLike).connect();
+      } catch (error) {
+        activePoolLocks.set(this.db, (activePoolLocks.get(this.db) ?? 1) - 1);
+        throw error;
+      }
+      const release = (destroy = false) => {
+        (client as SqlClient & { release(destroy?: boolean): void }).release(destroy);
+        activePoolLocks.set(this.db, (activePoolLocks.get(this.db) ?? 1) - 1);
+      };
+      try {
+        const { rows } = await client.query<{ locked: boolean }>(
+          'select pg_try_advisory_lock(hashtextextended($1,0)) as locked',
+          [id],
+        );
+        if (!rows[0]?.locked) {
+          release();
+          return null;
+        }
+        return async () => {
+          try {
+            await client.query('select pg_advisory_unlock(hashtextextended($1,0))', [id]);
+          } catch (error) {
+            release(true);
+            throw error;
+          }
+          release();
+        };
+      } catch (error) {
+        release();
+        throw error;
+      }
+    }
+    let locks = localOperationLocks.get(this.db);
+    if (!locks) {
+      locks = new Set();
+      localOperationLocks.set(this.db, locks);
+    }
+    if (locks.has(id)) return null;
+    locks.add(id);
+    return async () => {
+      locks.delete(id);
+    };
+  }
+  async claimOperation(
+    userId: string,
+    operation: string,
+    key: string,
+    requestHash: string,
+  ): Promise<OperationClaim> {
+    const id = JSON.stringify([userId, operation, key]);
+    const unlock = await this.lockOperation(id);
+    if (!unlock) {
+      const row = await this.one<{ request_hash: string }>(
+        'select request_hash from idempotency_keys where user_id=$1 and operation=$2 and key=$3',
+        [userId, operation, key],
+      );
+      return row && row.request_hash !== requestHash ? { state: 'conflict' } : { state: 'pending' };
+    }
+    let keepLock = false;
+    try {
+      await this.db.query(
+        `insert into idempotency_keys (user_id,operation,key,request_hash,expires_at)
+        values ($1,$2,$3,$4,now()+interval '7 days') on conflict (user_id,operation,key) do nothing`,
+        [userId, operation, key, requestHash],
+      );
+      const row = await this.one<{
+        request_hash: string;
+        response_status: number | null;
+        response_body: unknown;
+      }>(
+        'select request_hash,response_status,response_body from idempotency_keys where user_id=$1 and operation=$2 and key=$3',
+        [userId, operation, key],
+      );
+      if (!row || row.request_hash !== requestHash) return { state: 'conflict' };
+      if (row.response_status !== null) return { state: 'done', result: row.response_body };
+      // The lock belonged to a dead process if a pending row already existed. Resume the business
+      // operation; its refund/provider state machine independently prevents a second money movement.
+      this.operationLocks.set(id, unlock);
+      keepLock = true;
+      return { state: 'claimed' };
+    } finally {
+      if (!keepLock) await unlock();
+    }
+  }
+  private async unlockOperation(userId: string, operation: string, key: string) {
+    const id = JSON.stringify([userId, operation, key]);
+    const unlock = this.operationLocks.get(id);
+    this.operationLocks.delete(id);
+    if (unlock) await unlock();
+  }
+  async finishOperation(userId: string, operation: string, key: string, result: unknown) {
+    try {
+      await this.db.query(
+        'update idempotency_keys set response_status=200,response_body=$4::jsonb where user_id=$1 and operation=$2 and key=$3',
+        [userId, operation, key, JSON.stringify(result)],
+      );
+    } finally {
+      await this.unlockOperation(userId, operation, key);
+    }
+  }
+  async releaseOperation(userId: string, operation: string, key: string) {
+    // Keep the request hash even after a failure; the next owner can safely resume the same body.
+    await this.unlockOperation(userId, operation, key);
+  }
+
   constructor(
     private readonly db: SqlClient,
     /** Keyed subject hash for consents.user_hash (kimlik's subjectHash). */
@@ -51,15 +170,25 @@ export class PgBillingStore implements BillingStore {
        on conflict (version) do nothing`,
       [t.version, t.effectiveFrom, JSON.stringify(t.operations)],
     );
-    const pt = await this.one<{ id: string }>('select id from price_tables where version = $1', [t.version]);
-    for (const p of t.products)
+    const pt = await this.one<{ id: string; matches: boolean }>(
+      'select id,(effective_from=$2 and operations=$3::jsonb) as matches from price_tables where version=$1',
+      [t.version, t.effectiveFrom, JSON.stringify(t.operations)],
+    );
+    if (!pt?.matches) throw new Error('price_version_content_mismatch');
+    for (const p of t.products) {
       await this.db.query(
         `insert into products (code, kind, price_table_id, price_kurus, credits, monthly_credits)
          values ($1, $2, $3, $4, $5, $6)
-         on conflict (code) do update set price_table_id = excluded.price_table_id, price_kurus = excluded.price_kurus,
-           credits = excluded.credits, monthly_credits = excluded.monthly_credits`,
+         on conflict (code, price_table_id) do nothing`,
         [p.code, p.kind, pt?.id, p.priceKurus, p.credits, p.monthlyCredits],
       );
+      const product = await this.one<{ matches: boolean }>(
+        `select (kind=$3 and price_kurus=$4 and credits is not distinct from $5::integer
+        and monthly_credits is not distinct from $6::integer) as matches from products where code=$1 and price_table_id=$2`,
+        [p.code, pt.id, p.kind, p.priceKurus, p.credits, p.monthlyCredits],
+      );
+      if (!product?.matches) throw new Error('price_version_content_mismatch');
+    }
   }
 
   async walletOf(userId: string): Promise<string> {
@@ -75,6 +204,7 @@ export class PgBillingStore implements BillingStore {
       id: String(r.id),
       userId: String(r.user_id),
       productCode: String(r.product_code),
+      productId: String(r.product_id),
       couponCode: (r.coupon_code as string | null) ?? null,
       amountKurus: Number(r.amount_kurus),
       status: r.status as Order['status'],
@@ -93,7 +223,7 @@ export class PgBillingStore implements BillingStore {
     await this.db.query(
       `insert into orders (id, user_id, product_id, coupon_id, amount_kurus, status, idempotency_key, consent_versions,
          checkout_token, provider_payment_id, paid_at, created_at)
-       values ($1, $2, (select id from products where code = $3), (select id from coupons where code = $4), $5, $6, $7,
+       values ($1, $2, coalesce((select product_id from orders where id=$1), $13::uuid, (select p.id from products p join price_tables t on t.id=p.price_table_id where p.code=$3 and t.effective_from <= $12 order by t.effective_from desc,t.version desc limit 1)), (select id from coupons where code = $4), $5, $6, $7,
          $8::jsonb, $9, $10, $11, $12)
        on conflict (id) do update set status = excluded.status, checkout_token = excluded.checkout_token,
          provider_payment_id = excluded.provider_payment_id, paid_at = excluded.paid_at, updated_at = now()`,
@@ -110,6 +240,7 @@ export class PgBillingStore implements BillingStore {
         o.paymentId,
         o.paidAt,
         o.createdAt,
+        o.productId ?? null,
       ],
     );
   }
@@ -232,6 +363,7 @@ export class PgBillingStore implements BillingStore {
       id: String(r.id),
       userId: String(r.user_id),
       planCode: String(r.product_code),
+      productId: String(r.product_id),
       providerRef: String(r.provider_ref),
       status: r.status as Subscription['status'],
       priceKurus: Number(r.price_kurus ?? 0),
@@ -257,7 +389,7 @@ export class PgBillingStore implements BillingStore {
       `insert into subscriptions (id, user_id, product_id, channel, provider_ref, status, current_period_start,
          current_period_end, cancel_at_period_end, canceled_at, grants_delivered, price_kurus, last_payment_id,
          first_failure_at, failed_retries, failed_order_ref, pending_price_kurus, pending_price_effective_at)
-       values ($1, $2, (select id from products where code = $3), 'iyzico', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
+       values ($1, $2, coalesce((select product_id from subscriptions where id=$1), $18::uuid, (select p.id from products p join price_tables t on t.id=p.price_table_id where p.code=$3 and t.effective_from <= $6 order by t.effective_from desc,t.version desc limit 1)), 'iyzico', $4, $5, $6, $7, $8, $9, $10, $11, $12, $13,
          $14, $15, $16, $17)
        on conflict (id) do update set status = excluded.status, current_period_start = excluded.current_period_start,
          current_period_end = excluded.current_period_end, cancel_at_period_end = excluded.cancel_at_period_end,
@@ -284,6 +416,7 @@ export class PgBillingStore implements BillingStore {
         s.failedOrderRef,
         s.pendingPrice?.priceKurus ?? null,
         s.pendingPrice?.effectiveAt ?? null,
+        s.productId ?? null,
       ],
     );
   }
@@ -489,14 +622,20 @@ export class PgBillingStore implements BillingStore {
     );
   }
 
-  async planRefs() {
+  async planRefs(version?: string) {
     const { rows } = await this.db.query<{ code: string; iyzico_plan_ref: string }>(
-      'select code, iyzico_plan_ref from products where iyzico_plan_ref is not null',
+      `select p.code,p.iyzico_plan_ref from products p join price_tables t on t.id=p.price_table_id
+      where p.iyzico_plan_ref is not null and t.version=coalesce($1,(select version from price_tables where effective_from<=now() order by effective_from desc,version desc limit 1))`,
+      [version ?? null],
     );
     return new Map(rows.map((r) => [r.code, r.iyzico_plan_ref]));
   }
-  async savePlanRef(code: string, ref: string) {
-    await this.db.query('update products set iyzico_plan_ref = $2 where code = $1', [code, ref]);
+  async savePlanRef(code: string, ref: string, version?: string) {
+    await this.db.query(
+      `update products set iyzico_plan_ref=$2 where code=$1 and price_table_id=(select id from price_tables
+      where ($3::text is not null and version=$3) or ($3::text is null and effective_from<=now()) order by effective_from desc,version desc limit 1)`,
+      [code, ref, version ?? null],
+    );
   }
 }
 
