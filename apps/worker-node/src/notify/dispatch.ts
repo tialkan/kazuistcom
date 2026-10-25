@@ -109,6 +109,8 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
   const wanted = (c: Channel) =>
     (!payload.channels || payload.channels.includes(c)) && channelAllows(prefs, c, payload.type);
   const m = render(payload.type, payload.refId);
+  // External push providers receive only generic text, never billing details (plan 5.5).
+  const pushMessage = render(payload.type);
   const sent: Channel[] = [];
 
   if (deps.email && wanted('email')) {
@@ -137,11 +139,15 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
     if (s.channel === 'web_push' && deps.webPush && wanted('web_push')) {
       r = await deps.webPush.send(
         { endpoint: s.endpoint, keys: s.keys as { p256dh: string; auth: string } },
-        m,
+        pushMessage,
       );
       if (r === 'ok' && !sent.includes('web_push')) sent.push('web_push');
     } else if (s.channel === 'apns' && deps.apns && wanted('apns')) {
-      r = await deps.apns.send(s.endpoint, s.environment === 'production' ? 'production' : 'sandbox', m);
+      r = await deps.apns.send(
+        s.endpoint,
+        s.environment === 'production' ? 'production' : 'sandbox',
+        pushMessage,
+      );
       if (r === 'ok' && !sent.includes('apns')) sent.push('apns');
     }
     if (r === 'gone') await deps.db.query('delete from push_subscriptions where id = $1', [s.id]);

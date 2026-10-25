@@ -33,6 +33,10 @@ Gerçek servisli Docker ölçümü CI'da yapılacak; yerel ortamda Docker yok.
 
 ## Dalga 1, kimlik, ödeme bildirimleri ve bekleyen iadeler, 2026-10-25
 
+Y-N8: ödeme ayrıntısı yalnız e-postada; Web Push ve APNs genel metni kullanır. Önce kırmızı
+regression tutar/tarih sızıntısını üretti, düzeltmeden sonra iki push ve e-posta aynı testte doğrulandı.
+Worker 34 test, typecheck, build, ESLint ve check:text geçti.
+
 Y5: notify dispatch ödeme referansını gerçek tutar/tarih ve hemen veya dönem sonu fesih metnine bağlar;
 yalnız renderer null dönerse genel metne düşer. O-N1: sözleşme 1.2 bekleyen iade listesi ve karar uçları
 kimlik guard üzerinden yönetici, passkey, ikinci adım ve hız sınırıyla bağlıdır. Karar servisinde aktör

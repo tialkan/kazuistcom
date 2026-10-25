@@ -114,6 +114,27 @@ describe('dispatch', () => {
     expect(message?.text).not.toMatch(/\{(?:tutar|tarih)\}/);
   });
 
+  it('keeps billing amount and date in email and sends only generic text to both push transports', async () => {
+    const before = push.sent.length;
+    await dispatch(deps(), {
+      type: 'odeme',
+      refId: 'odeme_7_gun:subscription:34900:2026-11-01T00:00:00Z',
+      userId,
+    });
+    expect(email.sent.at(-1)?.text).toContain('349,00');
+    expect(email.sent.at(-1)?.text).toContain('1 Kasım 2026');
+    const delivered = push.sent.slice(before);
+    expect(delivered.map((item) => item.target).sort()).toEqual([
+      'devtoken1',
+      'https://push.example.invalid/1',
+    ]);
+    for (const item of delivered) {
+      expect(item.m).toEqual(render('odeme'));
+      expect(JSON.stringify(item.m)).not.toContain('349,00');
+      expect(JSON.stringify(item.m)).not.toContain('1 Kasım 2026');
+    }
+  });
+
   it('keeps cancellation modes distinct and falls back only for unsupported references', () => {
     expect(render('fesih_teyidi', 'fesih_teyidi:sub:hemen:2026-11-01').body).not.toBe(
       render('fesih_teyidi', 'fesih_teyidi:sub:donem_sonu:2026-11-01').body,

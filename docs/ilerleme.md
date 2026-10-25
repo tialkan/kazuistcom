@@ -9,7 +9,7 @@ Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sür�
 | 0 | bagimsiz-denetci | Dalga 0 denetimi | tamam | Kritik 0, yüksek 1 (kapandı), orta 5 (kapandı), düşük 7 (6 kapandı, D1 Dalga 1 odeme'ye) |
 | 0 | Tarık | ADR toplu onayı, contracts-v1 etiketi | tamam | 19 Ekim 2026 onay; contracts-v1 |
 | 1 | altyapi | Staging, CI/CD, yedek, izleme | kapı bekliyor | PR #2 main'de |
-| 1 | kimlik | Better Auth, roller, KVKK hak uçları; Y5 ve O-N1 bağlantısı | kapı bekliyor | PR #6 main'de; ödeme bildirimleri ve yönetim iade uçları 2026-10-25 doğrulandı, PR bekliyor |
+| 1 | kimlik | Better Auth, roller, KVKK hak uçları; Y5 ve O-N1 bağlantısı | kapı bekliyor | PR #6 main'de; PR #32: ödeme bildirimleri ve yönetim iade uçları doğrulandı; Y-N8 push ayrıntıları temizlendi, worker 34 test geçti |
 | 1 | yz-gecidi | Sağlayıcılar, BYOK, maskeleme, bütçe | kapı bekliyor | PR #1 main'de |
 | 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7 main'de |
 | 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü; NER karşılaştırması ve bağlama, masked_text | PR açık | PR #3 main'de; NER: dal dalga-1/anonimlestirme/ner, kazanan kural katmanı + akdeniz27 (sentetik ve zor set, kapı kanıtı değil) |
