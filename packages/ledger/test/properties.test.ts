@@ -71,6 +71,7 @@ function run(cmds: Cmd[]) {
   for (const c of cmds) {
     const at = new Date(now);
     const before = l.txs.length;
+    const beforeReservations = structuredClone(l.wallet(W).reservations);
     try {
       switch (c.t) {
         case 'grant': {
@@ -141,8 +142,25 @@ function run(cmds: Cmd[]) {
       }
     } catch (e) {
       if (!(e instanceof LedgerError)) throw e;
-      // A rejected command writes at most the release of an expired reservation.
-      expect(l.txs.length - before).toBeLessThanOrEqual(1);
+      // reserve sweeps every due hold before validating the requested key. A rejected duplicate
+      // may therefore release several expired holds and expire returned promotional credits.
+      // It must never create a new reservation or charge for the rejected operation.
+      for (const tx of l.txs.slice(before)) {
+        expect(['rezervasyon_cozum', 'son_kullanma']).toContain(tx.kind);
+        if (tx.kind === 'rezervasyon_cozum') {
+          const previous = beforeReservations.find(
+            (r) => tx.idempotencyKey === `rezervasyon_sonu:${r.operationId}`,
+          );
+          expect(previous?.status).toBe('acik');
+          expect(previous?.expiresAt.getTime()).toBeLessThanOrEqual(at.getTime());
+        } else {
+          for (const entry of tx.entries) {
+            const lot = l.wallet(W).lots.find((item) => item.id === entry.lotId);
+            expect(lot?.source).toBe('promosyon');
+            expect(lot?.expiresAt?.getTime()).toBeLessThanOrEqual(at.getTime());
+          }
+        }
+      }
     }
     check(l, events);
   }
@@ -156,6 +174,8 @@ function check(l: Ledger, events: string[]) {
   expect(new Set(l.txs.map((t) => t.idempotencyKey)).size).toBe(l.txs.length);
   // Total balance equals the sum of movements on the wallet account.
   expect(l.accountBalance(ACCOUNTS.wallet(W))).toBe(l.balance(W));
+  // A key identifies one reservation for its entire lifetime, including after expiry.
+  expect(new Set(w.reservations.map((r) => r.operationId)).size).toBe(w.reservations.length);
   // Held credits equal the open reservations.
   expect(l.accountBalance(ACCOUNTS.reserve(W))).toBe(l.reserved(W));
   // Lots stay within bounds.
@@ -218,4 +238,19 @@ describe('ledger invariants (fast-check)', () => {
       }),
     );
   });
+});
+
+it('seed 944090688: an expired duplicate releases all due holds and never reserves that key again', () => {
+  const { l } = run([
+    { t: 'grant', source: 'promosyon', credits: 2, ref: 0, dup: false },
+    { t: 'reserve', op: 0, est: 1 },
+    { t: 'reserve', op: 1, est: 1 },
+    { t: 'advance', minutes: 5 },
+    { t: 'reserve', op: 0, est: 1 },
+  ]);
+  expect(l.wallet(W).reservations.map((r) => r.status)).toEqual(['cozuldu', 'cozuldu']);
+  expect(l.reserved(W)).toBe(0);
+  expect(l.balance(W)).toBe(2);
+  expect(l.txs.filter((t) => t.kind === 'rezervasyon')).toHaveLength(2);
+  expect(l.txs.filter((t) => t.kind === 'rezervasyon_cozum')).toHaveLength(2);
 });
