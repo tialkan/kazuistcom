@@ -160,21 +160,21 @@ describe('migration 0003 on a v1 database', () => {
   it('payments: one charge per provider id, several refunds, renewals without an order', async () => {
     const ord = await one<{ id: string }>('select id from orders limit 1');
     const dup =
-      "insert into payments (order_id, provider, provider_payment_id, amount_kurus, status) values ($1, 'iyzico', 'p-1', 100, 'x')";
+      "insert into payments (order_id, provider, provider_payment_id, amount_kurus, status) values ($1, 'iyzico', 'p-1', 100, 'basarili')";
     await expect(pg.query(dup, [ord.id])).rejects.toThrow(/duplicate key/);
     const refund =
-      "insert into payments (order_id, kind, provider, provider_payment_id, refund_ref, amount_kurus, status) values ($1, 'iade', 'iyzico', 'p-1', $2, 30, 'x')";
+      "insert into payments (order_id, kind, provider, provider_payment_id, refund_ref, amount_kurus, status) values ($1, 'iade', 'iyzico', 'p-1', $2, 30, 'basarili')";
     await pg.query(refund, [ord.id, 'r-1']);
     await pg.query(refund, [ord.id, 'r-2']);
     await expect(pg.query(refund, [ord.id, 'r-2'])).rejects.toThrow(/duplicate key/);
     await expect(
       pg.query(
-        "insert into payments (provider, provider_payment_id, amount_kurus, status) values ('iyzico', 'p-2', 1, 'x')",
+        "insert into payments (provider, provider_payment_id, amount_kurus, status) values ('iyzico', 'p-2', 1, 'basarili')",
       ),
     ).rejects.toThrow(/payments_owner/);
     await expect(
       pg.query(
-        "insert into payments (order_id, kind, provider, provider_payment_id, amount_kurus, status) values ($1, 'iade', 'iyzico', 'p-1', 1, 'x')",
+        "insert into payments (order_id, kind, provider, provider_payment_id, amount_kurus, status) values ($1, 'iade', 'iyzico', 'p-1', 1, 'basarili')",
         [ord.id],
       ),
     ).rejects.toThrow(/payments_refund_ref/);

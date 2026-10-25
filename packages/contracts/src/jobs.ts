@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { BillingNoticeKind } from './billing.ts';
 import type { JobType } from './schemas.ts';
 
 /**
@@ -38,13 +39,23 @@ export const pushChannels = ['web_push', 'apns'] as const;
 export const apnsEnvironments = ['production', 'sandbox'] as const;
 
 /** notify.send payload. The worker renders the text from i18n; no text or address is queued. */
-export const NotifyPayload = z.strictObject({
-  type: NotificationType,
-  userId: z.uuid(),
-  refId: z.string().max(100).optional(),
-  /** Restrict to some channels; default every channel the user allows. */
-  channels: z.array(NotificationChannel).optional(),
-});
+export const NotifyPayload = z
+  .strictObject({
+    type: NotificationType,
+    /**
+     * Template of a billing notice (v1.2, ADR-0026). Only with type odeme; preferences stay per type.
+     * Producers before v1.2 encode it as the refId prefix (<subtype>:<ref>), which renderers still accept.
+     */
+    subtype: BillingNoticeKind.optional(),
+    userId: z.uuid(),
+    refId: z.string().max(100).optional(),
+    /** Restrict to some channels; default every channel the user allows. */
+    channels: z.array(NotificationChannel).optional(),
+  })
+  .refine((p) => p.subtype === undefined || p.type === 'odeme', {
+    message: 'subtype is only allowed with type odeme',
+    path: ['subtype'],
+  });
 export type NotifyPayload = z.infer<typeof NotifyPayload>;
 
 /**
@@ -58,6 +69,16 @@ export type AccountPurgePayload = z.infer<typeof AccountPurgePayload>;
 /** anon.run payload (services/worker-py/anonymizer/job.py). */
 export const AnonRunPayload = z.strictObject({ recordId: z.uuid() });
 
+/**
+ * embed.chunks payload (v1.2, ADR-0026). Enqueued with dedupe key embed:<recordId> by anon.run and by the
+ * records trigger whenever masked_text gets a value. The consumer embeds records.masked_text only; it
+ * remembers md5(masked_text) when it reads and, in the write transaction, locks the record row and writes the
+ * chunks only if the hash is unchanged, otherwise it fails the job so the retry reads the new text. Chunks of
+ * a record are deleted by the records trigger whenever masked_text changes or becomes NULL (fail closed).
+ */
+export const EmbedChunksPayload = z.strictObject({ recordId: z.uuid() });
+export type EmbedChunksPayload = z.infer<typeof EmbedChunksPayload>;
+
 /** billing.reconcile payload: the UTC day to reconcile, default yesterday. */
 export const BillingReconcilePayload = z.strictObject({ day: z.iso.date().optional() });
 
@@ -65,6 +86,7 @@ export const jobPayloadSchemas = {
   'notify.send': NotifyPayload,
   'account.purge': AccountPurgePayload,
   'anon.run': AnonRunPayload,
+  'embed.chunks': EmbedChunksPayload,
   'billing.reconcile': BillingReconcilePayload,
   'billing.monthly_grant': z.strictObject({}),
 } as const satisfies Partial<Record<JobType, z.ZodType>>;

@@ -53,3 +53,7 @@ Sözleşme yolları (`packages/contracts`, `packages/db`) hazırdır; aşağıda
 ## Aciliyet
 
 1, 4, 5: yayın kapısından önce. 3: yönetim paneli açılmadan önce.
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Sahibinin PR'ı: #14 (TOTP, auth_method, kvkk_requests ve misafir akışı, account.purge, sözleşme bildirim türleri). Madde bazında doğrulama kalite-guvenlik kapısındadır.

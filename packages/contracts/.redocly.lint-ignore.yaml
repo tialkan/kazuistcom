@@ -1,0 +1,7 @@
+# This file instructs Redocly's linter to ignore the rules contained for specific parts of your API.
+# See https://redocly.com/docs/cli/ for more information.
+# The two iyzico checkout callbacks answer only with a 303 redirect to /odeme/donus (ADR-0026); no 2XX exists.
+openapi.yaml:
+  operation-2xx-response:
+    - '#/paths/~1v1~1checkout~1callback/post/responses'
+    - '#/paths/~1v1~1checkout~1subscription-callback/post/responses'

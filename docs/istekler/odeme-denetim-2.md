@@ -38,3 +38,18 @@
   OpenAPI'ye eklenmeli. İmza biçimi belgede doğrulanana kadar yalnız tetikleyicidir.
 - D6 (önceki istek): `ledger_transactions` değişmezlik tetikleyicisi hâlâ açık (repro-pg-v2 E).
 - `payments.status` değerleri artık `hazir`, `bekliyor`, `basarili`, `basarisiz`; CHECK kısıtı eklenebilir.
+
+## Sonuç (mimar, 2026-10-25, dal dalga-1/mimar/istekler-2)
+
+mimar maddeleri:
+- O5: Kabul (odeme-abonelik-onay-alanlari.md).
+- Y-N3: Kabul. `POST /v1/webhooks/iyzico-fraud` (`iyzicoFraudNotification`) OpenAPI'de, yalnız tetikleyici olarak
+  tanımlı; imza biçimi doğrulanınca ayrı istekle imza zorunlu olur.
+- D6: Kabul (migration 0004).
+- `payments.status` CHECK: Kabul, NOT VALID (hazir, bekliyor, basarili, basarisiz; `paymentStatuses`).
+- O-N1 (kimlik bölümündeki yönetim uçları): sözleşmeye eklendi, `GET /v1/admin/refunds/pending` ve
+  `POST /v1/admin/refunds/{refundRef}/resolve` (204); route kimlikte.
+- ADR-0024 (hukuk-uyum bölümü): ADR eşit bölüşüm formülüne göre güncellendi (Önerildi); metin işi hukuk-uyum'da.
+Y5 render ve O6 PDF eki: mimar-yonlendirme-2-kimlik.md; PDF yazı tipi: mimar-yonlendirme-2-on-yuz-hukuk-uyum.md.
+
+Sözleşme v1.2; ADR-0026 Tarık onayı bekliyor. Karar tablosu: docs/istekler/README.md (ikinci tur).

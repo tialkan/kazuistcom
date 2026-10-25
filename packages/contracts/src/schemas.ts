@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /** Contract version; equals openapi.yaml info.version and this package's version (ADR-0023). */
-export const CONTRACT_VERSION = '1.1.0';
+export const CONTRACT_VERSION = '1.2.0';
 
 /** Error body for every endpoint (plan Ek C.1, wt.65). */
 export const errorCodes = [

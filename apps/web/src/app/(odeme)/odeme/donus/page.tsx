@@ -16,9 +16,9 @@ export default async function OdemeDonusPage(props: { searchParams: Promise<{ du
         ? odeme.donus.basarisiz
         : odeme.donus.kontrol;
   return (
-    <main>
+    <div className="sayfa">
       <h1>{odeme.donus.baslik}</h1>
       <p aria-live="polite">{text}</p>
-    </main>
+    </div>
   );
 }

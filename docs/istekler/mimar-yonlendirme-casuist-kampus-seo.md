@@ -24,3 +24,7 @@ Site haritası `hidden_at` dolu veya `masked_text` boş kayıtları içermez; gi
 ## Aciliyet
 
 Dalga 2 modül işleriyle birlikte.
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Açık: Dalga 2 modül işleri; embed.chunks tüketici kuralı ikinci turda (ADR-0026). Madde bazında doğrulama kalite-guvenlik kapısındadır.

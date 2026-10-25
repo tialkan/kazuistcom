@@ -2,6 +2,35 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, mimar, ikinci istek turu (dalga-1/mimar/istekler-2), 2026-10-25
+
+Durum: PR açık, birleştirilmedi. Sözleşme v1.2; ADR-0026 ve güncellenen ADR-0024 "Önerildi, Tarık onayı bekliyor".
+Karar tablosu: docs/istekler/README.md (ikinci tur).
+
+Doğrulama (güncel main ve PR #30 ile): `pnpm test` 585 geçti, 3 ortam gerektiren test atlandı;
+`pnpm typecheck`, `pnpm lint`, `pnpm contracts:lint`, `pnpm check:text`, `pnpm build` geçti.
+Python `uv run --project services/worker-py pytest services/worker-py/tests -q`: 86 geçti.
+Migration testleri 27/27; v1.1 verisinden yükseltme ve defter/parça tetikleyicileri dahil.
+Dal commitleri `gitleaks git --redact --log-opts='origin/main..HEAD'` ile temiz.
+IFN gövdesi PR #30 ile eşlendi (`paymentId`, `fraudStatus`); `orders.status` CHECK eklenmedi.
+Gerçek servisli Docker ölçümü CI'da yapılacak; yerel ortamda Docker yok.
+
+
+- Migration `0004_v1_2_ledger_guards.sql`: D6 tetikleyicileri (`ledger_transactions` değişmez, `credit_lots` yalnız
+  `remaining_credits`), `products (code, price_table_id)` tekil (D4 genişletme adımı), `payments.status` ve
+  `notices.kind` CHECK'leri NOT VALID, `records.masked_text` tetikleyicisi (parçaları siler, `embed.chunks` atar).
+  v1.1 verisinden yükseltme testi `packages/db/test/migration-0004.test.ts`.
+- Dikkat: `credit_lots` ve `ledger_transactions` üzerinde UPDATE, DELETE veya TRUNCATE yapan kod ya da test artık
+  hata alır; düzeltme ters kayıtla yapılır.
+- Dikkat: `records.masked_text` her değiştiğinde o kaydın parçaları silinir; masked_text yazan her üretici bunu
+  bilmeli (aynı metni yeniden yazmak tetiklemez).
+- D4 daraltma adımı ve iki CHECK'in VALIDATE edilmesi sonraki migration'lardır (odeme deposu ve staging verisi).
+- OpenAPI: iki iyzico dönüş ucu yalnız 303 döndüğü için `.redocly.lint-ignore.yaml` (lint) ve `redocly.generate.yaml`
+  (üretici) içinde açık istisna; başka istisna eklenmemeli.
+- worker-py `ner-runtime` ekstrası kilitli; imaj işi altyapıda.
+- Orkestra talimatıyla değişen sahip dışı dosyalar: `apps/web/src/app/(odeme)/odeme/page.tsx`,
+  `odeme/donus/page.tsx` (tekil main), `services/worker-py/pyproject.toml` ve `uv.lock` (ner-runtime).
+
 ## Orkestra devri, 2026-10-25
 
 Orkestra yeni oturuma devredildi. Devralan oturum önce `docs/ORKESTRA-DEVIR.md`'yi okur; başlangıç metni o dosyanın 11. bölümündedir.

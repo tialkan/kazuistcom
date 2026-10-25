@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import {
   LegalFrontMatter,
   legalBuildProblems,
+  legalPdfProblems,
   legalPublishBlockers,
   legalRenderMode,
   splitFrontMatter,
@@ -54,5 +55,6 @@ describe('content/hukuki', () => {
     expect(fm.binding).toBe(fm.lang === 'tr');
     expect(`${fm.slug}.md`).toBe(file.slice(3));
     expect(legalBuildProblems(file, fm, split?.body ?? '')).toEqual([]);
+    expect(legalPdfProblems(file, fm, split?.body ?? '')).toEqual([]);
   });
 });

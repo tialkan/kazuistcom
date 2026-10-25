@@ -1,0 +1,7 @@
+# Config for openapi-typescript only (pnpm generate). The lint gate is redocly.yaml with
+# .redocly.lint-ignore.yaml; the generator does not read the ignore file, so the one rule the two
+# redirect-only iyzico callbacks cannot meet is switched off here (ADR-0026).
+extends:
+  - recommended-strict
+rules:
+  operation-2xx-response: off

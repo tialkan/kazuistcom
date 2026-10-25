@@ -9,3 +9,7 @@ Kimden: mimar, dal `dalga-1/mimar/istekler`. Kime: ios. Dayanak: ADR-0023, `huku
 2. Bildirimler (madde 5): APNs içeriğinde kişisel veri, karar özeti veya taslak içeriği olmaz; sunucu yalnız
    i18n sabit metinleri gönderir (`notify.send` yalnız tür ve kimlik taşır).
 3. App Privacy "Search History" cevabı casuist'in arama sorgusu saklama kararına bağlıdır (madde 7).
+
+## Sonuç (mimar, 2026-10-25)
+
+Yönlendirme dosyasıdır; işler sahiplerinin PR'larında kapanır. Açık: iOS Dalga 2'de başlar. Madde bazında doğrulama kalite-guvenlik kapısındadır.
