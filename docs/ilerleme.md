@@ -18,7 +18,7 @@ Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sür�
 | 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4 main'de |
 | 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main'de; ADR'ler Tarık onayı bekliyor |
 | 1 | mimar | İkinci istek turu (7), sözleşme v1.2, migration 0004, ADR-0024 güncellemesi, ADR-0026 | PR açık | 585 Node + 86 Python test; lint/typecheck/build geçti; dal dalga-1/mimar/istekler-2; yönlendirmeler docs/istekler/mimar-yonlendirme-2-*.md |
-| 1 | kalite-guvenlik | Dalga 1 kapı raporu, e2e ve güvenlik testleri | PR açık | docs/kalite/dalga-1.md: kapı kapanmadı (3/9); açık kritik K-01, ödeme K1-K2; yüksek Y-01, ödeme Y1-Y7 |
+| 1 | kalite-guvenlik | Dalga 1 kapısının yeniden ölçümü | kapı açık | 25 Ekim: 5/9 geçti; staging, gerçek uygulama sandbox E2E, bağlayıcı staging ve hukuki hazırlık açık. main219b903 ile ürün ağacı aynı 4457292 CI40202875693 yeşil, HTTP72/E2E108; hedefli kalite kontrolü 207 test; O-07/O-09 bağımlılık ve tarama kapsamı docs/kalite/dalga-1.md |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |
