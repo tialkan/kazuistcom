@@ -4,7 +4,7 @@ En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en 
 
 ## Dalga 1, ödeme, D3 ve D8 teknik kapanış, 2026-10-25
 
-Durum: `codex/odeme-aciklar`, PR hazırlanıyor; main `1ffbe56` tabanı. Plan 4 ve 9.
+Durum: `codex/odeme-aciklar`, PR #35 açık; main `1ffbe56` tabanı. Plan 4 ve 9.
 D3: fesih/iade istemci anahtarı kullanıcı+işlem bazında kalıcı `idempotency_keys` kaydına ve
 hedef dahil gövde SHA-256 özetine bağlandı. Başarılı aynı istek özgün sonucu döndürür; farklı
 hedef/mod/gerekçe 409. Çalışan aynı istek 409 verir, tamamlanınca tekrar özgün sonucu alır.
