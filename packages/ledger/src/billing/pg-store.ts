@@ -124,6 +124,17 @@ export class PgBillingStore implements BillingStore {
     ]);
     return r ? this.orderOf(r) : null;
   }
+  async findOrderByPaymentId(pid: string) {
+    const r = await this.one(`${this.orderSql} where o.provider_payment_id = $1`, [pid]);
+    return r ? this.orderOf(r) : null;
+  }
+  async listDeletedUsersWithLiveSubscriptions() {
+    const { rows } = await this.db.query<{ user_id: string }>(
+      `select distinct s.user_id from subscriptions s join users u on u.id = s.user_id
+        where u.deleted_at is not null and s.status in ('aktif', 'odeme_bekliyor')`,
+    );
+    return rows.map((r) => r.user_id);
+  }
   async findOrderByToken(token: string) {
     const r = await this.one(`${this.orderSql} where o.checkout_token = $1`, [token]);
     return r ? this.orderOf(r) : null;
@@ -197,7 +208,8 @@ export class PgBillingStore implements BillingStore {
   }
   async listPendingOrders(since: Date) {
     const { rows } = await this.db.query<Row>(
-      `${this.orderSql} where o.status = 'bekliyor' and o.checkout_token is not null and o.created_at >= $1
+      `${this.orderSql} where o.checkout_token is not null
+         and (o.status = 'inceleniyor' or (o.status = 'bekliyor' and o.created_at >= $1))
         order by o.created_at`,
       [since],
     );

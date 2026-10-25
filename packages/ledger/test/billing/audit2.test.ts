@@ -124,7 +124,7 @@ describe('high', () => {
     const e = env();
     e.iyz.nextFraudStatus = 0;
     const a = await e.buy();
-    expect((await e.svc.completeCheckout(a.token)).status).toBe('bekliyor');
+    expect((await e.svc.completeCheckout(a.token)).status).toBe('inceleniyor');
     e.iyz.decideFraud(a.token, 2);
     expect(await e.svc.recheckPendingOrders()).toBe(1);
     expect(await balance(e)).toBe(300);

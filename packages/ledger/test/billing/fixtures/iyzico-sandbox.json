@@ -1,0 +1,172 @@
+{
+  "checkedAt": "2026-10-25",
+  "base": "sandbox-api.iyzipay.com",
+  "cases": {
+    "paymentSuccess": {
+      "authCode": "string",
+      "basketId": "string",
+      "binNumber": "string",
+      "cardAssociation": "MASTER_CARD",
+      "cardFamily": "string",
+      "cardType": "CREDIT_CARD",
+      "conversationId": "string",
+      "currency": "TRY",
+      "fraudStatus": 1,
+      "hostReference": "string",
+      "installment": 1,
+      "itemTransactions": [
+        {
+          "blockageRate": "number",
+          "blockageRateAmountMerchant": "number",
+          "blockageRateAmountSubMerchant": "number",
+          "blockageResolvedDate": "string",
+          "convertedPayout": {
+            "blockageRateAmountMerchant": "number",
+            "blockageRateAmountSubMerchant": "number",
+            "currency": "TRY",
+            "iyziCommissionFee": "number",
+            "iyziCommissionRateAmount": "number",
+            "iyziConversionRate": "number",
+            "iyziConversionRateAmount": "number",
+            "merchantPayoutAmount": "number",
+            "paidPrice": "number",
+            "subMerchantPayoutAmount": "number"
+          },
+          "itemId": "string",
+          "iyziCommissionFee": "number",
+          "iyziCommissionRateAmount": "number",
+          "merchantCommissionRate": "number",
+          "merchantCommissionRateAmount": "number",
+          "merchantPayoutAmount": "number",
+          "paidPrice": "number",
+          "paymentTransactionId": "string",
+          "price": "number",
+          "subMerchantPayoutAmount": "number",
+          "subMerchantPayoutRate": "number",
+          "subMerchantPrice": "number",
+          "transactionStatus": 2
+        }
+      ],
+      "iyziCommissionFee": "number",
+      "iyziCommissionRateAmount": "number",
+      "lastFourDigits": "string",
+      "locale": "tr",
+      "merchantCommissionRate": "number",
+      "merchantCommissionRateAmount": "number",
+      "paidPrice": "number",
+      "paymentId": "string",
+      "phase": "AUTH",
+      "price": "number",
+      "signature": "string",
+      "status": "success",
+      "systemTime": "number"
+    },
+    "notSufficientFunds": {
+      "conversationId": "string",
+      "errorCode": "10051",
+      "errorGroup": "string",
+      "errorMessage": "string",
+      "locale": "tr",
+      "paymentId": "string",
+      "status": "failure",
+      "systemTime": "number"
+    },
+    "doNotHonour": {
+      "conversationId": "string",
+      "errorCode": "10005",
+      "errorGroup": "string",
+      "errorMessage": "string",
+      "locale": "tr",
+      "paymentId": "string",
+      "status": "failure",
+      "systemTime": "number"
+    },
+    "threeDsInitialize": {
+      "conversationId": "string",
+      "locale": "tr",
+      "paymentId": "string",
+      "signature": "string",
+      "status": "success",
+      "systemTime": "number",
+      "threeDSHtmlContent": "string"
+    },
+    "threeDsInitializeFailed": {
+      "conversationId": "string",
+      "errorCode": "5099",
+      "errorMessage": "string",
+      "locale": "tr",
+      "status": "failure",
+      "systemTime": "number"
+    },
+    "checkoutFormInitialize": {
+      "checkoutFormContent": "string",
+      "conversationId": "string",
+      "locale": "tr",
+      "payWithIyzicoPageUrl": "string",
+      "paymentPageUrl": "string",
+      "signature": "string",
+      "status": "success",
+      "systemTime": "number",
+      "token": "string",
+      "tokenExpireTime": "number"
+    },
+    "checkoutDetailAbandoned": {
+      "errorCode": "5122",
+      "errorMessage": "string",
+      "locale": "tr",
+      "status": "failure",
+      "systemTime": "number"
+    },
+    "checkoutDetailUnknownToken": {
+      "errorCode": "5124",
+      "errorMessage": "string",
+      "locale": "tr",
+      "status": "failure",
+      "systemTime": "number"
+    },
+    "refundPartial": {
+      "authCode": "string",
+      "conversationId": "string",
+      "currency": "TRY",
+      "hostReference": "string",
+      "locale": "tr",
+      "paymentId": "string",
+      "price": "number",
+      "refundHostReference": "string",
+      "retryable": "boolean",
+      "signature": "string",
+      "status": "success",
+      "systemTime": "number",
+      "transactionType": "REFUND"
+    },
+    "refundPartialAgain": {
+      "authCode": "string",
+      "conversationId": "string",
+      "currency": "TRY",
+      "hostReference": "string",
+      "locale": "tr",
+      "paymentId": "string",
+      "price": "number",
+      "refundHostReference": "string",
+      "retryable": "boolean",
+      "signature": "string",
+      "status": "success",
+      "systemTime": "number",
+      "transactionType": "REFUND"
+    },
+    "subscriptionProduct": {
+      "errorCode": "100001",
+      "errorMessage": "string",
+      "status": "failure",
+      "systemTime": "number"
+    },
+    "reportTransactions": {
+      "status": "success",
+      "systemTime": "number",
+      "transactions": []
+    }
+  },
+  "reportRelation": {
+    "linesForOurConversation": []
+  }
+}

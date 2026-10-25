@@ -401,6 +401,14 @@ export class Ledger {
     return r;
   }
 
+  /** Move the expiry of an open reservation (a refund hold whose outcome is unknown, D-N6). */
+  extendReservation(walletId: string, operationId: string, expiresAt: Date): Reservation {
+    const r = this.wallet(walletId).reservations.find((x) => x.operationId === operationId);
+    if (!r || r.status !== 'acik') throw new LedgerError('reservation_not_open');
+    if (expiresAt.getTime() > r.expiresAt.getTime()) r.expiresAt = expiresAt;
+    return r;
+  }
+
   /** Finish a refund held by holdLot: the held credits go to the refund account as a reversal of the grant. */
   refundHeld(p: { walletId: string; operationId: string; now: Date }): LedgerTx {
     const w = this.wallet(p.walletId);

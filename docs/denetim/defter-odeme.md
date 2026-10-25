@@ -71,3 +71,23 @@ Yeni bulgular (betikler: `docs/denetim/repro/repro2-pg.mts`, `repro2-mem.mts`, `
 Kısmen kalanlarda öne çıkanlar: Y5 bildirim metinleri genel (7 gün bildiriminde tutar ve tarih yok, dönem sonu fesihte yanlış metin); Y7 açık rezervasyonun eşzamanlı tekrarı tek ücretle iki kez çalışıyor; O5 abonelikte cayma onayı kaydedilmiyor; O6 ekranda hukuk-uyum yer tutucuları, PDF ve e-posta yok; O9 onAccountDeletion çağrılmıyor.
 
 Toplam açık: kritik 0, yüksek 7, orta 7, düşük 10. Canlı ödeme anahtarı Y-N1..Y-N4 kapanmadan istenmez.
+
+## Üçüncü denetim, 2026-10-25 (main 50f7c1a, PR #27 sonrası)
+
+Hüküm: canlı ödeme anahtarı istenmemeli. Önceki açık ya da kısmen 24 bulgu: kapandı 9 (Y3, Y7, O4, Y-N1, Y-N2, Y-N4, D-N3, D-N4, D-N5), kısmen 13, açık 2 (D6, D9).
+
+Yeni bulgular (betikler `docs/denetim/repro/repro3-pg.mts`, `repro3-pg-r2.mts`, `repro3-http.mts`):
+
+| No | Önem | Bulgu | Yer |
+|---|---|---|---|
+| Y-N5 | Yüksek | İncelemesi (fraudStatus 0) 2 günü aşan, parası tahsil edilmiş sipariş kalıcı `basarisiz` kapanıyor; sonraki onay ve IFN onu görmüyor. | service.ts:383-385, 404; pg-store listPendingOrders (R1) |
+| Y-N6 | Yüksek | Tek bir iyzico hatası (zaman aşımı veya `status: failure`) günlük ödeme zincirinin kalanını o gün durduruyor; başarısız kart cevabında callback 500, sipariş `bekliyor`, kupon dönmüyor. FakeIyzico bu yolu modellemiyor. | service.ts:380-382; worker-node billing/deps.ts:29-37; iyzico.ts call, retrySubscriptionOrder (repro3-pg-r2, repro3-http) |
+| O-N3 | Orta | IFN ucu belgedeki `{paymentId, fraudStatus}` gövdesini yok sayıyor (yalnız conversationId okuyor); kimliksiz çağrı yeniden sorgu tetikleyebiliyor. | service.ts:394-406; fake-iyzico.ts fraudNotification (R3) |
+| D-N6 | Düşük | 30 günlük tutma dolunca belirsiz iadenin kredisi serbest kalıyor; geç yönetici kararı yarım kalıyor. | engine.ts REFUND_HOLD_TTL_MS; service.ts:1183-1191 (R4) |
+| D-N7 | Düşük | plan.md 4.5/7 eski formülü yazıyor (ADR-0024 onayıyla düzelecek); kod, hukuki metin ve kararlar yeni formülde. | plan.md:289 |
+| D-N8 | Düşük | FakeIyzico yarım bırakılan abonelik checkout'unu modelleyemiyor. | fake-iyzico.ts retrieveSubscriptionCheckout |
+| D-N9 | Düşük | reconcileCancellations bitmiş tüm abonelikleri süresiz sorguluyor. | service.ts:978-991 |
+
+Kısmen kalanlar: Y5 (renderBillingNotice çağrılmıyor, sozlesme metni PDF vaat ediyor), Y-N3, O5 (withdrawalWaiver sözleşmede yok), O6 (PDF ve e-posta yok, yer tutucular, abonelik adımı başlığı), O8 ve D-N2 (siparişsiz yenileme eşlemesi), O9 (silme kancası hatasında yeniden deneme yok), O-N1 (yönetim uçları bağlı değil), O-N2 (HttpIyzico failure yolunda kupon), D-N1 (abonelikte onaylar başlatmadan önce), D3, D4, D8.
+
+Toplam açık: kritik 0, yüksek 4 (Y5, Y-N3, Y-N5, Y-N6), orta 7, düşük 11. Gerçek sandbox uçtan uca denemesi (başarısız kart, yarım belirteç, IFN gövdesi, rapor transactionId) IYZICO_MERCHANT_ID gelince yapılacak.

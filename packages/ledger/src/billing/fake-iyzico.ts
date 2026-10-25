@@ -31,7 +31,9 @@ export const FAKE_CFG = {
 
 interface FakeCheckout {
   init: CheckoutInit;
-  outcome: 'success' | 'threeds_failure' | 'pending';
+  /** card_failure: the detail query answers status failure, as iyzico does for a declined card. */
+  /** abandoned: the form was never paid; the detail answers status failure 5122 (sandbox). */
+  outcome: 'success' | 'threeds_failure' | 'pending' | 'card_failure' | 'abandoned';
   fraudStatus: 1 | 2 | 0 | -1;
   paymentId: string;
 }
@@ -95,17 +97,12 @@ export class FakeIyzico implements IyzicoApi {
 
   async retrieveCheckoutForm(token: string): Promise<CheckoutResult> {
     const c = this.checkouts.get(token);
-    if (!c)
-      return {
-        status: 'failure',
-        paymentStatus: 'FAILURE',
-        paymentId: null,
-        basketId: null,
-        conversationId: null,
-        paidPriceKurus: null,
-        fraudStatus: null,
-        currency: null,
-      };
+    // Sandbox answers status failure 5124 for a token it does not know.
+    if (!c) throw new IyzicoError('/payment/iyzipos/checkoutform/auth/ecom/detail', true, '5124');
+    if (c.outcome === 'card_failure')
+      throw new IyzicoError('/payment/iyzipos/checkoutform/auth/ecom/detail', true, '10051');
+    if (c.outcome === 'abandoned')
+      throw new IyzicoError('/payment/iyzipos/checkoutform/auth/ecom/detail', true, '5122');
     const ok = c.outcome === 'success';
     if (ok && c.fraudStatus !== -1 && !this.transactions.some((t) => t.paymentId === c.paymentId))
       this.transactions.push({
@@ -187,9 +184,15 @@ export class FakeIyzico implements IyzicoApi {
       });
   }
 
+  /** The user left the subscription form without paying (D-N8). */
+  abandonSubscriptionCheckout(token: string): void {
+    this.abandoned.add(token);
+  }
+  readonly abandoned = new Set<string>();
+
   async retrieveSubscriptionCheckout(token: string) {
     const c = this.subCheckouts.get(token);
-    if (!c)
+    if (!c || (this.abandoned.has(token) && !c.subRef))
       return { status: 'failure' as const, subscriptionReferenceCode: null, customerReferenceCode: null };
     if (!c.subRef) {
       const plan = this.plans.get(c.init.pricingPlanReferenceCode);

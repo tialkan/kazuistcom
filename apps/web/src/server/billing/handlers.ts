@@ -25,6 +25,8 @@ const rate = {
   write: { name: 'billing-write', limit: 10, windowSec: 60 },
   prices: { name: 'billing-prices', limit: 120, windowSec: 60 },
   webhook: { name: 'billing-webhook', limit: 600, windowSec: 60 },
+  /** IFN is only a trigger and has no verified signature yet: a narrow limit per IP (O-N3). */
+  ifn: { name: 'billing-ifn', limit: 20, windowSec: 60 },
 };
 
 const codeOf: Record<BillingError['status'], ErrorCode> = {
@@ -126,30 +128,50 @@ export const checkoutSubscriptionPost = withAuth({ rate: rate.write }, async (re
 
 const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+/**
+ * Ownership is checked first, straight from the database: another user's subscription or order answers
+ * 404 before any body validation and even while the billing service is not configured (IDOR test).
+ */
+async function owns(
+  ctx: AuthContext,
+  table: 'subscriptions' | 'orders',
+  id: string,
+  userId: string,
+): Promise<boolean> {
+  if (!uuidRe.test(id)) return false;
+  const t = table === 'subscriptions' ? schema.subscriptions : schema.orders;
+  const [row] = await ctx.db.select({ userId: t.userId }).from(t).where(eq(t.id, id));
+  return row?.userId === userId;
+}
+
 export function subscriptionCancelPost(req: Request, route: { params: Promise<{ id: string }> }) {
-  return withAuth({ rate: rate.write }, async (r, p) =>
-    withService(async (s) => {
-      const { id } = await route.params;
-      if (!uuidRe.test(id)) return apiError('not_found');
+  return withAuth({ rate: rate.write }, async (r, p, ctx) => {
+    const { id } = await route.params;
+    if (!(await owns(ctx, 'subscriptions', id, p.userId))) return apiError('not_found');
+    return withService(async (s) => {
       // Cancel is idempotent on the subscription itself; the key is still required (D3).
       if (!idemKey(r)) return apiError('bad_request');
       const parsed = CancelSubscriptionInput.safeParse(await body(r));
       if (!parsed.success) return apiError('bad_request');
       return json(await s.cancel(p.userId, id, parsed.data.mode));
-    }),
-  )(req);
+    });
+  })(req);
 }
 
-export const refundRequestPost = withAuth({ rate: rate.write }, async (req, p) =>
-  withService(async (s) => {
+export const refundRequestPost = withAuth({ rate: rate.write }, async (req, p, ctx) => {
+  const raw = await body(req);
+  const orderId = (raw as { orderId?: unknown } | null)?.orderId;
+  if (typeof orderId === 'string' && !(await owns(ctx, 'orders', orderId, p.userId)))
+    return apiError('not_found');
+  return withService(async (s) => {
     if (!idemKey(req)) return apiError('bad_request');
-    const parsed = RefundRequestInput.safeParse(await body(req));
+    const parsed = RefundRequestInput.safeParse(raw);
     if (!parsed.success) return apiError('bad_request');
     // Inside the 14 day rule the refund runs at once; otherwise the request waits for approval (O9).
     const r = await s.requestRefund(p.userId, parsed.data.orderId, parsed.data.reason);
     return json(r, r.status === 'tamamlandi' ? 201 : 202);
-  }),
-);
+  });
+});
 
 /** Public: authenticated by the iyzico signature, idempotent on iyziReferenceCode. */
 export const iyzicoWebhookPost = withPublic(rate.webhook, async (req) =>
@@ -160,10 +182,10 @@ export const iyzicoWebhookPost = withPublic(rate.webhook, async (req) =>
  * IFN for fraud reviews (Y-N3). Its signature format is not verified yet, so the body is only a trigger:
  * the service re-queries the named order at iyzico and takes nothing else from the request.
  */
-export const iyzicoFraudPost = withPublic(rate.webhook, async (req) =>
+export const iyzicoFraudPost = withPublic(rate.ifn, async (req) =>
   withService(async (s) => {
     const raw = await req.text();
-    if (raw.length > 16_000) return apiError('payload_too_large');
+    if (raw.length > 2_000) return apiError('payload_too_large');
     const r = await s.handleFraudNotification(raw);
     return r.status === 200 ? json({ ok: true }) : apiError('bad_request');
   }),

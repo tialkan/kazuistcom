@@ -26,14 +26,28 @@ const subjectHash = (secret: string, id: string) =>
 export function depsFromService(svc: BillingService, now: () => Date = () => new Date()): BillingJobsDeps {
   return {
     now,
+    /**
+     * The daily chain (Y-N6): every step runs even when an earlier one failed; the names of failed steps
+     * are reported in the job result. Pending payments, failed iyzico cancels and deletion hooks that did
+     * not run are retried every day (Y-N2, Y-N3, Y-N4, O9).
+     */
     async monthlyGrant() {
-      await svc.closeEndedPeriods();
-      // Pending payments (fraud review, missed subscription callback) and iyzico cancels that failed
-      // are retried every day (Y-N2, Y-N3, Y-N4).
-      await svc.recheckPendingOrders();
-      await svc.reconcileCancellations();
-      await svc.runDunning();
-      return svc.monthlyGrant();
+      const failed: string[] = [];
+      const step = async <T>(name: string, fn: () => Promise<T>): Promise<T | undefined> => {
+        try {
+          return await fn();
+        } catch {
+          failed.push(name);
+          return undefined;
+        }
+      };
+      await step('closeEndedPeriods', () => svc.closeEndedPeriods());
+      await step('recheckPendingOrders', () => svc.recheckPendingOrders());
+      await step('reconcileCancellations', () => svc.reconcileCancellations());
+      await step('reconcileDeletedAccounts', () => svc.reconcileDeletedAccounts());
+      await step('runDunning', () => svc.runDunning());
+      const granted = (await step('monthlyGrant', () => svc.monthlyGrant())) ?? 0;
+      return { granted, failed };
     },
     reconcileDay: (day) => svc.reconcileDay(day),
   };

@@ -4,7 +4,8 @@
  */
 import { Ledger, istanbulDay, type LedgerTx } from '../index.ts';
 
-export type OrderStatus = 'bekliyor' | 'odendi' | 'basarisiz' | 'iade_edildi';
+/** inceleniyor: paid, iyzico fraud review open (fraudStatus 0); never closed by the 2 day rule (Y-N5). */
+export type OrderStatus = 'bekliyor' | 'inceleniyor' | 'odendi' | 'basarisiz' | 'iade_edildi';
 export interface Order {
   id: string;
   userId: string;
@@ -122,6 +123,9 @@ export interface BillingStore {
   getOrder(id: string): Promise<Order | null>;
   findOrderByKey(userId: string, key: string): Promise<Order | null>;
   findOrderByToken(token: string): Promise<Order | null>;
+  findOrderByPaymentId(paymentId: string): Promise<Order | null>;
+  /** Deleted accounts that still have a live subscription (O9 retry). */
+  listDeletedUsersWithLiveSubscriptions(): Promise<string[]>;
   /** Returns false when the payment row already exists (idempotent). */
   addPayment(p: Payment): Promise<boolean>;
   findCharge(providerPaymentId: string): Promise<Payment | null>;
@@ -188,6 +192,7 @@ export class MemoryBillingStore implements BillingStore {
   coupons = new Map<string, CouponRow>();
   redemptions = new Set<string>();
   refundRequests: RefundRequest[] = [];
+  deletedUsers = new Set<string>();
   wallets = new Map<string, string>();
   plans = new Map<string, Plan>();
   refs = new Map<string, string>();
@@ -243,8 +248,19 @@ export class MemoryBillingStore implements BillingStore {
   }
   async listPendingOrders(since: Date) {
     return [...this.orders.values()].filter(
-      (o) => o.status === 'bekliyor' && o.checkoutToken && o.createdAt.getTime() >= since.getTime(),
+      (o) =>
+        o.checkoutToken &&
+        (o.status === 'inceleniyor' || (o.status === 'bekliyor' && o.createdAt.getTime() >= since.getTime())),
     );
+  }
+  async findOrderByPaymentId(pid: string) {
+    return [...this.orders.values()].find((o) => o.paymentId === pid) ?? null;
+  }
+  async listDeletedUsersWithLiveSubscriptions() {
+    const live = [...this.subscriptions.values()].filter(
+      (s) => this.deletedUsers.has(s.userId) && (s.status === 'aktif' || s.status === 'odeme_bekliyor'),
+    );
+    return [...new Set(live.map((s) => s.userId))];
   }
   async findCharge(id: string) {
     return this.payments.find((p) => p.kind === 'odeme' && p.providerPaymentId === id) ?? null;

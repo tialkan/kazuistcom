@@ -18,6 +18,8 @@ import { GET as walletGET } from '../../../app/api/v1/wallet/route.ts';
 import { GET as ledgerGET } from '../../../app/api/v1/wallet/ledger/route.ts';
 import { GET as invoicesGET } from '../../../app/api/v1/invoices/route.ts';
 import { POST as webhookPOST } from '../../../app/api/v1/webhooks/iyzico/route.ts';
+import { POST as cancelPOST } from '../../../app/api/v1/subscriptions/[id]/cancel/route.ts';
+import { POST as refundPOST } from '../../../app/api/v1/refund-requests/route.ts';
 import { BASE, api, createHarness, signUp, type Harness } from '../../auth/__tests__/harness.ts';
 import { setBillingService } from '../context.ts';
 
@@ -125,5 +127,39 @@ describe('billing routes', () => {
       }),
     );
     expect(res.status).toBe(401);
+  });
+
+  it('another user cancelling or refunding gets 404 before body validation (IDOR, quality gate)', async () => {
+    const other = (await signUp('baska@example.invalid')).token;
+    const owner = (
+      await h.pg.query<{ id: string }>("select id from users where email = 'odeme@example.invalid'")
+    ).rows[0]?.id;
+    const plan = (await h.pg.query<{ id: string }>("select id from products where code = 'ogrenci.aylik'"))
+      .rows[0]?.id;
+    const sub = (
+      await h.pg.query<{ id: string }>(
+        `insert into subscriptions (user_id, product_id, channel, provider_ref, status, current_period_start, current_period_end)
+         values ($1, $2, 'iyzico', 'idor-1', 'aktif', now(), now() + interval '30 days') returning id`,
+        [owner, plan],
+      )
+    ).rows[0]?.id;
+    const order = (await h.pg.query<{ id: string }>('select id from orders limit 1')).rows[0]?.id;
+    const c = await cancelPOST(
+      api(`/v1/subscriptions/${sub}/cancel`, other, {
+        method: 'POST',
+        body: JSON.stringify({ mode: 'hemen' }),
+      }),
+      {
+        params: Promise.resolve({ id: sub as string }),
+      },
+    );
+    expect(c.status).toBe(404);
+    const r = await refundPOST(
+      api('/v1/refund-requests', other, { method: 'POST', body: JSON.stringify({ orderId: order }) }),
+    );
+    expect(r.status).toBe(404);
+    expect((await h.pg.query('select status from subscriptions where id = $1', [sub])).rows).toEqual([
+      { status: 'aktif' },
+    ]);
   });
 });
