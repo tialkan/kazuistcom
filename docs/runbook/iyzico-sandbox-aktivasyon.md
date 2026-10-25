@@ -34,3 +34,7 @@ Teşekkürler.
 Önceki sandbox kaydı ödeme, kart reddi, 3DS başlatma, ödenmemiş token ve kısmi iade cevap biçimlerini içeriyor.
 Bu kayıt uygulamanın HPP ve 3DS tarayıcı adımları, webhook teslimi, abonelik ve rapor eşlemesi dahil tüm
 uçtan uca kabul senaryolarının geçtiği anlamına gelmez. Canlı ödeme anahtarı bu açıklar kapanmadan istenmez.
+
+## Gönderim kaydı, 26 Ekim 2026
+
+Kullanıcının 25 Ekim açık yetkisiyle taslak, sandbox profilinde doğrulanan kayıtlı hesaptan `entegrasyon@iyzico.com` adresine 26 Ekim 2026 00:32 (Europe/Istanbul) gönderildi. Gmail Gönderilenler içinde alıcı, konu ve gövde doğrulandı. Bu kayıt aktivasyonun tamamlandığını göstermez; iyzico yanıtı ve gerçek uygulama kabulü beklenir. Yerel görsel kanıt: `/tmp/kazuist-iyzico-sent-20261026.png`.
