@@ -91,3 +91,122 @@ Yeni bulgular (betikler `docs/denetim/repro/repro3-pg.mts`, `repro3-pg-r2.mts`, 
 Kısmen kalanlar: Y5 (renderBillingNotice çağrılmıyor, sozlesme metni PDF vaat ediyor), Y-N3, O5 (withdrawalWaiver sözleşmede yok), O6 (PDF ve e-posta yok, yer tutucular, abonelik adımı başlığı), O8 ve D-N2 (siparişsiz yenileme eşlemesi), O9 (silme kancası hatasında yeniden deneme yok), O-N1 (yönetim uçları bağlı değil), O-N2 (HttpIyzico failure yolunda kupon), D-N1 (abonelikte onaylar başlatmadan önce), D3, D4, D8.
 
 Toplam açık: kritik 0, yüksek 4 (Y5, Y-N3, Y-N5, Y-N6), orta 7, düşük 11. Gerçek sandbox uçtan uca denemesi (başarısız kart, yarım belirteç, IFN gövdesi, rapor transactionId) IYZICO_MERCHANT_ID gelince yapılacak.
+
+## Dördüncü denetim, 2026-10-25 (main 3b1e172, PR #30 sonrası)
+
+Denetçi: işi üretmemiş bagimsiz-denetci. İzole checkout: `.claude/worktrees/codex-denetim4`.
+Ağ veya ödeme çağrısı yapılmadı. `pnpm --filter @kazuist/ledger test`: 16 dosya, 116 test geçti.
+Bu bölümün ilk ölçümü PR #31 ve #32 öncesidir; aşağıdaki son teyit bu tarihli başlangıçtan önceliklidir.
+
+### Yeni yüksek bulgu Y-N7
+
+`service.ts:299-302`, 5122/5124 dışındaki tüm kesin `IyzicoError` cevaplarını ödeme reddi sayıyor.
+`iyzico.ts:273-279` her `status: failure` cevabını kesin hata olarak işaretliyor. Teknik hata ödeme reddinin
+kanıtı değildir (plan 9.2/1,5).
+
+Ağsız yeniden üretme: FakeIyzico ile fraudStatus 0 sipariş açıldı, callback ile `inceleniyor` oldu.
+`retrieveCheckoutForm` bir kez `IyzicoError('/detail', true, '100001')` attı. Günlük yeniden sorgu siparişi
+`basarisiz` yaptı. Sağlayıcı düzeltilip fraudStatus 2 onayı ve ödeme kimlikli IFN geldikten sonra da bakiye 0
+kaldı. Kanıt: `before inceleniyor -> after system failure basarisiz -> after approval and IFN basarisiz balance 0`.
+Beklenen: doğrulanmış ödeme reddi dışındaki teknik cevaplarda durum korunur, uyarı ve yeniden sorgu sürer.
+
+### PR #30 ile teyit edilenler
+
+- Y-N5 olağan uzun inceleme yolu: 9 gün sonra inceleme sürüyor; onaylı IFN 300 kredi yüklüyor. Y-N7 ayrı hata yoludur.
+- Y-N6 günlük adımlar ve kayıt döngüleri izole; tek hata kalan yüklemeleri durdurmuyor. Kart reddi 10051
+  siparişi kapatıp kuponu geri veriyor. Teknik cevap sınıflandırması Y-N7'de açık.
+- O-N3: yalnız ödeme kimlikli mevcut sipariş yeniden sorgulanıyor; 20/dk/IP, 2 KB gövde sınırı var.
+  IFN imzası doğrulanmış değil; uç ödeme sonucu kabul etmez, sağlayıcıdan yeniden sorgu tetikler.
+- D-N6: 31 gün sonra tutma ve geç yönetici kararı bellek ve PGlite testlerinde geçti. Kod süresiz yerine
+  10 yıllık uzatma kullanıyor; hiç sona ermeyen kilit olarak tanımlanmamalı.
+- D-N8: taklit sağlayıcı terk edilen abonelik checkout'unu modelleyebiliyor; gerçek abonelik cevabı doğrulanmadı.
+- D-N9: 60 günlük iptal sorgu penceresi testi geçti.
+- D-N1: başarısız abonelik başlatmada onay kaydı yok. O-N2: reddedilen kartta kupon geri geliyor.
+- O9 kısmen: kurtarma sorgusu yalnız canlı abonelikli silinmiş kullanıcıları seçiyor (`pg-store.ts:131`).
+  Kancası kaçan ve yalnız kullanılmamış paket kredisi olan kullanıcı kurtarma işine girmiyor.
+
+### Bu ölçümde açık kalanlar
+
+Y5 yüksek (ayrıntılı ödeme metni gönderime bağlı değil), O5 (abonelik cayma alanı sözleşmede yok), O6
+(PDF ve kalıcı e-posta teslimi yok), O8/D-N2 (gerçek dolu raporla ödeme kimliği eşlemesi yok), O-N1
+(yönetim iade uçları yok), D3 (fesih/iade idempotency anahtarının gövdeyle eşlemesi yok), D4/D8 (fiyat,
+kupon ve ters ibraz giriş noktaları eksik), D6 (mimar migration sonrası teyit bekliyor), D9 (cüzdan
+geçmişinin tamamının yüklenmesi).
+
+### Sandbox kanıt sınırı
+
+`fixtures/iyzico-sandbox.json` kimliksiz cevap şekilleri ve hata kodlarıdır; fetch taklidiyle geçen fixture
+testi gerçek uygulama uçtan uca kabulü değildir. HPP/3DS tarayıcı adımı, callback/webhook teslimi,
+defter-fatura-bildirim zinciri, abonelik başlatma/yenileme/fesih ve dolu günlük rapor kanıtı eksiktir.
+`100001` tek başına eklentinin kapalı olduğunu kanıtlamaz. Resmî sandbox aktivasyon yolu ve gönderilmemiş
+taslak: `docs/runbook/iyzico-sandbox-aktivasyon.md`.
+
+Başlangıç hükmü: ödeme kapısı geçmedi; canlı anahtar istenmez. Y-N7 ve O9 düzeltme sahibine verildi;
+Y5/O-N1 kimlik PR #32, D6/O5 sözleşme PR #31 ile son teyit bekliyor.
+
+### Ek teyit: sözleşme 1.2 ve kimlik (13cfbec, PR #31 ve #32 adayı)
+
+Bağımsız denetçi ayrı `.claude/worktrees/codex-denetim-final` checkout'unda yeniden ölçtü:
+DB 6 dosya/27 test, bildirim dispatch 1 dosya/15 test, yönetici iade yetkisi 1 dosya/8 test geçti.
+
+- D6 kapandı: migration 0004 işlem kayıtlarında UPDATE/DELETE/TRUNCATE, kredi partilerinde kalan kredi
+  dışındaki değişiklikleri engelliyor; v1.1 verisinden yükseltme ve yasak işlemler test edildi.
+- Y5 metin bağlantısı kapandı: gerçek dispatch ödeme refId'sini renderer'a taşıyor; tutar/tarih ve iki
+  fesih biçimi e-posta taşıyıcısına ulaşıyor. Gerçek e-posta teslimi ölçülmedi.
+- O-N1 kapandı: yönetim iade uçları BillingService'e bağlı. Anonim 401, kullanıcı 403, ikinci adım öncesi
+  403, şema, actor aktarımı ve tekrar kararda 409 testleri geçti. Servis davranışı ayrıca PGlite'te ölçüldü.
+- O5 bu adayda açık kaldı: alanlar sözleşmede var ama form göndermiyor, servis yıllık taahhüt sürümünü
+  ayrıca almıyor. Ödeme sahibine düzeltme verildi.
+- D4 kısmen: bileşik ürün indeksi var, PgBillingStore kataloğu hâlâ `on conflict(code)` ile güncelliyor;
+  uçtan uca fiyat sürümleme akışı kapanmış sayılmaz.
+
+Bu adayın denetimi Y-N7/O9 ödeme düzeltmesini içermiyor. O6, O8/D-N2, D3, D8 ve D9 önceki açık
+kapsamlarıyla sürüyor. Gerçek sandbox kabulüne onay verilmedi.
+
+### Ek yüksek bulgu Y-N8: ödeme ayrıntısı APNs'a taşınıyor (13cfbec)
+
+`billing/notices.ts:24` bildirim kanalını sınırlamıyor. `notify/dispatch.ts:111` ayrıntılı ödeme mesajını
+oluşturup hem WebPush'a hem APNs'a taşıyor; `notify/transports.ts:121` APNs gövdesini `aps.alert.body`
+olarak Apple'a iletiyor. `docs/kvkk/aktarim.md:26` dış push metninde kişisel veri/içerik olmayacağını söylüyor.
+
+Ağsız yeniden üretmede ödeme bildirimi için her iki push taşıyıcısı tahsilat tarihi ve tutarını aldı.
+WebPush şifreli olduğundan sağlayıcının içeriği okuduğu iddia edilmiyor; APNs yolu tek başına bulguya
+kanıt. Canlı bildirim gönderilmedi. Kimliğe düzeltme verildi: ayrıntılı mesaj yalnız e-postada, dış push
+mesajı genel sabit metinden üretilecek; iki push kanalı ve e-posta regresyon testiyle teyit edilecek.
+
+### Y-N8 kapanış teyidi (84f07f7)
+
+Bağımsız denetçi bildirim dispatch testini yeniden çalıştırdı: 1 dosya, 16 test geçti. Her iki dış push
+kanalı refId'siz genel metni alıyor; ayrıntılı tutar/tarih yalnız e-posta taşıyıcısında kalıyor. Y5 metin
+bağlantısının kapanışı korundu. Gerçek e-posta veya push gönderilmedi.
+
+### Ödeme düzeltmeleri bağımsız teyidi (1209bf7, PR #33 adayı)
+
+Ledger 16 dosya/120 test ve ödeme formu 1 dosya/3 test bağımsız olarak geçti. Y-N7 kapandı: teknik
+100001/1000/10214/bilinmeyen kodları incelemeyi koruyor ve uyarı veriyor; sonraki onaylı IFN 300 kredi
+yüklüyor. Yalnız doğrulanmış 10051/10005 banka retlerinde sipariş kapanıp kupon dönüyor.
+
+O5 kapandı: form cayma onayını ve yıllık taahhüt sürümünü gönderiyor; servis eksik cayma onayını,
+eksik/eski yıllık sürümü reddediyor ve kabul edilen sürümleri ayrı onay kayıtlarına yazıyor. Yıllık
+taahhüt abonelik metninin bir bölümü olarak aynı yayın sürümüne bağlı. O6 hukuki metin/PDF teslimi açık.
+
+O9'un backend kurtarma eksiği kapandı: yalnız kullanılmamış paket kredisi olan silinmiş kullanıcı da
+bulunuyor; PGlite'te tekrar ve eşzamanlı çağrılar tek iade talebi oluşturuyor. O9'un tamamı kapalı değil:
+hesap silme ekranında bakiye uyarısı ve iade seçeneği (plan 4.5/12) eksik.
+
+Adaylar birlikte değerlendirildiğinde ödeme denetiminde kritik 0, yüksek 0; orta O6/O8/O9; düşük
+D3/D4/D8/D9/D-N2/D-N7 açık. Bu sayım bağımlılık güvenlik taramasını içermez; güncel O-07 ve tarama
+hata kodu bulgusu kalite raporundadır. Gerçek sandbox uçtan uca kabulü ve dolu mutabakat raporu kanıtı
+olmadan ödeme veya Dalga 1 için geçiş onayı verilmedi. Birleşmiş son main'de hedefli test teyidi gerekir.
+
+### Birleşik adayda son bağımsız kontrol (4457292)
+
+Ledger 120/120, ödeme formu 3/3, bildirim dispatch 16/16, yönetici iade yetkileri 8/8, toplam 147 test
+geçti. Y-N7, Y-N8, Y5, O5 ve O-N1 kapanışları aynı ürün ağacında korundu. O9 backend kurtarma ve
+tekilleştirme kapalı; silme ekranındaki bakiye uyarısı/iade seçeneği açık. D6 migration testleriyle kapalı.
+Denetçi checkout'u temiz bıraktı ve dosya değiştirmedi. Yeni kritik bulgu bulunmadı. Squash sonrası ürün
+ağacı eşitliği doğrulanırsa aynı hedefli testlerin tekrarına gerek yok.
+
+Son birleşim teyidi: PR #32 squash sonrası main `219b903` ile test edilen `4457292` arasında
+`git diff 4457292 219b903 -- apps packages services infra .github tests` boş. Bağımsız 147 test ve
+CI 40202875693 aynı ürün kodunu kapsıyor. Kod PR'larının tamamı dört tamamlanmış yeşil CI işiyle birleşti.

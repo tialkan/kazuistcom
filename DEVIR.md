@@ -2,6 +2,35 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Orkestra devralma ve Dalga 1 yeniden ölçümü, 25 Ekim 2026
+
+Devir alındı. Önceki iki ajanın günlükleri kullanım sınırında durduklarını gösterdi; mimarın kaydedilmemiş
+çalışması korunarak tamamlandı. PR #30, #31, #33 ve #32 dörder tamamlanmış yeşil CI işiyle squash
+birleştirildi. Son ürün main `219b903`; denetlenen birleşik aday `4457292` ile ürün kodu farkı yok.
+CI kanıtı: https://github.com/tialkan/kazuistcom/actions/runs/40202875693.
+Son main 219b903 push CI: https://github.com/tialkan/kazuistcom/actions/runs/40203467801, dört iş başarı.
+
+- İki ana iş tamam: ödeme üçüncü denetim ve cevap şekli fikstürleri (#30), sözleşme 1.2/migration 0004 (#31).
+- Ek düzeltmeler: teknik iyzico hatasında incelemenin korunması, paket kredili silinmiş hesap kurtarma,
+  abonelik onaylarının gerçek form/servis kaydı (#33); ayrıntılı ödeme e-postası, yönetim iade uçları ve
+  yalnız genel metin kullanan dış push kanalları (#32).
+- Bağımsız son denetim: defter 120, form 3, bildirim 16, yönetici iade yetkisi 8; toplam 147 test geçti.
+  Kalite, aynı kontroller ve enjeksiyon 60 ile 207 test doğruladı. D6 migration korumaları 27 testle teyitli.
+- Güncel kapı `docs/kalite/dalga-1.md`: 5/9 geçti. Staging, gerçek uygulama sandbox kabulü, staging
+  bağlayıcıları ve hukuki hazırlık açık; Dalga 2 başlamadı.
+- Ödeme denetimindeki kritik/yüksek bulgular kapalı; orta O6/O8/O9, düşük D3/D4/D8/D9/D-N2/D-N7 sürüyor.
+  Bu sayım bağımlılık güvenliğini kapsamaz: Python bulguları ve tarama hata kodu O-07/O-09 olarak açık.
+- Sandbox fikstürü gerçek uygulama uçtan uca kabulü değildir. Abonelik 100001 cevabının sebebi kesin değil;
+  resmî aktivasyon/durum teyidi e-postası için gönderilmemiş taslak runbook'ta hazır.
+- Güncel tek kullanıcı listesi `docs/istekler/orkestra-onaylar-2026-10-25.md`: beş ADR, sandbox hesap adımı,
+  eksik künye. `~/Desktop/kazuist-kunye.txt` boş alanlı şablon olarak izin 600 ile hazırlandı.
+- ADR onayı alınmış sayılmadı; plan, sürüm etiketi, DNS, canlı ödeme, canlı veri ve App Store değiştirilmedi.
+  Eski worktree'ler korundu. Aşağıdaki ajan kayıtlarındaki eski PR durumları tarihsel kayıttır.
+
+## Dalga 1, kalite-guvenlik, yeniden ölçüm, 2026-10-25
+
+Dalga 1 kapısı kapanmadı: 5/9 geçti. Güncel kanıt ve dokuz hüküm `docs/kalite/dalga-1.md` en üstünde; 22 Ekim ölçümü tarihsel korundu. Son ürün main219b903; aynı ürün ağacındaki birleşik4457292 CI40202875693 dört işte yeşil, HTTP72/E2E108 geçti, yükleme20 atlandı. Birleşik 4457292 yerel kalite kontrolü ledger120, notify16, web gate3/admin8 ve enjeksiyon60 geçti. Gerçek staging, uygulama uçtan uca sandbox, beş bağlayıcının staging çalışması ve hukuki hazırlık açık. O-07 Python runtime/extra bağımlılık bulguları ile O-09 tarama exit-kodu açığı raporlandı; yeşil CI bu açıklıkları kapatmaz. Yeni ürün kodu değiştirilmedi.
+
 ## Dalga 1, ödeme, dördüncü denetim düzeltmeleri, 2026-10-25
 
 Durum: `codex/odeme-denetim4`, PR açılacak; birleştirme orkestrada ve yeşil CI sonrasında.

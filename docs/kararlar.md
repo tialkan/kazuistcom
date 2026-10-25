@@ -19,3 +19,14 @@ Plan dışı ya da plan içinde Tarık onayı bekleyen kararların tarihli kayd�
 | 2026-10-23 | iyzico sandbox anahtarları | ~/Desktop/kazuist-iyzico-sandbox.txt (izin 600); kaynak Tarık'ın verdiği dosya, iki değer de sandbox önekli; IYZICO_MERCHANT_ID eksik | Tarık |
 
 Henüz onaylanmamış: hukuki metinler (TASLAK), kaynak bağlayıcılarının üretimde açılması (docs/kaynaklar), anonimleştirme policy.yaml, DNS ve canlı ödeme.
+
+## Orkestra devralma varsayılanları, 25 Ekim 2026
+
+- Önceki iki Claude ajanının son kayıtları kullanım sınırında durduğunu gösterdi; mevcut kirli mimar
+  worktree'si korunarak devralındı, ödeme PR #30 dört tamamlanmış yeşil CI işi sonrası birleştirildi.
+- Dalga 1 kapısı yeniden ölçülmeden Dalga 2 başlamaz. Staging yokluğu ve gerçek sandbox kabul kanıtının
+  eksikliği geçer olarak yazılmaz. Sağlayıcı cevap şekli fikstürü gerçek uygulama uçtan uca testi sayılmaz.
+- 100001 cevabından sandbox abonelik özelliğinin kapalı olduğu kesin sonucu çıkarılmaz. Resmî belgeye
+  göre aktivasyon durumu entegrasyon ekibinden teyit edilir; ileti gönderimi kullanıcı onayına tabidir.
+- ADR-0021, 0022, 0023, 0024 ve yeni 0026 için önceki onay eksikliği korunur; bu oturum onay verilmiş gibi
+  kayıt açmaz, planı bu önerilerle değiştirmez ve sürüm etiketi koymaz.

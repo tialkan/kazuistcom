@@ -1,5 +1,62 @@
 # Dalga 1 kapı raporu (kalite-guvenlik)
 
+## Yeniden ölçüm, 25 Ekim 2026
+
+Bu bölüm güncel ölçümdür. Aşağıdaki 22 Ekim bölümü tarihsel kanıttır; oradaki açık bulgular ve test sayıları güncel durum diye okunmaz. Kapsam plan 5.6, 15, 17.2 Dalga 1 ve Ek I. Veri alınamayan madde geçmedi sayılır. Sentetik test, taklit sağlayıcı, yerel CI konteyneri ve gerçek staging ayrı değerlendirilir.
+
+Denetlenen son ürün: main `219b903ae62bd138599205175bd77d7d8c9a5730` (PR #30-#33 dahil). Birleşik aday `4457292126a41e7640f45c1fe906da839baace54` için [CI 40202875693](https://github.com/tialkan/kazuistcom/actions/runs/40202875693) dört işte tamamlandı ve yeşil. Orkestra `git diff 4457292 219b903 -- apps packages services infra .github tests` çıktısının boş olduğunu teyit etti: ölçülen ürün ağacı son main ile aynı. Son main'in [push CI 40203467801](https://github.com/tialkan/kazuistcom/actions/runs/40203467801) sonucu da completed/success; node, python, docker ve gitleaks dört işte yeşil olarak orkestra tarafından doğrulandı.
+
+### Komut ve CI kanıtı
+
+- `gh run view 40202875693 --json status,conclusion,jobs`: completed/success; node, python, gitleaks, docker success. `gh run download 40202875693` ile `playwright-reports` ve `tarama` artefaktları ayrıca okundu.
+- Node: tip/lint/metin, sözleşme lint/istemci güncelliği, i18n, üretim derlemesi geçti. Workspace JS testleri 496 geçti, 3 atlandı (2 canlı sağlayıcı, 1 bağımlılık testi); bağımlılık testi Docker işinde gerçek servislerle ayrıca koştu. Python 143 geçti, 3 optional-extra testi atlandı. Enjeksiyon 60/60.
+- Docker: gerçek PostgreSQL/pgvector, Valkey, S3; migration iki kez (ikincisi no-op), db-smoke, root olmayan imajlar, health 200/503/200 ve gerçek işçi giriş noktaları geçti. Bu testler PGlite veya taklit servis sonucu değildir.
+- HTTP güvenlik: 72 geçti, 20 yükleme testi atlandı. E2E: 108 geçti; axe 13 sayfa x 3 genişlik dahil. Hassas yollar, güvenlik başlıkları/CSP, oturum çerezi, IDOR, CSRF ve hız sınırı bu CI kapsamındadır. Atlanan yükleme testleri geçmedi: veri yok.
+- Lighthouse mobil simüle, üçer koşu: `/` 96/96/96; `/fiyatlar` 97/99/98; `/en` 95/96/96. Performans 90 ve CLS bütçesi geçti. LCP `/` yaklaşık 2,63 sn, `/en` 2,77-2,81 sn; LCP uyarısı kapıyı kırmaz ve 2,5 sn hedefi bu sayfalarda sağlanmadı.
+- Yerel birleşik 4457292: ledger120, notify16, gate3/admin8 ve enjeksiyon60 geçti. Anonimleştirme tekrar ölçümü aşağıda 3b1e172 kural katmanındadır; final ürün farkında anonimleştirme kodu değişmedi.
+
+### Dalga 1'in dokuz maddesi
+
+| No  | Madde                                | Hüküm             | Kanıt ve sınır                                                                                                                                                                                                                                                                                                                                         |
+| --- | ------------------------------------ | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Staging canlı                        | geçmedi: veri yok | 25 Ekim orkestra dış kontrolü: staging.kazuist.com A ve AAAA boş; HTTPS çözümlenmiyor. CI localhost dağıtımı staging değildir.                                                                                                                                                                                                                         |
+| 2   | Giriş çalışır                        | geçti             | Üretim Docker imajında Playwright kayıt/giriş API ve arayüz akışları; HTTP oturumlu uçlar ve IDOR testleri. Eski K-01 ve O-01 güncel CI'da yeniden üretilemedi.                                                                                                                                                                                        |
+| 3   | Defter özellik testleri              | geçti             | Yerel birleşik 4457292 `pnpm --filter @kazuist/ledger test`: 16 dosya, 120 test geçti; özellik testleri dahil. Final entegrasyon CI kanıtı aşağıda.                                                                                                                                                                                                    |
+| 4   | iyzico sandbox mutlu yollar          | geçmedi           | Gerçek sandbox cevaplarından elde edilen fixture'lar bağdaştırıcı yanıt şekillerini sınar. Uygulama üzerinden gerçek Ödeme Formu/3DS, abonelik ilk tahsilat/yenileme, webhook, fatura ve mutabakat eşlemesi uçtan uca kanıtlanmadı. Fixture ve FakeIyzico ile geçen testler bu kapıyı kapatmaz.                                                        |
+| 5   | YZ geçidi taklit ve gerçek sağlayıcı | geçti             | Taklit geçit CI'da; yerel 3b1e172 enjeksiyon/maskeleme 60/60. Gerçek OpenRouter 25 Ekim duman testi kayıtlı (`docs/ORKESTRA-DEVIR.md`, bölüm 5/7); ücretli çağrı yeniden yapılmadı. CI canlı sağlayıcı testlerini atlar.                                                                                                                               |
+| 6   | Beş kaynak bağlayıcısı staging'de    | geçmedi: veri yok | Staging yok; fixture testleri gerçek staging çalışmasını kanıtlamaz. Kaynakların açılması onay bekliyor.                                                                                                                                                                                                                                               |
+| 7   | Anonimleştirme 50 belge raporu       | geçti             | `uv run python ../../eval/anon/measure.py --out <geçici>`: 50 sentetik belge, ner=none, PERSON 418/430 (%97,21), mikro yakalama %98,30, kesinlik %100. NER aday raporu `eval/anon/raporlar/dalga-1-ner.md` ayrıca mevcut; bu tur model çalıştırılmadı. Çift etiketli belge 0, kappa yok. 200 gerçek karar ve %99,5 kişi yakalama yayın kapısı geçmedi. |
+| 8   | Kabuk ve korunan Casuist sayfaları   | geçti             | CI üretim imajında Ek H 23 adres, kabuk/Casuist içerik ve görsel kontrolleri; 375, 768, 1440 px axe kritik/ciddi ihlal ve yatay taşma kapıları geçti.                                                                                                                                                                                                  |
+| 9   | Hukuki taslaklar onaya hazır         | geçmedi           | `content/hukuki` altında 7 DOĞRULANACAK işareti sürüyor. Vergi dairesi, VKN ve KEP eksik; ayrıca barındırma, marka durumu ve e-posta sağlayıcısı alanları açık. Dinamik satın alma ürün/tutar alanları bu künye eksikliklerinden ayrıdır. README onaydan önce doğrulama işaretlerinin kapanmasını ister; hukuki yayım onayı yok.                       |
+
+Sonuç: **Dalga 1 kapısı kapanmadı: 5 madde geçti, 4 madde geçmedi. Dalga 2'ye geçiş onayı verilmez.**
+
+### Bağımlılık ve tarama kapsamı (O-07)
+
+Yeşil CI güvenlik açığı sayısının sıfır olduğunu göstermez. Kaynak: CI 40202875693 `tarama` artefaktı; logda `pip-audit exit 1`, ardından `tarama status 0`. `tarama` artefaktı `pip-audit.txt`, 13 kayıt/3 paket bildiriyor:
+
+| Paket               | Kapsam                                                                                                                                                           | Artefakt bulgusu                                                                                            | Düzeltme                                                                     |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| pypdf 6.21.1        | Temel worker runtime; `connectors/rekabet.py` PDF ayrıştırır; Docker `uv sync --frozen --no-dev` ile kurar                                                       | CVE-2026-115572, CVE-2026-115585, CVE-2026-115580                                                           | 6.21.2                                                                       |
+| transformers 4.57.6 | Yerel `ner` extra; üretim worker imajına bu extra kurulmaz                                                                                                       | 9 kayıt; bazı PYSEC kimlikleri farklı fix sürümleriyle tekrar listelenir, 9 benzersiz açık iddiası değildir | Artefakta göre 5.0.0/5.0.0rc3, 5.3.0, 5.5.0, 5.10.0; bazı kayıtlarda fix yok |
+| setuptools 84.0.0   | `--all-extras` export içindeki spaCy/thinc/torch kolları; standart yerel uv ortamında yok. Temel Python imajındaki ayrıca sağlanan sürüm bu artefaktla ölçülmedi | GHSA-xmj3-9gf7-h52w                                                                                         | 84.1.0                                                                       |
+
+Node audit: esbuild geliştirme zincirinde 1 orta. Certifi artık 2026.10.19, önceki certifi kaydı bu artefakta yok. Açıkların istismar edilebilirlik ve şiddet analizi tamamlanmadığından **yüksek güvenlik bulgusu sıfır** hükmü verilmez; özellikle pypdf runtime bulguları sahip orkestra/veri-toplama tarafından incelenmelidir.
+
+Yeni **O-09, orta, sahibi kalite-guvenlik/orkestra**: `tests/security/tarama/tarama.sh`, `pip-audit` dönüş kodunu `p` ile yazıyor fakat birleşik `status` değerine yansıtmıyor. `pip-audit exit 1` ile genel tarama yeşil olabilir. Node alt paket audit'leri de pipeline içinde yalnız çıktı üretir. Kapı değerlendirmesi rapor içeriğini ayrıca incelemelidir. Bu tur davranış değiştirilmedi.
+
+### Bağımsız ödeme denetimi ve kalan ürün işleri
+
+Dördüncü denetimde Y-N7 (teknik iyzico hatasında siparişin kalıcı başarısızlaşması), Y-N8 (bildirim ayrıntılarının push kanallarına taşınması), Y5, O5 (yeni ödeme onay alanları), O-N1 ve O9 paket-only silinmiş kullanıcı backend kurtarması birleşik 4457292 üzerinde bağımsız denetçi tarafından kapandı. Kalite yeniden kontrolü: ledger 120, bildirim 16, web ödeme kapısı 3, admin 8, enjeksiyon 60 geçti (toplam 207). D6 migration denetimi önceki 27 testle kapandı. O9 kullanıcı arayüzündeki silmeden önce bakiye uyarısı/iade seçeneği kapsamı henüz kapanmış sayılmaz. Güncel açık/kapalı tüm ödeme bulguları `docs/denetim/defter-odeme.md` dördüncü denetim bölümünden izlenir; eski 22 Ekim kritik/yüksek sayıları bu tur için kullanılmaz.
+
+### Açık kapsam ve sonraki adım
+
+Staging/TLS/Basic Auth/noindex, gerçek sandbox mutlu yolları, beş bağlayıcının staging çalışması ve hukuki hazırlık tamamlanmadan kapı kapanmaz. OWASP ZAP, k6 (200 arama/50 özet), yükleme saldırıları ve Ek I staging robotları için veri yok; yükleme uçları henüz olmadığı için atlanan testler başarı sayılmaz. Lighthouse yerel mobil laboratuvar ölçümüdür; CrUX/RUM ve üretim performansını kanıtlamaz. LCP bütçesi uyarı olduğundan yeşil CI LCP 2,5 sn altı iddiası da değildir.
+
+---
+
+## Tarihsel ölçüm, 22 Ekim 2026
+
 - Tarih: 2026-10-22. Denetlenen: main 1386148 (PR #1-#18, denetim raporu docs/denetim/defter-odeme.md dahil).
 - Kapsam: plan 15.2, 17.2 Dalga 1 satırı; 5.6, 15.1, 15.3/7-13 ve Ek I'nın bu dalgada ölçülebilen kısmı.
 - Kural: veri alınamayan ölçüm "geçmedi: veri yok" yazılır, geçti sayılmaz. Bu rapor kendi yazmadığım işi
