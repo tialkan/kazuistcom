@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-20
 - Karar kodu: yok (plan 17.3/4; istekler: docs/istekler/, karar tablosu docs/istekler/README.md)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (2026-10-25, kullanıcı onayı)
 
 ## Bağlam
 
@@ -158,4 +158,4 @@ belirsiz ya da uluslararası metin için ZZ (ISO kullanıcı atamalı kod). Veri
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (2026-10-25, kullanıcı onayı).

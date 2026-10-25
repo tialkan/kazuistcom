@@ -81,6 +81,9 @@ jobs:
       - name: Dependency audit and license scan (tests/security/tarama)
         run: |
           pnpm install --frozen-lockfile
+          pnpm --dir tests/e2e install --ignore-workspace --frozen-lockfile
+          pnpm --dir tests/security install --ignore-workspace --frozen-lockfile
+          python3 -m unittest discover -s tests/security/tarama -p 'test_*.py'
           (cd services/worker-py && uv sync --frozen)
           sh tests/security/tarama/tarama.sh "$RUNNER_TEMP/tarama"
       - name: Scan reports
