@@ -217,7 +217,9 @@ it('D3 pool lock uses dedicated sessions, leaves business capacity and unlocks o
 it('D4: repeated catalog version cannot rewrite historical product values', async () => {
   const e = await env();
   const changed = structuredClone(PRICE_TABLE_V1);
-  changed.products[0]!.priceKurus++;
+  const firstProduct = changed.products[0];
+  if (!firstProduct) throw new Error('missing fixture product');
+  firstProduct.priceKurus++;
   await expect(e.store.ensureCatalog(changed)).rejects.toThrow('price_version_content_mismatch');
   const { rows } = await e.pg.query<{ price_kurus: number }>(
     'select price_kurus from products where code=$1',
@@ -235,6 +237,7 @@ it('D4: same-code versions keep old order/subscription product UUIDs and scope p
     buyer,
   );
   const oldOrder = await e.store.getOrder(a.orderId);
+  if (!oldOrder) throw new Error('missing fixture order');
   const subOrder = await e.svc.startSubscription(
     e.userId,
     randomUUID(),
@@ -245,6 +248,7 @@ it('D4: same-code versions keep old order/subscription product UUIDs and scope p
     (await e.store.getOrder(subOrder.orderId))?.checkoutToken as string,
   );
   const originalSub = await e.store.getSubscription(sub.id);
+  if (!originalSub) throw new Error('missing fixture subscription');
   // Emulate the architect-owned 0005 contraction on this disposable database only.
   await e.pg.query('alter table products drop constraint products_code_unique');
   const next = structuredClone(PRICE_TABLE_V1);
@@ -254,7 +258,7 @@ it('D4: same-code versions keep old order/subscription product UUIDs and scope p
   await e.store.ensureCatalog(next);
   const newOrderId = randomUUID();
   await e.store.saveOrder({
-    ...oldOrder!,
+    ...oldOrder,
     productId: undefined,
     id: newOrderId,
     idempotencyKey: randomUUID(),
@@ -262,9 +266,9 @@ it('D4: same-code versions keep old order/subscription product UUIDs and scope p
     checkoutToken: null,
   });
   expect((await e.store.getOrder(newOrderId))?.productId).not.toBe(oldOrder?.productId);
-  await e.store.saveSubscription({ ...originalSub!, currentPeriodStart: new Date('2026-11-22T00:00:00Z') });
+  await e.store.saveSubscription({ ...originalSub, currentPeriodStart: new Date('2026-11-22T00:00:00Z') });
   expect((await e.store.getSubscription(sub.id))?.productId).toBe(originalSub?.productId);
-  await e.store.saveOrder(oldOrder!);
+  await e.store.saveOrder(oldOrder);
   expect((await e.store.getOrder(a.orderId))?.productId).toBe(oldOrder?.productId);
   const counts = await e.pg.query<{ count: number }>(
     'select count(*)::int as count from products where code=$1',
