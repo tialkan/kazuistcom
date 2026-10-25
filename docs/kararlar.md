@@ -30,3 +30,7 @@ Henüz onaylanmamış: hukuki metinler (TASLAK), kaynak bağlayıcılarının ü
   göre aktivasyon durumu entegrasyon ekibinden teyit edilir; ileti gönderimi kullanıcı onayına tabidir.
 - ADR-0021, 0022, 0023, 0024 ve yeni 0026 için önceki onay eksikliği korunur; bu oturum onay verilmiş gibi
   kayıt açmaz, planı bu önerilerle değiştirmez ve sürüm etiketi koymaz.
+
+## 2026-10-25: ADR onayları ve iyzico yazışma yetkisi
+
+Kullanıcı ADR-0021, ADR-0022, ADR-0023, ADR-0024 ve ADR-0026 kararlarını açıkça onayladı. İyzico sandbox abonelik aktivasyon taslağının gönderilmesine de izin verdi. Gönderim kaydı, kayıtlı hesap ve gönderilmiş ileti doğrulandıktan sonra eklenir. Hukuki metinlerin yayını için bu onaylardan izin çıkarılmaz; künye dosyasını kullanıcı dolduracak.

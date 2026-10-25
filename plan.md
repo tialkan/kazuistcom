@@ -122,7 +122,7 @@ Ana kararlar:
 | 5 | Veri erişimi | Yargıtay, Danıştay, YÖKTEZ için protokol bekleniyor; protokol gelmezse ürün boş kalır. | Çekirdek dizin ve canlı federasyon; yargi-mcp (MIT) uçları referans; YÖKTEZ'de yalnız bağlantı. | K-12, 6 |
 | 6 | Doğrulama | "Kaynak kimliği dizinde var" kontrolü uydurma kaynağı yakalar ama kaynağın iddiayı desteklediğini kanıtlamaz. WebLINKrobot dersi: bağlantının açılması ile iddiayı desteklemesi ayrıdır. | Cümle başına birebir dayanak alıntısı, sayı ve künye denetimi, isim denetimi, güncellik denetimi. | 7.4, Ek D |
 | 7 | Otorite | Bağlayıcı kaynak ile yalnız atıf yapılan kaynak ayrımı yok (Casuist'in ikinci mekanizması). | Otorite sınıfı etiketi ve sıralamaya etkisi. | FR-81, Ek F |
-| 8 | Abonelik hukuku | Abonelik Sözleşmeleri Yönetmeliği (RG 24.01.2015, 29246) m.13, m.16, m.19-25 ve Mesafeli Sözleşmeler Yönetmeliği (RG 27.11.2014, 29188) m.5-7, m.15 karşılanmıyor. | Belirsiz süreli abonelik, tek adımda fesih, yıllık planda kalan bedelin iadesi, 7 gün önce ödeme bildirimi, ön bilgilendirme teyidi. | 4.5, 9.2 |
+| 8 | Abonelik hukuku | Abonelik Sözleşmeleri Yönetmeliği (RG 24.01.2015, 29246) m.2/2 kapsamındaki m.5, 6, 13, 22-25 ve Mesafeli Sözleşmeler Yönetmeliği (RG 27.11.2014, 29188) m.5-7, m.15 karşılanmıyor. | Belirsiz süreli abonelik, tek adımda fesih, yıllık planda kalan bedelin iadesi, 7 gün önce ödeme bildirimi, ön bilgilendirme teyidi. | 4.5, 9.2 |
 | 9 | Görseller | FR-57 görüntü üretme modeli öneriyor; wt.18 ve wt.32 YZ görselini yasaklıyor. FR-53 emoji kullanıyor; wt.28 yasaklıyor. | Tek çizerden piktogram ve avatar seti; Kalemcik yüz ifadeleri. | 12 |
 | 10 | iOS | SRS mobil uygulamayı sonraya bırakıyor; ödeme ve kimlik kararları iOS'u hesaba katmıyor. | Apple 3.1.1, 3.1.3(b), 4.8, 5.1.1(v), 5.1.2(i) ile uyumlu tek cüzdan; iOS planı. | 9.3, 16 |
 | 11 | Kapsam | FR-24 (dışa aktarma) ve FR-60 (aralıklı tekrar) MVP dışı; ikisi de düşük maliyetli. | CSL stilleri (isnad-dipnotlu, isnad-metinici, OSCOLA, Bluebook) ve ts-fsrs ile 1.0'a alındı. | 10 |
@@ -286,9 +286,9 @@ Plan ekonomisi: Öğrenci Plus 99 TL, KDV hariç 82,5 TL; kredilerin tamamı sta
 4. Paket iadesi: satın almadan sonraki 14 gün içinde ve paketten hiç kredi kullanılmamışsa tam iade. Kullanım başlamışsa iade yoktur ve bu, ödeme öncesi ayrı kutuyla onaylatılır (Mesafeli Sözleşmeler Yönetmeliği m.15/1-ğ ve h). İstisna mümkün olsa da hiç kullanılmamış pakette iade, uyuşmazlık maliyetinden ucuzdur.
 5. Abonelik belirsiz sürelidir; ödeme dönemi aylık veya yıllıktır. Belirli süreli sözleşmeye kendiliğinden uzama hükmü konamadığı için (Abonelik Sözleşmeleri Yönetmeliği m.13; TKHK m.52) yıllık plan da belirsiz süreli sözleşmenin yıllık ödeme dönemi olarak kurulur.
 6. Fesih hesap sayfasında tek adımdır ve kuruluş yönteminden zor olamaz (Abonelik Yön. m.23). Varsayılan "dönem sonunda bitir"; "hemen bitir" seçeneği vardır. Yönetmelik en geç 7 gün içinde işlem istiyor (Abonelik Yön. m.24); bizde fesih anında işlenir.
-7. Hemen fesihte aylık plan: o ayın kredisi yüklenmiş olduğundan iade yoktur, krediler hesapta kalır. Yıllık plan: teslim edilmemiş aylık yüklemelerin bedeli 15 gün içinde iade edilir (Abonelik Yön. m.25). Formül: iade = ödenen yıllık bedel eksi (yüklemesi yapılmış ay sayısı çarpı aylık liste fiyatı), sıfırın altına inmez. Bu, kullanılan aylara düşen indirimin mahsubudur ve Abonelik Yön. m.16'daki sınır içinde kalır. Yıllık plan sözleşmesine Abonelik Yön. m.15'teki taahhütname unsurları eklenir.
-8. Ödeme bildirimi: her otomatik tahsilattan en az 7 gün önce e-posta (Abonelik Yön. m.19-20); yıllık yenilemede ayrıca 30 gün önce.
-9. Fiyat değişikliği: mevcut abonelere en az 30 gün önce bildirim; yeni fiyat sonraki dönemden geçerli; abone dilediği an fesheder (Abonelik Yön. m.22).
+7. Hemen fesihte aylık plan: o ayın kredisi yüklenmiş olduğundan iade yoktur, krediler hesapta kalır. Yıllık plan: teslim edilmemiş aylık yüklemelerin bedeli 15 gün içinde iade edilir (Abonelik Yön. m.25). Formül: iade = ödenen yıllık bedel eksi (yüklemesi yapılmış ay sayısı çarpı ödenen yıllık bedel / 12), sıfırın altına inmez. Kesinti kuruşa aşağı yuvarlanır (tüketici lehine). Aylık liste fiyatıyla mahsup yapılmaz (ADR-0024).
+8. Ödeme bildirimi: her otomatik tahsilattan en az 7 gün önce e-posta; yıllık yenilemede ayrıca 30 gün önce. Bu süreler gönüllü ürün taahhüdüdür (ADR-0024).
+9. Fiyat değişikliği: mevcut abonelere en az 30 gün önce bildirim; yeni fiyat sonraki dönemden geçerli; abone dilediği an fesheder. Bildirim süresi gönüllü ürün taahhüdüdür (ADR-0024).
 10. Başarısız tahsilat: 1., 3. ve 7. gün yeniden deneme; sonra plan Ücretsiz'e iner, mevcut krediler kalır.
 11. Ters ibraz veya Apple iadesi: ilgili kredi geri alınır; bakiye eksiye düşerse yeni YZ işlemi açılmaz.
 12. Hesap silme: kullanılmamış satın alınmış kredi varsa silme ekranında uyarı ve iade talebi seçeneği gösterilir; talep yönetim onayıyla sonuçlanır.
@@ -367,7 +367,7 @@ kazuist/
 | Veri tabanı | PostgreSQL (güncel kararlı) ve pgvector (halfvec, HNSW), pg_trgm; tam metin yapılandırması "turkish" | Yalnız özel ağ |
 | İş kuyruğu | Postgres `jobs` tablosu, FOR UPDATE SKIP LOCKED, LISTEN/NOTIFY | Node ve Python aynı sözleşme (Ek C) |
 | Önbellek, hız sınırı | Valkey | Paylaşımlı sayaç (wt.72) |
-| Nesne deposu | Türkiye'de S3 uyumlu; geliştirmede MinIO | Ham arşiv, yüklemeler |
+| Nesne deposu | Türkiye'de S3 uyumlu; geliştirmede SeaweedFS | Ham arşiv, yüklemeler |
 | NLP işçisi | Python 3.12, FastAPI (yalnız iç ağ), uv, ONNX Runtime (CPU), Microsoft Presidio | NER adayları 6.4'te |
 | Embedding | Adaylar: BGE-M3, Qwen3-Embedding-0.6B, multilingual-e5-large; kendi sunucumuzda | nDCG@10 ve CPU gecikmesiyle seçilir (eval/embed) |
 | Belge | docx (npm) üretim; LibreOffice headless doğrulama; pdfplumber ve pdf.js çıkarım; DOCX XML'den kelime sayımı | |
@@ -788,7 +788,7 @@ Taslakları hukuk-uyum ajanı hazırlar; her metin "TASLAK, Tarık onayı bekliy
 | Kullanım koşulları | TBK, TKHK | /hukuki/kosullar |
 | Ön bilgilendirme formu | Mesafeli Sözleşmeler Yön. m.5-7 | Ödeme adımı, e-posta |
 | Mesafeli satış sözleşmesi | TKHK m.48 ve Yönetmelik | Ödeme adımı |
-| Abonelik sözleşmesi ve yıllık plan taahhütnamesi | TKHK m.52; Abonelik Sözleşmeleri Yön. m.6, m.15 | Abonelik adımı |
+| Abonelik sözleşmesi ve yıllık ödeme dönemi koşulları | TKHK m.52; Abonelik Sözleşmeleri Yön. m.2/2, 6, 13, 22-25; gönüllü bildirim taahhütleri (ADR-0024) | Abonelik adımı |
 | İade, iptal ve kredi kuralları | 4.5 | /hukuki/iade-ve-kredi |
 | Erişilebilirlik beyanı (mevcut sayfanın güncellenmesi) | WCAG 2.1 AA | /hukuki/erisilebilirlik |
 | Topluluk kuralları (Kampüs) | | /hukuki/topluluk |
@@ -1183,7 +1183,7 @@ Dalga 0 görevlerin:
 2. packages/contracts: Ek C'den OpenAPI 3.1, zod şemaları, TS istemci üretimi, Swift istemci üretim yapılandırması; Redocly veya Spectral lint.
 3. packages/db: Ek C tablolarıyla Drizzle şeması, ilk migration, örnek veri betiği; jobs tablosu sözleşmesi.
 4. packages/ui ve packages/i18n iskeleti (belirteç adları; değerleri on-yuz verir).
-5. infra/docker-compose.dev.yml: PostgreSQL ve pgvector, Valkey, MinIO, Mailpit.
+5. infra/docker-compose.dev.yml: PostgreSQL ve pgvector, Valkey, SeaweedFS, Mailpit.
 6. .env.example (gerçek değer yok), .github/workflows/ci.yml iskeleti.
 7. docs/adr/0001-0020 (K-01..K-20), docs/sahiplik.md (plan 17.1), docs/ilerleme.md, DEVIR.md, docs/ip/arka-plan-kaydi.md.
 8. CLAUDE.md (Ek K) ve .claude/agents/ (Ek A).

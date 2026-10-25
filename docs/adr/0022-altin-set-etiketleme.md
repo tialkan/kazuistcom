@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-20
 - Karar kodu: yok (plan 6.7, 15.3/2; istek: docs/istekler/anonimlestirme-etiketleme-adr.md)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (2026-10-25, kullanıcı onayı)
 
 ## Bağlam
 
@@ -46,4 +46,4 @@ A, Dalga 3 kapısının ön koşulu olan 200 kararlık seti en kısa sürede ve 
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (2026-10-25, kullanıcı onayı).
