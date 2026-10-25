@@ -107,3 +107,14 @@ GLiNER 20 belge yeni-yığın export/parity denemesi henüz geçmedi: `OSError: 
  device` nedeniyle model yazılamadı. Import ve metadata uyumu tam export eşliği yerine geçmez. Orkestra
 alanı doğrulamadan yeni büyük export başlatılmaz. O-07 güvenlik açığı sayısı temiz olsa da bu major
 uyumluluk kabulü ve tam final tarama/CI ölçümü tamamlanmadan iş kapalı sayılmaz.
+
+### GLiNER salt okunur uyumluluk ölçümü
+
+Yeni GLiNER0.2.29/Transformers5.16.1 Torch referansı mevcut sabit cache ONNX grafiğiyle 20 sentetik belgede
+ölçüldü: 150 birleşik span, eşlik **1.0**, max skor farkı **0.0000199676**. Çıktı
+`/tmp/kazuist-gliner-cached-parity.log`; ağ kapalı, yeni büyük dosya yok, cache kaynak/çıktıları değişmedi.
+Bu, yeni Torch yığınının mevcut ONNX modelle uyumunu kanıtlar; disk28 nedeniyle tamamlanamayan yeni GLiNER
+export işleminin yerine geçmez. Yeni Python export ortamı lisans denetimi de 55 paket için çıkış0.
+
+Kapanış için final tam tarama ve dört CI işi, ardından bağımsız denetim orkestradadır. esbuild orta
+bulgusu raporda açık kalır; Node yüksek eşiği düşürülmedi.

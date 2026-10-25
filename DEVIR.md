@@ -4,7 +4,7 @@ O-09 tarama hataları artık kapıyı kapatır; CLI ikizleriyle kırmızı/yeşi
 setuptools84.2.1 ve optimum bağımlılığı kaldırılarak transformers5.16.1: gerçek all-extras pip-audit 0.
 Python145 geçti/1 optional skip; küçük offline ONNX dinamik şekil testi yeşil. Akdeniz50belge eski/yeni
 runtime PERSON440/440 eş; Hushmark402paragraf span1.0. GLiNER yeni-yığın tam export disk28 nedeniyle
-geçmedi, import/metadata uyumlu. CI/final tam tarama ve bağımsız denetim bekleniyor, birleşmedi.
+geçmedi; yeni Torch vs mevcut ONNX20belge span1.0 (150span), skor fark2e-5. CI/final tam tarama ve bağımsız denetim bekleniyor, birleşmedi.
 Kanıt ve açık işler: docs/istekler/kalite-bagimlilik.md. Eski model cache ve runtime kodu değişmedi.
 
 # Devir kaydı
