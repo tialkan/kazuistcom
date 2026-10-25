@@ -1,4 +1,8 @@
 import { createOTP } from '@better-auth/utils/otp';
+import type { BillingService } from '@kazuist/ledger/billing';
+import { BillingError } from '@kazuist/ledger/billing';
+import { setBillingService } from '../../billing/context.ts';
+import { adminPendingRefundsGet, adminRefundResolvePost } from '../admin-refunds.ts';
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { schema } from '../db.ts';
@@ -110,6 +114,46 @@ describe('admin: passkey session plus TOTP second step', () => {
     );
     expect(r.status).toBe(403);
     expect((await adminFlagsGet(api('/v1/admin/flags', adm.token))).status).toBe(403);
+  });
+});
+
+describe('pending refund administration', () => {
+  it('requires passkey and second step, validates inputs, passes the actor and returns conflicts', async () => {
+    const ref = 'paket:00000000-0000-4000-8000-000000000001';
+    const decisions: unknown[][] = [];
+    setBillingService({
+      listPendingRefunds: async () => [{ refundRef: ref, amountKurus: 34900 }],
+      resolvePendingRefund: async (...args: unknown[]) => {
+        if (decisions.length) throw new BillingError(409, 'not_pending');
+        decisions.push(args);
+      },
+    } as unknown as BillingService);
+    try {
+      expect((await adminPendingRefundsGet(api('/v1/admin/refunds/pending', null))).status).toBe(401);
+      const user = await signUp('refund-user@example.invalid');
+      expect((await adminPendingRefundsGet(api('/v1/admin/refunds/pending', user.token))).status).toBe(403);
+      const adm = await admin('refund-admin@example.invalid');
+      expect((await adminPendingRefundsGet(api('/v1/admin/refunds/pending', adm.token))).status).toBe(403);
+      await stepUpConfirm(
+        api('/auth/step-up/confirm', adm.token, post({ code: await createOTP(adm.secret).totp() })),
+      );
+      const list = await adminPendingRefundsGet(api('/v1/admin/refunds/pending', adm.token));
+      expect(list.status).toBe(200);
+      expect(await body(list)).toEqual([{ refundRef: ref, amountKurus: 34900 }]);
+      const resolve = (value: unknown, refundRef = ref) =>
+        adminRefundResolvePost(
+          api(`/v1/admin/refunds/${refundRef}/resolve`, adm.token, post(value)),
+          params({ refundRef }),
+        );
+      expect((await resolve({ outcome: 'basarili', extra: true })).status).toBe(400);
+      expect((await resolve({ outcome: 'unknown' })).status).toBe(400);
+      expect((await resolve({ outcome: 'basarili' }, 'invalid')).status).toBe(400);
+      expect((await resolve({ outcome: 'basarisiz' })).status).toBe(204);
+      expect(decisions).toEqual([[ref, 'basarisiz', adm.id]]);
+      expect((await resolve({ outcome: 'basarili' })).status).toBe(409);
+    } finally {
+      setBillingService(undefined);
+    }
   });
 });
 
