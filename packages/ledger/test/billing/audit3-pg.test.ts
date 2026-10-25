@@ -5,7 +5,7 @@ import { FakeEArsiv } from '../../src/billing/earsiv.ts';
 import { FAKE_CFG, FakeIyzico } from '../../src/billing/fake-iyzico.ts';
 import { PgBillingStore, PgLedgerPort } from '../../src/billing/pg-store.ts';
 import { BillingService, type Buyer } from '../../src/billing/service.ts';
-import { addDays } from '../../src/index.ts';
+import { PRICE_TABLE_V1, addDays } from '../../src/index.ts';
 import { pgBillingEnv } from './pg-env.ts';
 
 const buyer: Buyer = {
@@ -211,5 +211,68 @@ it('D3 pool lock uses dedicated sessions, leaves business capacity and unlocks o
   await store.releaseOperation(e.userId, 'test', 'second');
   expect(held).toBe(0);
   expect(released).toBe(2);
+  await e.pg.close();
+}, 60000);
+
+it('D4: repeated catalog version cannot rewrite historical product values', async () => {
+  const e = await env();
+  const changed = structuredClone(PRICE_TABLE_V1);
+  changed.products[0]!.priceKurus++;
+  await expect(e.store.ensureCatalog(changed)).rejects.toThrow('price_version_content_mismatch');
+  const { rows } = await e.pg.query<{ price_kurus: number }>(
+    'select price_kurus from products where code=$1',
+    [PRICE_TABLE_V1.products[0]?.code],
+  );
+  expect(rows[0]?.price_kurus).toBe(PRICE_TABLE_V1.products[0]?.priceKurus);
+  await e.pg.close();
+}, 60000);
+it('D4: same-code versions keep old order/subscription product UUIDs and scope plan references', async () => {
+  const e = await env();
+  const a = await e.svc.startTopup(
+    e.userId,
+    randomUUID(),
+    { productCode: 'kredi.300', withdrawalWaiver: true, ...pack },
+    buyer,
+  );
+  const oldOrder = await e.store.getOrder(a.orderId);
+  const subOrder = await e.svc.startSubscription(
+    e.userId,
+    randomUUID(),
+    { planCode: 'ogrenci.aylik', ...plan },
+    buyer,
+  );
+  const sub = await e.svc.completeSubscriptionCheckout(
+    (await e.store.getOrder(subOrder.orderId))?.checkoutToken as string,
+  );
+  const originalSub = await e.store.getSubscription(sub.id);
+  // Emulate the architect-owned 0005 contraction on this disposable database only.
+  await e.pg.query('alter table products drop constraint products_code_unique');
+  const next = structuredClone(PRICE_TABLE_V1);
+  next.version = 'test-v2';
+  next.effectiveFrom = new Date('2026-10-21T00:00:00Z');
+  for (const product of next.products) product.priceKurus += 100;
+  await e.store.ensureCatalog(next);
+  const newOrderId = randomUUID();
+  await e.store.saveOrder({
+    ...oldOrder!,
+    productId: undefined,
+    id: newOrderId,
+    idempotencyKey: randomUUID(),
+    createdAt: new Date('2026-10-22T00:00:00Z'),
+    checkoutToken: null,
+  });
+  expect((await e.store.getOrder(newOrderId))?.productId).not.toBe(oldOrder?.productId);
+  await e.store.saveSubscription({ ...originalSub!, currentPeriodStart: new Date('2026-11-22T00:00:00Z') });
+  expect((await e.store.getSubscription(sub.id))?.productId).toBe(originalSub?.productId);
+  await e.store.saveOrder(oldOrder!);
+  expect((await e.store.getOrder(a.orderId))?.productId).toBe(oldOrder?.productId);
+  const counts = await e.pg.query<{ count: number }>(
+    'select count(*)::int as count from products where code=$1',
+    ['kredi.300'],
+  );
+  expect(counts.rows[0]?.count).toBe(2);
+  await e.store.savePlanRef('ogrenci.aylik', 'new-ref', next.version);
+  expect((await e.store.planRefs(next.version)).get('ogrenci.aylik')).toBe('new-ref');
+  expect((await e.store.planRefs(PRICE_TABLE_V1.version)).get('ogrenci.aylik')).not.toBe('new-ref');
   await e.pg.close();
 }, 60000);

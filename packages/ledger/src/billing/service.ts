@@ -129,7 +129,7 @@ export class BillingService {
 
   /** Define iyzico subscription product and pricing plans (9.2/2). Idempotent per planCode. */
   async setupSubscriptionCatalog(): Promise<Map<string, string>> {
-    const refs = await this.s.planRefs();
+    const refs = await this.s.planRefs(this.table().version);
     const subs = this.table().products.filter((p) => p.kind === 'abonelik' && !refs.has(p.code));
     if (!subs.length) return refs;
     const productRef = (await this.d.iyzico.createProduct({ name: 'Kazuist Plan' })).referenceCode;
@@ -140,7 +140,7 @@ export class BillingService {
         paymentInterval: p.interval === 'yillik' ? 'YEARLY' : 'MONTHLY',
         paymentIntervalCount: 1,
       });
-      await this.s.savePlanRef(p.code, r.referenceCode);
+      await this.s.savePlanRef(p.code, r.referenceCode, this.table().version);
       refs.set(p.code, r.referenceCode);
     }
     return refs;
@@ -560,7 +560,7 @@ export class BillingService {
     // Coupons on plans are not defined yet (O5): refuse instead of silently ignoring.
     if (input.couponCode) throw new BillingError(400, 'coupon_not_supported');
     const product = findProduct(this.table(), input.planCode);
-    const planRef = (await this.s.planRefs()).get(input.planCode);
+    const planRef = (await this.s.planRefs(this.table().version)).get(input.planCode);
     if (!product || product.kind !== 'abonelik' || !planRef) throw new BillingError(400, 'unknown_plan');
     this.checkVersions(
       input.preInfoConsentVersion,
@@ -634,13 +634,14 @@ export class BillingService {
     const first = detail.orders[0];
     const paymentId = successfulPaymentId(first);
     if (!first || !paymentId) throw new BillingError(409, 'payment_pending');
-    const product = findProduct(this.table(), order.productCode);
+    const product = findProduct(this.table(order.createdAt), order.productCode);
     if (!product) throw new BillingError(400, 'unknown_plan');
     const now = this.d.now();
     const sub: Subscription = {
       id: this.d.newId(),
       userId: order.userId,
       planCode: product.code,
+      productId: order.productId,
       providerRef: ref,
       status: 'aktif',
       priceKurus: first.price,

@@ -10,6 +10,7 @@ export interface Order {
   id: string;
   userId: string;
   productCode: string;
+  productId?: string;
   couponCode: string | null;
   amountKurus: number;
   status: OrderStatus;
@@ -50,6 +51,7 @@ export interface Subscription {
   id: string;
   userId: string;
   planCode: string;
+  productId?: string;
   providerRef: string;
   status: SubStatus;
   priceKurus: number;
@@ -187,8 +189,8 @@ export interface BillingStore {
   setPlan(userId: string, plan: Plan): Promise<void>;
   getPlan(userId: string): Promise<Plan>;
   alert(kind: string, detail: unknown): Promise<void>;
-  planRefs(): Promise<Map<string, string>>;
-  savePlanRef(planCode: string, ref: string): Promise<void>;
+  planRefs(version?: string): Promise<Map<string, string>>;
+  savePlanRef(planCode: string, ref: string, version?: string): Promise<void>;
 }
 
 export class MemoryBillingStore implements BillingStore {
@@ -410,11 +412,16 @@ export class MemoryBillingStore implements BillingStore {
   async alert(kind: string, detail: unknown) {
     this.alerts.push({ kind, detail });
   }
-  async planRefs() {
-    return new Map(this.refs);
+  async planRefs(version?: string) {
+    const prefix = version ? `${version}:` : '';
+    return new Map(
+      [...this.refs]
+        .filter(([code]) => !version || code.startsWith(prefix))
+        .map(([code, ref]) => [version ? code.slice(prefix.length) : code, ref]),
+    );
   }
-  async savePlanRef(code: string, ref: string) {
-    this.refs.set(code, ref);
+  async savePlanRef(code: string, ref: string, version?: string) {
+    this.refs.set(version ? `${version}:${code}` : code, ref);
   }
 }
 

@@ -17,7 +17,11 @@ D8: `/v1/coupons/redeem`, `/v1/admin/chargebacks`, `/v1/admin/price-changes` ger
 Admin işlemlerinde yönetici rolü+passkey+TOTP, actor denetim kaydı, hız sınırı, strict zod ve
 kalıcı istek anahtarı vardır. Kupon mevcut defter idempotency ve tüketim limitiyle işler.
 D4 ikinci migration isteği `docs/istekler/odeme-d4-urun-fiyat-surumu.md`; DB/contracts değişmedi.
-Mimar 0005 sonrası ürün upsert ve hesap silme tercihi ayrı entegrasyon işi olarak orkestradadır.
+Mimar 0005 öncesinde ödeme uyumu bu PR'da: katalog `(code,price_table_id)` çatışma anahtarını kullanır,
+aynı sürümün fiyat/kredi/işlem içerik değişimini reddeder; eski order/sub product UUID'si korunur,
+yeni sipariş işlem tarihindeki sürümü seçer. İlk abonelik ürünü siparişten taşınır; planRef sürüm bazlıdır.
+D4 önce iki yeni test kırmızıydı; son odaklı test 23/23 ve ledger typecheck geçti.
+0005 ve hesap silme tercihi/PDF snapshot bağlantıları sonraki ayrı entegrasyondadır.
 
 Kanıt: önce D3 hedefli regresyon 2 başarısız/14; D8 route henüz yokken import hatası.
 Düzeltme sonrası odaklı memory 14/14, PGlite 7/7, gerçek guard+servis route 2/2 geçti.
