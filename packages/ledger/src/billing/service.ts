@@ -1461,7 +1461,7 @@ export class BillingService {
 
   /**
    * billing.reconcile: iyzico's daily report against recorded charges; differences raise an alert. Refund
-   * lines are not compared (the report does not document their link to the payment). When the report call
+   * lines use the original paymentId and their own refunded amount. When the report call
    * is not available the job reports disabled and raises mutabakat_devre_disi instead of failing (O8).
    */
   async reconcileDay(date: Date): Promise<ReconcileResult> {
@@ -1477,29 +1477,18 @@ export class BillingService {
       });
       return { disabled: true, diffs: [] };
     }
-    const payments = (await this.s.paymentsOn(dayStr)).filter((p) => p.kind === 'odeme');
-    const known = new Set(payments.map((p) => p.providerPaymentId));
-    const byOrder = new Map(
-      payments.filter((p) => p.orderId).map((p) => [p.orderId as string, p.providerPaymentId]),
-    );
-    // transactionId is expected to equal paymentId; when it does not, the conversationId (our order id)
-    // links the line, and the mapping is reported so it can be confirmed in the sandbox (DEVIR).
-    let remapped = 0;
-    const provider = report
-      .filter((t) => t.kind === 'odeme')
-      .map((t) => {
-        const linked =
-          !known.has(t.paymentId) && t.conversationId ? byOrder.get(t.conversationId) : undefined;
-        if (linked) remapped++;
-        return { paymentId: linked ?? t.paymentId, kind: t.kind, amountKurus: t.amountKurus };
-      });
+    const payments = await this.s.paymentsOn(dayStr);
+    const provider = report.map((t) => ({
+      paymentId: t.paymentId,
+      kind: t.kind,
+      amountKurus: t.amountKurus,
+    }));
     const recorded = payments.map((p) => ({
       paymentId: p.providerPaymentId,
       kind: p.kind,
       amountKurus: p.amountKurus,
     }));
     const diffs = reconcile(provider, recorded);
-    if (remapped) await this.s.alert('mutabakat_eslesme', { day: dayStr, remapped });
     if (diffs.length) await this.s.alert('mutabakat_farki', { day: dayStr, diffs });
     return { disabled: false, diffs };
   }
