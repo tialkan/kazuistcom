@@ -2,6 +2,12 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Orkestra, ADR onayları ve teknik açıklar, 25 Ekim 2026
+
+Kullanıcı ADR-0021/0022/0023/0024/0026 kararlarını ve runbook'taki iyzico aktivasyon taslağının gönderimini açıkça onayladı. ADR durumları ve plan 4.5 eşit bölüşüm/gönüllü bildirim atıfları güncellendi. Hukuki yayım onayı verilmedi; künye kullanıcı tarafından doldurulacak. İleti henüz gönderilmedi: sandbox kayıtlı gönderen hesabı doğrulanıyor.
+
+Teknik işler ayrı worktree'lerde sürüyor: PR #35 ödeme idempotency ve yönetim uçları, mimarda kalıcı belge/fiyat sürümleme migration 0005 ve ADR-0027 önerisi, güvenlikte hata yutan tarama ve Python bağımlılık düzeltmeleri, kimlikte PDF/hesap silme entegrasyonu. Yeni ADR-0027 onaylanmış sayılmaz; üretim migration'ı uygulanmaz. Dalga 1 kapısı son ölçümde 5/9, sonraki dalga başlamadı. Biten PR'lar yalnız dört CI işi yeşil tamamlanınca birleştirilecek.
+
 ## Orkestra devralma ve Dalga 1 yeniden ölçümü, 25 Ekim 2026
 
 Devir alındı. Önceki iki ajanın günlükleri kullanım sınırında durduklarını gösterdi; mimarın kaydedilmemiş
