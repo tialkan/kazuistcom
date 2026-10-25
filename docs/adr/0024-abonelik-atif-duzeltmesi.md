@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-22 (güncelleme 2026-10-25: yıllık plan iade formülü docs/kararlar.md 2026-10-22 satırına göre)
 - Karar kodu: yok (plan 4.5, 11; istek: docs/istekler/hukuk-uyum-urun-tutarliligi.md madde 1)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (2026-10-25, kullanıcı onayı)
 
 ## Bağlam
 
@@ -60,4 +60,4 @@ düşürür; liste fiyatıyla mahsup ise ancak uygulanmayan m.16'ya dayanabiliyo
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (2026-10-25, kullanıcı onayı).

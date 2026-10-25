@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-25
 - Karar kodu: yok (plan 17.3/4; istekler: docs/istekler/, karar tablosu docs/istekler/README.md, ikinci tur)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (2026-10-25, kullanıcı onayı)
 
 ## Bağlam
 
@@ -90,4 +90,4 @@ tutarlılığı tek bir üreticiye bırakılmamalıdır.
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (2026-10-25, kullanıcı onayı).
