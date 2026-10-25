@@ -34,6 +34,15 @@ it('O6: posts the published versions with one Idempotency-Key and continues only
     idempotencyKey: 'k',
   });
   expect(s.url).toBe('/api/v1/checkout/subscription');
+  expect(JSON.parse(String(s.init.body)).withdrawalWaiver).toBe(true);
+  const annual = checkoutRequest({
+    kind: 'abonelik',
+    code: 'ogrenci.yillik',
+    versions: { preInfo: 'a', contract: 'c', annualCommitment: 'c' },
+    withdrawalWaiver: true,
+    idempotencyKey: 'k',
+  });
+  expect(JSON.parse(String(annual.init.body)).annualCommitmentVersion).toBe('c');
   expect(nextStep({ paymentPageUrl: 'https://sandbox-cpp.iyzipay.com/?token=t' })).toEqual({
     kind: 'redirect',
     url: 'https://sandbox-cpp.iyzipay.com/?token=t',

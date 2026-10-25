@@ -128,10 +128,14 @@ export class PgBillingStore implements BillingStore {
     const r = await this.one(`${this.orderSql} where o.provider_payment_id = $1`, [pid]);
     return r ? this.orderOf(r) : null;
   }
-  async listDeletedUsersWithLiveSubscriptions() {
+  async listDeletedUsersNeedingBillingRecovery() {
     const { rows } = await this.db.query<{ user_id: string }>(
-      `select distinct s.user_id from subscriptions s join users u on u.id = s.user_id
-        where u.deleted_at is not null and s.status in ('aktif', 'odeme_bekliyor')`,
+      `select u.id as user_id from users u where u.deleted_at is not null and (
+         exists (select 1 from subscriptions s where s.user_id = u.id and s.status in ('aktif', 'odeme_bekliyor'))
+         or (exists (select 1 from wallets w join credit_lots l on l.wallet_id = w.id
+                      where w.user_id = u.id and l.source = 'paket' and l.remaining_credits > 0)
+             and not exists (select 1 from refund_requests r where r.user_id = u.id and r.reason like 'hesap_silme:%'))
+       )`,
     );
     return rows.map((r) => r.user_id);
   }

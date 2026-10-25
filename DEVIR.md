@@ -2,6 +2,25 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, ödeme, dördüncü denetim düzeltmeleri, 2026-10-25
+
+Durum: `codex/odeme-denetim4`, PR açılacak; birleştirme orkestrada ve yeşil CI sonrasında.
+Plan 4.5/12 ve 9: Y-N7 için yalnız belgelenmiş 10051/10005 kart retleri siparişi kapatır;
+teknik/bilinmeyen `status: failure` sipariş ve kupon durumunu korur, günlük yeniden sorgu hata alarmı üretir.
+5122/5124 ödenmemiş token davranışı korundu. Resmî kaynak: https://docs.iyzico.com/ek-bilgiler/hata-kodlari
+(2026-10-25 doğrulandı; hata kodu aralığına genelleme yok).
+O9: canlı aboneliği olmayan, kullanılmamış paket kredili silinmiş kullanıcı da kurtarma işine alınır;
+eski talepler korunur, eşzamanlı yeniden denemeler deterministik UUID ve PK ile tek iade talebi açar.
+O5: abonelikte ayrı cayma kutusu API gövdesine taşınır ve sunucuda zorunlu doğrulanır; yıllık taahhüt,
+`content/hukuki/tr/abonelik.md` içindeki ayrılmaz bölüm olduğu için aynı metnin sürümüyle gönderilir,
+sunucuda doğrulanır ve `yillik_taahhutname` onayına yazılır. Yeni hukuki metin veya sözleşme alanı eklenmedi.
+Kırmızı kanıt: önce Y-N7/O9 regresyonları 2 başarısız / 118 test; düzeltme sonrası 119/119 ledger testi geçti.
+Son ek 10005 testi dahil ledger 120/120 geçti; PGlite yeniden kontrolü 4/4 geçti.
+`pnpm test`: 588 geçti, 3 ortam gerektiren test atlandı (son ek 10005 testi öncesi).
+`pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm build` geçti; web ödeme gate 3/3.
+Gerçek sandbox çağrısı, sır erişimi veya canlı işlem yapılmadı. O6 hukuki metin/PDF/e-posta işi ve önceki
+diğer bulgular bu kapsamda kapandı sayılmadı. ADR/hukuki yayın onayı orkestranın birleşik listesinde kalır.
+
 ## Dalga 1, mimar, ikinci istek turu (dalga-1/mimar/istekler-2), 2026-10-25
 
 Durum: PR açık, birleştirilmedi. Sözleşme v1.2; ADR-0026 ve güncellenen ADR-0024 "Önerildi, Tarık onayı bekliyor".
