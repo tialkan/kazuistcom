@@ -3,22 +3,25 @@
 Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sürüyor, PR açık, kapı bekliyor, tamam.
 "Tamam" yalnız kalite-guvenlik kapı raporuyla yazılır (plan 17.3/7).
 
+Güncel orkestra kaydı, 25 Ekim 2026: Dalga 1 kapısı 5/9; PR #30-#33 main’de. Son ürün 219b903,
+kanıt CI40202875693 ve docs/kalite/dalga-1.md. Dalga 2 başlamadı.
+
 | Dalga | Ajan | İş | Durum | Not |
 |---|---|---|---|---|
 | 0 | mimar | Monorepo, sözleşmeler v1, şema v1, ADR-0001..0020, sahiplik | tamam | CI yeşil (4400e99); docker compose up doğrulanamadı, gerçek PostgreSQL doğrulaması Dalga 1 altyapi'ye devredildi |
 | 0 | bagimsiz-denetci | Dalga 0 denetimi | tamam | Kritik 0, yüksek 1 (kapandı), orta 5 (kapandı), düşük 7 (6 kapandı, D1 Dalga 1 odeme'ye) |
 | 0 | Tarık | ADR toplu onayı, contracts-v1 etiketi | tamam | 19 Ekim 2026 onay; contracts-v1 |
-| 1 | altyapi | Staging, CI/CD, yedek, izleme | kapı bekliyor | PR #2 main'de |
-| 1 | kimlik | Better Auth, roller, KVKK hak uçları; Y5 ve O-N1 bağlantısı | kapı bekliyor | PR #6 main'de; PR #32: ödeme bildirimleri ve yönetim iade uçları doğrulandı; Y-N8 push ayrıntıları temizlendi, worker 34 test geçti |
-| 1 | yz-gecidi | Sağlayıcılar, BYOK, maskeleme, bütçe | kapı bekliyor | PR #1 main'de |
-| 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7 main'de |
-| 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü; NER karşılaştırması ve bağlama, masked_text | PR açık | PR #3 main'de; NER: dal dalga-1/anonimlestirme/ner, kazanan kural katmanı + akdeniz27 (sentetik ve zor set, kapı kanıtı değil) |
-| 1 | odeme | Defter, iyzico sandbox | yeniden denetim bekliyor | Y-N7, O9 paket-only kurtarma ve O5 form/servis düzeltmesi; codex/odeme-denetim4. 120 ledger, 3 gate testi; lint/typecheck/build temiz |
-| 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8 main'de; 2026-10-20 onayları (künye, fiyatlar, Casuist görselleri) dalga-1/on-yuz/onaylar PR'ında |
-| 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4 main'de |
-| 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main'de; ADR'ler Tarık onayı bekliyor |
-| 1 | mimar | İkinci istek turu (7), sözleşme v1.2, migration 0004, ADR-0024 güncellemesi, ADR-0026 | PR açık | 585 Node + 86 Python test; lint/typecheck/build geçti; dal dalga-1/mimar/istekler-2; yönlendirmeler docs/istekler/mimar-yonlendirme-2-*.md |
-| 1 | kalite-guvenlik | Dalga 1 kapısının yeniden ölçümü | kapı açık | 25 Ekim: 5/9 geçti; staging, gerçek uygulama sandbox E2E, bağlayıcı staging ve hukuki hazırlık açık. main219b903 ile ürün ağacı aynı 4457292 CI40202875693 yeşil, HTTP72/E2E108; hedefli kalite kontrolü 207 test; O-07/O-09 bağımlılık ve tarama kapsamı docs/kalite/dalga-1.md |
+| 1 | altyapi | Staging, CI/CD, yedek, izleme | kapı bekliyor | PR #2/#12/#22/#29 main’de; gerçek servisli CI yeşil, staging/TLS/yedek kabulü açık |
+| 1 | kimlik | Better Auth, roller, KVKK hak uçları; Y5 ve O-N1 bağlantısı | kapı bekliyor | PR #6/#14/#24/#32 main’de; Y5/O-N1/Y-N8 bağımsız teyitli, bildirim 16 ve yönetici iade 8 test geçti |
+| 1 | yz-gecidi | Sağlayıcılar, BYOK, maskeleme, bütçe | kapı bekliyor | PR #1/#18/#21/#26 main’de; taklit ve 25 Ekim gerçek OpenRouter duman testi kayıtlı, enjeksiyon 60/60 |
+| 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7/#11 main’de; fikstür testleri var, staging ve kaynak üretim onayları açık |
+| 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü; NER karşılaştırması ve bağlama, masked_text | kapı bekliyor | PR #3/#16 main’de; 50 sentetik belge raporu geçti, 200 gerçek karar ve üretim politikası onayı açık |
+| 1 | odeme | Defter, iyzico sandbox | kapı bekliyor | PR #5/#15/#19/#27/#30/#33 main’de; 120 defter/3 form testi, bağımsız denetim teyitli; gerçek sandbox ve O6/O8/O9 açık |
+| 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8/#9/#25 main’de; kabuk, korunan adresler ve axe kapısı geçti |
+| 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4/#23/#28 main’de; 7 doğrulama işareti ve künye eksikleri sürüyor, yayım onayı hazır değil |
+| 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main’de; sözleşme 1.1/migration 0003; ADR-0021/0022/0023 onayı bekliyor |
+| 1 | mimar | İkinci istek turu (7), sözleşme v1.2, migration 0004, ADR-0024 güncellemesi, ADR-0026 | kapı bekliyor | PR #31 main’de; sözleşme 1.2/migration 0004, ADR-0024/0026 öneri; 27 migration testi geçti |
+| 1 | kalite-guvenlik | Dalga 1 kapısının yeniden ölçümü | kapı bekliyor | 25 Ekim: 5/9; main219b903 ile ürün ağacı aynı 4457292 CI40202875693 yeşil. HTTP72/E2E108, hedefli207; O-07/O-09 açık |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |

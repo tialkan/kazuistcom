@@ -3,6 +3,29 @@
 Belge tarihi: 25 Ekim 2026. Bu dosya Kazuist orkestrasını devralan oturum içindir. En altta başlangıç metni var.
 Bu dosya devir anının fotoğrafıdır; güncel durum için her zaman `git log`, `gh pr list`, `docs/ilerleme.md`, `DEVIR.md`'nin en üst bölümü ve `docs/kararlar.md` okunur.
 
+## Güncel devralma sonucu, 25 Ekim 2026
+
+İlk devralma tamamlandı. Aşağıdaki 5-9. bölümler önceki oturumun tarihli fotoğrafıdır; bu güncel bölüm,
+`DEVIR.md` üst kaydı ve `docs/kalite/dalga-1.md` üst raporu onlardan önceliklidir.
+
+- Önceki iki Claude ajanının son günlük kayıtları kullanım sınırında durduğunu gösterdi. Mimarın kirli
+  worktree'si korundu; bitmiş ödeme dalı PR #30 olarak bulundu.
+- PR #30 (ödeme üçüncü denetim), #31 (sözleşme 1.2), #33 (ödeme dördüncü denetim) ve #32
+  (bildirim/iadeler ve push gizliliği) dört tamamlanmış yeşil CI işi sonrası squash birleşti.
+- Son ürün kodu main `219b903`; test edilen birleşik aday `4457292` ile apps/packages/services/infra/tests
+  ve CI dosyaları farkı yok. CI kanıtı: https://github.com/tialkan/kazuistcom/actions/runs/40202875693.
+- Bağımsız birleşik testler: defter 120, ödeme formu 3, bildirim 16, yönetici iade yetkileri 8; toplam 147.
+  Kalite ayrıca aynı sette istem enjeksiyonu 60 testiyle toplam 207 kontrolü doğruladı.
+- Dalga 1 kapısı 5/9; staging, gerçek uygulama sandbox kabulü, staging bağlayıcıları ve hukuki taslakların
+  hazır olması açık. Dalga 2 başlamadı. Güncel ödeme denetimi ve bağımlılık taraması ayrı raporlanır;
+  yeşil CI bütün güvenlik açıklarının kapalı olduğunu göstermez.
+- ADR-0021/0022/0023/0024/0026 onayı bekliyor; plan ve sürüm etiketi değiştirilmedi. Hukuki yayım onayı
+  metinlerdeki eksikler kapanınca sunulacak.
+- Güncel tek kullanıcı listesi: `docs/istekler/orkestra-onaylar-2026-10-25.md`.
+  Sandbox aktivasyonu resmî belgede e-posta yoluyla; panel eklentisi satın alma yönlendirmesi düzeltildi.
+- Eski worktree'ler silinmedi. Önceki Claude oturumu bu tamamlanmış dallarda yeniden başlatılmamalı;
+  yeni işler güncel main'den izole worktree'ye atanır.
+
 ## 1. Okuma sırası
 
 1. `plan.md` baştan sona. Tek doğruluk kaynağıdır; yalnız ADR ile değişir. SRS: `docs/kaynak/Kazuist.docx` (`textutil -convert txt -stdout docs/kaynak/Kazuist.docx`); çelişkide plan geçerlidir.
