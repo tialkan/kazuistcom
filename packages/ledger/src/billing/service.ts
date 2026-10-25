@@ -49,6 +49,7 @@ import {
   type Consent,
   type LedgerPort,
   type Order,
+  type PreparedLegalDocument,
   type Subscription,
 } from './store.ts';
 
@@ -78,6 +79,11 @@ export interface BillingDeps {
   /** Required in production (context reads content/hukuki); without it only non empty versions are checked. */
   consentVersions?: ConsentVersions;
   priceTables?: PriceTable[];
+  prepareLegalDocuments?: (
+    order: Readonly<Order>,
+    buyer: Buyer,
+    table: PriceTable,
+  ) => readonly PreparedLegalDocument[] | Promise<readonly PreparedLegalDocument[]>;
   now: () => Date;
   newId: () => string;
   callbackBaseUrl: string;
@@ -146,18 +152,20 @@ export class BillingService {
     return refs;
   }
 
-  private consents(userId: string, items: [Consent['kind'], string, boolean][], ctx: Consent['context']) {
+  private consents(
+    userId: string,
+    items: [Consent['kind'], string, boolean][],
+    ctx: Consent['context'],
+  ): Consent[] {
     const at = this.d.now();
-    return this.s.addConsents(
-      items.map(([kind, version, granted]) => ({
-        userId,
-        kind,
-        version,
-        granted,
-        context: { ...ctx, channel: 'web' },
-        at,
-      })),
-    );
+    return items.map(([kind, version, granted]) => ({
+      userId,
+      kind,
+      version,
+      granted,
+      context: { ...ctx, channel: 'web' },
+      at,
+    }));
   }
 
   private checkVersions(
@@ -228,25 +236,6 @@ export class BillingService {
     }
     const orderId = this.d.newId();
     try {
-      const init = await this.d.iyzico.initCheckoutForm({
-        conversationId: orderId,
-        basketId: orderId,
-        priceKurus: amount,
-        paidPriceKurus: amount,
-        callbackUrl: `${this.d.callbackBaseUrl}/api/v1/checkout/callback`,
-        buyer,
-        item: { id: product.code, name: `Kazuist ${product.credits} kredi`, category: 'Dijital hizmet' },
-      });
-      // Consents only for a checkout that iyzico opened (D-N1), still before the order row (Y4).
-      await this.consents(
-        userId,
-        [
-          ['on_bilgilendirme', input.preInfoConsentVersion, true],
-          ['mesafeli_sozlesme', input.distanceContractConsentVersion, true],
-          ['cayma_istisnasi', input.distanceContractConsentVersion, input.withdrawalWaiver],
-        ],
-        { orderId, productCode: product.code },
-      );
       const order: Order = {
         id: orderId,
         userId,
@@ -260,15 +249,38 @@ export class BillingService {
           distance: input.distanceContractConsentVersion,
           waiver: input.withdrawalWaiver,
           requestHash,
-          form: init.checkoutFormContent,
-          ...(init.paymentPageUrl ? { pageUrl: init.paymentPageUrl } : {}),
+          form: '',
         },
-        checkoutToken: init.token,
+        checkoutToken: null,
         paymentId: null,
         createdAt: this.d.now(),
         paidAt: null,
       };
-      await this.s.saveOrder(order);
+      const documents =
+        (await this.d.prepareLegalDocuments?.(order, buyer, this.table(order.createdAt))) ?? [];
+      const init = await this.d.iyzico.initCheckoutForm({
+        conversationId: orderId,
+        basketId: orderId,
+        priceKurus: amount,
+        paidPriceKurus: amount,
+        callbackUrl: `${this.d.callbackBaseUrl}/api/v1/checkout/callback`,
+        buyer,
+        item: { id: product.code, name: `Kazuist ${product.credits} kredi`, category: 'Dijital hizmet' },
+      });
+      // Consents only for a checkout that iyzico opened (D-N1), still before the order row (Y4).
+      const consentRows = this.consents(
+        userId,
+        [
+          ['on_bilgilendirme', input.preInfoConsentVersion, true],
+          ['mesafeli_sozlesme', input.distanceContractConsentVersion, true],
+          ['cayma_istisnasi', input.distanceContractConsentVersion, input.withdrawalWaiver],
+        ],
+        { orderId, productCode: product.code },
+      );
+      order.checkoutToken = init.token;
+      order.consentVersions.form = init.checkoutFormContent;
+      if (init.paymentPageUrl) order.consentVersions.pageUrl = init.paymentPageUrl;
+      await this.s.saveCheckout(order, consentRows, documents);
       if (couponCode && !(await this.s.recordRedemption(couponCode, userId, { orderId }))) {
         order.status = 'basarisiz';
         await this.s.saveOrder(order);
@@ -584,15 +596,7 @@ export class BillingService {
     if (product.interval === 'yillik')
       items.push(['yillik_taahhutname', input.annualCommitmentVersion as string, true]);
     items.push(['cayma_istisnasi', input.distanceContractConsentVersion, true]);
-    const init = await this.d.iyzico.initSubscriptionCheckout({
-      conversationId: orderId,
-      pricingPlanReferenceCode: planRef,
-      callbackUrl: `${this.d.callbackBaseUrl}/api/v1/checkout/subscription-callback`,
-      customer: buyer,
-    });
-    // Consents only for a checkout that iyzico opened (D-N1).
-    await this.consents(userId, items, { orderId, productCode: product.code });
-    await this.s.saveOrder({
+    const order: Order = {
       id: orderId,
       userId,
       productCode: product.code,
@@ -604,14 +608,26 @@ export class BillingService {
         preInfo: input.preInfoConsentVersion,
         distance: input.distanceContractConsentVersion,
         requestHash,
-        form: init.checkoutFormContent,
-        ...(init.paymentPageUrl ? { pageUrl: init.paymentPageUrl } : {}),
+        form: '',
       },
-      checkoutToken: init.token,
+      checkoutToken: null,
       paymentId: null,
       createdAt: this.d.now(),
       paidAt: null,
+    };
+    const documents = (await this.d.prepareLegalDocuments?.(order, buyer, this.table(order.createdAt))) ?? [];
+    const init = await this.d.iyzico.initSubscriptionCheckout({
+      conversationId: orderId,
+      pricingPlanReferenceCode: planRef,
+      callbackUrl: `${this.d.callbackBaseUrl}/api/v1/checkout/subscription-callback`,
+      customer: buyer,
     });
+    // Consents only for a checkout that iyzico opened (D-N1).
+    const consentRows = this.consents(userId, items, { orderId, productCode: product.code });
+    order.checkoutToken = init.token;
+    order.consentVersions.form = init.checkoutFormContent;
+    if (init.paymentPageUrl) order.consentVersions.pageUrl = init.paymentPageUrl;
+    await this.s.saveCheckout(order, consentRows, documents);
     await this.notify(userId, 'sozlesme', this.d.now(), orderId);
     return { orderId, checkoutFormContent: init.checkoutFormContent, paymentPageUrl: init.paymentPageUrl };
   }
@@ -1397,6 +1413,7 @@ export class BillingService {
    */
   async onAccountDeletion(
     userId: string,
+    options?: { requestRefund?: boolean },
   ): Promise<{ canceled: number; providerPending: number; refundRequested: boolean }> {
     let canceled = 0;
     let providerPending = 0;
@@ -1418,10 +1435,11 @@ export class BillingService {
         .lots.filter((x) => x.source === 'paket' && !x.closedBy)
         .reduce((s, x) => s + x.remainingCredits, 0),
     );
+    const requestRefund = options?.requestRefund ?? (await this.s.deletionRefundPreference(userId));
     const alreadyRequested = (await this.s.listRefundRequests(userId)).some((r) =>
       r.reason?.startsWith('hesap_silme:'),
     );
-    if (unused > 0 && !alreadyRequested)
+    if (requestRefund && unused > 0 && !alreadyRequested)
       await this.s.createRefundRequest({
         id: createHash('sha256')
           .update(`account-deletion-refund:${userId}`)
@@ -1435,7 +1453,7 @@ export class BillingService {
         amountKurus: null,
         status: 'bekliyor',
       });
-    return { canceled, providerPending, refundRequested: unused > 0 };
+    return { canceled, providerPending, refundRequested: requestRefund && unused > 0 };
   }
 
   /** billing.monthly_grant: annual plans receive their monthly credits while active (9.2/3). */
