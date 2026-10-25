@@ -6,7 +6,7 @@ import { migrationsFolder } from '@kazuist/db';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { dispatch, type NotifyDeps } from '../dispatch.ts';
+import { dispatch, render, type NotifyDeps } from '../dispatch.ts';
 import { channelAllows } from '../prefs.ts';
 import { isQuietHour, nextSendTime } from '../quiet-hours.ts';
 import { apnsJwt, MemoryEmail, MemoryPush } from '../transports.ts';
@@ -96,6 +96,52 @@ describe('dispatch', () => {
   it('payment notices are exempt from quiet hours', async () => {
     const night = new Date('2026-10-20T20:00:00Z');
     expect((await dispatch(deps({ now: () => night }), { type: 'odeme', userId })).status).toBe('sent');
+  });
+
+  it.each([
+    ['odeme', 'odeme_alindi:order:12345', ['123,45']],
+    ['odeme', 'odeme_7_gun:subscription:34900:2026-11-01T00:00:00Z', ['349,00', '1 Kasım 2026']],
+    ['fesih_teyidi', 'fesih_teyidi:subscription:donem_sonu:2026-11-01T00:00:00Z', ['1 Kasım 2026']],
+    ['fesih_teyidi', 'fesih_teyidi:subscription:hemen:2026-10-25T00:00:00Z', []],
+  ] as const)('sends billing reference details by email (%s, %s)', async (type, refId, details) => {
+    await dispatch(deps(), { type, refId, userId, channels: ['email'] });
+    const message = email.sent.at(-1);
+    const rendered = render(type, refId);
+    expect(message?.subject).toBe(rendered.title);
+    expect(message?.text).toContain(rendered.body);
+    expect(rendered.body).not.toBe(render(type).body);
+    for (const detail of details) expect(message?.text).toContain(detail);
+    expect(message?.text).not.toMatch(/\{(?:tutar|tarih)\}/);
+  });
+
+  it('keeps billing amount and date in email and sends only generic text to both push transports', async () => {
+    const before = push.sent.length;
+    await dispatch(deps(), {
+      type: 'odeme',
+      refId: 'odeme_7_gun:subscription:34900:2026-11-01T00:00:00Z',
+      userId,
+    });
+    expect(email.sent.at(-1)?.text).toContain('349,00');
+    expect(email.sent.at(-1)?.text).toContain('1 Kasım 2026');
+    const delivered = push.sent.slice(before);
+    expect(delivered.map((item) => item.target).sort()).toEqual([
+      'devtoken1',
+      'https://push.example.invalid/1',
+    ]);
+    for (const item of delivered) {
+      expect(item.m).toEqual(render('odeme'));
+      expect(JSON.stringify(item.m)).not.toContain('349,00');
+      expect(JSON.stringify(item.m)).not.toContain('1 Kasım 2026');
+    }
+  });
+
+  it('keeps cancellation modes distinct and falls back only for unsupported references', () => {
+    expect(render('fesih_teyidi', 'fesih_teyidi:sub:hemen:2026-11-01').body).not.toBe(
+      render('fesih_teyidi', 'fesih_teyidi:sub:donem_sonu:2026-11-01').body,
+    );
+    expect(render('odeme', 'unknown:ref')).toEqual(render('odeme'));
+    expect(render('odeme', 'odeme_7_gun:sub:bad:bad')).toEqual(render('odeme'));
+    expect(render('takip', 'odeme_alindi:order:12345')).toEqual(render('takip'));
   });
 
   it('commercial needs consent and IYS', async () => {
