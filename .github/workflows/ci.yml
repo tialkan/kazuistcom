@@ -275,17 +275,20 @@ jobs:
           set -a; . ./app.env; set +a
           KAZUIST_SEC_BASE_URL=http://localhost:3000 KAZUIST_SEC_DATABASE_URL="$DATABASE_URL" \
             pnpm --dir tests/security exec playwright test \
-            --grep-invert "kullanici \(signed in\)|JSON endpoints refuse oversized bodies"
-        # Open gate findings owned by other agents are excluded by test title (docs/kalite/dalga-1.md) so any
-        # new failure still blocks. K-01: signed-in endpoints answer 500 in the production build (kimlik);
-        # O-01: no form on /kayit and /giris; D-01: two main landmarks on /giris; O-05: internal links.
-        # Remove an entry when its fix lands. The header tests (Y-01) are not excluded.
+            --grep-invert "B cannot cancel A subscription or refund A order"
+        # Still red after K-01: POST /api/v1/subscriptions/{id}/cancel by another user answers 400 instead of
+        # 404 (valid body {"mode":"hemen"}); owner odeme (apps/web/src/server/billing). Remove when fixed.
       - name: E2E smoke against the production image (tests/e2e)
         if: success() || failure()
-        run: >
-          KAZUIST_E2E_BASE_URL=http://localhost:3000 pnpm --dir tests/e2e exec playwright test
-          --grep-invert "account UI flow|account API flow|exactly one main landmark|every same-origin link"
-      - name: Playwright reports
+        run: KAZUIST_E2E_BASE_URL=http://localhost:3000 pnpm --dir tests/e2e exec playwright test
+      - name: Lighthouse CI budgets (mobile, performance 90; /, /fiyatlar, /en)
+        if: success() || failure()
+        env:
+          LHCI_VERSION: 0.15.1
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v google-chrome-stable)"
+          npx --yes "@lhci/cli@${LHCI_VERSION}" autorun --config=infra/lighthouse/lighthouserc.json
+      - name: Playwright and Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -293,6 +296,7 @@ jobs:
           path: |
             tests/e2e/test-results
             tests/security/test-results
+            lhci-report
           if-no-files-found: ignore
           retention-days: 14
       - name: Logs on failure

@@ -40,7 +40,8 @@ Ortam değişkenleri: `.env.example` listesi; Production bölümüne secret olar
 
 - HTTP Basic Auth: web uygulamasına Traefik basicauth middleware'i (Coolify: uygulama > Advanced > Container Labels'a `traefik.http.middlewares.kazuist-staging-auth.basicauth.users=<htpasswd>` ve router'a ekleme). htpasswd değeri Coolify secret'ında; depoya girmez. Etiket adları kurulum günü Coolify'ın ürettiği router adına göre ayarlanır.
 - noindex: `X-Robots-Tag: noindex, nofollow` başlığı aynı yöntemle (headers middleware) ve uygulamanın staging robots kuralı (seo ajanı).
-- TLS: Traefik ve Let's Encrypt; Cloudflare DNS only. HTTP'den HTTPS'e tek yönlendirme. HSTS tüm alt alanlar doğrulandıktan sonra.
+- TLS: Traefik ve Let's Encrypt; Cloudflare DNS only. HTTP'den HTTPS'e tek yönlendirme.
+- HSTS yalnız uygulamadan gelir (`apps/web/src/server/security-headers.ts`, üretim derlemesinde `max-age=63072000`, includeSubDomains ve preload yok). Traefik'te ikinci bir HSTS (headers middleware `stsSeconds` vb.) eklenmez; iki kaynak çelişir. CSP ve diğer güvenlik başlıkları da yalnız uygulamadandır.
 
 ## Bakım sayfası (FR-105)
 
