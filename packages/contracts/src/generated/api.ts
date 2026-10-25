@@ -70,12 +70,37 @@ export interface paths {
         get: operations["getMe"];
         put?: never;
         post?: never;
-        /** Delete account (KVKK m.7) */
+        /**
+         * Delete account (KVKK m.7)
+         * @description An absent body or absent requestRefund preserves the default refund request choice (true).
+         */
         delete: operations["deleteMe"];
         options?: never;
         head?: never;
         /** Update profile */
         patch: operations["updateMe"];
+        trace?: never;
+    };
+    "/v1/me/orders/{orderId}/legal-documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read the authenticated user's frozen order documents
+         * @description Own orders only; unavailable snapshots are never recreated from current texts.
+         *     Responses contain personal data and require Cache-Control private, no-store.
+         *     Neither documents nor buyer fields are logged or sent to external push services.
+         */
+        get: operations["listMyOrderLegalDocuments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/v1/me/edu-verification": {
@@ -1581,6 +1606,17 @@ export interface components {
             /** @enum {string} */
             plan?: "ucretsiz" | "byok" | "ogrenci_plus" | "akademisyen";
         };
+        OrderLegalDocument: {
+            /** @enum {string} */
+            slug: "on-bilgilendirme" | "mesafeli-satis" | "abonelik";
+            version: string;
+            text: string;
+            sha256: string;
+        };
+        MeDeleteInput: {
+            /** @default true */
+            requestRefund: boolean;
+        };
         MePatch: {
             name?: string;
             avatar?: string;
@@ -2406,9 +2442,14 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["MeDeleteInput"];
+            };
+        };
         responses: {
             202: components["responses"]["Accepted"];
+            400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
         };
     };
@@ -2436,6 +2477,32 @@ export interface operations {
             };
             400: components["responses"]["BadRequest"];
             401: components["responses"]["Unauthorized"];
+        };
+    };
+    listMyOrderLegalDocuments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The complete frozen document set for this order. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        documents: components["schemas"]["OrderLegalDocument"][];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
         };
     };
     startEduVerification: {
