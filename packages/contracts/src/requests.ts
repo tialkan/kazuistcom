@@ -16,6 +16,8 @@ const uuid = z.uuid();
 /** Multipart file part; the route handler checks type, size (20 MB) and content. */
 const filePart = z.unknown();
 
+export const MeDeleteInput = z.strictObject({ requestRefund: z.boolean().default(true) });
+
 export const MePatch = z.strictObject({
   name: z.string().max(120).optional(),
   avatar: z.string().max(60).optional(),
@@ -223,6 +225,7 @@ export const AdminLedgerAdjustmentInput = z.strictObject({
 /** operationId to request body schema. Operations in requestBodyExempt have a provider shaped body. */
 export const requestBodies = {
   updateMe: MePatch,
+  deleteMe: MeDeleteInput,
   startEduVerification: EduVerificationStart,
   confirmEduVerification: EduVerificationConfirm,
   recordConsent: ConsentInput,
