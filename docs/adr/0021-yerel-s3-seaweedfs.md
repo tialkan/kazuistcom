@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-20
 - Karar kodu: yok (plan 5.3 teknoloji seçimi; istek: docs/istekler/altyapi-s3-yerel.md)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (2026-10-25, kullanıcı onayı)
 
 ## Bağlam
 
@@ -36,4 +36,4 @@ ve CI içindir; üretim deposu Türkiye'de S3 uyumlu sağlayıcıdır (plan 5.5,
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor.
+Kabul edildi (2026-10-25, kullanıcı onayı).
