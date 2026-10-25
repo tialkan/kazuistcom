@@ -250,7 +250,7 @@ it('D4: same-code versions keep old order/subscription product UUIDs and scope p
   const originalSub = await e.store.getSubscription(sub.id);
   if (!originalSub) throw new Error('missing fixture subscription');
   // Emulate the architect-owned 0005 contraction on this disposable database only.
-  await e.pg.query('alter table products drop constraint products_code_unique');
+  await e.pg.query('alter table products drop constraint if exists products_code_unique');
   const next = structuredClone(PRICE_TABLE_V1);
   next.version = 'test-v2';
   next.effectiveFrom = new Date('2026-10-21T00:00:00Z');

@@ -121,7 +121,17 @@ export function planRole(code: Plan): 'ucretsiz' | 'plus' | 'akademisyen' {
 
 export type OperationClaim =
   { state: 'claimed' } | { state: 'conflict' } | { state: 'pending' } | { state: 'done'; result: unknown };
+export interface PreparedLegalDocument {
+  slug: 'on-bilgilendirme' | 'mesafeli-satis' | 'abonelik';
+  version: string;
+  text: string;
+  sha256: string;
+  sourceSha256?: string | null;
+  fields: Readonly<Record<string, string>>;
+}
 export interface BillingStore {
+  saveCheckout(order: Order, consents: Consent[], documents: readonly PreparedLegalDocument[]): Promise<void>;
+  deletionRefundPreference(userId: string): Promise<boolean>;
   claimOperation(
     userId: string,
     operation: string,
@@ -226,6 +236,16 @@ export class MemoryBillingStore implements BillingStore {
     if (row) row.active = false;
   }
 
+  frozenDocuments = new Map<string, readonly PreparedLegalDocument[]>();
+  deletionRefundPreferences = new Map<string, boolean>();
+  async deletionRefundPreference(userId: string) {
+    return this.deletionRefundPreferences.get(userId) ?? true;
+  }
+  async saveCheckout(order: Order, consents: Consent[], documents: readonly PreparedLegalDocument[]) {
+    await this.saveOrder(order);
+    await this.addConsents(consents);
+    this.frozenDocuments.set(order.id, structuredClone(documents));
+  }
   orders = new Map<string, Order>();
   payments: Payment[] = [];
   subscriptions = new Map<string, Subscription>();
@@ -309,6 +329,7 @@ export class MemoryBillingStore implements BillingStore {
         this.deletedUsers.has(o.userId) &&
         o.status === 'odendi' &&
         o.productCode.startsWith('kredi.') &&
+        this.deletionRefundPreferences.get(o.userId) !== false &&
         !this.refundRequests.some((r) => r.userId === o.userId && r.reason?.startsWith('hesap_silme:')),
     );
     return [...new Set([...live.map((s) => s.userId), ...packages.map((o) => o.userId)])];

@@ -1,3 +1,4 @@
+import { prepareCheckoutDocuments } from './legal-checkout.ts';
 /**
  * Process wide billing service. Production: Postgres store and ledger over DATABASE_URL, iyzico sandbox
  * from IYZICO_* variables (live keys are refused by HttpIyzico), fake e-Arsiv until the integrator is chosen.
@@ -74,6 +75,7 @@ export async function getBillingService(
         // No integrator yet: invoices are raised as fatura_bekliyor alerts, never invented (D5).
         earsiv: new UnconfiguredEArsiv(),
         consentVersions: versions,
+        prepareLegalDocuments: prepareCheckoutDocuments,
         store,
         ledger: new PgLedgerPort(pool, pool),
         now: () => new Date(),
