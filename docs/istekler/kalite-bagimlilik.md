@@ -25,3 +25,47 @@ Komut: `sh tests/security/tarama/tarama.sh <dizin>`.
 ## Sonuç
 
 (orkestra dolduracak)
+
+## 25 Ekim 2026, teknik düzeltme ve yeniden ölçüm
+
+Dal: `codex/guvenlik-bagimlilik`, başlangıç main `1ffbe56`.
+
+- pypdf alt sınırı 6.21.2 yapıldı; kilit 6.21.1 -> 6.21.2. Birincil sürüm notu
+  https://github.com/py-pdf/pypdf/releases/tag/6.21.2 güvenlik düzeltmelerini yayımlar;
+  https://pypi.org/project/pypdf/6.21.2/ BSD-3-Clause ve Python >=3.9 bilgisini doğrular.
+- setuptools kilidi 84.0.0 -> 84.2.1. Birincil paket kaydı:
+  https://pypi.org/project/setuptools/84.2.1/ . Mevcut bağımlılık aralıklarıyla `uv lock` çözüldü.
+- `uv run --directory services/worker-py pytest -q`: 145 geçti, 1 optional test atlandı.
+- Üretim kapsamı `uv export --frozen --no-dev --extra ner-runtime --no-hashes` ardından pip-audit:
+  **No known vulnerabilities found**, çıkış 0. Bu sonuç all-extras için geçerli değildir.
+- All-extras pip-audit: **9 kayıt, 1 paket**, yalnız transformers 4.57.6. pypdf ve setuptools artık
+  raporlanmıyor. Transformers açıkları kapanmadı. Düzeltme sürümleri kayda göre 5.0.0/5.3.0/5.5.0/5.10.0;
+  bazı kayıtlarda sabit sürüm bilgisi yoktur.
+- Uyum engeli birincil PyPI metadata ile ölçüldü: https://pypi.org/pypi/optimum-onnx/json güncel 0.1.0
+  için `transformers>=4.36,<4.58.0` ve `optimum~=2.1.0` ister. `uv lock --upgrade-package transformers
+  --upgrade-package optimum --upgrade-package optimum-onnx --upgrade-package gliner` 4.57.6'da kaldı.
+  `eval/anon/export_ner.py` halen `optimum.onnxruntime` kullanır. Kör 5.x override yapılmadı.
+  İstenen sonraki iş: anonimleştirme sahibi export yolunu transformer 5.x destekleyen araçla uyarlasın ve
+  ONNX çıktı/sayısal ve PERSON span eşliğini yeniden ölçsün; alternatif gerçek ayrı export projesi ve
+  açık güvenlik kapısıyla yalıtım kararıdır. Runtime ayrımı ADR-0026 ile zaten vardır.
+- esbuild orta bulgusu sürüyor: üç yol, better-auth/drizzle-kit > @esbuild-kit/core-utils > esbuild
+  0.18.20. Birincil bildirim https://github.com/evanw/esbuild/security/advisories/GHSA-67mh-4wv8-2f99
+  geliştirme sunucusunun kaynak okuma riskini açıklar. Kök pnpm kilidi ve override değiştirilmedi;
+  üst paket geçişi/0.x kırıcı API değişimi orkestra tarafından ayrıca doğrulanmalıdır.
+
+### Tarama güvenilirliği (O-09)
+
+Önce CLI ikizleriyle regresyon kırmızı: pip-audit, uv export ve alt paket audit hataları eski betikte
+başarı sayıldı. Düzeltmeyle hata kodları kaybolmaz; eksik araç, eksik alt paket kurulumu, boş export,
+boş/bozuk audit envanteri ve boş/bilinmeyen/yasak lisans verisi kapıyı kapatır. Alt paket audit/lisans
+çıktıları dosyada saklanır, `tail`/`grep` boru hattı hata kodunu yutmaz. Kök Node yüksek eşiği mevcut
+politikayla korunur; orta esbuild bulgusu raporda kalır, ignore eklenmedi.
+
+Gerçek tam tarama `sh tests/security/tarama/tarama.sh /tmp/kazuist-security-scan2`: **status 1**,
+pip-audit transformers kayıtları nedeniyle. Lisans: kök Node 333, e2e 5, security 17, Python 39 paket;
+yasak lisans yok. Yerel raporlar `/tmp/kazuist-security-scan2/` ve all-extras JSON
+`/tmp/kazuist-security-all-audit.json` altındadır; CI artefaktı yerine geçmez.
+
+**Kapanış:** pypdf/setuptools alt bulguları kapalı; O-07 transformer/esbuild açık. O-09 kod düzeltmesi
+ve regresyon kanıtı hazır; CI dört iş yeşil olmadan birleşme veya bağımsız denetim kapanışı verilmez.
+All-extras açıkları nedeniyle yeni doğru tarama CI'ı kıracaktır; kapı gevşetilmez.

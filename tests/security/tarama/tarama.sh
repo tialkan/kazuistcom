@@ -5,7 +5,11 @@
 # Output files hold findings only; gitleaks runs with --redact so no secret value is written.
 set -u
 OUT=${1:?output directory}
-mkdir -p "$OUT"
+mkdir -p "$OUT" || exit 1
+OUT=$(cd "$OUT" && pwd) || exit 1
+for tool in gitleaks pnpm uv uvx python3; do
+  command -v "$tool" >/dev/null 2>&1 || { echo "required tool missing: $tool"; exit 1; }
+done
 status=0
 
 echo "== gitleaks (full history, redacted)"
@@ -21,6 +25,7 @@ done
 
 echo "== pnpm audit (workspace, all dependencies)"
 pnpm audit --json > "$OUT/pnpm-audit.json" 2> "$OUT/pnpm-audit.err"
+python3 -I tests/security/tarama/audit_json.py "$OUT/pnpm-audit.json" || status=1
 pnpm audit > "$OUT/pnpm-audit.txt" 2>&1
 a=$?
 tail -3 "$OUT/pnpm-audit.txt"
@@ -30,25 +35,32 @@ echo "pnpm audit exit $a"
 for d in tests/e2e tests/security; do
   if [ -d "$d/node_modules" ]; then
     echo "== pnpm audit ($d)"
-    pnpm --dir "$d" audit --ignore-workspace 2>&1 | tail -2
+    pnpm --dir "$d" audit --ignore-workspace > "$OUT/audit-$(basename "$d").txt" 2>&1 || status=1
+    tail -2 "$OUT/audit-$(basename "$d").txt"
+  else
+    echo "missing installed dependencies: $d"
+    status=1
   fi
 done
 
 echo "== Python dependency audit (pip-audit through uvx, services/worker-py lock)"
-( cd services/worker-py && uv export --frozen --no-hashes --all-extras > "$OUT/requirements.txt" 2> /dev/null )
+( cd services/worker-py && uv export --frozen --no-hashes --all-extras > "$OUT/requirements.txt" 2> "$OUT/uv-export.err" ) || status=1
+[ -s "$OUT/requirements.txt" ] || status=1
 uvx --from pip-audit pip-audit -r "$OUT/requirements.txt" --progress-spinner off > "$OUT/pip-audit.txt" 2>&1
 p=$?
+[ "$p" -eq 0 ] || status=1
 tail -5 "$OUT/pip-audit.txt"
 echo "pip-audit exit $p"
 
 echo "== licenses (AGPL and SSPL forbidden without ADR)"
-pnpm licenses list --json > "$OUT/pnpm-lisans.json" 2> /dev/null
+pnpm licenses list --json > "$OUT/pnpm-lisans.json" 2> "$OUT/pnpm-lisans.err" || status=1
 python3 -I tests/security/tarama/lisans.py node "$OUT/pnpm-lisans.json" > "$OUT/lisans-node.txt" || status=1
 grep -E "packages|FORBIDDEN|review" "$OUT/lisans-node.txt"
 for d in tests/e2e tests/security; do
   if [ -d "$d/node_modules" ]; then
-    pnpm --dir "$d" licenses list --json --ignore-workspace > "$OUT/lisans-$(basename $d).json" 2> /dev/null
-    python3 -I tests/security/tarama/lisans.py node "$OUT/lisans-$(basename $d).json" | grep -E "packages|FORBIDDEN|review"
+    pnpm --dir "$d" licenses list --json --ignore-workspace > "$OUT/lisans-$(basename $d).json" 2> "$OUT/lisans-$(basename "$d").err" || status=1
+    python3 -I tests/security/tarama/lisans.py node "$OUT/lisans-$(basename $d).json" > "$OUT/lisans-$(basename "$d").txt" || status=1
+    grep -E "packages|FORBIDDEN|review" "$OUT/lisans-$(basename "$d").txt"
   fi
 done
 services/worker-py/.venv/bin/python -I tests/security/tarama/lisans.py python > "$OUT/lisans-python.txt" || status=1

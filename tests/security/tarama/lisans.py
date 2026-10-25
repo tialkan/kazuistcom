@@ -35,7 +35,9 @@ def python() -> list[tuple[str, str]]:
         lic = m.get("License-Expression") or ""
         if not lic:
             classifiers = [
-                c.split("::")[-1].strip() for c in (m.get_all("Classifier") or []) if c.startswith("License ::")
+                c.split("::")[-1].strip()
+                for c in (m.get_all("Classifier") or [])
+                if c.startswith("License ::")
             ]
             lic = "; ".join(classifiers)
         if not lic:
@@ -53,7 +55,11 @@ def main() -> int:
     for lic, n in counts.most_common():
         print(f"  {n:4d}  {lic}")
     bad = [(p, lic) for p, lic in rows if FORBIDDEN.search(lic)]
-    weak = [(p, lic) for p, lic in rows if WEAK_COPYLEFT.search(lic) and not FORBIDDEN.search(lic)]
+    weak = [
+        (p, lic)
+        for p, lic in rows
+        if WEAK_COPYLEFT.search(lic) and not FORBIDDEN.search(lic)
+    ]
     unknown = [(p, lic) for p, lic in rows if lic.upper() in ("UNKNOWN", "")]
     for p, lic in weak:
         print(f"  review (copyleft, not forbidden): {p} {lic}")
@@ -61,7 +67,7 @@ def main() -> int:
         print(f"  review (unknown license): {p}")
     for p, lic in bad:
         print(f"  FORBIDDEN: {p} {lic}")
-    return 1 if bad else 0
+    return 1 if bad or unknown or not rows else 0
 
 
 if __name__ == "__main__":
