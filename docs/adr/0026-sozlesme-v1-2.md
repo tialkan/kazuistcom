@@ -39,7 +39,8 @@ bildirim alt türleri (Y5). Hukuki metinlerin PDF alanları, anonimleştirmeden 
 - Uygulamada olup sözleşmeye eklenen uçlar: `POST /v1/checkout/callback` ve
   `POST /v1/checkout/subscription-callback` (iyzico form gövdesi, yalnız `token` okunur, 303 ile `/odeme/donus`;
   2XX yoktur, Redocly'de bu iki işlem için açık istisna), `POST /v1/webhooks/iyzico-fraud` (IFN; imza biçimi
-  doğrulanana kadar yalnız tetikleyici, sipariş iyzico'dan yeniden sorgulanır).
+  doğrulanana kadar yalnız tetikleyici, `paymentId` ile sipariş bulunur ve iyzico'dan yeniden sorgulanır; `fraudStatus` karar için kullanılmaz).
+  `orders.status` için CHECK eklenmedi; PR #30'daki `inceleniyor` durumu serbesttir.
 - D8: `POST /v1/coupons/redeem`, `POST /v1/admin/chargebacks`, `POST /v1/admin/price-changes`. O-N1:
   `GET /v1/admin/refunds/pending` ve `POST /v1/admin/refunds/{refundRef}/resolve` (3 iş günü). Yönetim uçları
   passkey ve ikinci adım ister.

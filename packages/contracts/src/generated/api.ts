@@ -1192,8 +1192,9 @@ export interface paths {
         put?: never;
         /**
          * iyzico fraud review notification (IFN), trigger only
-         * @description The signature format is not verified yet, so the body is only a trigger: the server takes the order id
-         *     (paymentConversationId or conversationId) and re-queries that order at iyzico; nothing else is read.
+         * @description The signature format is not verified yet, so the body is only a trigger: paymentId locates the order,
+         *     then the server re-queries it at iyzico. fraudStatus is never trusted to grant credits.
+         *     The endpoint limits requests to 20 per minute per IP and bodies to 2 KB.
          */
         post: operations["iyzicoFraudNotification"];
         delete?: never;
@@ -4339,7 +4340,11 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": Record<string, never>;
+                "application/json": {
+                    paymentId: string | number;
+                    /** @enum {integer} */
+                    fraudStatus: -1 | 0 | 1 | 2;
+                };
             };
         };
         responses: {
