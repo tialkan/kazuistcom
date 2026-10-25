@@ -1,0 +1,113 @@
+/** Third audit on PGlite (repro3-pg.mts R1, R4; O9 retry over the users table). */
+import { randomUUID } from 'node:crypto';
+import { expect, it } from 'vitest';
+import { FakeEArsiv } from '../../src/billing/earsiv.ts';
+import { FAKE_CFG, FakeIyzico } from '../../src/billing/fake-iyzico.ts';
+import { PgLedgerPort } from '../../src/billing/pg-store.ts';
+import { BillingService, type Buyer } from '../../src/billing/service.ts';
+import { addDays } from '../../src/index.ts';
+import { pgBillingEnv } from './pg-env.ts';
+
+const buyer: Buyer = {
+  id: 'u1',
+  email: 'a@example.invalid',
+  name: 'A',
+  surname: 'B',
+  identityNumber: '11111111111',
+  ip: '127.0.0.1',
+  city: 'Ankara',
+  country: 'Turkey',
+  address: 'x',
+};
+const pack = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'mss-1' };
+const plan = { preInfoConsentVersion: 'onb-1', distanceContractConsentVersion: 'abo-1' };
+
+async function env() {
+  const base = await pgBillingEnv();
+  let now = new Date('2026-10-20T09:00:00Z');
+  const iyz = new FakeIyzico();
+  iyz.now = () => now;
+  const svc = new BillingService({
+    iyzico: iyz,
+    iyzicoCfg: FAKE_CFG,
+    earsiv: new FakeEArsiv(() => now),
+    store: base.store,
+    ledger: new PgLedgerPort(base.db),
+    consentVersions: { on_bilgilendirme: 'onb-1', mesafeli_sozlesme: 'mss-1', abonelik_sozlesmesi: 'abo-1' },
+    now: () => now,
+    newId: randomUUID,
+    callbackBaseUrl: 'https://k.test',
+    webAddress: 'https://k.test',
+  });
+  await svc.setupSubscriptionCatalog();
+  return {
+    ...base,
+    iyz,
+    svc,
+    set: (d: Date) => {
+      now = d;
+    },
+    get now() {
+      return now;
+    },
+  };
+}
+
+it('Y-N5 on Postgres: a long fraud review stays inceleniyor and the IFN by paymentId credits it', async () => {
+  const e = await env();
+  e.iyz.nextFraudStatus = 0;
+  const a = await e.svc.startTopup(
+    e.userId,
+    randomUUID(),
+    { productCode: 'kredi.300', withdrawalWaiver: true, ...pack },
+    buyer,
+  );
+  const tok = (await e.store.getOrder(a.orderId))?.checkoutToken as string;
+  await e.svc.completeCheckout(tok);
+  e.set(addDays(e.now, 9));
+  await e.svc.recheckPendingOrders();
+  expect((await e.store.getOrder(a.orderId))?.status).toBe('inceleniyor');
+  e.iyz.decideFraud(tok, 2);
+  const pid = e.iyz.checkouts.get(tok)?.paymentId;
+  await e.svc.handleFraudNotification(JSON.stringify({ paymentId: Number(pid), fraudStatus: 2 }));
+  expect((await e.store.getOrder(a.orderId))?.status).toBe('odendi');
+  expect((await e.svc.wallet(e.userId)).balance).toBe(300);
+  await e.pg.close();
+}, 60_000);
+
+it('D-N6 on Postgres: the hold of an unknown refund survives 31 days and the late decision closes it', async () => {
+  const e = await env();
+  const a = await e.svc.startTopup(
+    e.userId,
+    randomUUID(),
+    { productCode: 'kredi.300', withdrawalWaiver: true, ...pack },
+    buyer,
+  );
+  await e.svc.completeCheckout((await e.store.getOrder(a.orderId))?.checkoutToken as string);
+  e.iyz.nextRefund = 'unknown';
+  await expect(e.svc.requestRefund(e.userId, a.orderId)).rejects.toMatchObject({ code: 'refund_pending' });
+  e.set(addDays(e.now, 31));
+  expect((await e.svc.wallet(e.userId)).balance).toBe(0);
+  await e.svc.resolvePendingRefund(`paket:${a.orderId}`, 'basarili', 'admin-1');
+  expect((await e.store.getOrder(a.orderId))?.status).toBe('iade_edildi');
+  expect((await e.svc.wallet(e.userId)).balance).toBe(0);
+  await e.pg.close();
+}, 60_000);
+
+it('O9 on Postgres: a deleted account with a live subscription is canceled by the daily job', async () => {
+  const e = await env();
+  const s = await e.svc.startSubscription(
+    e.userId,
+    randomUUID(),
+    { planCode: 'ogrenci.aylik', ...plan },
+    buyer,
+  );
+  const sub = await e.svc.completeSubscriptionCheckout(
+    (await e.store.getOrder(s.orderId))?.checkoutToken as string,
+  );
+  await e.pg.query('update users set deleted_at = now() where id = $1', [e.userId]);
+  expect(await e.svc.reconcileDeletedAccounts()).toBe(1);
+  expect((await e.store.getSubscription(sub.id))?.status).toBe('iptal');
+  expect(await e.svc.reconcileDeletedAccounts()).toBe(0);
+  await e.pg.close();
+}, 60_000);

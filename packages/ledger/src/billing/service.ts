@@ -97,6 +97,9 @@ const PLAN_RANK: Record<string, number> = { ucretsiz: 0, plus: 1, akademisyen: 2
 /** Signup gift (plan 4.2): 50 promotional credits, 90 days. */
 export const SIGNUP_PROMO_CREDITS = 50;
 
+/** iyzico error codes meaning "no payment for this token yet" (sandbox answers of 2026-10-25). */
+const NOT_PAID_YET = new Set(['5122', '5124']);
+
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 
 export interface ReconcileResult {
@@ -285,7 +288,22 @@ export class BillingService {
     const order = await this.s.findOrderByToken(token);
     if (!order) throw new BillingError(404, 'order_not_found');
     if (order.status === 'odendi' || order.status === 'iade_edildi') return order;
-    const r = await this.d.iyzico.retrieveCheckoutForm(token);
+    let r;
+    try {
+      r = await this.d.iyzico.retrieveCheckoutForm(token);
+    } catch (e) {
+      // Sandbox, 2026-10-25 (fixtures/iyzico-sandbox.json): a token whose form was never paid answers
+      // status failure with errorCode 5122 (5124: unknown token). That is not a failed payment yet; the
+      // recheck job closes it after 2 days.
+      if (e instanceof IyzicoError && e.definite && NOT_PAID_YET.has(e.errorCode ?? '')) return order;
+      // Any other status failure (declined card, 10051, 10005): a failed payment, not a server error
+      // (Y-N6, O-N2).
+      if (e instanceof IyzicoError && e.definite) {
+        await this.failOrder(order);
+        return order;
+      }
+      throw e;
+    }
     if (r.status !== 'success' || r.paymentStatus !== 'SUCCESS' || r.paymentId === null) {
       if (r.paymentStatus === 'FAILURE') await this.failOrder(order);
       return order;
@@ -295,7 +313,15 @@ export class BillingService {
       return order;
     }
     // 1 approved, 2 approved after review; 0 stays pending and is re-queried by recheckPendingOrders (Y-N3).
-    if (r.fraudStatus !== 1 && r.fraudStatus !== 2) return order;
+    if (r.fraudStatus !== 1 && r.fraudStatus !== 2) {
+      // Paid, in fraud review: tracked as inceleniyor with its paymentId for the IFN and the recheck job.
+      if (order.status !== 'inceleniyor' || order.paymentId !== r.paymentId) {
+        order.status = 'inceleniyor';
+        order.paymentId = r.paymentId;
+        await this.s.saveOrder(order);
+      }
+      return order;
+    }
     if (
       r.basketId !== order.id ||
       r.paidPriceKurus !== order.amountKurus ||
@@ -367,22 +393,27 @@ export class BillingService {
       const product = findProduct(this.table(o.createdAt), o.productCode);
       if (!product || !o.checkoutToken) continue;
       if (kind === 'abonelik' && product.kind !== 'abonelik') continue;
-      try {
-        if (product.kind === 'abonelik') {
-          await this.completeSubscriptionCheckout(o.checkoutToken);
-          paid++;
-          continue;
+      const token = o.checkoutToken;
+      await this.isolate('yeniden_sorgu_hatasi', { orderId: o.id }, async () => {
+        try {
+          if (product.kind === 'abonelik') {
+            await this.completeSubscriptionCheckout(token);
+            paid++;
+            return;
+          }
+          if ((await this.completeCheckout(token)).status === 'odendi') {
+            paid++;
+            return;
+          }
+        } catch (e) {
+          if (!(e instanceof BillingError)) throw e;
         }
-        if ((await this.completeCheckout(o.checkoutToken)).status === 'odendi') {
-          paid++;
-          continue;
-        }
-      } catch (e) {
-        if (!(e instanceof BillingError)) throw e;
-      }
-      const fresh = await this.s.getOrder(o.id);
-      if (fresh?.status === 'bekliyor' && now - o.createdAt.getTime() > 2 * 86_400_000)
-        await this.failOrder(fresh);
+        // Only an order without a payment is closed after 2 days; a paid order in fraud review stays
+        // inceleniyor until iyzico decides (Y-N5).
+        const fresh = await this.s.getOrder(o.id);
+        if (fresh?.status === 'bekliyor' && now - o.createdAt.getTime() > 2 * 86_400_000)
+          await this.failOrder(fresh);
+      });
     }
     return paid;
   }
@@ -398,10 +429,14 @@ export class BillingService {
     } catch {
       return { status: 400 };
     }
-    const id = body?.paymentConversationId ?? body?.conversationId;
-    if (typeof id !== 'string' || id.length > 100) return { status: 200 };
-    const order = await this.s.getOrder(id).catch(() => null);
-    if (order?.status === 'bekliyor' && order.checkoutToken) await this.completeCheckout(order.checkoutToken);
+    // Documented IFN body: { paymentId, fraudStatus } (O-N3). Only an order already waiting in fraud review
+    // with that paymentId is re-queried; any other body triggers nothing.
+    const pid = body?.paymentId;
+    if ((typeof pid !== 'number' && typeof pid !== 'string') || String(pid).length > 30)
+      return { status: 200 };
+    const order = await this.s.findOrderByPaymentId(String(pid));
+    if (order?.status === 'inceleniyor' && order.checkoutToken)
+      await this.completeCheckout(order.checkoutToken);
     return { status: 200 };
   }
 
@@ -539,13 +574,14 @@ export class BillingService {
       items.push(['yillik_taahhutname', input.distanceContractConsentVersion, true]);
     if (input.withdrawalWaiver !== undefined)
       items.push(['cayma_istisnasi', input.distanceContractConsentVersion, input.withdrawalWaiver]);
-    await this.consents(userId, items, { orderId, productCode: product.code });
     const init = await this.d.iyzico.initSubscriptionCheckout({
       conversationId: orderId,
       pricingPlanReferenceCode: planRef,
       callbackUrl: `${this.d.callbackBaseUrl}/api/v1/checkout/subscription-callback`,
       customer: buyer,
     });
+    // Consents only for a checkout that iyzico opened (D-N1).
+    await this.consents(userId, items, { orderId, productCode: product.code });
     await this.s.saveOrder({
       id: orderId,
       userId,
@@ -775,29 +811,49 @@ export class BillingService {
    * retried (O2).
    */
   async runDunning(): Promise<void> {
+    for (const sub of await this.s.listSubscriptions())
+      await this.isolate('deneme_hatasi', { subscriptionId: sub.id }, () => this.dunOne(sub));
+  }
+
+  private async dunOne(sub: Subscription): Promise<void> {
     const now = this.d.now();
-    for (const sub of await this.s.listSubscriptions()) {
-      if (sub.status !== 'odeme_bekliyor' || !sub.firstFailureAt || !sub.failedOrderRef) continue;
-      if (sub.cancelAtPeriodEnd || sub.canceledAt) continue;
-      const step = nextDunningStep(sub.firstFailureAt, sub.failedRetries);
-      if (!dueToday(step.at, now)) continue;
-      if (step.action === 'downgrade') {
-        await this.downgrade(sub);
-        continue;
-      }
-      const r = await this.d.iyzico.retrySubscriptionOrder(sub.failedOrderRef);
-      if (r.status === 'success') {
-        const detail = await this.d.iyzico.retrieveSubscription(sub.providerRef);
-        const o = detail.orders.find((x) => x.referenceCode === sub.failedOrderRef);
-        const pid = successfulPaymentId(o);
-        if (pid && !(await this.s.findCharge(pid)))
-          await this.renew(sub, sub.failedOrderRef, pid, o?.price ?? sub.priceKurus);
-        await this.s.saveSubscription(sub);
-        continue;
-      }
-      sub.failedRetries += 1;
+    if (sub.status !== 'odeme_bekliyor' || !sub.firstFailureAt || !sub.failedOrderRef) return;
+    if (sub.cancelAtPeriodEnd || sub.canceledAt) return;
+    const step = nextDunningStep(sub.firstFailureAt, sub.failedRetries);
+    if (!dueToday(step.at, now)) return;
+    if (step.action === 'downgrade') return this.downgrade(sub);
+    const r = await this.d.iyzico.retrySubscriptionOrder(sub.failedOrderRef);
+    if (r.status === 'success') {
+      const detail = await this.d.iyzico.retrieveSubscription(sub.providerRef);
+      const o = detail.orders.find((x) => x.referenceCode === sub.failedOrderRef);
+      const pid = successfulPaymentId(o);
+      if (pid && !(await this.s.findCharge(pid)))
+        await this.renew(sub, sub.failedOrderRef, pid, o?.price ?? sub.priceKurus);
       await this.s.saveSubscription(sub);
-      if (sub.failedRetries >= RETRY_DAYS.length) await this.downgrade(sub);
+      return;
+    }
+    sub.failedRetries += 1;
+    await this.s.saveSubscription(sub);
+    if (sub.failedRetries >= RETRY_DAYS.length) await this.downgrade(sub);
+  }
+
+  /**
+   * One subscription or order never stops a daily loop (Y-N6): any error is raised as an alert with the
+   * ids only, and the loop goes on. Returns false when the step failed.
+   */
+  private async isolate(
+    kind: string,
+    ids: Record<string, string>,
+    fn: () => Promise<unknown>,
+  ): Promise<boolean> {
+    try {
+      await fn();
+      return true;
+    } catch (e) {
+      await this.s
+        .alert(kind, { ...ids, error: e instanceof Error ? e.name : 'Error' })
+        .catch(() => undefined);
+      return false;
     }
   }
 
@@ -977,17 +1033,31 @@ export class BillingService {
    */
   async reconcileCancellations(): Promise<number> {
     let fixed = 0;
+    // Only cancellations of the last 60 days (D-N9); iyzico is asked once per subscription and the cancel
+    // is sent only when it still shows the subscription live.
+    const since = this.d.now().getTime() - 60 * 86_400_000;
     for (const sub of await this.s.listSubscriptions()) {
-      if (!sub.canceledAt && sub.status !== 'sona_erdi') continue;
-      if (!(await this.ensureProviderCanceled(sub))) continue;
-      fixed++;
-      const refund = await this.s.findRefund(`fesih:${sub.id}`);
-      if (refund?.status === 'hazir')
-        await this.finishCancelRefund(sub, refund.amountKurus).catch((e: unknown) => {
-          if (!(e instanceof BillingError)) throw e;
-        });
+      const at = sub.canceledAt ?? (sub.status === 'sona_erdi' ? sub.currentPeriodEnd : null);
+      if (!at || at.getTime() < since) continue;
+      await this.isolate('iptal_bekliyor', { subscriptionId: sub.id }, async () => {
+        if (!(await this.ensureProviderCanceled(sub))) return;
+        fixed++;
+        const refund = await this.s.findRefund(`fesih:${sub.id}`);
+        if (refund?.status === 'hazir') await this.finishCancelRefund(sub, refund.amountKurus);
+      });
     }
     return fixed;
+  }
+
+  /**
+   * Accounts deleted while the deletion hook failed (O9): every deleted user with a live subscription is
+   * run through onAccountDeletion by the daily job.
+   */
+  async reconcileDeletedAccounts(): Promise<number> {
+    let n = 0;
+    for (const userId of await this.s.listDeletedUsersWithLiveSubscriptions())
+      if (await this.isolate('silme_kancasi_hatasi', { userId }, () => this.onAccountDeletion(userId))) n++;
+    return n;
   }
 
   /** Ends subscriptions whose period is over after a donem_sonu cancellation (also while a charge failed). */
@@ -1133,17 +1203,31 @@ export class BillingService {
         raw: { holdOp: op, walletId },
       });
     } catch (e) {
-      if (!(e instanceof BillingError && e.code === 'refund_pending'))
-        await this.d.ledger.run(walletId, (l) =>
-          l.settle({ walletId, operationId: op, outcome: 'teknik_hata', now: this.d.now() }),
-        );
+      const pending = e instanceof BillingError && e.code === 'refund_pending';
+      await this.d.ledger.run(walletId, (l) =>
+        pending
+          ? // Unknown outcome: the hold no longer expires; only the administrator decision ends it (D-N6).
+            l.extendReservation(walletId, op, new Date(this.d.now().getTime() + 10 * 365 * 86_400_000))
+          : l.settle({ walletId, operationId: op, outcome: 'teknik_hata', now: this.d.now() }),
+      );
       throw e;
     }
     await this.finishHeldRefund(order, walletId, op, won);
   }
 
   private async finishHeldRefund(order: Order, walletId: string, op: string, invoice: boolean) {
-    await this.d.ledger.run(walletId, (l) => l.refundHeld({ walletId, operationId: op, now: this.d.now() }));
+    await this.d.ledger.run(walletId, (l) => {
+      const r = l.wallet(walletId).reservations.find((x) => x.operationId === op);
+      if (r?.status === 'acik' || r?.status === 'tuketildi')
+        return l.refundHeld({ walletId, operationId: op, now: this.d.now() });
+      // A hold released before the decision (data from before D-N6): reverse the lot if it is untouched.
+      return l.refundUnusedLot({
+        key: `iade_karari:${op}`,
+        walletId,
+        originRef: `order:${order.id}`,
+        now: this.d.now(),
+      });
+    });
     order.status = 'iade_edildi';
     await this.s.saveOrder(order);
     if (invoice) await this.invoice(order.userId, order.id, 'iade', order.amountKurus, 'İade');
@@ -1292,19 +1376,20 @@ export class BillingService {
   async monthlyGrant(): Promise<number> {
     const now = this.d.now();
     let n = 0;
-    for (const sub of await this.s.listSubscriptions()) {
-      const product = findProduct(this.table(), sub.planCode);
-      if (product?.interval !== 'yillik' || sub.status !== 'aktif') continue;
-      const due = Math.min(
-        annualGrantsDue(sub.currentPeriodStart, now),
-        annualGrantsDue(sub.currentPeriodStart, sub.currentPeriodEnd),
-      );
-      while (sub.grantsDelivered < due) {
-        await this.grantMonth(sub, `ay${sub.grantsDelivered + 1}`);
-        await this.s.saveSubscription(sub);
-        n++;
-      }
-    }
+    for (const sub of await this.s.listSubscriptions())
+      await this.isolate('yukleme_hatasi', { subscriptionId: sub.id }, async () => {
+        const product = findProduct(this.table(), sub.planCode);
+        if (product?.interval !== 'yillik' || sub.status !== 'aktif') return;
+        const due = Math.min(
+          annualGrantsDue(sub.currentPeriodStart, now),
+          annualGrantsDue(sub.currentPeriodStart, sub.currentPeriodEnd),
+        );
+        while (sub.grantsDelivered < due) {
+          await this.grantMonth(sub, `ay${sub.grantsDelivered + 1}`);
+          await this.s.saveSubscription(sub);
+          n++;
+        }
+      });
     return n;
   }
 

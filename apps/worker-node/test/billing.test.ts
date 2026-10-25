@@ -26,7 +26,7 @@ it('runs billing.reconcile and billing.monthly_grant through the job consumer', 
   };
   const handlers = billingHandlers({
     now: () => now,
-    monthlyGrant: async () => 2,
+    monthlyGrant: async () => ({ granted: 2, failed: [] }),
     reconcileDay: async () => ({
       disabled: false,
       diffs: [
@@ -39,6 +39,6 @@ it('runs billing.reconcile and billing.monthly_grant through the job consumer', 
   await c.runOnce('billing.monthly_grant');
   expect(results).toEqual([
     { day: '2026-10-19', disabled: false, differences: 1, paymentIds: ['p1'] },
-    { granted: 2 },
+    { granted: 2, failed: [] },
   ]);
 });
