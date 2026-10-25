@@ -1,11 +1,11 @@
 """Exercise scanner exit propagation with isolated CLI doubles, without network."""
 
 import os
-from pathlib import Path
 import shutil
 import subprocess
 import tempfile
 import unittest
+from pathlib import Path
 
 SOURCE = Path(__file__).resolve().parent
 
@@ -52,6 +52,7 @@ exit 0
                 cwd=root,
                 env=env,
                 capture_output=True,
+                check=False,
             ).returncode
 
     def test_success(self):

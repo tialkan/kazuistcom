@@ -69,3 +69,41 @@ yasak lisans yok. Yerel raporlar `/tmp/kazuist-security-scan2/` ve all-extras JS
 **Kapanış:** pypdf/setuptools alt bulguları kapalı; O-07 transformer/esbuild açık. O-09 kod düzeltmesi
 ve regresyon kanıtı hazır; CI dört iş yeşil olmadan birleşme veya bağımsız denetim kapanışı verilmez.
 All-extras açıkları nedeniyle yeni doğru tarama CI'ı kıracaktır; kapı gevşetilmez.
+
+### Ek yetkiyle export uyumluluk düzeltmesi
+
+Orkestra `eval/anon/export_ner.py` ve ilgili regresyon testlerini bu işe açıkça verdi.
+`optimum`/`optimum-onnx` kaldırıldı; `onnx>=1.17`, `transformers>=5.10,<5.17`,
+`gliner>=0.2.29,<0.3` aralıkları çözüldü: transformers 5.16.1, gliner 0.2.29. GLiNER birincil metadata
+https://pypi.org/pypi/gliner/0.2.29/json `transformers>=4.51.3,<5.17.0` ile uyumludur.
+
+Akdeniz export doğrudan `torch.onnx.export` logits sarmalayıcısına geçti; eager attention, eval modu,
+opset 17 ve dinamik batch/token eksenleri açıkça seçilir. Resmî API:
+https://docs.pytorch.org/docs/2.14/onnx.html (`dynamo=False` için `dynamic_axes`). Config, tokenizer,
+kaynak/ONNX SHA256 ve manifest üretimi korunur. GLiNER hazırlık dizini kaynak cache yerine çıktı altında
+oluşturulur; `anonymizer` runtime kodu değişmedi.
+
+All-extras yeni gerçek pip-audit: **No known vulnerabilities found**, çıkış 0
+(`/tmp/kazuist-security-all2-audit.txt`). Önceki 9 transformers kaydı artık yoktur.
+
+- Küçük rastgele Bert offline export regresyonu: farklı batch/token/padding üç şekil, `atol=rtol=1e-5`.
+  İlk koşu kırmızı: wrapper training modu export sonunda referans modelde dropout açtı. `.eval()`
+  düzeltmesiyle yeşil. Komut: `uv run --directory services/worker-py --extra ner python -m unittest
+  discover -s ../../eval/anon -p 'test_export_ner.py'`.
+- Gerçek sabit cache ağırlığı, akdeniz 50 sentetik belge: max logit farkı 0.0000460148; transformer 5
+  pipeline PERSON span uyumu %98,65. Eski manifestteki %99,10 farklı pipeline sürümüdür. Eski cache ONNX
+  ve yeni graph aynı runtime ile ayrıca karşılaştırıldı: eski PERSON 440, yeni 440, kesişim 440,
+  **runtime span kaybı yok**. Yeni ONNX SHA256:
+  `d360b18c97f47570235f91f7f51a383c597e0a079eb59c9df6a18539ffa45340`.
+- Hushmark 402 paragraf: span eşliği 1.0, max skor farkı 0.00000572205; sınır aşımı nedeniyle atlanan 0.
+- Yeni Python yığını: 145 geçti, 1 optional test atlandı. Ruff yeni tarama/export testlerinde temiz.
+
+Gerçek export çıktıları yalnız `/tmp/kazuist-ner-security-export` altında üretildi, eski model cache
+çıktıları değiştirilmedi. Alan sıkışıklığında kendi yeni model çıktıları SHA/manifest ölçümü sonrası
+kaldırıldı; manifest kopyaları `/tmp/kazuist-akdeniz-manifest.json` ve
+`/tmp/kazuist-hushmark-manifest.json` olarak korunur. İlk disk hataları başarı sayılmadı.
+
+GLiNER 20 belge yeni-yığın export/parity denemesi henüz geçmedi: `OSError: [Errno 28] No space left on
+ device` nedeniyle model yazılamadı. Import ve metadata uyumu tam export eşliği yerine geçmez. Orkestra
+alanı doğrulamadan yeni büyük export başlatılmaz. O-07 güvenlik açığı sayısı temiz olsa da bu major
+uyumluluk kabulü ve tam final tarama/CI ölçümü tamamlanmadan iş kapalı sayılmaz.

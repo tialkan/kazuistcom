@@ -12,12 +12,13 @@ import re
 import sys
 from collections import Counter
 
-FORBIDDEN = re.compile(r"\b(AGPL|SSPL|Server Side Public License|Affero)\b", re.I)
-WEAK_COPYLEFT = re.compile(r"\b(LGPL|MPL|EPL|CDDL|GPL)\b", re.I)
+FORBIDDEN = re.compile(r"\b(AGPL|SSPL|Server Side Public License|Affero)\b", re.IGNORECASE)
+WEAK_COPYLEFT = re.compile(r"\b(LGPL|MPL|EPL|CDDL|GPL)\b", re.IGNORECASE)
 
 
 def node(path: str) -> list[tuple[str, str]]:
-    data = json.load(open(path, encoding="utf-8"))
+    with open(path, encoding="utf-8") as source:
+        data = json.load(source)
     out = []
     for lic, pkgs in data.items():
         for p in pkgs:
