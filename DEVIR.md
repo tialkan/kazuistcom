@@ -2,6 +2,10 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Orkestra devri, 2026-10-25
+
+Orkestra yeni oturuma devredildi. Devralan oturum önce `docs/ORKESTRA-DEVIR.md`'yi okur; başlangıç metni o dosyanın 11. bölümündedir.
+
 ## Dalga 1, kalite-guvenlik, kapı raporu (dalga-1/kalite-guvenlik/kapi), 2026-10-22
 
 ### Durum
