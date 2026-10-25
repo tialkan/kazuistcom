@@ -16,3 +16,7 @@ it('Y5: renewal, price and cancellation notices carry amount, date and the right
   expect(renderBillingNotice('odeme_7_gun:x:abc:not-a-date')).toBeNull();
   expect(renderBillingNotice('baska:1')).toBeNull();
 });
+
+it('Y5: the contract notice makes no PDF promise until the PDF exists', () => {
+  expect(renderBillingNotice('sozlesme:order-1')?.body).not.toMatch(/PDF/);
+});

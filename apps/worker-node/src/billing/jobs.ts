@@ -7,7 +7,7 @@ import type { ReconcileResult } from '@kazuist/ledger/billing';
 import type { JobHandler } from '../queue.ts';
 
 export interface BillingJobsDeps {
-  monthlyGrant(): Promise<number>;
+  monthlyGrant(): Promise<{ granted: number; failed: string[] }>;
   reconcileDay(day: Date): Promise<ReconcileResult>;
   now(): Date;
 }
@@ -26,7 +26,7 @@ export function billingHandlers(
   deps: BillingJobsDeps,
 ): Record<'billing.monthly_grant' | 'billing.reconcile', JobHandler> {
   return {
-    'billing.monthly_grant': async () => ({ granted: await deps.monthlyGrant() }),
+    'billing.monthly_grant': async () => deps.monthlyGrant(),
     'billing.reconcile': async (job) => {
       const day = reconcileDayOf(job.payload, deps.now());
       const { disabled, diffs } = await deps.reconcileDay(day);

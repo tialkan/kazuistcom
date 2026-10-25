@@ -195,7 +195,8 @@ async function persist(db: SqlClient, ledger: Ledger, walletId: string): Promise
     await db.query(
       `insert into reservations (wallet_id, operation_id, estimated_credits, actual_credits, status, expires_at)
        values ($1, $2, $3, $4, $5::reservation_status, $6)
-       on conflict (operation_id) do update set actual_credits = excluded.actual_credits, status = excluded.status`,
+       on conflict (operation_id) do update set actual_credits = excluded.actual_credits, status = excluded.status,
+         expires_at = excluded.expires_at`,
       [walletId, r.operationId, r.estimatedCredits, r.actualCredits, r.status, r.expiresAt],
     );
   }

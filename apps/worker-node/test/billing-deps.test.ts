@@ -14,10 +14,11 @@ it('runs period close, pending rechecks, cancel retries, dunning and grants in t
     recheckPendingOrders: async () => (calls.push('recheck'), 0),
     reconcileCancellations: async () => (calls.push('cancels'), 0),
     runDunning: async () => void calls.push('dunning'),
+    reconcileDeletedAccounts: async () => (calls.push('deleted'), 0),
     monthlyGrant: async () => (calls.push('grant'), 3),
     reconcileDay: async () => ({ disabled: true, diffs: [] }),
   };
   const deps = depsFromService(svc as never);
-  expect(await deps.monthlyGrant()).toBe(3);
-  expect(calls).toEqual(['close', 'recheck', 'cancels', 'dunning', 'grant']);
+  expect(await deps.monthlyGrant()).toEqual({ granted: 3, failed: [] });
+  expect(calls).toEqual(['close', 'recheck', 'cancels', 'deleted', 'dunning', 'grant']);
 });

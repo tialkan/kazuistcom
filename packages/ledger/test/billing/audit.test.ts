@@ -336,7 +336,7 @@ describe('medium', () => {
     const e = env();
     e.iyz.nextFraudStatus = 0;
     const a = await e.buy();
-    expect((await e.svc.completeCheckout(a.token)).status).toBe('bekliyor');
+    expect((await e.svc.completeCheckout(a.token)).status).toBe('inceleniyor');
     expect(await balance(e)).toBe(0);
     e.iyz.decideFraud(a.token, 1);
     const w = e.iyz.checkoutWebhook(a.token);
