@@ -1573,14 +1573,20 @@ paths:
       operationId: iyzicoFraudNotification
       summary: iyzico fraud review notification (IFN), trigger only
       description: |
-        The signature format is not verified yet, so the body is only a trigger: the server takes the order id
-        (paymentConversationId or conversationId) and re-queries that order at iyzico; nothing else is read.
+        The signature format is not verified yet, so the body is only a trigger: paymentId locates the order,
+        then the server re-queries it at iyzico. fraudStatus is never trusted to grant credits.
+        The endpoint limits requests to 20 per minute per IP and bodies to 2 KB.
       security: []
       requestBody:
         required: true
         content:
           application/json:
-            schema: { type: object }
+            schema:
+              type: object
+              required: [paymentId, fraudStatus]
+              properties:
+                paymentId: { type: [string, integer], maxLength: 30 }
+                fraudStatus: { type: integer, enum: [-1, 0, 1, 2] }
       responses:
         '200': { description: 'Accepted.' }
         '400': { $ref: '#/components/responses/BadRequest' }

@@ -7,6 +7,15 @@ En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en 
 Durum: PR açık, birleştirilmedi. Sözleşme v1.2; ADR-0026 ve güncellenen ADR-0024 "Önerildi, Tarık onayı bekliyor".
 Karar tablosu: docs/istekler/README.md (ikinci tur).
 
+Doğrulama (güncel main ve PR #30 ile): `pnpm test` 585 geçti, 3 ortam gerektiren test atlandı;
+`pnpm typecheck`, `pnpm lint`, `pnpm contracts:lint`, `pnpm check:text`, `pnpm build` geçti.
+Python `uv run --project services/worker-py pytest services/worker-py/tests -q`: 86 geçti.
+Migration testleri 27/27; v1.1 verisinden yükseltme ve defter/parça tetikleyicileri dahil.
+Dal commitleri `gitleaks git --redact --log-opts='origin/main..HEAD'` ile temiz.
+IFN gövdesi PR #30 ile eşlendi (`paymentId`, `fraudStatus`); `orders.status` CHECK eklenmedi.
+Gerçek servisli Docker ölçümü CI'da yapılacak; yerel ortamda Docker yok.
+
+
 - Migration `0004_v1_2_ledger_guards.sql`: D6 tetikleyicileri (`ledger_transactions` değişmez, `credit_lots` yalnız
   `remaining_credits`), `products (code, price_table_id)` tekil (D4 genişletme adımı), `payments.status` ve
   `notices.kind` CHECK'leri NOT VALID, `records.masked_text` tetikleyicisi (parçaları siler, `embed.chunks` atar).

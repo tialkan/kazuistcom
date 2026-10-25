@@ -34,3 +34,9 @@
 - Abonelik ürün oluşturma `errorCode: 100001` ("Sistem hatası"): sandbox abonelik eklentisi açık görünmüyor.
   Tarık'ın panelden açması gerekiyor.
 - Günlük rapor aynı gün boş döndü; transactionId ile paymentId ilişkisi ertesi gün yeniden denenmeli.
+
+## Mimar sonucu (2026-10-25, sözleşme 1.2)
+
+`orders.status` üzerinde yeni CHECK yoktur; `inceleniyor` engellenmez. IFN OpenAPI gövdesi `paymentId`
+(metin veya tam sayı) ve `fraudStatus` olarak güncellendi; uç kimliği yalnız siparişi bulup iyzico'dan
+yeniden sorgulamak için kullanır. 20/dk/IP ve 2 KB sınırı belgede gösterildi.
