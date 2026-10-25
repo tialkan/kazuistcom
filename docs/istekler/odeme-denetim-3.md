@@ -31,8 +31,10 @@
   bunları "henüz ödenmedi" sayıyor, başarısız ödeme saymıyor.
 - `.invalid` uzantılı e-posta iyzico'da `errorCode: 5` ile reddediliyor; test verileri gerçek biçimli adres
   kullanmalı.
-- Abonelik ürün oluşturma `errorCode: 100001` ("Sistem hatası"): sandbox abonelik eklentisi açık görünmüyor.
-  Tarık'ın panelden açması gerekiyor.
+- Abonelik ürün oluşturma `errorCode: 100001` ("Sistem hatası"): abonelik akışı doğrulanamadı. Bu kod
+  tek başına eklentinin kapalı olduğunu kanıtlamaz. Resmî sandbox aktivasyon/durum teyidi yolu
+  entegrasyon@iyzico.com adresidir; panelde Eklentiler satın alımı canlı hesap içindir. Ayrıntı ve
+  gönderilmemiş taslak: `docs/runbook/iyzico-sandbox-aktivasyon.md` (25 Ekim 2026 yeniden doğrulaması).
 - Günlük rapor aynı gün boş döndü; transactionId ile paymentId ilişkisi ertesi gün yeniden denenmeli.
 
 ## Mimar sonucu (2026-10-25, sözleşme 1.2)
