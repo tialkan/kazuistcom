@@ -117,7 +117,17 @@ export function planRole(code: Plan): 'ucretsiz' | 'plus' | 'akademisyen' {
   return 'ucretsiz';
 }
 
+export type OperationClaim =
+  { state: 'claimed' } | { state: 'conflict' } | { state: 'pending' } | { state: 'done'; result: unknown };
 export interface BillingStore {
+  claimOperation(
+    userId: string,
+    operation: string,
+    key: string,
+    requestHash: string,
+  ): Promise<OperationClaim>;
+  finishOperation(userId: string, operation: string, key: string, result: unknown): Promise<void>;
+  releaseOperation(userId: string, operation: string, key: string): Promise<void>;
   walletOf(userId: string): Promise<string>;
   saveOrder(o: Order): Promise<void>;
   getOrder(id: string): Promise<Order | null>;
@@ -182,6 +192,38 @@ export interface BillingStore {
 }
 
 export class MemoryBillingStore implements BillingStore {
+  private operations = new Map<string, { hash: string; result?: unknown; active: boolean }>();
+  async claimOperation(
+    userId: string,
+    operation: string,
+    key: string,
+    requestHash: string,
+  ): Promise<OperationClaim> {
+    const id = JSON.stringify([userId, operation, key]);
+    const row = this.operations.get(id);
+    if (row)
+      return row.hash !== requestHash
+        ? { state: 'conflict' }
+        : row.result === undefined
+          ? row.active
+            ? { state: 'pending' }
+            : ((row.active = true), { state: 'claimed' })
+          : { state: 'done', result: structuredClone(row.result) };
+    this.operations.set(id, { hash: requestHash, active: true });
+    return { state: 'claimed' };
+  }
+  async finishOperation(userId: string, operation: string, key: string, result: unknown) {
+    const row = this.operations.get(JSON.stringify([userId, operation, key]));
+    if (row) {
+      row.result = structuredClone(result);
+      row.active = false;
+    }
+  }
+  async releaseOperation(userId: string, operation: string, key: string) {
+    const row = this.operations.get(JSON.stringify([userId, operation, key]));
+    if (row) row.active = false;
+  }
+
   orders = new Map<string, Order>();
   payments: Payment[] = [];
   subscriptions = new Map<string, Subscription>();

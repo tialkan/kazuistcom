@@ -2,6 +2,33 @@
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, ödeme, D3 ve D8 teknik kapanış, 2026-10-25
+
+Durum: `codex/odeme-aciklar`, PR hazırlanıyor; main `1ffbe56` tabanı. Plan 4 ve 9.
+D3: fesih/iade istemci anahtarı kullanıcı+işlem bazında kalıcı `idempotency_keys` kaydına ve
+hedef dahil gövde SHA-256 özetine bağlandı. Başarılı aynı istek özgün sonucu döndürür; farklı
+hedef/mod/gerekçe 409. Çalışan aynı istek 409 verir, tamamlanınca tekrar özgün sonucu alır.
+PostgreSQL'de özel havuz oturumunda advisory lock işlem süresince tutulur; süreç ölünce PG
+kilidi bırakır, aynı gövdeli sahipsiz pending kayıt iş akışının mevcut iade/fesih korumalarıyla
+sürdürülür. Hata sonrası gövde bağı kaybolmaz. Havuzda defter/iş sorguları için bağlantı ayrılır.
+Kaynak: https://www.postgresql.org/docs/current/explicit-locking.html#ADVISORY-LOCKS
+
+D8: `/v1/coupons/redeem`, `/v1/admin/chargebacks`, `/v1/admin/price-changes` gerçek servise bağlı.
+Admin işlemlerinde yönetici rolü+passkey+TOTP, actor denetim kaydı, hız sınırı, strict zod ve
+kalıcı istek anahtarı vardır. Kupon mevcut defter idempotency ve tüketim limitiyle işler.
+D4 ikinci migration isteği `docs/istekler/odeme-d4-urun-fiyat-surumu.md`; DB/contracts değişmedi.
+Mimar 0005 sonrası ürün upsert ve hesap silme tercihi ayrı entegrasyon işi olarak orkestradadır.
+
+Kanıt: önce D3 hedefli regresyon 2 başarısız/14; D8 route henüz yokken import hatası.
+Düzeltme sonrası odaklı memory 14/14, PGlite 7/7, gerçek guard+servis route 2/2 geçti.
+Sahipsiz pending, ayrı depo örnekleri, replay, gövde çatışması, havuz kapasitesi ve kilit bırakma sınandı.
+Tam test turu (son iki lock recovery testi öncesi) 601 geçti, 3 ortam testi atlandı;
+`pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm build` geçti. Son lock değişikliğinde
+ledger typecheck ve küçük hedefli testler yeniden geçti. Disk sınırı nedeniyle yeni büyük build koşulmadı.
+Gerçek PostgreSQL session termination testi yerelde yapılmadı; pool yolu protokol taklidi/PGlite ile sınandı.
+O8 gerçek sağlayıcı rapor çağrısı orkestradadır; sır veya ağ ödeme çağrısı yapılmadı.
+PDF/sözleşme ve worker notice dosyalarına dokunulmadı. Tarık'tan yeni adım gerekmiyor.
+
 ## Orkestra devralma ve Dalga 1 yeniden ölçümü, 25 Ekim 2026
 
 Devir alındı. Önceki iki ajanın günlükleri kullanım sınırında durduklarını gösterdi; mimarın kaydedilmemiş

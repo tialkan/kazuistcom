@@ -335,3 +335,31 @@ it('O5: subscription consent rejects absent waiver and annual version and record
     e.store.consents.filter((c) => c.kind === 'yillik_taahhutname' && c.version === 'abo-1'),
   ).toHaveLength(1);
 });
+
+it('D3: cancellation keys bind target and mode and replay the original result', async () => {
+  const e = env();
+  await e.svc.setupSubscriptionCatalog();
+  const a = await e.svc.startSubscription('u1', randomUUID(), { ...plan, planCode: 'ogrenci.aylik' }, buyer);
+  const sub = await e.svc.completeSubscriptionCheckout(e.token(a.orderId));
+  const first = await e.svc.cancel('u1', sub.id, 'donem_sonu', 'cancel-key');
+  expect(await e.svc.cancel('u1', sub.id, 'donem_sonu', 'cancel-key')).toEqual(first);
+  await expect(e.svc.cancel('u1', sub.id, 'hemen', 'cancel-key')).rejects.toMatchObject({ status: 409 });
+});
+it('D3: refund key binds reason and order and concurrent repeats do not duplicate refunds', async () => {
+  const e = env();
+  const a = await e.buy();
+  await e.svc.completeCheckout(a.token);
+  const results = await Promise.allSettled([
+    e.svc.requestRefund('u1', a.orderId, 'reason', 'refund-key'),
+    e.svc.requestRefund('u1', a.orderId, 'reason', 'refund-key'),
+  ]);
+  expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(1);
+  const first = results.find((r) => r.status === 'fulfilled');
+  expect(await e.svc.requestRefund('u1', a.orderId, 'reason', 'refund-key')).toEqual(
+    first?.status === 'fulfilled' ? first.value : null,
+  );
+  await expect(e.svc.requestRefund('u1', a.orderId, 'different', 'refund-key')).rejects.toMatchObject({
+    status: 409,
+  });
+  expect(e.iyz.refunds).toHaveLength(1);
+});

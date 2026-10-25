@@ -959,11 +959,40 @@ export class BillingService {
    * cancellation and, for an annual immediate cancel, the refund row (hazir) are stored first; then iyzico
    * is told to stop charging; then the refund is sent. A repeated call resumes every step that is missing.
    */
+  private async operation<T>(
+    userId: string,
+    operation: string,
+    key: string,
+    body: unknown,
+    run: () => Promise<T>,
+  ): Promise<T> {
+    const claim = await this.s.claimOperation(userId, operation, key, hash(body));
+    if (claim.state === 'done') return claim.result as T;
+    if (claim.state !== 'claimed')
+      throw new BillingError(
+        409,
+        claim.state === 'pending' ? 'operation_in_progress' : 'idempotency_key_reused',
+      );
+    try {
+      const result = await run();
+      await this.s.finishOperation(userId, operation, key, result);
+      return result;
+    } catch (error) {
+      await this.s.releaseOperation(userId, operation, key);
+      throw error;
+    }
+  }
+
   async cancel(
     userId: string,
     subId: string,
     mode: 'donem_sonu' | 'hemen',
+    idempotencyKey?: string,
   ): Promise<{ status: string; refundAmountKurus?: number }> {
+    if (idempotencyKey)
+      return this.operation(userId, 'subscription.cancel', idempotencyKey, { subId, mode }, () =>
+        this.cancel(userId, subId, mode),
+      );
     const sub = await this.s.getSubscription(subId);
     if (!sub || sub.userId !== userId) throw new BillingError(404, 'subscription_not_found');
     if (sub.status === 'sona_erdi') throw new BillingError(409, 'already_ended');
@@ -1095,9 +1124,18 @@ export class BillingService {
     userId: string,
     orderId: string,
     reason?: string,
+    idempotencyKey?: string,
   ): Promise<{ id: string; status: 'tamamlandi' | 'bekliyor'; amountKurus: number | null }> {
     const order = await this.s.getOrder(orderId);
     if (!order || order.userId !== userId) throw new BillingError(404, 'order_not_found');
+    if (idempotencyKey)
+      return this.operation(
+        userId,
+        'refund.request',
+        idempotencyKey,
+        { orderId, reason: reason ?? null },
+        () => this.requestRefund(userId, orderId, reason),
+      );
     const existing = (await this.s.listRefundRequests(userId)).find((r) => r.orderId === orderId);
     if (existing?.status === 'tamamlandi')
       return { id: existing.id, status: 'tamamlandi', amountKurus: existing.amountKurus };
@@ -1304,6 +1342,16 @@ export class BillingService {
    * Chargeback reported by iyzico: claw back the order's credits (4.5/11). One clawback per order; a lot
    * that was already refunded is not clawed back again (O3).
    */
+  async adminChargeback(actorId: string, key: string, input: { orderId: string; caseRef: string }) {
+    return this.operation(actorId, 'admin.chargeback', key, input, async () => ({
+      balance: await this.chargeback(input.orderId, input.caseRef),
+    }));
+  }
+  async adminPriceChange(actorId: string, key: string, input: { planCode: string; newPriceKurus: number }) {
+    return this.operation(actorId, 'admin.price_change', key, input, async () => ({
+      notified: await this.announcePriceChange(input.planCode, input.newPriceKurus),
+    }));
+  }
   async chargeback(orderId: string, caseRef: string): Promise<number> {
     const order = await this.s.getOrder(orderId);
     if (!order) throw new BillingError(404, 'order_not_found');

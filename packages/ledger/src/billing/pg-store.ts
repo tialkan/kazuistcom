@@ -9,6 +9,7 @@ import type { Ledger, PriceTable } from '../index.ts';
 import { listWalletTransactions, walletRunner, type PoolLike, type SqlClient } from '../pg.ts';
 import type {
   BillingStore,
+  OperationClaim,
   Consent,
   CouponRow,
   Invoice,
@@ -24,6 +25,9 @@ import type {
 } from './store.ts';
 import { planRole } from './store.ts';
 
+// PGlite has one connection. Production uses a dedicated pool connection per active operation.
+const localOperationLocks = new WeakMap<SqlClient, Set<string>>();
+const activePoolLocks = new WeakMap<SqlClient, number>();
 const PROVIDER = 'iyzico';
 const PLAN_ROLES = ['plus', 'akademisyen'] as const;
 export { planRole };
@@ -33,6 +37,121 @@ const d = (v: unknown): Date => (v instanceof Date ? v : new Date(String(v)));
 const dn = (v: unknown): Date | null => (v === null || v === undefined ? null : d(v));
 
 export class PgBillingStore implements BillingStore {
+  private operationLocks = new Map<string, () => Promise<void>>();
+  private async lockOperation(id: string): Promise<(() => Promise<void>) | null> {
+    if ('connect' in this.db && typeof this.db.connect === 'function') {
+      // Keep a pool connection available for the business operation and ledger transaction.
+      const max = (this.db as SqlClient & { options?: { max?: number } }).options?.max ?? 10;
+      const active = activePoolLocks.get(this.db) ?? 0;
+      if (active >= Math.max(0, max - 1)) return null;
+      activePoolLocks.set(this.db, active + 1);
+      let client;
+      try {
+        client = await (this.db as SqlClient & PoolLike).connect();
+      } catch (error) {
+        activePoolLocks.set(this.db, (activePoolLocks.get(this.db) ?? 1) - 1);
+        throw error;
+      }
+      const release = (destroy = false) => {
+        (client as SqlClient & { release(destroy?: boolean): void }).release(destroy);
+        activePoolLocks.set(this.db, (activePoolLocks.get(this.db) ?? 1) - 1);
+      };
+      try {
+        const { rows } = await client.query<{ locked: boolean }>(
+          'select pg_try_advisory_lock(hashtextextended($1,0)) as locked',
+          [id],
+        );
+        if (!rows[0]?.locked) {
+          release();
+          return null;
+        }
+        return async () => {
+          try {
+            await client.query('select pg_advisory_unlock(hashtextextended($1,0))', [id]);
+          } catch (error) {
+            release(true);
+            throw error;
+          }
+          release();
+        };
+      } catch (error) {
+        release();
+        throw error;
+      }
+    }
+    let locks = localOperationLocks.get(this.db);
+    if (!locks) {
+      locks = new Set();
+      localOperationLocks.set(this.db, locks);
+    }
+    if (locks.has(id)) return null;
+    locks.add(id);
+    return async () => {
+      locks.delete(id);
+    };
+  }
+  async claimOperation(
+    userId: string,
+    operation: string,
+    key: string,
+    requestHash: string,
+  ): Promise<OperationClaim> {
+    const id = JSON.stringify([userId, operation, key]);
+    const unlock = await this.lockOperation(id);
+    if (!unlock) {
+      const row = await this.one<{ request_hash: string }>(
+        'select request_hash from idempotency_keys where user_id=$1 and operation=$2 and key=$3',
+        [userId, operation, key],
+      );
+      return row && row.request_hash !== requestHash ? { state: 'conflict' } : { state: 'pending' };
+    }
+    let keepLock = false;
+    try {
+      await this.db.query(
+        `insert into idempotency_keys (user_id,operation,key,request_hash,expires_at)
+        values ($1,$2,$3,$4,now()+interval '7 days') on conflict (user_id,operation,key) do nothing`,
+        [userId, operation, key, requestHash],
+      );
+      const row = await this.one<{
+        request_hash: string;
+        response_status: number | null;
+        response_body: unknown;
+      }>(
+        'select request_hash,response_status,response_body from idempotency_keys where user_id=$1 and operation=$2 and key=$3',
+        [userId, operation, key],
+      );
+      if (!row || row.request_hash !== requestHash) return { state: 'conflict' };
+      if (row.response_status !== null) return { state: 'done', result: row.response_body };
+      // The lock belonged to a dead process if a pending row already existed. Resume the business
+      // operation; its refund/provider state machine independently prevents a second money movement.
+      this.operationLocks.set(id, unlock);
+      keepLock = true;
+      return { state: 'claimed' };
+    } finally {
+      if (!keepLock) await unlock();
+    }
+  }
+  private async unlockOperation(userId: string, operation: string, key: string) {
+    const id = JSON.stringify([userId, operation, key]);
+    const unlock = this.operationLocks.get(id);
+    this.operationLocks.delete(id);
+    if (unlock) await unlock();
+  }
+  async finishOperation(userId: string, operation: string, key: string, result: unknown) {
+    try {
+      await this.db.query(
+        'update idempotency_keys set response_status=200,response_body=$4::jsonb where user_id=$1 and operation=$2 and key=$3',
+        [userId, operation, key, JSON.stringify(result)],
+      );
+    } finally {
+      await this.unlockOperation(userId, operation, key);
+    }
+  }
+  async releaseOperation(userId: string, operation: string, key: string) {
+    // Keep the request hash even after a failure; the next owner can safely resume the same body.
+    await this.unlockOperation(userId, operation, key);
+  }
+
   constructor(
     private readonly db: SqlClient,
     /** Keyed subject hash for consents.user_hash (kimlik's subjectHash). */

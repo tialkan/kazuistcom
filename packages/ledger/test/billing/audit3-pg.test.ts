@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { expect, it } from 'vitest';
 import { FakeEArsiv } from '../../src/billing/earsiv.ts';
 import { FAKE_CFG, FakeIyzico } from '../../src/billing/fake-iyzico.ts';
-import { PgLedgerPort } from '../../src/billing/pg-store.ts';
+import { PgBillingStore, PgLedgerPort } from '../../src/billing/pg-store.ts';
 import { BillingService, type Buyer } from '../../src/billing/service.ts';
 import { addDays } from '../../src/index.ts';
 import { pgBillingEnv } from './pg-env.ts';
@@ -135,3 +135,81 @@ it('O9 recovery: deleted package-only account gets exactly one refund request', 
   expect(await e.svc.reconcileDeletedAccounts()).toBe(0);
   await e.pg.close();
 }, 60_000);
+
+it('D3 Postgres claims serialize across store instances and preserve the response after restart', async () => {
+  const e = await env();
+  const second = new PgBillingStore(e.db, (id) => `hash-${id}`);
+  const claims = await Promise.all([
+    e.store.claimOperation(e.userId, 'refund.request', 'key-test', 'body1'),
+    second.claimOperation(e.userId, 'refund.request', 'key-test', 'body1'),
+  ]);
+  expect(claims.filter((c) => c.state === 'claimed')).toHaveLength(1);
+  expect(claims.filter((c) => c.state === 'pending')).toHaveLength(1);
+  expect(await second.claimOperation(e.userId, 'refund.request', 'key-test', 'body2')).toEqual({
+    state: 'conflict',
+  });
+  await e.store.finishOperation(e.userId, 'refund.request', 'key-test', {
+    id: 'request1',
+    status: 'bekliyor',
+    amountKurus: 3900,
+  });
+  const restarted = new PgBillingStore(e.db, (id) => `hash-${id}`);
+  expect(await restarted.claimOperation(e.userId, 'refund.request', 'key-test', 'body1')).toEqual({
+    state: 'done',
+    result: { id: 'request1', status: 'bekliyor', amountKurus: 3900 },
+  });
+  await e.pg.close();
+}, 60000);
+
+it('D3 recovery: an ownerless pending row resumes but keeps its request body binding', async () => {
+  const e = await env();
+  await e.pg.query(
+    "insert into idempotency_keys(user_id,operation,key,request_hash,expires_at) values($1,'refund.request','crashed','body1',now()+interval '7 days')",
+    [e.userId],
+  );
+  expect(await e.store.claimOperation(e.userId, 'refund.request', 'crashed', 'body2')).toEqual({
+    state: 'conflict',
+  });
+  expect(await e.store.claimOperation(e.userId, 'refund.request', 'crashed', 'body1')).toEqual({
+    state: 'claimed',
+  });
+  await e.store.releaseOperation(e.userId, 'refund.request', 'crashed');
+  expect(await e.store.claimOperation(e.userId, 'refund.request', 'crashed', 'body2')).toEqual({
+    state: 'conflict',
+  });
+  expect(await e.store.claimOperation(e.userId, 'refund.request', 'crashed', 'body1')).toEqual({
+    state: 'claimed',
+  });
+  await e.store.finishOperation(e.userId, 'refund.request', 'crashed', { status: 'done' });
+  await e.pg.close();
+}, 60000);
+
+it('D3 pool lock uses dedicated sessions, leaves business capacity and unlocks on completion', async () => {
+  const e = await env();
+  let held = 0;
+  let released = 0;
+  const pool = {
+    query: e.db.query.bind(e.db),
+    options: { max: 2 },
+    connect: async () => ({
+      query: async <R>(sql: string) => ({
+        rows: [{ locked: sql.includes('try_advisory') ? ++held > 0 : --held === 0 }] as R[],
+      }),
+      release: () => {
+        released++;
+      },
+    }),
+  };
+  const store = new PgBillingStore(pool, (id) => id);
+  expect(await store.claimOperation(e.userId, 'test', 'first', 'a')).toEqual({ state: 'claimed' });
+  expect(held).toBe(1);
+  expect(await store.claimOperation(e.userId, 'test', 'second', 'b')).toEqual({ state: 'pending' });
+  await store.finishOperation(e.userId, 'test', 'first', { ok: true });
+  expect(held).toBe(0);
+  expect(released).toBe(1);
+  expect(await store.claimOperation(e.userId, 'test', 'second', 'b')).toEqual({ state: 'claimed' });
+  await store.releaseOperation(e.userId, 'test', 'second');
+  expect(held).toBe(0);
+  expect(released).toBe(2);
+  await e.pg.close();
+}, 60000);
