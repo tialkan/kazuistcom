@@ -10,6 +10,8 @@ ve eksik şirket bilgileri içindir. Parola veya token değeri sohbete yazılmaz
 3. Künye: VKN, vergi dairesi ve KEP alanlarını `~/Desktop/kazuist-kunye.txt` dosyasında doldurun; yalnız
    dosya yolunu bildirin. Mevcut dosya varsa üzerine yazılmadı; yoksa boş alanlı, izin 600 şablonu hazırlandı.
 
+4. GitHubActions hesap engeli: https://github.com/settings/billing > Billing and licensing. Ödeme uyarısı varsa hesap sahibi düzeltir; Budgets and alerts > Actions engeli varsa uygun bütçeyi kendisi belirler. Sonrun40405096283 hiçbir adıma başlamadı. Kart/parola/token değeri sohbete yazılmaz; kullanıcı düzeldi bilgisini verince CI yeniden çalıştırılır.
+
 ## Önce orkestranın tamamlayacağı işler
 
 - Türkiye VPS sağlayıcısının plan 5.5 ölçütleri teyit edilip somut satın alma paketi hazırlanacak.
