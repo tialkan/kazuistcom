@@ -14,7 +14,7 @@ users.deletion_request_refund alanına silme durumu ile aynı güncellemede yaz�
 Gövdesiz eski istemcilerde varsayılan true. Ödeme ajanının atomik checkout ve günlük tercih kurtarma
 entegrasyonu bu dalın bağımlılığıdır; ödeme dosyaları o ajanın commitlerinden alındı.
 
-Doğrulama: web 92 geçti/1 mevcut skip, worker 39 geçti, ledger 134 geçti; sonra eklenen onaylı alıntıyı
+Doğrulama: web 92 geçti/1 mevcut skip, worker 43 geçti (SMTP alıcı kabulü/ID sınırları dahil), ledger 134 geçti; sonra eklenen onaylı alıntıyı
 koruma testiyle belge hedefli 7 test geçti. Web ve worker üretim derlemesi, tipler ve değişen kod lint
 kontrolü geçti. PDF iki sayfa Poppler ile render edilip gözle incelendi; metin çıkarımı Türkçe glifleri,
 12.00pt alt sınırını ve gömülü fontu doğruladı. Silme ekranı 375/768/1440px, mock wallet ve iade opt-out
