@@ -3,8 +3,7 @@
 Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sürüyor, PR açık, kapı bekliyor, tamam.
 "Tamam" yalnız kalite-guvenlik kapı raporuyla yazılır (plan 17.3/7).
 
-Güncel orkestra kaydı, 25 Ekim 2026: Dalga 1 kapısı 5/9; PR #30-#33 main’de. Son ürün 219b903,
-kanıt CI40202875693 ve docs/kalite/dalga-1.md. Dalga 2 başlamadı.
+Güncel orkestra kaydı, 26 Ekim 2026: main f41457d; PR35/36/37/39/40 dörder yeşil CI işiyle birleşti. Dalga1 kapısı5/9, sonraki dalga başlamadı. PR38/41/42/43 ADR27 ve son bütünleşik kalite kapısı bekliyor; checkout metni ve silme iadesi yönetimi ayrı teknik işlerdir. İyzico talebi kayıtlı hesaptan26Ekim00:32gönderildi; aktivasyon yanıtı beklenir.
 
 | Dalga | Ajan | İş | Durum | Not |
 |---|---|---|---|---|
@@ -19,8 +18,8 @@ kanıt CI40202875693 ve docs/kalite/dalga-1.md. Dalga 2 başlamadı.
 | 1 | odeme | Defter, iyzico sandbox | yeniden denetim bekliyor | D3 kalıcı gövde eşlemesi/yarış/crash kurtarma, D8 gerçek kupon/chargeback/fiyat uçları; odaklı 14+7+2 test geçti. D4 compound upsert/geçmiş UUID/planRef uyumu hazır, 0005 mimarda |
 | 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8/#9/#25 main’de; kabuk, korunan adresler ve axe kapısı geçti |
 | 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4/#23/#28 main’de; 7 doğrulama işareti ve künye eksikleri sürüyor, yayım onayı hazır değil |
-| 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main’de; sözleşme 1.1/migration 0003; ADR-0021/0022/0023 onayı bekliyor |
-| 1 | mimar | İkinci istek turu (7), sözleşme v1.2, migration 0004, ADR-0024 güncellemesi, ADR-0026 | kapı bekliyor | PR #31 main’de; sözleşme 1.2/migration 0004, ADR-0024/0026 öneri; 27 migration testi geçti |
+| 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main’de; sözleşme 1.1/migration 0003; ADR-0021/0022/0023 kullanıcı tarafından25Ekim onaylandı |
+| 1 | mimar | İkinci istek turu (7), sözleşme v1.2, migration 0004, ADR-0024 güncellemesi, ADR-0026 | kapı bekliyor | PR #31 main’de; sözleşme 1.2/migration 0004, ADR-0024/0026 kullanıcı tarafından25Ekim onaylandı; 27 migration testi geçti |
 | 1 | kalite-guvenlik | Dalga 1 kapısının yeniden ölçümü | kapı bekliyor | 25 Ekim: 5/9; O-09 kod/regresyon hazır, O-07 all-extras audit0; akdeniz/hushmark ve GLiNER mevcut ONNX eşlik kanıtlı; GLiNER yeni export disk engeli, final CI/denetim bekliyor. codex/guvenlik-bagimlilik |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri | bekliyor | |

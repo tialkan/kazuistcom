@@ -7,6 +7,14 @@ runtime PERSON440/440 eş; Hushmark402paragraf span1.0. GLiNER yeni-yığın tam
 geçmedi; yeni Torch vs mevcut ONNX20belge span1.0 (150span), skor fark2e-5. CI/final tam tarama ve bağımsız denetim bekleniyor, birleşmedi.
 Kanıt ve açık işler: docs/istekler/kalite-bagimlilik.md. Eski model cache ve runtime kodu değişmedi.
 
+## Orkestra güncel durum, 26 Ekim 2026
+
+Main f41457d temiz; PR35/36/37/39/40 dört completed/success CI işi sonrası birleşti. Beş ADR onayı kaydedildi, plan düzeltildi, iyzico aktivasyon e-postası kayıtlı hesaptan26Ekim00:32 gönderildi ve Gönderilenler doğrulandı. Gerçek readonly sandbox raporuyla kimlik/kısmi iade eşlemesi düzeltildi; bağımsız O-N4 sayfalama açığı da kapandı.
+
+PR38(schema/ADR27),41(checkout/deletion),42(PDF/delivery/UI) birleşik43adayında9c37234 tabanında toplandı. Root bütün workspace test/tip/lint/metin/build kontrollerini geçirdi; ledger144, DB35, contracts121, web94, worker43. Yeni esbuildyaması44 ayrıca adayda birleştirildi; son CI/bağımsız kalite beklenir. ADR27 onayı henüz yok; üretim migration ve hukuki yayım yapılmaz.
+
+Bağımsız denetimin O6yer tutucu gösterim ve O9silme iadesi yönetimi kalanları için kimlik/ödeme/mimar ayrı worktree'lerde sürüyor. İade yönetimi yeni ADR28 önerisi gerektirir; kabul varsayılmaz. Güncel gate5/9; staging, gerçek uygulama sandbox, stagingbağlayıcıları ve hukuki hazırlık açık. Künye üç alanı henüz boş, değerler yazdırılmadı. Tek kullanıcı listesi docs/istekler/orkestra-onaylar-2026-10-25.md. Dalga2 başlamadı.
+
 # Devir kaydı
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.

@@ -210,3 +210,16 @@ ağacı eşitliği doğrulanırsa aynı hedefli testlerin tekrarına gerek yok.
 Son birleşim teyidi: PR #32 squash sonrası main `219b903` ile test edilen `4457292` arasında
 `git diff 4457292 219b903 -- apps packages services infra .github tests` boş. Bağımsız 147 test ve
 CI 40202875693 aynı ürün kodunu kapsıyor. Kod PR'larının tamamı dört tamamlanmış yeşil CI işiyle birleşti.
+
+
+## 26 Ekim bağımsız ek denetim
+
+Adaylar: main ef4479a, şema09fb90d, rezervasyon testi3a241fe, mutabakat75e94da; O6kimlikb54ee60 ve O9ödeme823bb76 ayrıca incelendi. Yeni kritik/yüksek regresyon yok. Kaynak dosyalar denetçi tarafından değiştirilmedi.
+
+- Ledger127, DB35, contracts121, billingroute/admin15, tarama2, offline dinamik ONNX1 ve PR39property4 test bağımsız geçti. D3 requesthash/kalıcı sonuç/advisorylock ve D8 gerçekadminuçları kapalı. GerçekPGprocesskill ölçümü yok. D4 kapanışı PR38'in birleşmesine bağlı.
+- PR40 reporting/audit27 geçti; özel gerçek sandbox raporunda üç satırın paymentId ve PAYMENTpaidPrice/REFUNDprice eşlemesi bağımsız doğrulandı. Hassas değerler çıktıya veya depoya konmadı. İlk aday95141bd'deki orta O-N4, eksiktransactions ve100sayfaüstü kesilme bulgusuydu;75e94da zarf/sayfa sayısı/değişenmeta kontrolleriyle kapandı. İptal/gecikmiş kayıt/staging kapsamı açık.
+- O6/O9 adaylarında ownerdocs+silme4, PDFdelivery+notify21, snapshot/PGrecovery17 ve preflight2 test geçti. Hash/sürüm/tam takım ve aynıcheckouttransaction; özel belgeye sahiplik; sağlayıcı kabulünden sonra receipt; dışpush'a sözleşme taşımama; silmetercihini günlükkurtarmada koruma teyitli. GerçekSMTPteslimi ölçülmedi.
+- O6 kalan: checkout-step yer tutucu hukuki gövdeleri ve kutu metinleri. O9 kalan: hesap_silme aggregate iade taleplerinin yönetici karar/ödeme akışı. Bu alt işler bitmeden O6/O9 tam kapalı sayılmaz. Yeni birleşik sonadayda tekrar denetim gerekir.
+- Güvenlik: PR35/37 dört CI işi ayrı sorgulandı; küçükONNXtest ve GLiNERartifactSHA doğrulandı. Manifestparity çalışması denetçi tarafından tekrar çalıştırılmadı.
+
+Kapı:5/9; sonraki dalga ve canlı ödeme kabulü verilmez.

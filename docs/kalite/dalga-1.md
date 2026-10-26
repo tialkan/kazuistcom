@@ -1,6 +1,21 @@
 # Dalga 1 kapı raporu (kalite-guvenlik)
 
-## Yeniden ölçüm, 25 Ekim 2026
+## Hazırlık yeniden ölçümü, 26 Ekim 2026
+
+Kalite-guvenlik ajanı izole `597d401` üzerinde ölçtü; bağımsız denetçi ayrıca main `ef4479a`, şema `09fb90d`, PR39 `3a241fe` ve rapor düzeltmesi `75e94da` adaylarını inceledi. Dalga 1 kapısı **5/9, açık**. Bu bir sonraki dalgaya veya canlı ödemeye kabul değildir. Aşağıdaki 25 ve 22 Ekim bölümleri tarihsel kanıttır.
+
+- PR35 CI40213442857 ve PR37 CI40213483001 dört completed/success işiyle main'e alındı. Kalite, 25 Ekim'de çalışmış ikinci run'ın artefaktını 26 Ekim'de yeniden okudu: pip-audit exit0, tarama status0. Güncel tarama kodu/kilit dosyasıyla fark yok. Yerel gitleaks148commit/sızıntı0; iki tarama negatif testi dokuz hata alt senaryosu ve başarı yoluyla geçti. O-09 kapanışı destekleniyor.
+- Python güvenlik düzeltmesi ve NER geçişi: GLiNER gerçek yeni ONNX20belgede span1.0, max skor fark0.0000199676. Kalite ve bağımsız denetçi model hash'ini manifestle ayrı hesaplayıp doğruladı; parity çalışmasını yeniden yaptıkları iddia edilmez. SHA256 `03f8a927c1c010c337bce2dfe9d25cdb41a245f4a8e26ff8cd457028beb0e3ef`. Bağımsız küçük dinamik batch/token/padding ONNX testi de geçti.
+- Node orta esbuild bulgusu bu ölçümde sürüyordu. Orkestra sonradan PR44 dar bağımlılık yamasını hazırladı; düşük eşik dahil yerel audit temiz ve DB27/web88 test geçti. PR44 dört CI ve kalite tekrar ölçümü olmadan kapanmış sayılmaz.
+- D3/D8 uygulama eksikleri bağımsız kontrolle kapalı. D3 gerçek PostgreSQL backend/process crash testi yapılmadı; PGlite/pool taklidi sınırı korunur. D4, PR38 değişmez ürün sürümü şemasının birleştirilmesine bağlıdır; ADR0027 henüz öneridir.
+- Mutabakat PR40 `75e94da`: bağımsız27test, gerçek özel sandbox raporunun ağsız adaptör doğrulaması. Özgün ödeme kimliği/kısmi iade bedeli ve O-N4 eksik rapor/sayfalama açığı kapalı. İptal/gecikmiş kayıt/staging sınırları ve gerçek uygulama checkout/abonelik kabulü açık.
+- O6 PDF/kalıcı belge ve O9 silme tercihi adayları incelendi: owner-only4, teslim/notify21, atomik checkout/kurtarma17 ve sourcepreflight2 test geçti. Ancak ödeme öncesi yer tutucu metinler ve hesap silme iadelerinin yönetici sonuçlandırması açık. Ayrı düzeltme işleri sürüyor. Gerçek SMTP sağlayıcı kabulü ve staging ölçümü yok.
+
+Kapı değişmeyen açıkları: staging; gerçek uygulama sandbox uçtan uca akışı; beş bağlayıcının staging çalışması; hukuki hazırlık (künye/yedi doğrulama işareti/yayım onayı). CI localhost'u staging veya taklit taşıyıcıyı gerçek teslim saymayız. Yeni bütünleşik aday son kalite ölçümüne sunulacak; bu hazırlık raporu onun yerine geçmez.
+
+---
+
+## Tarihsel yeniden ölçüm, 25 Ekim 2026
 
 Bu bölüm güncel ölçümdür. Aşağıdaki 22 Ekim bölümü tarihsel kanıttır; oradaki açık bulgular ve test sayıları güncel durum diye okunmaz. Kapsam plan 5.6, 15, 17.2 Dalga 1 ve Ek I. Veri alınamayan madde geçmedi sayılır. Sentetik test, taklit sağlayıcı, yerel CI konteyneri ve gerçek staging ayrı değerlendirilir.
 
