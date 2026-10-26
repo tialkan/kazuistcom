@@ -16,7 +16,7 @@ kanıt CI40202875693 ve docs/kalite/dalga-1.md. Dalga 2 başlamadı.
 | 1 | yz-gecidi | Sağlayıcılar, BYOK, maskeleme, bütçe | kapı bekliyor | PR #1/#18/#21/#26 main’de; taklit ve 25 Ekim gerçek OpenRouter duman testi kayıtlı, enjeksiyon 60/60 |
 | 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7/#11 main’de; fikstür testleri var, staging ve kaynak üretim onayları açık |
 | 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü; NER karşılaştırması ve bağlama, masked_text | kapı bekliyor | PR #3/#16 main’de; 50 sentetik belge raporu geçti, 200 gerçek karar ve üretim politikası onayı açık |
-| 1 | odeme | Defter, iyzico sandbox | yeniden denetim bekliyor | D3 kalıcı gövde eşlemesi/yarış/crash kurtarma, D8 gerçek kupon/chargeback/fiyat uçları; odaklı 14+7+2 test geçti. D4 compound upsert/geçmiş UUID/planRef uyumu hazır, 0005 mimarda |
+| 1 | odeme | Defter, iyzico sandbox | entegrasyon doğrulaması | PR35 main; checkout order/consent/snapshot tek transaction, silme false recovery; hedefli6+2 ve tam626 test, typecheck/lint/text/build yeşil; ayrı PR hazır |
 | 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8/#9/#25 main’de; kabuk, korunan adresler ve axe kapısı geçti |
 | 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4/#23/#28 main’de; 7 doğrulama işareti ve künye eksikleri sürüyor, yayım onayı hazır değil |
 | 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main’de; sözleşme 1.1/migration 0003; ADR-0021/0022/0023 onayı bekliyor |

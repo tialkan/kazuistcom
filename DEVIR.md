@@ -23,6 +23,31 @@ visualizations/2026/10/25/01a1736a-3c34-7d40-ae4e-8f8808e87e0c/belge-teslim dizi
 
 Canlı gönderim yapılmadı. Hukuki taslak/yayım kapısı korunur; ADR-0027 ve hukuki yayım onayları hâlâ
 beklenir. Root katkısı: worker direct PDF bağımlılıkları, font build kopyası ve Docker font yolu.
+## Dalga 1, ödeme, checkout snapshot ve silme tercihi entegrasyonu, 2026-10-26
+
+Durum: `codex/odeme-snapshot-deletion`; şema 0005/mimar `1b49422` ve snapshot helper/kimlik
+`db10a07` bağımlılıkları dala birleştirildi. Ödeme uygulaması `47ce6c4` kimliğe iletildi.
+Checkout önce kabul edilen metin sürümünü, gerçek tutarı ve alıcı alanlarını dondurur; draft,
+eksik alan veya değişen sürüm sağlayıcı formu açılmadan reddedilir. Sunucu production context'i
+snapshot factory olmadan checkout açmaz. Paket ön bilgi+mesafeli satış, abonelik ön bilgi+abonelik
+takımı, kaynak ve dolu metin SHA-256 özetiyle saklanır. PDF/worker belge dosyalarına dokunulmadı.
+
+`PgBillingStore.saveCheckout`: order, tüm consent satırları ve freezeOrderLegalDocuments aynı
+transaction client'ıyla yazılır; hatada tamamı rollback olur. Özel snapshot satırı içerebilen SQL hata
+detayları API/log hatasına taşınmaz. İdempotent checkout replay mevcut order sonucunu kullanır;
+geçmiş belge güncel dosyadan üretilmez. Depo helper'ı runtime kullanıldığı için ledger `@kazuist/db`
+bağımlılığı dev'den runtime'a alındı; yalnız ledger lock importer taşıması orkestra yetkisiyle yapıldı.
+
+`onAccountDeletion(userId,{requestRefund?:boolean})`: false seçimi canlı abonelik iptalini korur,
+iade talebi açmaz. Seçim verilmezse users.deletion_request_refund okunur (varsayılan true).
+Günlük kurtarma false tercihli yalnız paket hesabını seçmez; canlı aboneliği varsa iptal eder.
+Tercihin kullanıcı silme kaydıyla atomik yazılması kimlik ajanındadır.
+
+Kanıt: önce snapshot takım kaydı ve rollback testleri 2 kırmızıydı. Son PGlite 6/6, web factory 2/2;
+ana senaryolarla hedefli 20/20. Tam Node workspace 626 geçti, 3 ortam testi atlandı; typecheck,
+lint ve check:text yeşil. Build ilk turda DB barrel'in migration URL çözümü nedeniyle kırıldı;
+mimar c2f7b95 alt yol export'u ve ödeme 37ac0f6 import düzeltmesiyle yeniden build geçti.
+Gerçek ödeme/ağ/sır çağrısı yok. O8 rapor/mutabakat işi orkestradadır.
 
 ## 25 Ekim 2026, güvenlik bağımlılık düzeltmesi (codex/guvenlik-bagimlilik)
 
@@ -81,6 +106,20 @@ ledger typecheck ve küçük hedefli testler yeniden geçti. Disk sınırı nede
 Gerçek PostgreSQL session termination testi yerelde yapılmadı; pool yolu protokol taklidi/PGlite ile sınandı.
 O8 gerçek sağlayıcı rapor çağrısı orkestradadır; sır veya ağ ödeme çağrısı yapılmadı.
 PDF/sözleşme ve worker notice dosyalarına dokunulmadı. Tarık'tan yeni adım gerekmiyor.
+## Dalga 1, mimar, kalıcı belgeler ve ürün sürümleri (codex/mimar-kalici-belge), 2026-10-25
+
+PR hazır, birleştirilmedi. Sözleşme/db 1.3.0; ADR-0027 öneri, Tarık onayı bekliyor.
+Migration0005: ürün kodu tekilliği kalkar, birleşik sürüm tekilliği ve eski ürün UUID ilişkileri kalır;
+ürün finansal sürüm alanları değişmez. Kalıcı sipariş belgeleri, SHA-256/sürüm/sahiplik denetimi,
+değişmez sağlayıcı kabul kanıtı ve silmede kalıcı iade tercihi eklendi.
+
+`@kazuist/db` freezeOrderLegalDocuments ve recordOrderLegalDocumentDelivery mevcut transaction client alır.
+Entegrasyon ayrıntısı `docs/istekler/mimar-kalici-belge-entegrasyonu.md`.
+Hedefli testler: DB35/35, contracts121/121; tüm typecheck, lint, OpenAPI lint ve check:text geçti.
+Tam pnpm test kırmızı:25 eski ON CONFLICT(code) ödeme uyumsuzluğu ve1 rastgele defter testi;
+ödeme PR35 uyumu önce birleşmeli, sonra0005. Saf karşıörnek ödeme ajanına bildirildi.
+Build, disk kısıtı nedeniyle CI'ya bırakıldı; yeşil sonucu henüz yok.
+Canlı migration, hukuki yayın ve eski5ADR onay dosyalarında değişiklik yapılmadı.
 
 ## Orkestra devralma ve Dalga 1 yeniden ölçümü, 25 Ekim 2026
 
