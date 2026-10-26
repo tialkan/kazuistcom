@@ -16,9 +16,10 @@ akışı değil. Bu iki kuyruğun modeli ve uçları ayrı kalmalı.
 - Yalnız talebin sahibine ait, gerçek tahsilatı kayıtlı iyzico paket siparişleri.
   Abonelik, promosyon ve IAP bu akışta değil. Gerekçedeki kredi rakamı mali veri
   sayılmaz; gerçek sipariş, başarılı ödeme ve kredi partisi birlikte okunur.
-- Her paket için üst sınır: `min(floor(originalPaidKurus * unusedCredits /
+- Her paket için üst sınır: `min(ceil(originalPaidKurus * unusedCredits /
   originalCredits), originalPaidKurus - priorRefundExposureKurus)`; sıfırın altı yok.
   Orijinal indirimli/KDV dahil tahsilat kullanılır; güncel liste fiyatı ve ücret kesintisi yok.
+  Kuruş kesri tüketici lehine yukarı yuvarlanır; toplam orijinal tahsilat üst sınırı korunur.
   14 günlük otomatik paket iade sınırı silme talebinin yönetici incelemesini engellemez.
 - `priorRefundExposureKurus`: başarılı veya sonucu belirsiz/mevcut yürütmedeki başka
   iadelerin tutarı; kesin reddedilmiş sağlayıcı çağrısı dahil değil. Çift iade yok.
