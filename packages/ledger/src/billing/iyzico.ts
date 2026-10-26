@@ -458,29 +458,55 @@ export class HttpIyzico implements IyzicoApi {
 
   /**
    * GET /v2/reporting/payment/transactions?transactionDate=YYYY-MM-DD&page=n (docs.iyzico.com, Daily
-   * Transactions Reporting). PAYMENT lines give transactionId and paidPrice; REFUND lines are returned as
-   * kind iade with the transaction id (their link to the payment is not documented, see DEVIR).
+   * Transactions Reporting). paymentId identifies the original payment, while transactionId/paymentTxId
+   * identify item operations. REFUND price is the refunded amount; paidPrice is the original payment.
    */
   async listTransactions(date: string): Promise<ProviderTransaction[]> {
     const out: ProviderTransaction[] = [];
+    let expectedPages: number | undefined;
     for (let page = 1; page <= 100; page++) {
       const r = await this.call(
         'GET',
         `/v2/reporting/payment/transactions?transactionDate=${date}&page=${page}`,
       );
-      for (const t of (r.transactions as Record<string, unknown>[] | undefined) ?? []) {
+      const pages = r.totalPageCount;
+      if (
+        !Array.isArray(r.transactions) ||
+        typeof pages !== 'number' ||
+        !Number.isInteger(pages) ||
+        pages < 1 ||
+        pages > 100 ||
+        (expectedPages !== undefined && pages !== expectedPages) ||
+        (r.currentPage !== undefined && r.currentPage !== page)
+      )
+        throw new Error('Incomplete or invalid iyzico daily report');
+      expectedPages = pages;
+      for (const t of r.transactions as Record<string, unknown>[]) {
         const type = String(t.transactionType);
         if (type !== 'PAYMENT' && type !== 'REFUND') continue;
+        const paymentId = t.paymentId;
+        const amount = type === 'REFUND' ? t.price : (t.paidPrice ?? t.price);
+        if (
+          !['string', 'number'].includes(typeof paymentId) ||
+          !String(paymentId).trim() ||
+          (t.transactionCurrency !== undefined && t.transactionCurrency !== 'TRY') ||
+          typeof amount !== 'number' ||
+          !Number.isFinite(amount) ||
+          amount < 0
+        )
+          throw new Error('Invalid iyzico daily report line');
+        const amountKurus = tryToKurus(amount);
+        if (!Number.isSafeInteger(amountKurus)) throw new Error('Invalid iyzico daily report amount');
         out.push({
-          paymentId: String(t.transactionId),
+          paymentId: String(paymentId),
           conversationId: (t.conversationId as string | undefined) ?? null,
-          amountKurus: tryToKurus((t.paidPrice ?? t.price) as number),
+          amountKurus,
           kind: type === 'PAYMENT' ? 'odeme' : 'iade',
           at: new Date(String(t.transactionDate).replace(' ', 'T') + '+03:00'),
         });
       }
-      if (page >= Number(r.totalPageCount ?? 1)) break;
+      if (page === expectedPages) return out;
     }
-    return out;
+    throw new Error('Incomplete iyzico daily report');
   }
 }

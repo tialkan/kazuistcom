@@ -14,4 +14,6 @@ allowBuilds:
 # variant. packages/db/test/single-drizzle.test.ts fails when the lockfile has more than one snapshot.
 overrides:
   drizzle-orm: 0.45.4
+  # Patch the deprecated loader's development server CORS exposure (GHSA-67mh-4wv8-2f99).
+  '@esbuild-kit/core-utils>esbuild': 0.28.2
 dedupePeerDependents: true
