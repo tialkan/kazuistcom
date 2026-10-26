@@ -33,4 +33,4 @@ ADR-0001..0020 plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi ve "K
 
 Yeni ADR: sıradaki numarayla, aynı bölüm düzeniyle; sözleşme değişikliği isteyen her istek (docs/istekler/) bir ADR ile sonuçlanır.
 
-| [0027](0027-kalici-siparis-belgeleri.md) | Kalıcı sipariş belgeleri, ürün sürümleri ve silmede iade tercihi | Kabul edildi (2026-10-27, kullanıcı onayı); migration0005 ve sözleşme1.3. Hukuki yayım/canlı migration izni değildir. |
+| [0027](0027-kalici-siparis-belgeleri-ve-urun-surumleri.md) | Kalıcı sipariş belgeleri, ürün sürümleri ve silmede iade tercihi | Kabul edildi (2026-10-27, kullanıcı onayı); migration0005 ve sözleşme1.3. Hukuki yayım/canlı migration izni değildir. |
