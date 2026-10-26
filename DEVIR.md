@@ -28,6 +28,17 @@ Build, tüm typecheck, lint, OpenAPI lint ve check:text geçti. Gerçek Docker/P
 PR CI'da; dört iş yeşil olmadan birleşmez. Canlı migration ve hukuki yayın yapılmadı.
 ADR0027 onayı önceki beş ADR onayından ayrıdır.
 
+## Dalga 1, ödeme, süresi dolmuş rezervasyon property regresyonu, 2026-10-26
+
+Seed `944090688`: 2 promosyon kredisi, iki ayrı 1 kredilik rezervasyon, 5 dakika ilerleme,
+aynı ilk işlem anahtarını tekrar ayırma. `reserve` önce her iki süresi dolmuş tutmayı çözer,
+sonra eski anahtarı `already_settled` ile reddeder. Yeni rezervasyon veya tüketim oluşmaz.
+Eski property testinin reddedilen komutun en fazla bir transaction yazabileceği varsayımı yanlıştı.
+Üretim defter kodu değişmedi. Test artık hata sonrasında yalnız süresi dolmuş eski rezervasyonların
+çözümünü ve süresi dolmuş promosyonların temizliğini kabul eder; rezervasyon anahtarları daima tekildir.
+Minimal dizi önce kırmızıydı (2 > 1); düzeltme sonrası tam ledger 128/128, typecheck ve test eslint temiz.
+PR #35 mevcut yeşil head ile birleştirildi; bu test değişikliği ayrı PR'dadır.
+
 ## Dalga 1, ödeme, D3 ve D8 teknik kapanış, 2026-10-25
 
 Durum: `codex/odeme-aciklar`, PR #35 açık; main `1ffbe56` tabanı. Plan 4 ve 9.
