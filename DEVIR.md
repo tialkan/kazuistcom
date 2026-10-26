@@ -16,6 +16,17 @@ En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en 
 Kullanıcı ADR-0021/0022/0023/0024/0026 kararlarını ve runbook'taki iyzico aktivasyon taslağının gönderimini açıkça onayladı. ADR durumları ve plan 4.5 eşit bölüşüm/gönüllü bildirim atıfları güncellendi. Hukuki yayım onayı verilmedi; künye kullanıcı tarafından doldurulacak. İyzico taslağı kayıtlı hesaptan 26 Ekim 00:32 gönderildi ve Gönderilenler doğrulandı; yanıt bekleniyor. GLiNER yeni export20belge span eşliği1.0; CI37 tam tarama0. Kanıt kalite-bagimlilik isteğinde.
 
 PR #35 (8ee22e9) ve #37 (ef4479a), dörder tamamlanmış yeşil CI işiyle main'e alındı. PR #37 beş ADR kabulünü ve plan düzeltmesini de içerir. Teknik işler ayrı worktree'lerde sürüyor: mimarda kalıcı belge/fiyat sürümleme migration 0005 ve ADR-0027 önerisi, güvenlikte hata yutan tarama ve Python bağımlılık düzeltmeleri, kimlikte PDF/hesap silme entegrasyonu. Yeni ADR-0027 onaylanmış sayılmaz; üretim migration'ı uygulanmaz. Dalga 1 kapısı son ölçümde 5/9, sonraki dalga başlamadı. Biten PR'lar yalnız dört CI işi yeşil tamamlanınca birleştirilecek.
+## Dalga 1, ödeme, süresi dolmuş rezervasyon property regresyonu, 2026-10-26
+
+Seed `944090688`: 2 promosyon kredisi, iki ayrı 1 kredilik rezervasyon, 5 dakika ilerleme,
+aynı ilk işlem anahtarını tekrar ayırma. `reserve` önce her iki süresi dolmuş tutmayı çözer,
+sonra eski anahtarı `already_settled` ile reddeder. Yeni rezervasyon veya tüketim oluşmaz.
+Eski property testinin reddedilen komutun en fazla bir transaction yazabileceği varsayımı yanlıştı.
+Üretim defter kodu değişmedi. Test artık hata sonrasında yalnız süresi dolmuş eski rezervasyonların
+çözümünü ve süresi dolmuş promosyonların temizliğini kabul eder; rezervasyon anahtarları daima tekildir.
+Minimal dizi önce kırmızıydı (2 > 1); düzeltme sonrası tam ledger 128/128, typecheck ve test eslint temiz.
+PR #35 mevcut yeşil head ile birleştirildi; bu test değişikliği ayrı PR'dadır.
+
 ## Dalga 1, ödeme, D3 ve D8 teknik kapanış, 2026-10-25
 
 Durum: `codex/odeme-aciklar`, PR #35 açık; main `1ffbe56` tabanı. Plan 4 ve 9.
