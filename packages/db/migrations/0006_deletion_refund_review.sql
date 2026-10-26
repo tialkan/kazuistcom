@@ -183,3 +183,6 @@ CREATE TRIGGER refund_request_review_audit AFTER UPDATE ON refund_requests
   FOR EACH ROW EXECUTE FUNCTION refund_request_review_audit();--> statement-breakpoint
 CREATE TRIGGER refund_request_item_audit AFTER INSERT OR UPDATE ON refund_request_items
   FOR EACH ROW EXECUTE FUNCTION refund_request_review_audit();
+--> statement-breakpoint
+CREATE TRIGGER audit_log_no_truncate BEFORE TRUNCATE ON audit_log
+  FOR EACH STATEMENT EXECUTE FUNCTION append_only_table();

@@ -1,3 +1,22 @@
+## 27 Ekim 2026, mimar, silme iade sözleşmesi 1.4 (codex/mimar-silme-iade)
+
+ADR-0028 ÖNERİ, Tarık onayı bekliyor. ADR-0027 dosyası değiştirilmedi; onay kaydı root43 dalındadır.
+Migration0006 mevcut FK'leri korur; karar reason/key/hash ve orijinal paket başına immutable allocation
+kalemi ekler. Tam tüketici lehine kuruş üst sınırı, gerçek tahsilat/kalan kredi/sahiplik ve diğer iade
+riski DB'de doğrulanır. Karar ve kalem değişimleri aktör/gerekçeyle append-only audit'e girer.
+Belirsiz kalem tamamlanmaz; başarılı payment kanıtı olmadan basarili olamaz. Tamamlanan talebin tutarı
+başarılı kalem toplamıyla aynı olmalıdır. Audit TRUNCATE da engellenir.
+
+Sözleşme iki GET/üç POST tanımlar; admin/passkey/TOTP, strict body, Idempotency-Key ve aktörün
+sunucudan gelmesi şarttır. Route/partial ledger/sağlayıcı entegrasyonu ödeme ajanının ayrı işidir;
+bu PR o uygulamayı tamamlandı saymaz. Ayrıntı docs/istekler/mimar-silme-iade-v1-4.md.
+
+Kanıt: tetikleyicisiz karar geçişi kabulü kırmızıydı; yeni guard'larla dolu1.3 yükseltme8/8,
+DB43/43, contracts127/127; tam Node636 geçti/3 ortam testi atlandı. Build/typecheck/lint,
+OpenAPI lint ve check:text geçti. Audit TRUNCATE eklemesinden sonra DB43 yeniden geçti.
+GitHub CI hesap/billing limiti orkestrada açık kapıdır; dört iş başarılı diye yazılmadı ve kör
+workflow yeniden başlatılmadı. Canlı migration, sandbox veya canlı para iadesi yapılmadı.
+
 ## 25 Ekim 2026, güvenlik bağımlılık düzeltmesi (codex/guvenlik-bagimlilik)
 
 O-09 tarama hataları artık kapıyı kapatır; CLI ikizleriyle kırmızı/yeşil regresyon kanıtı var. pypdf6.21.2,

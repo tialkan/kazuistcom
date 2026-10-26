@@ -31,4 +31,6 @@ ADR-0001..0020 plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi ve "K
 | [0025](0025-platform-yz-saglayicisi-openrouter.md) | Platform modunda YZ sağlayıcısı OpenRouter | Kabul edildi (Tarık İsmet Alkan, 23 Ekim 2026). Platform istekleri OpenRouter üzerinden, veri toplama reddi ve sıfır veri saklamayla; Anthropic doğrudan yedek. |
 | [0026](0026-sozlesme-v1-2.md) | Sözleşme v1.2: ödeme denetimi, PDF ön bilgi alanları ve parçalama tutarlılığı | Kabul edildi (2026-10-25, kullanıcı onayı). Defter değişmezliği (D6), ürün sürümleme genişletmesi (D4), fesih ve iade idempotency (D3), abonelik onay alanları (O5), dönüş, IFN, D8 ve O-N1 uçları, bildirim alt türleri, PDF alanları, embed.chunks tutarlılığı, ner-runtime; migration 0004. |
 
+| [0028](0028-hesap-silme-iade-yonetimi.md) | Hesap silme iadesi: yönetici kararı, kalem ve sağlayıcı sonucu | Önerildi, Tarık onayı bekliyor. Orijinal tahsilat/kalan kredi üst sınırı, immutable karar/kalem ve aktör/gerekçe denetimi; migration0006, sözleşme1.4. |
+
 Yeni ADR: sıradaki numarayla, aynı bölüm düzeniyle; sözleşme değişikliği isteyen her istek (docs/istekler/) bir ADR ile sonuçlanır.
