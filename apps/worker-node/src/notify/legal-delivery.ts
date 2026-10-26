@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { readFile } from 'node:fs/promises';
 import { renderContractPdf, verifyOrderDocumentSet, type LegalSnapshot } from '@kazuist/ledger/billing';
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
@@ -21,7 +22,6 @@ export async function deliverLegalDocuments(input: {
   db: SqlClient;
   orderId: string;
   userId: string;
-  recipient: string;
   email?: EmailTransport;
   now: Date;
   fontBytes?: Uint8Array;
@@ -61,6 +61,15 @@ export async function deliverLegalDocuments(input: {
     }));
     if (!verifyOrderDocumentSet(documents, input.orderId, order.kind, order.consent_versions))
       throw new Error('Frozen legal document set is incomplete or corrupt');
+    // Durable legal delivery uses the address frozen at checkout, including after account deletion.
+    // Never redirect an old contract to the current account address or guess a missing recipient.
+    const recipient = documents[0]?.fields.ALICI_EPOSTA;
+    if (
+      !recipient ||
+      !z.email().safeParse(recipient).success ||
+      documents.some((document) => document.fields.ALICI_EPOSTA !== recipient)
+    )
+      throw new Error('Frozen contract recipient is missing or inconsistent');
     const font =
       input.fontBytes ??
       (await readFile(
@@ -75,7 +84,7 @@ export async function deliverLegalDocuments(input: {
       })),
     );
     const accepted = await input.email.send({
-      to: input.recipient,
+      to: recipient,
       subject: tr.eposta.sozlesme.konu,
       text: tr.eposta.sozlesme.metin,
       messageId: `<legal-${input.orderId}@kazuist.com>`,

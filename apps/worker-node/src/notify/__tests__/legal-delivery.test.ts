@@ -40,7 +40,7 @@ beforeAll(async () => {
 }, 60_000);
 afterAll(async () => pg.close());
 
-async function order(complete = true) {
+async function order(complete = true, recipient = 'frozen@example.invalid', conflict = false) {
   const id =
     (
       await pg.query<{ id: string }>(
@@ -68,7 +68,11 @@ async function order(complete = true) {
           pdf_fields: ['ALICI_AD', 'TUTAR_TL'],
         },
         body: '# Test sözleşmesi\n\nAlıcı {{ALICI_AD}}, tutar {{TUTAR_TL}} TL.',
-        fields: { ALICI_AD: 'Çağrı Özgür', TUTAR_TL: '349,00' },
+        fields: {
+          ALICI_AD: 'Çağrı Özgür',
+          TUTAR_TL: '349,00',
+          ALICI_EPOSTA: conflict && slug === 'mesafeli-satis' ? 'other@example.invalid' : recipient,
+        },
       }),
     );
     await pg.transaction((tx) =>
@@ -143,5 +147,65 @@ it('rejects missing historical snapshots instead of sending a generic notice', a
   const id = await order(false);
   const count = sent.length;
   await expect(send(id)).rejects.toThrow('incomplete');
+  expect(sent).toHaveLength(count);
+});
+
+it('delivers a paid deleted-account contract to its frozen checkout email while other notices stay skipped', async () => {
+  const id = await order();
+  await pg.query("update orders set status='odendi',paid_at=now() where id=$1", [id]);
+  await pg.query("update users set deleted_at=now(),email='changed@example.invalid' where id=$1", [uid]);
+  try {
+    expect((await send(id)).sent).toEqual(['email']);
+    expect(sent.at(-1)?.to).toBe('frozen@example.invalid');
+    const count = sent.length;
+    for (const type of ['kampanya', 'takip', 'odeme'] as const) {
+      const generic = await dispatch(
+        {
+          db: pg,
+          appUrl: 'https://kazuist.com',
+          iys: { allowsEmail: async () => true },
+          email: {
+            send: async (m) => {
+              sent.push(m);
+              return { messageId: 'unexpected' };
+            },
+          },
+          webPush: {
+            send: async () => {
+              throw new Error('Deleted account must not reach push');
+            },
+          },
+          apns: {
+            send: async () => {
+              throw new Error('Deleted account must not reach APNs');
+            },
+          },
+        },
+        { type, userId: uid },
+      );
+      expect(generic.reason).toBe('no_user');
+    }
+    expect(sent).toHaveLength(count);
+  } finally {
+    await pg.query("update users set deleted_at=null,email='legal@example.invalid' where id=$1", [uid]);
+  }
+});
+
+it.each(['', 'not-an-email'])(
+  'fails closed with no receipt when frozen email is invalid: %s',
+  async (recipient) => {
+    const id = await order(true, recipient);
+    const count = sent.length;
+    await expect(send(id)).rejects.toThrow('recipient');
+    expect(sent).toHaveLength(count);
+    expect(
+      (await pg.query('select 1 from order_legal_document_deliveries where order_id=$1', [id])).rows,
+    ).toHaveLength(0);
+  },
+);
+it('does not choose between conflicting snapshot recipient addresses', async () => {
+  const id = await order(true, 'frozen@example.invalid', true);
+  const count = sent.length;
+  await expect(send(id)).rejects.toThrow('recipient');
   expect(sent).toHaveLength(count);
 });
