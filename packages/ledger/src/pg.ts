@@ -146,8 +146,13 @@ export async function loadWallet(
  * Run `fn` against the wallet inside one DB transaction and persist what it produced.
  * Returns fn's result. Any error rolls back.
  */
-export async function withWallet<T>(db: SqlClient, walletId: string, fn: (l: Ledger) => T): Promise<T> {
-  await db.query('begin');
+export async function withWallet<T>(
+  db: SqlClient,
+  walletId: string,
+  fn: (l: Ledger) => T,
+  options: { withinTransaction?: boolean } = {},
+): Promise<T> {
+  if (!options.withinTransaction) await db.query('begin');
   try {
     await db.query('select id from wallets where id = $1 for update', [walletId]);
     const { state, keys } = await loadWallet(db, walletId);
@@ -155,10 +160,10 @@ export async function withWallet<T>(db: SqlClient, walletId: string, fn: (l: Led
     ledger.load(state, keys);
     const result = fn(ledger);
     await persist(db, ledger, walletId);
-    await db.query('commit');
+    if (!options.withinTransaction) await db.query('commit');
     return result;
   } catch (err) {
-    await db.query('rollback');
+    if (!options.withinTransaction) await db.query('rollback');
     throw err;
   }
 }

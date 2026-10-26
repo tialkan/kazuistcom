@@ -122,6 +122,11 @@ export function planRole(code: Plan): 'ucretsiz' | 'plus' | 'akademisyen' {
 export type OperationClaim =
   { state: 'claimed' } | { state: 'conflict' } | { state: 'pending' } | { state: 'done'; result: unknown };
 export interface BillingStore {
+  withRefundRequestTransaction<T>(
+    requestId: string,
+    ledger: LedgerPort,
+    fn: (store: BillingStore, ledger: LedgerPort) => Promise<T>,
+  ): Promise<T>;
   claimOperation(
     userId: string,
     operation: string,
@@ -194,6 +199,35 @@ export interface BillingStore {
 }
 
 export class MemoryBillingStore implements BillingStore {
+  private activeRefundRequests = new Set<string>();
+  async withRefundRequestTransaction<T>(
+    requestId: string,
+    ledger: LedgerPort,
+    fn: (store: BillingStore, ledger: LedgerPort) => Promise<T>,
+  ): Promise<T> {
+    if (this.activeRefundRequests.has(requestId)) throw new Error('refund_request_busy');
+    if (!(ledger instanceof MemoryLedgerPort)) throw new Error('incompatible_memory_ledger');
+    this.activeRefundRequests.add(requestId);
+    try {
+      return await ledger.withTransaction(async (boundLedger) => {
+        const boundStore = new MemoryBillingStore();
+        Object.assign(boundStore, this);
+        boundStore.refundRequests = structuredClone(this.refundRequests);
+        boundStore.alerts = [];
+        const result = await fn(boundStore, boundLedger);
+        const row = boundStore.refundRequests.find((r) => r.id === requestId);
+        if (row) {
+          const index = this.refundRequests.findIndex((r) => r.id === requestId);
+          if (index >= 0) this.refundRequests[index] = row;
+        }
+        this.alerts.push(...boundStore.alerts);
+        return result;
+      });
+    } finally {
+      this.activeRefundRequests.delete(requestId);
+    }
+  }
+
   private operations = new Map<string, { hash: string; result?: unknown; active: boolean }>();
   async claimOperation(
     userId: string,
@@ -431,11 +465,31 @@ export interface LedgerPort {
 }
 
 export class MemoryLedgerPort implements LedgerPort {
-  readonly ledger = new Ledger();
-  async run<T>(_walletId: string, fn: (l: Ledger) => T): Promise<T> {
-    return fn(this.ledger);
+  readonly ledger: Ledger;
+  private tail: Promise<void> = Promise.resolve();
+  constructor(ledger = new Ledger()) {
+    this.ledger = ledger;
   }
-  async movements(walletId: string): Promise<LedgerTx[]> {
-    return this.ledger.txs.filter((t) => t.walletId === walletId);
+  private exclusive<T>(fn: () => Promise<T> | T): Promise<T> {
+    const running = this.tail.then(fn);
+    this.tail = running.then(
+      () => undefined,
+      () => undefined,
+    );
+    return running;
+  }
+  withTransaction<T>(fn: (ledger: LedgerPort) => Promise<T>): Promise<T> {
+    return this.exclusive(async () => {
+      const fork = this.ledger.fork();
+      const result = await fn(new MemoryLedgerPort(fork));
+      this.ledger.restoreFrom(fork);
+      return result;
+    });
+  }
+  run<T>(_walletId: string, fn: (l: Ledger) => T): Promise<T> {
+    return this.exclusive(() => fn(this.ledger));
+  }
+  movements(walletId: string): Promise<LedgerTx[]> {
+    return this.exclusive(() => this.ledger.txs.filter((t) => t.walletId === walletId));
   }
 }

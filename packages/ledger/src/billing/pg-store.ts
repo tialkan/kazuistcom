@@ -6,7 +6,7 @@
  * coupon_redemptions_uq).
  */
 import type { Ledger, PriceTable } from '../index.ts';
-import { listWalletTransactions, walletRunner, type PoolLike, type SqlClient } from '../pg.ts';
+import { listWalletTransactions, walletRunner, withWallet, type PoolLike, type SqlClient } from '../pg.ts';
 import type {
   BillingStore,
   OperationClaim,
@@ -37,6 +37,42 @@ const d = (v: unknown): Date => (v instanceof Date ? v : new Date(String(v)));
 const dn = (v: unknown): Date | null => (v === null || v === undefined ? null : d(v));
 
 export class PgBillingStore implements BillingStore {
+  async withRefundRequestTransaction<T>(
+    requestId: string,
+    _ledger: LedgerPort,
+    fn: (store: BillingStore, ledger: LedgerPort) => Promise<T>,
+  ): Promise<T> {
+    const write = async (tx: SqlClient) => {
+      const { rows } = await tx.query('select id from refund_requests where id=$1 for update', [requestId]);
+      if (!rows.length) throw new Error('refund_request_not_found');
+      const store = new PgBillingStore(tx, this.hashSubject);
+      const ledger: LedgerPort = {
+        run: (walletId, run) => withWallet(tx, walletId, run, { withinTransaction: true }),
+        movements: (walletId) => listWalletTransactions(tx, walletId),
+      };
+      return fn(store, ledger);
+    };
+    if ('transaction' in this.db && typeof this.db.transaction === 'function')
+      return (
+        this.db as SqlClient & { transaction<T>(fn: (tx: SqlClient) => Promise<T>): Promise<T> }
+      ).transaction(write);
+    const client =
+      'connect' in this.db && typeof this.db.connect === 'function'
+        ? await (this.db as SqlClient & PoolLike).connect()
+        : null;
+    const tx = client ?? this.db;
+    try {
+      await tx.query('begin');
+      const result = await write(tx);
+      await tx.query('commit');
+      return result;
+    } catch (error) {
+      await tx.query('rollback');
+      throw error;
+    } finally {
+      client?.release();
+    }
+  }
   private operationLocks = new Map<string, () => Promise<void>>();
   private async lockOperation(id: string): Promise<(() => Promise<void>) | null> {
     if ('connect' in this.db && typeof this.db.connect === 'function') {

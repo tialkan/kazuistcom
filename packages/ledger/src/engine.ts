@@ -168,6 +168,20 @@ export class Ledger {
     for (const [k, tx] of usedKeys) this.byKey.set(k, tx);
   }
 
+  /** Isolated copy for the in-memory transaction adapter; production uses the PostgreSQL transaction. */
+  fork(): Ledger {
+    const copy = new Ledger({ newId: this.newId });
+    copy.restoreFrom(this);
+    return copy;
+  }
+  restoreFrom(source: Ledger): void {
+    this.wallets.clear();
+    for (const [id, state] of source.wallets) this.wallets.set(id, structuredClone(state));
+    this.byKey.clear();
+    for (const [key, tx] of source.byKey) this.byKey.set(key, structuredClone(tx));
+    this.txs.splice(0, this.txs.length, ...structuredClone(source.txs));
+  }
+
   wallet(walletId: string): WalletState {
     let w = this.wallets.get(walletId);
     if (!w) {
