@@ -118,3 +118,9 @@ export işleminin yerine geçmez. Yeni Python export ortamı lisans denetimi de 
 
 Kapanış için final tam tarama ve dört CI işi, ardından bağımsız denetim orkestradadır. esbuild orta
 bulgusu raporda açık kalır; Node yüksek eşiği düşürülmedi.
+
+### 26 Ekim: yeni GLiNER export ve CI kabulü
+
+Diskte 20 GiB boş alan doğrulandıktan sonra gerçek sabit kaynak ağırlığıyla GLiNER yeniden dışa aktarıldı. Ağ kapalı; çıktı yalnız `/tmp/kazuist-gliner-final-20261026/model/`, kaynak cache değişmedi. Yeni ONNX SHA256 `03f8a927c1c010c337bce2dfe9d25cdb41a245f4a8e26ff8cd457028beb0e3ef`. 20 sentetik belgede Torch/ONNX span eşliği 1.0, max skor farkı 0.0000199676. Manifest kaynak/model hashleri ve ortam sürümlerini içerir. Önceki disk engeli bu ölçümle kapandı.
+
+PR #37 CI40213483001 dört iş başarı; gerçek tarama `tarama status 0`, all-extras pip-audit çıkış0, tarama regresyonları geçti. Esbuild orta bulgusu mevcut yüksek eşik politikasında raporlanır ve bağımsız denetim beklenir; bu sonuç tüm güvenlik işlerinin kapandığı anlamına gelmez.
