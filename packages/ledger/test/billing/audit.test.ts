@@ -498,3 +498,19 @@ describe('low', () => {
     expect(webhookSignature(FAKE_CFG, body)).toMatch(/^[0-9a-f]{64}$/);
   });
 });
+
+describe('daily refund reconciliation', () => {
+  it('detects partial refund amount differences instead of dropping every refund line', async () => {
+    const e = env();
+    const order = await e.buy();
+    await e.svc.completeCheckout(order.token);
+    await e.svc.requestRefund('u1', order.orderId);
+    expect(await e.svc.reconcileDay(e.now)).toEqual({ disabled: false, diffs: [] });
+    const refund = e.iyz.transactions.find((line) => line.kind === 'iade');
+    if (!refund) throw new Error('expected a provider refund');
+    refund.amountKurus += 1;
+    expect((await e.svc.reconcileDay(e.now)).diffs).toEqual([
+      expect.objectContaining({ kind: 'iade', problem: 'tutar_farki' }),
+    ]);
+  });
+});
