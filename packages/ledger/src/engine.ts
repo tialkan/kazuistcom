@@ -47,6 +47,8 @@ export interface Lot {
   source: LotSource;
   originalCredits: number;
   remainingCredits: number;
+  /** Credits already reversed by partial refunds, derived from immutable ledger entries on reload. */
+  refundedCredits?: number;
   expiresAt: Date | null;
   originRef: string;
   createdAt: Date;
@@ -371,12 +373,36 @@ export class Ledger {
     now: Date;
     ttlMs?: number;
   }): Reservation {
+    return this.holdPaidLot(p, false);
+  }
+
+  /** Account-deletion approval: only an unreserved, unused remainder of a paid package. */
+  holdUnusedPackageCredits(p: {
+    operationId: string;
+    walletId: string;
+    originRef: string;
+    now: Date;
+    ttlMs?: number;
+  }): Reservation {
+    return this.holdPaidLot(p, true);
+  }
+  private holdPaidLot(
+    p: { operationId: string; walletId: string; originRef: string; now: Date; ttlMs?: number },
+    partialPackage: boolean,
+  ): Reservation {
     const w = this.wallet(p.walletId);
     const existing = this.existing(p.walletId, p.operationId);
     if (existing) return existing;
     const lot = w.lots.find((l) => l.originRef === p.originRef);
     if (!lot) throw new LedgerError('lot_not_found');
-    if (lot.source === 'promosyon' || lot.closedBy || lot.remainingCredits !== lot.originalCredits)
+    if (
+      lot.closedBy ||
+      lot.remainingCredits <= 0 ||
+      (partialPackage
+        ? lot.source !== 'paket' ||
+          w.reservations.some((r) => r.status === 'acik' && r.allocations.some((a) => a.lotId === lot.id))
+        : lot.source === 'promosyon' || lot.remainingCredits !== lot.originalCredits)
+    )
       throw new LedgerError('refund_not_allowed');
     const allocations = [{ lotId: lot.id, credits: lot.remainingCredits }];
     lot.remainingCredits = 0;
@@ -437,7 +463,10 @@ export class Ledger {
     );
     r.status = 'tuketildi';
     r.actualCredits = r.estimatedCredits;
-    if (lot) lot.closedBy = 'iade';
+    if (lot) {
+      lot.refundedCredits = (lot.refundedCredits ?? 0) + r.estimatedCredits;
+      if (lot.refundedCredits >= lot.originalCredits) lot.closedBy = 'iade';
+    }
     return tx;
   }
 
@@ -599,7 +628,7 @@ export class Ledger {
     if (!lot) throw new LedgerError('lot_not_found');
     if (lot.closedBy) return null;
     const fromLot = lot.remainingCredits;
-    const owed = lot.originalCredits - fromLot;
+    const owed = Math.max(0, lot.originalCredits - fromLot - (lot.refundedCredits ?? 0));
     const entries: Entry[] = [];
     if (fromLot > 0) {
       entries.push({

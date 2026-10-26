@@ -89,7 +89,9 @@ Talep içindeki order'lar sabit sırayla kilitlenir; aynı order'da iade exposur
 Para çağrısı uzun DB transaction'ının içinde tutulmaz: karar/items/hold kalıcı olduktan
 sonra çağrı yapılır; provider_refund_ref başına payments bekliyor CAS çağrıyı tekilleştirir.
 Süreç düşüşü veya ağda belirsizlik yeniden para gönderme sebebi değildir; bekliyor+alert
-ve manuel resolve gerekir. Kesin başarısızlık krediyi korur/çözer, execute kontrollü tekrar açar.
+ve manuel resolve gerekir. Kesin başarısızlıkta bu özel akışın kredileri onaylı talep adına tutulur; execute aynı
+açık hold_operation_id ile kontrollü tekrar yapar. Manual resolve basarisiz de hold
+serbest bırakmaz; onaylı talep sonuçlanana kadar tahsis değişmez.
 
 İşlem kimliği ve tutarlar audit'e; ham kart, hukuki belge ve sırlar loga girmez.
 
