@@ -1,22 +1,25 @@
 'use client';
 
+import styles from './checkout-step.module.css';
 import odeme from '@kazuist/i18n/tr/odeme.json';
 import { useId, useState, type FormEvent } from 'react';
 import { canPay, type CheckoutKind } from './gate.ts';
-import { checkoutRequest, nextStep, type PaymentVersions } from './submit.ts';
+import { checkoutRequest, nextStep } from './submit.ts';
+import type { CheckoutLegalPresentation } from './legal-presentation.ts';
+import { BlokGoster } from '../../(kabuk)/_hukuki/HukukiGovde.tsx';
 
 /**
  * Payment step: pre-contract information shown right before the payment obligation, the confirmation box
  * and the separate withdrawal exception box. Submitting posts the accepted versions to the checkout API
- * (consents are written server side) and continues to iyzico. Legal texts come from hukuk-uyum; the keys
- * here are placeholders.
+ * (consents are written server side) and continues to iyzico. Legal bodies and accepted versions come from the same publication-gated source.
  */
 export function CheckoutStep(props: {
   kind: CheckoutKind;
   code: string;
   productLabel: string;
   priceLabel: string;
-  versions: PaymentVersions | null;
+  legal: CheckoutLegalPresentation | null;
+  blockedMessage?: string;
 }) {
   const [confirmed, setConfirmed] = useState(false);
   const [waiver, setWaiver] = useState(false);
@@ -25,18 +28,18 @@ export function CheckoutStep(props: {
   const [frame, setFrame] = useState<string | null>(null);
   const [key] = useState(() => crypto.randomUUID());
   const hintId = useId();
-  const open = canPay({ kind: props.kind, confirmed, withdrawalWaiver: waiver }) && !!props.versions && !busy;
+  const open = canPay({ kind: props.kind, confirmed, withdrawalWaiver: waiver }) && !!props.legal && !busy;
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!open || !props.versions) return;
+    if (!open || !props.legal) return;
     setBusy(true);
     setError(null);
     try {
       const { url, init } = checkoutRequest({
         kind: props.kind,
         code: props.code,
-        versions: props.versions,
+        versions: props.legal.versions,
         withdrawalWaiver: waiver,
         idempotencyKey: key,
       });
@@ -70,38 +73,47 @@ export function CheckoutStep(props: {
       <p>
         {odeme.urun}: {props.productLabel}. {odeme.fiyatKdvDahil}: {props.priceLabel}
       </p>
-      <section aria-labelledby="onb">
-        <h2 id="onb">{odeme.onBilgilendirme.baslik}</h2>
-        <div style={{ fontSize: '1rem', maxHeight: '16rem', overflow: 'auto' }} tabIndex={0}>
-          {odeme.onBilgilendirme.metin}
-        </div>
-      </section>
-      <section aria-labelledby="mss">
-        <h2 id="mss">{odeme.mesafeliSozlesme.baslik}</h2>
-        <div style={{ fontSize: '1rem', maxHeight: '16rem', overflow: 'auto' }} tabIndex={0}>
-          {odeme.mesafeliSozlesme.metin}
-        </div>
-      </section>
+      {props.legal?.documents.map((document) => {
+        const titleId = `${hintId}-${document.slug}`;
+        return (
+          <section key={document.slug} aria-labelledby={titleId}>
+            <h2 id={titleId}>{document.title}</h2>
+            <p>
+              {odeme.metinSurumu}: {document.version}
+            </p>
+            <div role="region" aria-labelledby={titleId} tabIndex={0} className={styles.body}>
+              <BlokGoster bloklar={document.blocks} tablo={odeme.hukukiTablo} />
+            </div>
+          </section>
+        );
+      })}
       <label style={{ display: 'flex', gap: '0.5rem', minHeight: 44, alignItems: 'center' }}>
         <input
           type="checkbox"
           name="teyit"
+          disabled={!props.legal || busy}
           checked={confirmed}
           onChange={(e) => setConfirmed(e.target.checked)}
         />
-        {odeme.teyitKutusu}
+        {props.kind === 'abonelik' ? odeme.teyitAbonelikKutusu : odeme.teyitKutusu}
       </label>
       <label style={{ display: 'flex', gap: '0.5rem', minHeight: 44, alignItems: 'center' }}>
         <input
           type="checkbox"
           name="caymaIstisnasi"
+          disabled={!props.legal || busy}
           checked={waiver}
           onChange={(e) => setWaiver(e.target.checked)}
         />
         {odeme.caymaIstisnasiKutusu}
       </label>
       <p id={hintId} aria-live="polite">
-        {error ?? (open || busy ? null : odeme.odemeKapali)}
+        {error ??
+          (!props.legal
+            ? (props.blockedMessage ?? odeme.hukukiMetinKapali)
+            : open || busy
+              ? null
+              : odeme.odemeKapali)}
       </p>
       <button type="submit" disabled={!open} style={{ minHeight: 44 }}>
         {busy ? odeme.yonlendiriliyor : odeme.odemeyeGec}

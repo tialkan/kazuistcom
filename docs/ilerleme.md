@@ -11,7 +11,7 @@ Güncel orkestra kaydı, 26 Ekim 2026: main f41457d; PR35/36/37/39/40 dörder ye
 | 0 | bagimsiz-denetci | Dalga 0 denetimi | tamam | Kritik 0, yüksek 1 (kapandı), orta 5 (kapandı), düşük 7 (6 kapandı, D1 Dalga 1 odeme'ye) |
 | 0 | Tarık | ADR toplu onayı, contracts-v1 etiketi | tamam | 19 Ekim 2026 onay; contracts-v1 |
 | 1 | altyapi | Staging, CI/CD, yedek, izleme | kapı bekliyor | PR #2/#12/#22/#29 main’de; gerçek servisli CI yeşil, staging/TLS/yedek kabulü açık |
-| 1 | kimlik | Kimlik/KVKK; kalıcı sözleşme PDF teslimi ve silme iade tercihi | kapı bekliyor | PR #6/#14/#24/#32 main’de; O6/O9 teknik hat, web92/worker43 ve belge7 hedefli test, üretim build/axe yeşil; canlı e-posta ve hukuki yayım onayı bekliyor |
+| 1 | kimlik | Kimlik/KVKK; gerçek checkout metni ve kalıcı sözleşme teslimi | kapı bekliyor | O6: kaynak/sürüm kapısı ve frozen alıcıyla deleted-account teslimi; web111/worker47, üretim build, mobil/axe yeşil. CI hesap sınırı ve gerçek SMTP/yayım kanıtı açık |
 | 1 | yz-gecidi | Sağlayıcılar, BYOK, maskeleme, bütçe | kapı bekliyor | PR #1/#18/#21/#26 main’de; taklit ve 25 Ekim gerçek OpenRouter duman testi kayıtlı, enjeksiyon 60/60 |
 | 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7/#11 main’de; fikstür testleri var, staging ve kaynak üretim onayları açık |
 | 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü; NER karşılaştırması ve bağlama, masked_text | kapı bekliyor | PR #3/#16 main’de; 50 sentetik belge raporu geçti, 200 gerçek karar ve üretim politikası onayı açık |

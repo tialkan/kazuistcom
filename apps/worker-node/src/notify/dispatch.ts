@@ -75,13 +75,6 @@ const asPrefs = (row: { email: unknown; web_push: unknown; apns: unknown } | und
 export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<DispatchResult> {
   const payload = NotifyPayload.parse(rawPayload);
   const now = deps.now?.() ?? new Date();
-  const { rows: users } = await deps.db.query<{ email: string; deleted_at: Date | null }>(
-    'select email, deleted_at from users where id = $1',
-    [payload.userId],
-  );
-  const user = users[0];
-  if (!user || user.deleted_at) return { status: 'skipped', reason: 'no_user', sent: [] };
-
   // A contract cannot complete by falling back to a generic notification or a push transport.
   if (
     payload.type === 'odeme' &&
@@ -95,7 +88,6 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
       db: deps.db,
       orderId,
       userId: payload.userId,
-      recipient: user.email,
       email: deps.email,
       now,
       fontBytes: deps.legalPdfFontBytes,
@@ -104,6 +96,13 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
       ? { status: 'sent', sent: ['email'] }
       : { status: 'skipped', reason: 'already_delivered', sent: [] };
   }
+
+  const { rows: users } = await deps.db.query<{ email: string; deleted_at: Date | null }>(
+    'select email, deleted_at from users where id = $1',
+    [payload.userId],
+  );
+  const user = users[0];
+  if (!user || user.deleted_at) return { status: 'skipped', reason: 'no_user', sent: [] };
 
   if (isCommercial(payload.type)) {
     const { rows } = await deps.db.query<{ granted: boolean }>(

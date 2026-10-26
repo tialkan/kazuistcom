@@ -1,3 +1,29 @@
+## 27 Ekim 2026, kimlik: gerçek ödeme öncesi metin ve silinmiş hesapta sözleşme teslimi
+
+`codex/checkout-metin`, birleşik aday 50d0c15 üstünde ayrı inceleme değişikliğidir; PR42 değiştirilmedi.
+Ödeme ekranı yer tutucu yerine aynı yayımlanmış Türkçe kaynağın gövdesini ve kabul edilecek sürümünü
+birlikte gösterir. Paket/abonelik başlığı kaynak metinden gelir. Gerçek oturum adı/e-postası ve seçili
+ürünün alanları `orderFields`/`fillLegalDoc` üzerinden hazırlanır; geçmiş PDF yeniden üretilmez. Eksik
+ad/soyadda tahminî alıcı yazılmaz. Taslak, boş künye, eksik alan, yanlış sürüm veya sözleşme türünde
+metin ve ödeme kapalıdır. İçerik/tutar değişirse kutu onayları yeniden alınır. Tablo ve kod dahil gövdede
+en az 12pt korunur. Teyit/cayma kutuları ve ürün adları i18n üzerinden gerçek metindir. Hukuki yayım
+onayı verilmedi; mevcut canlı kaynaklar bu kapıyı aşmaz.
+
+Sözleşme işi, genel `deleted_at` kontrolünden önce yalnız sipariş sahibi ve değişmez belge takımından
+çözülür. Alıcı yalnız her iki snapshot'ın aynı ve geçerli `ALICI_EPOSTA` alanıdır; güncel kullanıcı
+e-postasına veya başka bir varsayılana dönülmez. Böylece ödeme sonrası silinen hesapta sözleşme işi
+atlanmaz. Diğer ödeme, takip ve kampanya bildirimleri silinmiş kullanıcıda hâlâ `no_user` ile atlanır;
+dış push'a özel sözleşme içeriği gitmez. Eksik/bozuk/çelişen alıcıda gönderim ve teslim kaydı yoktur.
+
+Kanıt: yer tutucu+yanlış başlık ve silinmiş hesapta atlanan sözleşme için önce kırmızı testler, sonra
+yeşil regresyonlar. Web 111 geçti/1 mevcut skip; worker 47 geçti. İki uygulamanın typecheck ve üretim
+derlemesi geçti; değişen kod ESLint, tam Prettier ve metin kontrolü temiz. Tarayıcıda yayımlanmış
+sentetik fikstürle 375/768/1440px görüntü, WCAG2A/AA+2.1AA axe 0 ve gövde/tablo/kod alt sınırı 16px
+(12pt) doğrulandı. Görünen üç sürüm fake checkout POST'uyla aynı; gerçek /odeme kapalı kaldı. Yerel
+fikstür rotası kaldırıldı. Kanıt dizini: Codex visualizations/2026/10/25/
+01a1736a-3c34-7d40-ae4e-8f8808e87e0c/checkout-metin. SMTP testleri taklittir; canlı gönderim yapılmadı.
+CI hesap faturalama sınırı nedeniyle root tarafından bloklu bildirildi; yeniden çalıştırma tetiklenmedi.
+
 ## Orkestra, 27 Ekim 2026
 
 Kullanıcı ADR-0027'yi açıkça onayladı. Kabul kaydı bu dalda işlendi; hukuki metin yayını ve canlı migration izni çıkarılmaz. PR44/45 dörder tamamlanmış yeşil CI işiyle main fef96e3'e alındı. Birleşik43 adayı main ile güncellendi; sonHEAD dört CI işi tamamlanmadan birleşmez. Eski38/41/42PR'ları aynı kapsamın kaynaklarıdır, birleşik43 sonrasında yinelenen değişiklik olarak kapatılacak.

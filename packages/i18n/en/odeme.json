@@ -3,15 +3,13 @@
   "urun": "Selected product",
   "fiyatKdvDahil": "Price (VAT included)",
   "onBilgilendirme": {
-    "baslik": "Pre-contract information form",
-    "metin": "[hukuk-uyum:on-bilgilendirme-formu]"
+    "baslik": "Pre-contract information form"
   },
   "mesafeliSozlesme": {
-    "baslik": "Distance sales contract",
-    "metin": "[hukuk-uyum:mesafeli-satis-sozlesmesi]"
+    "baslik": "Distance sales contract"
   },
-  "teyitKutusu": "[hukuk-uyum:teyit-kutusu-metni]",
-  "caymaIstisnasiKutusu": "[hukuk-uyum:cayma-istisnasi-kutusu-metni]",
+  "teyitKutusu": "I have read and accept the pre-contract information and distance sales agreement.",
+  "caymaIstisnasiKutusu": "I request immediate access to the digital content and acknowledge that I lose my right of withdrawal when I start using the credits.",
   "odemeyeGec": "Continue to payment",
   "odemeKapali": "Payment opens once the required boxes are checked.",
   "donus": {
@@ -24,7 +22,8 @@
   "iyzicoFormu": "iyzico payment form",
   "hata": {
     "genel": "The payment could not be started. Please try again.",
-    "girisGerekli": "Please sign in to pay."
+    "girisGerekli": "Please sign in to pay.",
+    "adSoyadGerekli": "Please complete your first and last name in your profile before paying."
   },
   "bildirim": {
     "odeme_7_gun": {
@@ -63,5 +62,18 @@
       "baslik": "Contract and pre-contract information",
       "metin": "The pre-contract information form and the contract you accepted are the versions published on kazuist.com/hukuki."
     }
+  },
+  "teyitAbonelikKutusu": "I have read and accept the pre-contract information and subscription agreement, including the terms of my selected payment period.",
+  "metinSurumu": "Document version",
+  "hukukiTablo": "Agreement table",
+  "hukukiMetinKapali": "Payment is currently unavailable. Please try again later.",
+  "urunAdlari": {
+    "kredi.300": "Starter credit pack (300 credits)",
+    "kredi.1000": "Standard credit pack (1,000 credits)",
+    "kredi.3000": "Intensive credit pack (3,000 credits)",
+    "ogrenci.aylik": "Student Plus, monthly",
+    "ogrenci.yillik": "Student Plus, annual",
+    "akademisyen.aylik": "Academic, monthly",
+    "akademisyen.yillik": "Academic, annual"
   }
 }

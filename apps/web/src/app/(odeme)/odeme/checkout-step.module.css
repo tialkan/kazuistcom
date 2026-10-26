@@ -1,0 +1,14 @@
+.body {
+  font-size: 12pt;
+  line-height: 1.65;
+  max-height: 24rem;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  padding: 1rem;
+  border: 1px solid var(--kz-color-border);
+}
+
+/* Legal table and monospace defaults elsewhere are smaller; every body element stays at least 12pt. */
+.body :is(p, li, th, td, code, blockquote, [role='region']) {
+  font-size: 12pt;
+}
