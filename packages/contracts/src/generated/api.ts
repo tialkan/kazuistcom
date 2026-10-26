@@ -1498,6 +1498,130 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/admin/refund-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List account deletion refund requests, fixed pages of 50
+         * @description Only hesap_silme requests. Personal data stays internal; private, no-store.
+         */
+        get: operations["adminListRefundRequests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/refund-requests/{requestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        /**
+         * Read original purchase evidence, decision and item outcomes
+         * @description No raw payment or legal document fields; private, no-store.
+         */
+        get: operations["adminGetRefundRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/refund-requests/{requestId}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Decide a deletion refund request once
+         * @description Server-derived actor, CSRF and user rate limit required. Bind Idempotency-Key to the actor,
+         *     operation, target and strict request body. Conflicting replay is 409; identical replay returns
+         *     the original response. Request/order locks prevent parallel decisions with different keys.
+         *     Approved amounts use original discounted payments and remaining credits with consumer-favourable
+         *     rounding up, capped by prior refund exposure. Open AI reservations are 409. Unknown provider
+         *     outcomes remain pending and are never automatically resent. Rejection is not a money refund.
+         */
+        post: operations["adminDecideRefundRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/refund-requests/{requestId}/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Explicitly resume ready or definitely failed approved items
+         * @description Server-derived actor, CSRF and user rate limit required. Bind Idempotency-Key to the actor,
+         *     operation, target and strict request body. Conflicting replay is 409; identical replay returns
+         *     the original response. Request/order locks prevent parallel decisions with different keys.
+         *     Approved amounts use original discounted payments and remaining credits with consumer-favourable
+         *     rounding up, capped by prior refund exposure. Open AI reservations are 409. Unknown provider
+         *     outcomes remain pending and are never automatically resent. Rejection is not a money refund.
+         */
+        post: operations["adminExecuteRefundRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/admin/refund-requests/{requestId}/items/{itemId}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Resolve one unknown outcome without sending money again
+         * @description Server-derived actor, CSRF and user rate limit required. Bind Idempotency-Key to the actor,
+         *     operation, target and strict request body. Conflicting replay is 409; identical replay returns
+         *     the original response. Request/order locks prevent parallel decisions with different keys.
+         *     Approved amounts use original discounted payments and remaining credits with consumer-favourable
+         *     rounding up, capped by prior refund exposure. Open AI reservations are 409. Unknown provider
+         *     outcomes remain pending and are never automatically resent. Rejection is not a money refund.
+         */
+        post: operations["adminResolveRefundRequestItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/admin/refunds/pending": {
         parameters: {
             query?: never;
@@ -2182,6 +2306,85 @@ export interface components {
             id: string;
             status: components["schemas"]["RefundRequestStatus"];
             amountKurus: number | null;
+        };
+        AdminRefundRequestDecisionInput: {
+            /** @enum {string} */
+            decision: "onay" | "ret";
+            reason: string;
+        };
+        AdminRefundRequestExecuteInput: Record<string, never>;
+        AdminRefundRequestItemResolveInput: {
+            /** @enum {string} */
+            outcome: "basarili" | "basarisiz";
+            reason: string;
+            providerResultRef?: string;
+        };
+        RefundRequestItem: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            orderId: string;
+            originalPaidKurus: number;
+            originalCredits: number;
+            unusedCredits: number;
+            approvedAmountKurus: number;
+            providerRefundRef: string;
+            /** @enum {string} */
+            state: "hazir" | "bekliyor" | "basarili" | "basarisiz";
+            providerResultRef: string | null;
+            /** Format: uuid */
+            resolvedBy: string | null;
+            /** Format: date-time */
+            resolvedAt: string | null;
+            resolutionReason: string | null;
+            /** Format: uuid */
+            updatedBy: string;
+            stateReason: string;
+        };
+        RefundRequestCandidate: {
+            /** Format: uuid */
+            orderId: string;
+            originalPaidKurus: number;
+            originalCredits: number;
+            unusedCredits: number;
+            priorRefundExposureKurus: number;
+            maxRefundKurus: number;
+            hasOpenReservation: boolean;
+        };
+        RefundRequestReview: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            userId: string;
+            /** @enum {string} */
+            status: "bekliyor" | "onaylandi" | "reddedildi" | "tamamlandi";
+            amountKurus: number | null;
+            decisionReason: string | null;
+            /** Format: uuid */
+            decidedBy: string | null;
+            /** Format: date-time */
+            decidedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            items: components["schemas"]["RefundRequestItem"][];
+        };
+        RefundRequestReviewDetail: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            userId: string;
+            /** @enum {string} */
+            status: "bekliyor" | "onaylandi" | "reddedildi" | "tamamlandi";
+            amountKurus: number | null;
+            decisionReason: string | null;
+            /** Format: uuid */
+            decidedBy: string | null;
+            /** Format: date-time */
+            decidedAt: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            items: components["schemas"]["RefundRequestItem"][];
+            candidates: components["schemas"]["RefundRequestCandidate"][];
         };
         PendingRefund: {
             refundRef: string;
@@ -4893,6 +5096,187 @@ export interface operations {
             };
             400: components["responses"]["BadRequest"];
             403: components["responses"]["Forbidden"];
+        };
+    };
+    adminListRefundRequests: {
+        parameters: {
+            query?: {
+                status?: "bekliyor" | "onaylandi" | "reddedildi" | "tamamlandi";
+                cursor?: components["parameters"]["Cursor"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Request review queue. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: components["schemas"]["RefundRequestReview"][];
+                        nextCursor: string | null;
+                    };
+                };
+            };
+            403: components["responses"]["Forbidden"];
+        };
+    };
+    adminGetRefundRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current refund request review with live candidate caps. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestReviewDetail"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    adminDecideRefundRequest: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRefundRequestDecisionInput"];
+            };
+        };
+        responses: {
+            /** @description Rejected or all item refunds confirmed successful. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestReview"];
+                };
+            };
+            /** @description Approved, at least one item remains ready, failed or unknown; not completed. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestReview"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    adminExecuteRefundRequest: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRefundRequestExecuteInput"];
+            };
+        };
+        responses: {
+            /** @description Rejected or all item refunds confirmed successful. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestReview"];
+                };
+            };
+            /** @description Approved, at least one item remains ready, failed or unknown; not completed. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestReview"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    adminResolveRefundRequestItem: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Client generated request id, unique per user and operation. */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                requestId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AdminRefundRequestItemResolveInput"];
+            };
+        };
+        responses: {
+            /** @description Rejected or all item refunds confirmed successful. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestReview"];
+                };
+            };
+            /** @description Approved, at least one item remains ready, failed or unknown; not completed. */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RefundRequestReview"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
         };
     };
     adminListPendingRefunds: {
