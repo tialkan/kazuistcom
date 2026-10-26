@@ -60,3 +60,27 @@ export function verifyLegalSnapshot(snapshot: LegalSnapshot): boolean {
     snapshot.sha256 === createHash('sha256').update(snapshot.text, 'utf8').digest('hex')
   );
 }
+
+/** Required purchase-time versions and exact document set, shared by delivery and owner-only access. */
+export function verifyOrderDocumentSet(
+  documents: readonly LegalSnapshot[],
+  orderId: string,
+  productKind: string,
+  consentVersions: Record<string, unknown>,
+): boolean {
+  const required = ['on-bilgilendirme', productKind === 'abonelik' ? 'abonelik' : 'mesafeli-satis'];
+  return (
+    documents.length === required.length &&
+    required.every((slug) => {
+      const matches = documents.filter((document) => document.slug === slug);
+      const d = matches[0];
+      return (
+        matches.length === 1 &&
+        !!d &&
+        d.orderId === orderId &&
+        d.version === consentVersions[slug === 'on-bilgilendirme' ? 'preInfo' : 'distance'] &&
+        verifyLegalSnapshot(d)
+      );
+    })
+  );
+}

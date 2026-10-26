@@ -12,6 +12,7 @@ import {
   KvkkGuestVerifyInput,
   KvkkRequestInput,
   MePatch,
+  MeDeleteInput,
   ReviewQueueName,
   TakedownRequestInput,
   TargetProfessionInput,
@@ -55,8 +56,19 @@ export const mePatch = withAuth({ rate: rules.meUser }, async (req, p, ctx) => {
   return json(await patchMe(ctx, p, body.data));
 });
 
-export const meDelete = withAuth({ rate: rules.meUser }, async (_req, p, ctx) => {
-  const jobId = await deleteMe(ctx, p);
+export const meDelete = withAuth({ rate: rules.meUser }, async (req, p, ctx) => {
+  const raw = await req.text();
+  let value: unknown = {};
+  if (raw.trim()) {
+    try {
+      value = JSON.parse(raw);
+    } catch {
+      return apiError('bad_request');
+    }
+  }
+  const input = MeDeleteInput.safeParse(value);
+  if (!input.success) return apiError('bad_request');
+  const jobId = await deleteMe(ctx, p, input.data.requestRefund);
   return json({ jobId }, 202);
 });
 

@@ -31,12 +31,15 @@ export interface EmailMessage {
   to: string;
   subject: string;
   text: string;
+  attachments?: { filename: string; content: Uint8Array; contentType: 'application/pdf' }[];
+  /** Stable for a contract retry; does not claim provider acceptance. */
+  messageId?: string;
   /** Commercial messages carry an opt out header and footer. */
   listUnsubscribe?: string;
 }
 
 export interface EmailTransport {
-  send(m: EmailMessage): Promise<void>;
+  send(m: EmailMessage): Promise<{ messageId: string } | undefined>;
 }
 
 export interface WebPushSubscription {

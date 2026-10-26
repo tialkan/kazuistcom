@@ -97,16 +97,16 @@ export async function setTargetProfession(
  * Account deletion (KVKK m.7, App Store 5.1.1(v)). Marks the user deleted, ends every session at once and
  * queues account.purge with run_after = now + grace period (ADR-0023, at most 30 days). Returns the job id.
  */
-export async function deleteMe(ctx: AuthContext, p: Principal): Promise<string> {
+export async function deleteMe(ctx: AuthContext, p: Principal, requestRefund = true): Promise<string> {
   const now = ctx.now();
   await ctx.db
     .update(schema.users)
-    .set({ deletedAt: now, updatedAt: now })
+    .set({ deletedAt: now, deletionRequestRefund: requestRefund, updatedAt: now })
     .where(eq(schema.users.id, p.userId));
   await ctx.db.delete(schema.sessions).where(eq(schema.sessions.userId, p.userId));
   // Cancel subscriptions and queue a refund review for unused purchased credits (odeme O9). A failure is
   // logged and audited; deletion still proceeds and the admin sees billingHook=false.
-  const billingHook = await runHook('deletion', () => ctx.hooks.onDeletion(p.userId));
+  const billingHook = await runHook('deletion', () => ctx.hooks.onDeletion(p.userId, { requestRefund }));
   const payload: AccountPurgePayload = { userId: p.userId };
   const runAfter = new Date(now.getTime() + ctx.config.purgeGraceDays * 86_400_000);
   const [job] = await ctx.db
@@ -119,7 +119,7 @@ export async function deleteMe(ctx: AuthContext, p: Principal): Promise<string> 
     action: 'user.deletion_requested',
     subjectType: 'user',
     subjectId: p.userId,
-    diff: { purgeJobId: job.id, runAfter: runAfter.toISOString(), billingHook },
+    diff: { purgeJobId: job.id, runAfter: runAfter.toISOString(), billingHook, requestRefund },
   });
   return job.id;
 }

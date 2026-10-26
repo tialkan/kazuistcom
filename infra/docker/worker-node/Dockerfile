@@ -36,7 +36,7 @@ CMD ["node", "infra/scripts/migrate.mjs"]
 
 FROM ${NODE_IMAGE} AS runtime
 ARG GIT_COMMIT=unknown
-ENV NODE_ENV=production GIT_COMMIT=${GIT_COMMIT}
+ENV NODE_ENV=production GIT_COMMIT=${GIT_COMMIT} LEGAL_PDF_FONT_PATH=/app/dist/assets/fonts/DejaVuSans.ttf
 WORKDIR /app
 COPY --from=build --chown=node:node /out ./
 USER node

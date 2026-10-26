@@ -4,6 +4,7 @@
 // external and are installed with `pnpm deploy --prod`. Output: dist/main.js, run with `node dist/main.js`.
 import { build } from 'esbuild';
 import { fileURLToPath } from 'node:url';
+import { copyFile, mkdir } from 'node:fs/promises';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 
@@ -30,4 +31,11 @@ await build({
     },
   ],
 });
-console.log('worker-node: dist/main.js built');
+// Ship the embedded Turkish font and its license with the production bundle.
+const fontRoot = new URL('../../../packages/ledger/assets/fonts/', import.meta.url);
+const outputFonts = new URL('../dist/assets/fonts/', import.meta.url);
+await mkdir(outputFonts, { recursive: true });
+for (const name of ['DejaVuSans.ttf', 'DejaVu-LICENSE.txt']) {
+  await copyFile(new URL(name, fontRoot), new URL(name, outputFonts));
+}
+console.log('worker-node: dist/main.js and PDF font assets built');

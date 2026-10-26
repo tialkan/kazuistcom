@@ -36,6 +36,15 @@ describe('immutable legal snapshot preparation', () => {
     expect(verifyLegalSnapshot({ ...snapshot, text: `${snapshot.text} altered` })).toBe(false);
   });
 
+  it('keeps approved quote paragraphs in the frozen contract', () => {
+    const source = input();
+    const snapshot = createLegalSnapshot({
+      ...source,
+      body: `${source.body}\n\n> İade talebi yönetim incelemesiyle sonuçlanır.`,
+    });
+    expect(snapshot.text).toContain('> İade talebi yönetim incelemesiyle sonuçlanır.');
+  });
+
   it('fails closed for draft, company placeholders, missing values and a different accepted version', () => {
     const source = input();
     expect(() =>

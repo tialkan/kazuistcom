@@ -77,9 +77,9 @@ const billingHooks: AccountHooks = {
     const { getBillingService } = await import('../billing/context.ts');
     await (await getBillingService()).grantSignupPromo(userId);
   },
-  async onDeletion(userId) {
+  async onDeletion(userId, options) {
     const { getBillingService } = await import('../billing/context.ts');
-    await (await getBillingService()).onAccountDeletion(userId);
+    await (await getBillingService()).onAccountDeletion(userId, options);
   },
 };
 

@@ -1,3 +1,29 @@
+## 26 Ekim 2026, kimlik: kalıcı PDF teslimi ve hesap silme tercihi (codex/belge-teslim)
+
+O6 teknik hat tamamlandı: satın alma anındaki onaylı Türkçe sürüm ve alanlar snapshot olarak doğrulanır;
+PDF yalnız hash ve tam belge takımı kontrolünden geçen kayıttan üretilir. Gömülü DejaVu Sans, 12 punto,
+sayfa bölme ve sayfa numarası vardır. SMTP PDF eklerini taşır; sağlayıcının alıcıyı kabul etmesi ve
+messageId dönmesi sonrasında teslim kaydı yazılır. Gönderim yoksa, kayıt eksikse veya bozuksa iş hata
+verir; genel ödeme metniyle tamamlanmaz. Order kilidi paralel gönderimleri sıralar, kayıtlı teslim
+tekrarı göndermez. SMTP kabulü ile DB commit atomik değildir; bu aralıktaki hata aynı Message-ID ile
+tekrar denemeye yol açabilir, sağlayıcı seviyesinde tam bir kez teslim garantisi verilmez.
+
+Kendi siparişinin kalıcı metinlerine erişim ucu private/no-store ve IDOR kontrollüdür. O9 silme ekranı
+wallet API'den gerçek bakiye ve kullanılmamış paket toplamını gösterir. İade tercihi strict DELETE gövdesiyle
+users.deletion_request_refund alanına silme durumu ile aynı güncellemede yazılır ve kancaya iletilir.
+Gövdesiz eski istemcilerde varsayılan true. Ödeme ajanının atomik checkout ve günlük tercih kurtarma
+entegrasyonu bu dalın bağımlılığıdır; ödeme dosyaları o ajanın commitlerinden alındı.
+
+Doğrulama: web 92 geçti/1 mevcut skip, worker 39 geçti, ledger 134 geçti; sonra eklenen onaylı alıntıyı
+koruma testiyle belge hedefli 7 test geçti. Web ve worker üretim derlemesi, tipler ve değişen kod lint
+kontrolü geçti. PDF iki sayfa Poppler ile render edilip gözle incelendi; metin çıkarımı Türkçe glifleri,
+12.00pt alt sınırını ve gömülü fontu doğruladı. Silme ekranı 375/768/1440px, mock wallet ve iade opt-out
+isteğiyle doğrulandı; yeni bölümün WCAG2A/AA ve 2.1AA axe sonucu 0. Yerel kanıtlar Codex
+visualizations/2026/10/25/01a1736a-3c34-7d40-ae4e-8f8808e87e0c/belge-teslim dizinindedir.
+
+Canlı gönderim yapılmadı. Hukuki taslak/yayım kapısı korunur; ADR-0027 ve hukuki yayım onayları hâlâ
+beklenir. Root katkısı: worker direct PDF bağımlılıkları, font build kopyası ve Docker font yolu.
+
 ## 25 Ekim 2026, güvenlik bağımlılık düzeltmesi (codex/guvenlik-bagimlilik)
 
 O-09 tarama hataları artık kapıyı kapatır; CLI ikizleriyle kırmızı/yeşil regresyon kanıtı var. pypdf6.21.2,

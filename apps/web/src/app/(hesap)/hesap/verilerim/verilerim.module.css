@@ -1,0 +1,55 @@
+.page {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.deletion {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+}
+
+.deletion h2 {
+  margin-top: 0;
+}
+
+.deletion label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+
+.deletion input {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.15rem 0 0;
+  accent-color: var(--kz-color-accent);
+}
+
+.deletion button {
+  min-height: 2.75rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--kz-color-danger);
+  background: var(--kz-color-danger);
+  color: var(--kz-color-accent-contrast);
+  font: inherit;
+  cursor: pointer;
+}
+
+.deletion button:disabled {
+  border-color: var(--kz-color-border);
+  background: var(--kz-color-surface-muted);
+  color: var(--kz-color-text-muted);
+  cursor: default;
+}
+
+.deletion :is(button, input):focus-visible {
+  outline: 2px solid var(--kz-color-focus);
+  outline-offset: 3px;
+}

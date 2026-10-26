@@ -23,14 +23,22 @@ export function smtpTransport(
   const t = nodemailer.createTransport(url);
   return {
     async send(m: EmailMessage) {
-      await t.sendMail({
+      const result = await t.sendMail({
         from,
         to: m.to,
         replyTo,
         subject: m.subject,
         text: m.text,
+        messageId: m.messageId,
+        attachments: m.attachments?.map((attachment) => ({
+          ...attachment,
+          content: Buffer.from(attachment.content),
+        })),
         headers: m.listUnsubscribe ? { 'List-Unsubscribe': `<${m.listUnsubscribe}>` } : undefined,
       });
+      if (!result.messageId || result.rejected.length || !result.accepted.length)
+        throw new Error('Email provider did not accept the recipient');
+      return { messageId: result.messageId };
     },
   };
 }
@@ -131,6 +139,7 @@ export class MemoryEmail implements EmailTransport {
   readonly sent: EmailMessage[] = [];
   async send(m: EmailMessage) {
     this.sent.push(m);
+    return undefined;
   }
 }
 
