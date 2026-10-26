@@ -34,3 +34,7 @@ Henüz onaylanmamış: hukuki metinler (TASLAK), kaynak bağlayıcılarının ü
 ## 2026-10-25: ADR onayları ve iyzico yazışma yetkisi
 
 Kullanıcı ADR-0021, ADR-0022, ADR-0023, ADR-0024 ve ADR-0026 kararlarını açıkça onayladı. İyzico sandbox abonelik aktivasyon taslağının gönderilmesine de izin verdi. Gönderim kaydı, kayıtlı hesap ve gönderilmiş ileti doğrulandıktan sonra eklenir. Hukuki metinlerin yayını için bu onaylardan izin çıkarılmaz; künye dosyasını kullanıcı dolduracak.
+
+## 2026-10-27: ADR-0027 kabulü
+
+Kullanıcı ADR-0027'yi açıkça onayladı. Kalıcı satın alma anı sözleşmesi, sağlayıcı kabul kaydı, değişmez ürün sürümü ve hesap silmede iade tercihi kararları kabul edildi. Bu onay hukuki metin yayını veya üretim migration'ı izni değildir; yeni ADR-0028 önerisini kapsamaz.

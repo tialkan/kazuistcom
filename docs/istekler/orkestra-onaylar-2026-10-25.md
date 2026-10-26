@@ -5,7 +5,7 @@ ve eksik şirket bilgileri içindir. Parola veya token değeri sohbete yazılmaz
 
 ## Kullanıcıdan gerekenler (tek liste)
 
-1. ADR-0021, ADR-0022, ADR-0023, ADR-0024 ve ADR-0026, 25 Ekim 2026 sohbetinde kullanıcı tarafından onaylandı. Yeniden onay istenmez. Sonradan hazırlanan ADR-0027 bu onayın kapsamında değildir.
+1. ADR-0021, ADR-0022, ADR-0023, ADR-0024 ve ADR-0026, 25 Ekim 2026 sohbetinde kullanıcı tarafından onaylandı. Yeniden onay istenmez. ADR-0027 ayrıca27Ekim2026 mesajında onaylandı; yeniden onay istenmez. YeniADR-0028 henüz öneridir.
 2. İyzico gönderim yetkisi kullanıldı: taslak, sandbox profilindeki kayıtlı hesaptan `entegrasyon@iyzico.com` adresine 26 Ekim 2026 00:32 gönderildi; Gönderilenler'de doğrulandı. Yanıt ve uygulama sandbox kabulü bekleniyor. Tekrar gönderim veya kullanıcı hesabı adımı gerekmiyor.
 3. Künye: VKN, vergi dairesi ve KEP alanlarını `~/Desktop/kazuist-kunye.txt` dosyasında doldurun; yalnız
    dosya yolunu bildirin. Mevcut dosya varsa üzerine yazılmadı; yoksa boş alanlı, izin 600 şablonu hazırlandı.

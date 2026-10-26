@@ -1,7 +1,7 @@
 # ADR-0027: Kalıcı sipariş belgeleri, ürün sürümleri ve silmede iade tercihi
 
 - Tarih: 2026-10-25
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (2026-10-27, kullanıcı onayı)
 - Dayanak: plan 4.5/12, 9.2/8, 9.4, 17.3/4; ADR-0026; kimlik ve ödeme istekleri
 
 ## Bağlam
@@ -76,4 +76,4 @@ Güvenilir sağlayıcı kabulü olmadan kayıt üretilmez. `notices.sent_at` yal
 - Kaynak checksum'u ilk hazırlayıcıda hesaplanabilirse kaydedilir; mevcut helper'da yoksa NULL.
 - Eski migration dosyaları değiştirilmez. Testler dolu v1.2'den yükseltme, iki fiyat sürümü, eski
   sipariş/fatura ve abonelik bedeli, hash/yer tutucu, atomik rollback, idempotency ve sahipliği sınar.
-- Canlı migration çalıştırılmadı. ADR-0027 onayı Tarık'tan beklenir.
+- Canlı migration çalıştırılmadı. ADR-0027 kullanıcı tarafından 27 Ekim 2026 tarihinde onaylandı.

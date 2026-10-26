@@ -1,3 +1,9 @@
+## Orkestra, 27 Ekim 2026
+
+Kullanıcı ADR-0027'yi açıkça onayladı. Kabul kaydı bu dalda işlendi; hukuki metin yayını ve canlı migration izni çıkarılmaz. PR44/45 dörder tamamlanmış yeşil CI işiyle main fef96e3'e alındı. Birleşik43 adayı main ile güncellendi; sonHEAD dört CI işi tamamlanmadan birleşmez. Eski38/41/42PR'ları aynı kapsamın kaynaklarıdır, birleşik43 sonrasında yinelenen değişiklik olarak kapatılacak.
+
+O6gerçek ödemeöncesi metin gösterimi ve silinmiş kullanıcıya kalıcı sözleşme teslim yarışı kimlikte; O9iade taleplerinin yönetici kararı/ödeme akışı ödeme+mimarın ayrıworktree'lerinde sürüyor. YeniADR0028 öneri kalır. Güncel Dalga1kapısı5/9; sonraki dalga başlamadı. İyzico aktivasyon yanıtı, gerçekuygulama sandbox/staging, bağlayıcılar ve hukuki hazırlık açık.
+
 ## 26 Ekim 2026, kimlik: kalıcı PDF teslimi ve hesap silme tercihi (codex/belge-teslim)
 
 O6 teknik hat tamamlandı: satın alma anındaki onaylı Türkçe sürüm ve alanlar snapshot olarak doğrulanır;
@@ -57,6 +63,14 @@ Python145 geçti/1 optional skip; küçük offline ONNX dinamik şekil testi ye�
 runtime PERSON440/440 eş; Hushmark402paragraf span1.0. GLiNER yeni-yığın tam export disk28 nedeniyle
 geçmedi; yeni Torch vs mevcut ONNX20belge span1.0 (150span), skor fark2e-5. CI/final tam tarama ve bağımsız denetim bekleniyor, birleşmedi.
 Kanıt ve açık işler: docs/istekler/kalite-bagimlilik.md. Eski model cache ve runtime kodu değişmedi.
+
+## Orkestra güncel durum, 26 Ekim 2026
+
+Main f41457d temiz; PR35/36/37/39/40 dört completed/success CI işi sonrası birleşti. Beş ADR onayı kaydedildi, plan düzeltildi, iyzico aktivasyon e-postası kayıtlı hesaptan26Ekim00:32 gönderildi ve Gönderilenler doğrulandı. Gerçek readonly sandbox raporuyla kimlik/kısmi iade eşlemesi düzeltildi; bağımsız O-N4 sayfalama açığı da kapandı.
+
+PR38(schema/ADR27),41(checkout/deletion),42(PDF/delivery/UI) birleşik43adayında9c37234 tabanında toplandı. Root bütün workspace test/tip/lint/metin/build kontrollerini geçirdi; ledger144, DB35, contracts121, web94, worker43. Yeni esbuildyaması44 ayrıca adayda birleştirildi; son CI/bağımsız kalite beklenir. ADR27 onayı henüz yok; üretim migration ve hukuki yayım yapılmaz.
+
+Bağımsız denetimin O6yer tutucu gösterim ve O9silme iadesi yönetimi kalanları için kimlik/ödeme/mimar ayrı worktree'lerde sürüyor. İade yönetimi yeni ADR28 önerisi gerektirir; kabul varsayılmaz. Güncel gate5/9; staging, gerçek uygulama sandbox, stagingbağlayıcıları ve hukuki hazırlık açık. Künye üç alanı henüz boş, değerler yazdırılmadı. Tek kullanıcı listesi docs/istekler/orkestra-onaylar-2026-10-25.md. Dalga2 başlamadı.
 
 # Devir kaydı
 
