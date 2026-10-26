@@ -1,10 +1,11 @@
 openapi: 3.1.0
 info:
   title: Kazuist API
-  version: 1.2.0
+  version: 1.4.0
   summary: Kazuist web and iOS API contract (single source of truth).
   description: |
-    Contract v1.2 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md and
+    Contract v1.4 for Kazuist (plan.md Ek C.1; changes in docs/adr/0027-kalici-siparis-belgeleri-ve-urun-surumleri.md,
+    docs/adr/0023-sozlesme-v1-1.md and
     docs/adr/0026-sozlesme-v1-2.md). All endpoints
     validate input with zod and reject unknown fields. Every error body is `{code, message, requestId}` and
     never exposes internal structure. Paths are relative to the `/api` prefix of the web application.
@@ -154,9 +155,47 @@ paths:
       tags: [account]
       operationId: deleteMe
       summary: Delete account (KVKK m.7)
+      description: An absent body or absent requestRefund preserves the default refund request choice (true).
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MeDeleteInput' }
       responses:
         '202': { $ref: '#/components/responses/Accepted' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/me/orders/{orderId}/legal-documents:
+    get:
+      tags: [account]
+      operationId: listMyOrderLegalDocuments
+      summary: Read the authenticated user's frozen order documents
+      description: |
+        Own orders only; unavailable snapshots are never recreated from current texts.
+        Responses contain personal data and require Cache-Control private, no-store.
+        Neither documents nor buyer fields are logged or sent to external push services.
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: The complete frozen document set for this order.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [documents]
+                additionalProperties: false
+                properties:
+                  documents:
+                    type: array
+                    minItems: 2
+                    maxItems: 3
+                    items: { $ref: '#/components/schemas/OrderLegalDocument' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
   /v1/me/edu-verification:
     post:
       tags: [account]
@@ -1991,6 +2030,166 @@ paths:
                   notified: { type: integer, minimum: 0 }
         '400': { $ref: '#/components/responses/BadRequest' }
         '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/refund-requests:
+    get:
+      tags: [admin]
+      operationId: adminListRefundRequests
+      x-kazuist-requires: [passkey, second-factor]
+      summary: List account deletion refund requests, fixed pages of 50
+      description: Only hesap_silme requests. Personal data stays internal; private, no-store.
+      parameters:
+        - name: status
+          in: query
+          schema: { type: string, enum: [bekliyor, onaylandi, reddedildi, tamamlandi], default: bekliyor }
+        - { $ref: '#/components/parameters/Cursor' }
+      responses:
+        '200':
+          description: Request review queue.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items, nextCursor]
+                additionalProperties: false
+                properties:
+                  items:
+                    type: array
+                    maxItems: 50
+                    items: { $ref: '#/components/schemas/RefundRequestReview' }
+                  nextCursor: { type: [string, 'null'] }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /v1/admin/refund-requests/{requestId}:
+    parameters:
+      - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [admin]
+      operationId: adminGetRefundRequest
+      x-kazuist-requires: [passkey, second-factor]
+      summary: Read original purchase evidence, decision and item outcomes
+      description: No raw payment or legal document fields; private, no-store.
+      responses:
+        '200':
+          description: Current refund request review with live candidate caps.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestReviewDetail' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/admin/refund-requests/{requestId}/decision:
+    parameters:
+      - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [admin]
+      operationId: adminDecideRefundRequest
+      x-kazuist-requires: [passkey, second-factor]
+      summary: Decide a deletion refund request once
+      description: |
+        Server-derived actor, CSRF and user rate limit required. Bind Idempotency-Key to the actor,
+        operation, target and strict request body. Conflicting replay is 409; identical replay returns
+        the original response. Request/order locks prevent parallel decisions with different keys.
+        Approved amounts use original discounted payments and remaining credits with consumer-favourable
+        rounding up, capped by prior refund exposure. Open AI reservations are 409. Unknown provider
+        outcomes remain pending and are never automatically resent. Rejection is not a money refund.
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminRefundRequestDecisionInput' }
+      responses:
+        '200':
+          description: Rejected or all item refunds confirmed successful.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestReview' }
+        '202':
+          description: Approved, at least one item remains ready, failed or unknown; not completed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestReview' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/admin/refund-requests/{requestId}/execute:
+    parameters:
+      - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [admin]
+      operationId: adminExecuteRefundRequest
+      x-kazuist-requires: [passkey, second-factor]
+      summary: Explicitly resume ready or definitely failed approved items
+      description: |
+        Server-derived actor, CSRF and user rate limit required. Bind Idempotency-Key to the actor,
+        operation, target and strict request body. Conflicting replay is 409; identical replay returns
+        the original response. Request/order locks prevent parallel decisions with different keys.
+        Approved amounts use original discounted payments and remaining credits with consumer-favourable
+        rounding up, capped by prior refund exposure. Open AI reservations are 409. Unknown provider
+        outcomes remain pending and are never automatically resent. Rejection is not a money refund.
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminRefundRequestExecuteInput' }
+      responses:
+        '200':
+          description: Rejected or all item refunds confirmed successful.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestReview' }
+        '202':
+          description: Approved, at least one item remains ready, failed or unknown; not completed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestReview' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /v1/admin/refund-requests/{requestId}/items/{itemId}/resolve:
+    parameters:
+      - { name: requestId, in: path, required: true, schema: { type: string, format: uuid } }
+      - { name: itemId, in: path, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [admin]
+      operationId: adminResolveRefundRequestItem
+      x-kazuist-requires: [passkey, second-factor]
+      summary: Resolve one unknown outcome without sending money again
+      description: |
+        Server-derived actor, CSRF and user rate limit required. Bind Idempotency-Key to the actor,
+        operation, target and strict request body. Conflicting replay is 409; identical replay returns
+        the original response. Request/order locks prevent parallel decisions with different keys.
+        Approved amounts use original discounted payments and remaining credits with consumer-favourable
+        rounding up, capped by prior refund exposure. Open AI reservations are 409. Unknown provider
+        outcomes remain pending and are never automatically resent. Rejection is not a money refund.
+      parameters:
+        - { $ref: '#/components/parameters/IdempotencyKey' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AdminRefundRequestItemResolveInput' }
+      responses:
+        '200':
+          description: Rejected or all item refunds confirmed successful.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestReview' }
+        '202':
+          description: Approved, at least one item remains ready, failed or unknown; not completed.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefundRequestReview' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /v1/admin/refunds/pending:
     get:
       tags: [admin]
@@ -2245,6 +2444,20 @@ components:
         avatar: { type: [string, 'null'] }
         tone: { type: [string, 'null'], enum: [nazik, dogrudan, null] }
         plan: { type: string, enum: [ucretsiz, byok, ogrenci_plus, akademisyen] }
+    OrderLegalDocument:
+      type: object
+      additionalProperties: false
+      required: [slug, version, text, sha256]
+      properties:
+        slug: { type: string, enum: [on-bilgilendirme, mesafeli-satis, abonelik] }
+        version: { type: string, minLength: 1 }
+        text: { type: string, minLength: 1 }
+        sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+    MeDeleteInput:
+      type: object
+      additionalProperties: false
+      properties:
+        requestRefund: { type: boolean, default: true }
     MePatch:
       type: object
       additionalProperties: false
@@ -2932,6 +3145,91 @@ components:
         id: { type: string, format: uuid }
         status: { $ref: '#/components/schemas/RefundRequestStatus' }
         amountKurus: { type: [integer, 'null'] }
+    AdminRefundRequestDecisionInput:
+      type: object
+      additionalProperties: false
+      required: [decision, reason]
+      properties:
+        decision: { type: string, enum: [onay, ret] }
+        reason: { type: string, minLength: 10, maxLength: 2000 }
+    AdminRefundRequestExecuteInput:
+      type: object
+      additionalProperties: false
+      properties: {}
+    AdminRefundRequestItemResolveInput:
+      type: object
+      additionalProperties: false
+      required: [outcome, reason]
+      properties:
+        outcome: { type: string, enum: [basarili, basarisiz] }
+        reason: { type: string, minLength: 10, maxLength: 2000 }
+        providerResultRef: { type: string, minLength: 1, maxLength: 200 }
+    RefundRequestItem:
+      type: object
+      additionalProperties: false
+      required: [id, orderId, originalPaidKurus, originalCredits, unusedCredits, approvedAmountKurus, providerRefundRef, state, providerResultRef, resolvedBy, resolvedAt, resolutionReason, updatedBy, stateReason]
+      properties:
+        id: { type: string, format: uuid }
+        orderId: { type: string, format: uuid }
+        originalPaidKurus: { type: integer, minimum: 0 }
+        originalCredits: { type: integer, minimum: 1 }
+        unusedCredits: { type: integer, minimum: 1 }
+        approvedAmountKurus: { type: integer, minimum: 0 }
+        providerRefundRef: { type: string }
+        state: { type: string, enum: [hazir, bekliyor, basarili, basarisiz] }
+        providerResultRef: { type: [string, 'null'] }
+        resolvedBy: { type: [string, 'null'], format: uuid }
+        resolvedAt: { type: [string, 'null'], format: date-time }
+        resolutionReason: { type: [string, 'null'] }
+        updatedBy: { type: string, format: uuid }
+        stateReason: { type: string }
+    RefundRequestCandidate:
+      type: object
+      additionalProperties: false
+      required: [orderId, originalPaidKurus, originalCredits, unusedCredits, priorRefundExposureKurus, maxRefundKurus, hasOpenReservation]
+      properties:
+        orderId: { type: string, format: uuid }
+        originalPaidKurus: { type: integer, minimum: 0 }
+        originalCredits: { type: integer, minimum: 1 }
+        unusedCredits: { type: integer, minimum: 0 }
+        priorRefundExposureKurus: { type: integer, minimum: 0 }
+        maxRefundKurus: { type: integer, minimum: 0 }
+        hasOpenReservation: { type: boolean }
+    RefundRequestReview:
+      type: object
+      additionalProperties: false
+      required: [id, userId, status, amountKurus, decisionReason, decidedBy, decidedAt, createdAt, items]
+      properties:
+        id: { type: string, format: uuid }
+        userId: { type: string, format: uuid }
+        status: { type: string, enum: [bekliyor, onaylandi, reddedildi, tamamlandi] }
+        amountKurus: { type: [integer, 'null'], minimum: 0 }
+        decisionReason: { type: [string, 'null'] }
+        decidedBy: { type: [string, 'null'], format: uuid }
+        decidedAt: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RefundRequestItem' }
+    RefundRequestReviewDetail:
+      type: object
+      additionalProperties: false
+      required: [id, userId, status, amountKurus, decisionReason, decidedBy, decidedAt, createdAt, items, candidates]
+      properties:
+        id: { type: string, format: uuid }
+        userId: { type: string, format: uuid }
+        status: { type: string, enum: [bekliyor, onaylandi, reddedildi, tamamlandi] }
+        amountKurus: { type: [integer, 'null'], minimum: 0 }
+        decisionReason: { type: [string, 'null'] }
+        decidedBy: { type: [string, 'null'], format: uuid }
+        decidedAt: { type: [string, 'null'], format: date-time }
+        createdAt: { type: string, format: date-time }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/RefundRequestItem' }
+        candidates:
+          type: array
+          items: { $ref: '#/components/schemas/RefundRequestCandidate' }
     PendingRefund:
       type: object
       required: [refundRef, paymentId, amountKurus, orderId, since, resolveBy]

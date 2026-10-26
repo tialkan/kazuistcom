@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import {
+  AdminRefundRequestDecisionInput,
+  AdminRefundRequestExecuteInput,
+  AdminRefundRequestItemResolveInput,
+} from './refund-review.ts';
+import {
   ConsentKind,
   KvkkRelation,
   KvkkReplyChannel,
@@ -15,6 +20,8 @@ import { AnswerRequest, PrepareRequest, VerifyRequest } from './schemas.ts';
 const uuid = z.uuid();
 /** Multipart file part; the route handler checks type, size (20 MB) and content. */
 const filePart = z.unknown();
+
+export const MeDeleteInput = z.strictObject({ requestRefund: z.boolean().default(true) });
 
 export const MePatch = z.strictObject({
   name: z.string().max(120).optional(),
@@ -223,6 +230,7 @@ export const AdminLedgerAdjustmentInput = z.strictObject({
 /** operationId to request body schema. Operations in requestBodyExempt have a provider shaped body. */
 export const requestBodies = {
   updateMe: MePatch,
+  deleteMe: MeDeleteInput,
   startEduVerification: EduVerificationStart,
   confirmEduVerification: EduVerificationConfirm,
   recordConsent: ConsentInput,
@@ -259,6 +267,9 @@ export const requestBodies = {
   adminChargeback: AdminChargebackInput,
   adminPriceChange: AdminPriceChangeInput,
   adminResolveRefund: AdminRefundResolveInput,
+  adminDecideRefundRequest: AdminRefundRequestDecisionInput,
+  adminExecuteRefundRequest: AdminRefundRequestExecuteInput,
+  adminResolveRefundRequestItem: AdminRefundRequestItemResolveInput,
   setNotificationPreferences: NotificationPreferencesInput,
   registerWebPush: WebPushSubscriptionInput,
   registerApnsToken: ApnsTokenInput,

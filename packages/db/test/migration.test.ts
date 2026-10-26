@@ -30,7 +30,7 @@ describe('initial migration on PGlite (PostgreSQL 18 wasm)', () => {
     const r = await one<{ n: number }>(
       "select count(*)::int n from information_schema.tables where table_schema in ('public','kampus') and table_type = 'BASE TABLE'",
     );
-    expect(r.n).toBe(74);
+    expect(r.n).toBe(77);
     const k = await one<{ n: number }>(
       "select count(*)::int n from information_schema.tables where table_schema = 'kampus'",
     );

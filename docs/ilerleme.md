@@ -21,6 +21,7 @@ Güncel orkestra kaydı, 26 Ekim 2026: main f41457d; PR35/36/37/39/40 dörder ye
 | 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main’de; sözleşme 1.1/migration 0003; ADR-0021/0022/0023 kullanıcı tarafından25Ekim onaylandı |
 | 1 | mimar | İkinci istek turu (7), sözleşme v1.2, migration 0004, ADR-0024 güncellemesi, ADR-0026 | kapı bekliyor | PR #31 main’de; sözleşme 1.2/migration 0004, ADR-0024/0026 kullanıcı tarafından25Ekim onaylandı; 27 migration testi geçti |
 | 1 | kalite-guvenlik | Dalga 1 kapısının yeniden ölçümü | kapı bekliyor | 25 Ekim: 5/9; O-09 kod/regresyon hazır, O-07 all-extras audit0; akdeniz/hushmark ve GLiNER mevcut ONNX eşlik kanıtlı; GLiNER yeni export disk engeli, final CI/denetim bekliyor. codex/guvenlik-bagimlilik |
+| 1 | mimar | Kalıcı sipariş belgeleri, D4 daraltma ve silmede iade tercihi, sözleşme1.3, migration0005, ADR0027 | PR açık | PR38; mainPR35/37 dahil; DB35/contracts121, tamNode616 ve build/typecheck/lint temiz; dörtCI kapısı bekleniyor; ADR27 onay bekliyor |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |

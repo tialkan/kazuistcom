@@ -24,6 +24,24 @@ En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en 
 Kullanıcı ADR-0021/0022/0023/0024/0026 kararlarını ve runbook'taki iyzico aktivasyon taslağının gönderimini açıkça onayladı. ADR durumları ve plan 4.5 eşit bölüşüm/gönüllü bildirim atıfları güncellendi. Hukuki yayım onayı verilmedi; künye kullanıcı tarafından doldurulacak. İyzico taslağı kayıtlı hesaptan 26 Ekim 00:32 gönderildi ve Gönderilenler doğrulandı; yanıt bekleniyor. GLiNER yeni export20belge span eşliği1.0; CI37 tam tarama0. Kanıt kalite-bagimlilik isteğinde.
 
 PR #35 (8ee22e9) ve #37 (ef4479a), dörder tamamlanmış yeşil CI işiyle main'e alındı. PR #37 beş ADR kabulünü ve plan düzeltmesini de içerir. Teknik işler ayrı worktree'lerde sürüyor: mimarda kalıcı belge/fiyat sürümleme migration 0005 ve ADR-0027 önerisi, güvenlikte hata yutan tarama ve Python bağımlılık düzeltmeleri, kimlikte PDF/hesap silme entegrasyonu. Yeni ADR-0027 onaylanmış sayılmaz; üretim migration'ı uygulanmaz. Dalga 1 kapısı son ölçümde 5/9, sonraki dalga başlamadı. Biten PR'lar yalnız dört CI işi yeşil tamamlanınca birleştirilecek.
+
+## Dalga 1, mimar, kalıcı belgeler ve ürün sürümleri (codex/mimar-kalici-belge), 2026-10-26
+
+PR #38 açık, birleştirilmedi. Sözleşme/db 1.3.0; ADR-0027 öneri, Tarık onayı bekliyor.
+Migration0005: ürün kodu tekilliği kalkar, birleşik sürüm tekilliği ve eski ürün UUID ilişkileri kalır;
+ürün finansal sürüm alanları değişmez. Kalıcı sipariş belgeleri, SHA-256/sürüm/sahiplik denetimi,
+değişmez sağlayıcı kabul kanıtı ve silmede kalıcı iade tercihi eklendi.
+
+`@kazuist/db` freezeOrderLegalDocuments ve recordOrderLegalDocumentDelivery mevcut transaction client alır.
+Entegrasyon ayrıntısı `docs/istekler/mimar-kalici-belge-entegrasyonu.md`.
+Main PR35 D4 uyumu ve PR37 güvenlik/onay önkoşulları dala alındı; önceki ON CONFLICT(code)
+uyumsuzluğu kapandı. Orkestra yetkisiyle ledger D4 testindeki elle DROP satırı IF EXISTS yapıldı;
+aynı test 0004 ve 0005 üstünde çalışır.
+Doğrulama: DB35/35, contracts121/121; tam Node616 geçti,3 ortam testi atlandı.
+Build, tüm typecheck, lint, OpenAPI lint ve check:text geçti. Gerçek Docker/PostgreSQL ölçümü
+PR CI'da; dört iş yeşil olmadan birleşmez. Canlı migration ve hukuki yayın yapılmadı.
+ADR0027 onayı önceki beş ADR onayından ayrıdır.
+
 ## Dalga 1, ödeme, süresi dolmuş rezervasyon property regresyonu, 2026-10-26
 
 Seed `944090688`: 2 promosyon kredisi, iki ayrı 1 kredilik rezervasyon, 5 dakika ilerleme,

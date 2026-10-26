@@ -13,6 +13,8 @@ export const users = pgTable(
     /** Better Auth two-factor plugin (TOTP for the admin panel, plan 5.6/2, ADR-0023). */
     twoFactorEnabled: boolean('two_factor_enabled').notNull().default(false),
     deletedAt: ts('deleted_at'),
+    /** Frozen account deletion refund choice; reconciliation must preserve an explicit opt-out. */
+    deletionRequestRefund: boolean('deletion_request_refund').notNull().default(true),
     createdAt: createdAt(),
     updatedAt: updatedAt(),
   },

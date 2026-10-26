@@ -1,12 +1,13 @@
 {
   "name": "@kazuist/db",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "private": true,
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
     "./schema": "./src/schema/index.ts",
     "./jobs": "./src/jobs.ts",
+    "./legal-documents": "./src/legal-documents.ts",
     "./migrate": "./src/run-migrations.ts"
   },
   "scripts": {
