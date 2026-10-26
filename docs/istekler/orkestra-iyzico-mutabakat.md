@@ -13,3 +13,7 @@ REFUND satırında `price` kısmi iade bedelidir, `paidPrice` özgün ödeme bed
 ## Sınırlar
 
 Bu, uygulamanın gerçek checkout/abonelik uçtan uca kabulü veya tam üretim mutabakatı değildir. Gecikmiş sağlayıcı kayıtlarının iş günü/dönem sonu düzeltmeleri, iptal hareketleri ve staging işi ayrıca ölçülmeli. PR dört CI işi ve bağımsız denetim geçmeden bulgu tamamen kapalı sayılmaz. Ham sağlayıcı cevabı günlük veya kullanıcı API'sine taşınmaz.
+
+## Bağımsız denetim O-N4 düzeltmesi
+
+Bağımsız denetçi ilk adayda kimlik/tutar eşlemesini gerçek özel cevapla doğruladı, ancak eksik `transactions` ve 100 sayfayı aşan sonucun sessizce kabulünü orta bulgu olarak saptadı. İki yeni regresyon önce kırmızıydı. Adaptör artık transaction dizisini, pozitif tam sayı toplam sayfa sayısını, 100 sayfalık üst sınırı ve varsa geçerli sayfa kimliğini doğrular. Sayfalar arasında toplam sayfa sayısı değişirse sonuç reddedilir. Sınırı aşan raporda kısmi liste dönmez. Düzeltmeden sonra hedefli27 test, ledger typecheck ve ESLint geçti; yeni CI ve bağımsız tekrar ölçümü beklenir.

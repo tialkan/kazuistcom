@@ -463,12 +463,25 @@ export class HttpIyzico implements IyzicoApi {
    */
   async listTransactions(date: string): Promise<ProviderTransaction[]> {
     const out: ProviderTransaction[] = [];
+    let expectedPages: number | undefined;
     for (let page = 1; page <= 100; page++) {
       const r = await this.call(
         'GET',
         `/v2/reporting/payment/transactions?transactionDate=${date}&page=${page}`,
       );
-      for (const t of (r.transactions as Record<string, unknown>[] | undefined) ?? []) {
+      const pages = r.totalPageCount;
+      if (
+        !Array.isArray(r.transactions) ||
+        typeof pages !== 'number' ||
+        !Number.isInteger(pages) ||
+        pages < 1 ||
+        pages > 100 ||
+        (expectedPages !== undefined && pages !== expectedPages) ||
+        (r.currentPage !== undefined && r.currentPage !== page)
+      )
+        throw new Error('Incomplete or invalid iyzico daily report');
+      expectedPages = pages;
+      for (const t of r.transactions as Record<string, unknown>[]) {
         const type = String(t.transactionType);
         if (type !== 'PAYMENT' && type !== 'REFUND') continue;
         const paymentId = t.paymentId;
@@ -492,8 +505,8 @@ export class HttpIyzico implements IyzicoApi {
           at: new Date(String(t.transactionDate).replace(' ', 'T') + '+03:00'),
         });
       }
-      if (page >= Number(r.totalPageCount ?? 1)) break;
+      if (page === expectedPages) return out;
     }
-    return out;
+    throw new Error('Incomplete iyzico daily report');
   }
 }
