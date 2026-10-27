@@ -38,3 +38,7 @@ Kullanıcı ADR-0021, ADR-0022, ADR-0023, ADR-0024 ve ADR-0026 kararlarını aç
 ## 2026-10-27: ADR-0027 kabulü
 
 Kullanıcı ADR-0027'yi açıkça onayladı. Kalıcı satın alma anı sözleşmesi, sağlayıcı kabul kaydı, değişmez ürün sürümü ve hesap silmede iade tercihi kararları kabul edildi. Bu onay hukuki metin yayını veya üretim migration'ı izni değildir; yeni ADR-0028 önerisini kapsamaz.
+
+## 2026-10-27: Ücretsiz özellikler, BYOK ve kredi geliri
+
+Kullanıcı bütün özelliklerin ve BYOK kullanımının ücretsiz olmasını, tek gelir kaynağının kendi anahtarını kullanmak istemeyenlere isteğe bağlı platform YZ kredileri satışı olmasını açıkça belirtti. Bu ürün talimatı ADR-0029 önerisinde somutlaştırıldı. Mevcut ücretli özellik katmanlarıyla fark bulunduğundan ADR kabul edilmeden plan/UI değiştirilmedi. Depoyu public yapma ifadesi soru biçimindedir; lisans veya görünürlük değişikliği onayı kaydedilmedi.

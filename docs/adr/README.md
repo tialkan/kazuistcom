@@ -35,3 +35,5 @@ ADR-0001..0020 plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi ve "K
 | [0028](0028-hesap-silme-iade-yonetimi.md) | Hesap silme iadesi: yönetici kararı, kalem ve sağlayıcı sonucu | Önerildi, Tarık onayı bekliyor. Orijinal tahsilat/kalan kredi üst sınırı, immutable karar/kalem ve aktör/gerekçe denetimi; migration0006, sözleşme1.4. |
 
 Yeni ADR: sıradaki numarayla, aynı bölüm düzeniyle; sözleşme değişikliği isteyen her istek (docs/istekler/) bir ADR ile sonuçlanır.
+
+- ADR-0029: [Ücretsiz ürün ve ayrı açık kaynak yayın kararı](0029-ucretsiz-urun-ve-acik-kaynak-onerisi.md), önerildi, 27 Ekim 2026; Tarık onayı bekliyor.
