@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { FakeEArsiv } from '../../src/billing/earsiv.ts';
 import { FAKE_CFG, FakeIyzico } from '../../src/billing/fake-iyzico.ts';
 import { PgLedgerPort } from '../../src/billing/pg-store.ts';
-import { BillingService, type Buyer } from '../../src/billing/service.ts';
+import { HistoricalBillingService as BillingService, type Buyer } from './historical-subscription.ts';
 import { LedgerReservationsAdapter } from '../../src/index.ts';
 import { walletRunner, withWallet } from '../../src/pg.ts';
 import { pgBillingEnv } from './pg-env.ts';

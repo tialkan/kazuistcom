@@ -21,6 +21,13 @@ export default async function OdemePage(props: { searchParams: Promise<{ urun?: 
   const product =
     findProduct(PRICE_TABLE_V1, urun ?? 'kredi.300') ?? findProduct(PRICE_TABLE_V1, 'kredi.300');
   if (!product) return null;
+  if (product.kind !== 'paket')
+    return (
+      <div className="sayfa" style={{ maxWidth: '54rem', margin: '0 auto', padding: '2rem 1.25rem' }}>
+        <h1>{odeme.baslik}</h1>
+        <p role="status">{odeme.abonelikSatisiKapali}</p>
+      </div>
+    );
   let legal: CheckoutLegalPresentation | null = null;
   let blockedMessage = odeme.hata.girisGerekli;
   try {

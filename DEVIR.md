@@ -1,3 +1,14 @@
+## 27 Ekim 2026, ödeme, ADR-0029 yeni abonelik satış kapısı
+
+Yeni abonelik başlatma servis sınırında 409 subscription_sales_closed döner; sağlayıcıya,
+replay veya veri tabanına erişmez. Fiyat API yalnız üç kredi paketini sunar. Eski abonelik
+bağlantıları alıcı/sözleşme yüklemeden satışın kapalı olduğunu gösterir. Tarihsel fiyat
+kataloğu, callback, yenileme, fesih, iade ve rol hakları korunur. Eski abonelik kurulumları
+üretim bayrağı olmadan yalnız test fixture sınıfındadır; legacy senaryolar atlanmadı.
+Defter167, web odeme sayfası ve gerçek admin handler9 test, ledger/web tip ve lint geçti.
+Üretim derlemesi ve üç genişlik görsel/axe doğrulaması ayrıca sonuçlandırılacak.
+D9 tüm geçmiş yükleme ve hareket listesinin sayfalamasız olması açık kalır.
+
 ## Orkestra iade entegrasyonu, 27 Ekim 2026
 
 43 adayı5a532dc ile49adayıe857d6c, izole278dd78 üzerinde birleştirildi; bu yerel entegrasyon main değildir. İki store çatışması ödeme sahibi tarafından snapshot/deletionfalse ve iade akışları birlikte korunarak çözüldü. Root tip kontrolü, ledger165, web113/1skip, DB43, contracts127 ve worker47 testlerini geçirdi. Web/worker üretim derlemesi, kaynak çatışma dosyalarının lint/biçimi ve metin kontrolü geçti. Bağımsız denetçi son birleşik adayda25testi ve kendi PGlite finansal repro'sunu geçirdi; yeni kritik/yüksek/orta bulgu yok. Ödeme önceki kapsamında ayrıca154ledger/12HTTPtesti ve üretim build geçti. Dalga1kapısı5/9 kalır, ADR28 öneridir ve CI hesap engeli sürer. Canlı işlem veya üretim migration yok.

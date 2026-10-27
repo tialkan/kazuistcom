@@ -75,5 +75,6 @@
     "ogrenci.yillik": "Öğrenci Plus, yıllık",
     "akademisyen.aylik": "Akademisyen, aylık",
     "akademisyen.yillik": "Akademisyen, yıllık"
-  }
+  },
+  "abonelikSatisiKapali": "Yeni abonelik satışı kapalıdır. Kazuist özelliklerini kendi sağlayıcı hesabınızla ücretsiz kullanabilir, platform YZ kullanımı için kredi paketi alabilirsiniz."
 }

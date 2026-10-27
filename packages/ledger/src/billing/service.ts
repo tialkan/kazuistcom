@@ -174,7 +174,8 @@ export class BillingService {
   }
 
   prices(): PriceTable {
-    return this.table();
+    const table = this.table();
+    return { ...table, products: table.products.filter((product) => product.kind === 'paket') };
   }
 
   /** Define iyzico subscription product and pricing plans (9.2/2). Idempotent per planCode. */
@@ -612,77 +613,9 @@ export class BillingService {
       annualCommitmentVersion?: string;
     },
     buyer: Buyer,
-  ) {
-    const requestHash = hash({
-      p: input.planCode,
-      c: input.couponCode ?? null,
-      v: [input.preInfoConsentVersion, input.distanceContractConsentVersion],
-      w: input.withdrawalWaiver ?? null,
-      annual: input.annualCommitmentVersion ?? null,
-    });
-    const again = await this.replay(userId, idempotencyKey, requestHash);
-    if (again) return again;
-    // Coupons on plans are not defined yet (O5): refuse instead of silently ignoring.
-    if (input.couponCode) throw new BillingError(400, 'coupon_not_supported');
-    const product = findProduct(this.table(), input.planCode);
-    const planRef = (await this.s.planRefs(this.table().version)).get(input.planCode);
-    if (!product || product.kind !== 'abonelik' || !planRef) throw new BillingError(400, 'unknown_plan');
-    this.checkVersions(
-      input.preInfoConsentVersion,
-      input.distanceContractConsentVersion,
-      'abonelik_sozlesmesi',
-    );
-    if (!input.withdrawalWaiver) throw new BillingError(400, 'withdrawal_waiver_required');
-    if (
-      product.interval === 'yillik' &&
-      input.annualCommitmentVersion !== input.distanceContractConsentVersion
-    )
-      throw new BillingError(400, 'annual_commitment_version_mismatch');
-    const orderId = this.d.newId();
-    // The annual commitment is an integral section of the same published abonelik text.
-    // Subscription step: abonelik_sozlesmesi, yillik_taahhutname for annual plans (ADR-0023) and the
-    // withdrawal exception box until Tarik decides the unused first period case.
-    const items: [Consent['kind'], string, boolean][] = [
-      ['on_bilgilendirme', input.preInfoConsentVersion, true],
-      ['abonelik_sozlesmesi', input.distanceContractConsentVersion, true],
-    ];
-    if (product.interval === 'yillik')
-      items.push(['yillik_taahhutname', input.annualCommitmentVersion as string, true]);
-    items.push(['cayma_istisnasi', input.distanceContractConsentVersion, true]);
-    const order: Order = {
-      id: orderId,
-      userId,
-      productCode: product.code,
-      couponCode: null,
-      amountKurus: product.priceKurus,
-      status: 'bekliyor',
-      idempotencyKey,
-      consentVersions: {
-        preInfo: input.preInfoConsentVersion,
-        distance: input.distanceContractConsentVersion,
-        requestHash,
-        form: '',
-      },
-      checkoutToken: null,
-      paymentId: null,
-      createdAt: this.d.now(),
-      paidAt: null,
-    };
-    const documents = (await this.d.prepareLegalDocuments?.(order, buyer, this.table(order.createdAt))) ?? [];
-    const init = await this.d.iyzico.initSubscriptionCheckout({
-      conversationId: orderId,
-      pricingPlanReferenceCode: planRef,
-      callbackUrl: `${this.d.callbackBaseUrl}/api/v1/checkout/subscription-callback`,
-      customer: buyer,
-    });
-    // Consents only for a checkout that iyzico opened (D-N1).
-    const consentRows = this.consents(userId, items, { orderId, productCode: product.code });
-    order.checkoutToken = init.token;
-    order.consentVersions.form = init.checkoutFormContent;
-    if (init.paymentPageUrl) order.consentVersions.pageUrl = init.paymentPageUrl;
-    await this.saveCheckout(order, consentRows, documents);
-    await this.notify(userId, 'sozlesme', this.d.now(), orderId);
-    return { orderId, checkoutFormContent: init.checkoutFormContent, paymentPageUrl: init.paymentPageUrl };
+  ): Promise<{ orderId: string; checkoutFormContent: string; paymentPageUrl: string | null }> {
+    void [userId, idempotencyKey, input, buyer];
+    throw new BillingError(409, 'subscription_sales_closed');
   }
 
   /**

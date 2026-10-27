@@ -1,6 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { expect, it } from 'vitest';
-import { BillingService } from '../../src/billing/service.ts';
+import { HistoricalBillingService as BillingService } from './historical-subscription.ts';
 import { PgLedgerPort } from '../../src/billing/pg-store.ts';
 import { FakeIyzico, FAKE_CFG } from '../../src/billing/fake-iyzico.ts';
 import { FakeEArsiv } from '../../src/billing/earsiv.ts';

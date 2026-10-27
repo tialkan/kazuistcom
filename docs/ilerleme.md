@@ -29,3 +29,5 @@ Güncel orkestra kaydı, 27 Ekim 2026: main fef96e3; PR44/45 dört yeşil CI ile
 | 4 | sahip ajanlar, icerik | Kapalı beta | bekliyor | |
 | 5 | altyapi, seo, kalite-guvenlik | Genel yayın | bekliyor | |
 | 6 | ios, odeme, kalite-guvenlik, bagimsiz-denetci | iOS 1.0 | bekliyor | |
+
+| 1 | odeme | ADR0029 yeni abonelik satışını kapatma ve D9 maliyet azaltma | sürüyor | Yeni servis409 ve yalnız paket satış görünümü; tarihsel yenileme/fesih/iade regresyonları korunur; D9 tam yükleme açık |

@@ -4,7 +4,11 @@ import { describe, expect, it } from 'vitest';
 import { FakeEArsiv } from '../../src/billing/earsiv.ts';
 import { FAKE_CFG, FakeIyzico } from '../../src/billing/fake-iyzico.ts';
 import { HttpIyzico, IYZICO_SANDBOX_BASE_URL, webhookSignature } from '../../src/billing/iyzico.ts';
-import { BillingService, type Buyer, type ConsentVersions } from '../../src/billing/service.ts';
+import {
+  HistoricalBillingService as BillingService,
+  type Buyer,
+  type ConsentVersions,
+} from './historical-subscription.ts';
 import { MemoryBillingStore, MemoryLedgerPort } from '../../src/billing/store.ts';
 import { Ledger, LedgerReservationsAdapter, addDays, memoryRunner } from '../../src/index.ts';
 
