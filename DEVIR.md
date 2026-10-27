@@ -1,3 +1,7 @@
+## 27 Ekim 2026, ücretsiz ürün ve açık kaynak önerisi
+
+ADR-0029 ücretsiz bütün özellikler/BYOK ve yalnız isteğe bağlı platform YZ kredisi gelirini önerir. Public/Apache-2.0 ayrı açık onay bekler. Plan, UI, LICENSE ve görünürlük değişmedi. Mahremiyet kapsamı ve henüz incelenmemiş geçmiş Actions içerikleri docs/istekler/orkestra-acik-kaynak-oneri.md içinde; CI faturalandırma engeli nedeniyle birleştirme yapılmaz.
+
 ## Orkestra CI hesap engeli, 27 Ekim 2026
 
 GitHubActions run40405096283 sonHEAD50d0c15 için dört işi de2-3saniyede ve sıfır adımla failure yaptı. Jobannotation: recentaccountpaymentsfailed veya spendinglimit artırımı gerekiyor. Kullanıcıya https://github.com/settings/billing > Billing and licensing / Budgets and alerts > Actions hesabıadımı verildi; ödeme/kart/token değeri istenmedi. Kör tekrar veya kapıgevşetme yok. ADR27 onaylıdır, ancak43 sonHEAD dörtgreenolmadanbirleşmez. Yerel geliştirme/test ve O6/O9 işleri devameder.

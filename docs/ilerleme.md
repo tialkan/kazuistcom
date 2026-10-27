@@ -28,3 +28,7 @@ Güncel orkestra kaydı, 26 Ekim 2026: main f41457d; PR35/36/37/39/40 dörder ye
 | 4 | sahip ajanlar, icerik | Kapalı beta | bekliyor | |
 | 5 | altyapi, seo, kalite-guvenlik | Genel yayın | bekliyor | |
 | 6 | ios, odeme, kalite-guvenlik, bagimsiz-denetci | iOS 1.0 | bekliyor | |
+
+## 27 Ekim 2026: Ürün modeli önerisi
+
+Orkestra ADR-0029 ve açık kaynak yayın kapsamını incelemeye hazırladı. Ücretsiz özellikler/BYOK ve kredi tek gelir talimatı karar kaydında. ADR, lisans ve görünürlük onayları ayrıdır; plan/UI değişmedi, çalışma kapı bekliyor.
