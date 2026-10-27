@@ -1,5 +1,9 @@
 # Dalga 1 kapı raporu (kalite-guvenlik)
 
+## İade birleşik aday kontrolü, 27 Ekim 2026
+
+İzole278dd78, önceki5a532dc sözleşme/PDF adayıyla e857d6c yönetici iadesini birleştirir. Root tip/ledger165/web113+1skip/DB43/contracts127/worker47, web+worker üretim derlemesi ve çatışma dosyaları lint/biçim geçti. Bağımsız denetçi sonadayda25test ve kendi PGlite finansal repro'sunu geçirdi; yeni kritik/yüksek/orta bulgu yok. Kaynak checkout/PDF/notify dosyalarının önceki adaya göre farkı yok; store snapshot/silmefalse alanları korunmuş. Gerçek sağlayıcı veya bu yeni iade akışında gerçekPG süreç çökmesi çalıştırılmadı. Fatura kalıcı alert'i operasyon gerektirir, otomatik outbox teslimi değildir. ADR28 ve sonHEAD yeşilCI olmadan birleşmez. Dalga1kapısı5/9 kalır.
+
 ## Güncel aday ölçümü, 27 Ekim 2026
 
 Kalite-guvenlik izole `1a97d36` adayını ölçtü: JS 569 geçti/3 atlandı, Python 143 geçti/3 atlandı, enjeksiyon 60/60. Tip, lint, biçim, metin (826 dosya), OpenAPI ve web/worker üretim derlemesi geçti. Workspace, E2E/security bağımlılıkları ve frozen all-extras Python audit temiz; lisans taramasında yasaklı lisans yok. Zayıf copyleft inceleme etiketleri korunur. Gitleaks 167 committe sızıntı bulmadı. Scanner iki test ve dokuz negatif alt senaryoyla geçti. Yerel ayrıntı: `/tmp/kazuist-kalite-son-tarama`.

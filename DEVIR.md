@@ -1,3 +1,9 @@
+## Orkestra iade entegrasyonu, 27 Ekim 2026
+
+43 adayı5a532dc ile49adayıe857d6c, izole278dd78 üzerinde birleştirildi; bu yerel entegrasyon main değildir. İki store çatışması ödeme sahibi tarafından snapshot/deletionfalse ve iade akışları birlikte korunarak çözüldü. Root tip kontrolü, ledger165, web113/1skip, DB43, contracts127 ve worker47 testlerini geçirdi. Web/worker üretim derlemesi, kaynak çatışma dosyalarının lint/biçimi ve metin kontrolü geçti. Bağımsız denetçi son birleşik adayda25testi ve kendi PGlite finansal repro'sunu geçirdi; yeni kritik/yüksek/orta bulgu yok. Ödeme önceki kapsamında ayrıca154ledger/12HTTPtesti ve üretim build geçti. Dalga1kapısı5/9 kalır, ADR28 öneridir ve CI hesap engeli sürer. Canlı işlem veya üretim migration yok.
+
+İade tutarı gerçek tahsilat ve kalan krediyle tavanlı/tüketici lehine yuvarlanır. Unknown sonuç otomatik yeniden gönderilmez. Manuel sonuç ödeme/kalem/defterle atomiktir. Açık hold varken chargeback409 ile güvenli durur. Fatura gerekliliği kalıcı audit'e yazılır; e-Arşiv entegratörü idempotency/requery olmadan otomatik fatura kurtarma tamamlanmış sayılmaz. PGlite/fake testleri gerçek sandbox veya O9 süreç çökmesi kanıtı değildir. Ücretsiz BYOK/özellik ve kredi tekgelir önerisi ayrıPR48/ADR29'da; public yapılmadı.
+
 ## 27 Ekim 2026, ödeme, silme iadesi yönetimi (codex/silme-iade-yonetimi)
 
 ADR-0028 önerisinin beş admin ucu gerçek BillingService/PgBillingStore akışına bağlandı.
