@@ -244,3 +244,33 @@ it('concurrent decisions cannot create duplicate allocations or provider refunds
   expect(e.store.deletionRefundItems).toHaveLength(1);
   expect(e.iyz.refunds).toHaveLength(1);
 });
+it('manual success rolls payment, resolution metadata and ledger reversal back together on persistence failure', async () => {
+  const e = await env();
+  e.iyz.nextRefund = 'unknown';
+  const r = await e.svc.decideDeletionRefund(actor, 'atomic-approve', e.request.id, {
+    decision: 'onay',
+    reason: 'Kalan paket kredileri için onay.',
+  });
+  const item = r.items[0];
+  if (!item) throw new Error('missing item');
+  const original = e.store.setDeletionRefundItemState;
+  e.store.setDeletionRefundItemState = async () => {
+    throw new Error('injected persistence failure');
+  };
+  await expect(
+    e.svc.resolveDeletionRefundItem(actor, 'atomic-resolve', r.id, item.id, {
+      outcome: 'basarili',
+      reason: 'Sağlayıcı panelinde iade doğrulandı.',
+    }),
+  ).rejects.toMatchObject({ status: 502 });
+  e.store.setDeletionRefundItemState = original;
+  expect((await e.store.findRefund(item.providerRefundRef))?.status).toBe('bekliyor');
+  expect(e.store.deletionRefundItems[0]?.resolvedBy).toBeNull();
+  expect(await e.ledger.run(e.wallet, (l) => l.reserved(e.wallet))).toBe(200);
+  const resolved = await e.svc.resolveDeletionRefundItem(actor, 'atomic-resolve', r.id, item.id, {
+    outcome: 'basarili',
+    reason: 'Sağlayıcı panelinde iade doğrulandı.',
+  });
+  expect(resolved.items[0]?.resolvedBy).toBe(actor);
+  expect(resolved.status).toBe('tamamlandi');
+});

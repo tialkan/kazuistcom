@@ -229,46 +229,56 @@ export class DeletionRefundReview {
         items.reduce((n, i) => n + i.approvedAmountKurus, 0),
       );
   }
-  private async finish(actor: string, id: string, itemId: string, resolution?: DeletionRefundResolution) {
-    const invoice = await this.tx(id, async (store, ledger) => {
-      const row = await this.request(id, store);
-      const item = (await store.listDeletionRefundItems(id)).find((i) => i.id === itemId);
-      if (!item || item.state === 'basarili') return null;
-      const payment = await store.findRefund(item.providerRefundRef);
-      if (payment?.status !== 'basarili' || payment.amountKurus !== item.approvedAmountKurus)
-        throw new BillingError(409, 'refund_payment_not_verified');
-      const wallet = await store.walletOf(row.userId);
-      await ledger.run(wallet, (l) =>
-        l.refundHeld({ walletId: wallet, operationId: item.holdOperationId, now: this.d.now() }),
-      );
-      if (
-        !(await store.setDeletionRefundItemState(
-          item.id,
-          ['bekliyor'],
-          'basarili',
-          actor,
-          resolution?.reason ?? successReason,
-          resolution,
-        ))
-      )
-        throw new BillingError(409, 'refund_item_conflict');
-      const order = await store.getOrder(item.orderId);
-      if (order && (await store.refundExposure(order.id)) >= item.originalPaidKurus) {
-        order.status = 'iade_edildi';
-        await store.saveOrder(order);
-      }
-      await this.completeIfReady(store, id);
-      // Durable operational evidence survives a process dying before the external invoice call.
-      // The e-Arsiv adapter has no idempotency/requery API, so do not automatically resend invoices.
-      await store.alert('silme_iade_fatura_gerekli', {
-        requestId: id,
-        itemId: item.id,
-        userId: row.userId,
-        orderId: item.orderId,
-        amountKurus: item.approvedAmountKurus,
-      });
-      return { userId: row.userId, orderId: item.orderId, amount: item.approvedAmountKurus };
+  private async finishInTransaction(
+    store: BillingStore,
+    ledger: LedgerPort,
+    actor: string,
+    id: string,
+    itemId: string,
+    resolution?: DeletionRefundResolution,
+  ) {
+    const row = await this.request(id, store);
+    const item = (await store.listDeletionRefundItems(id)).find((i) => i.id === itemId);
+    if (!item || item.state === 'basarili') return null;
+    const payment = await store.findRefund(item.providerRefundRef);
+    if (payment?.status !== 'basarili' || payment.amountKurus !== item.approvedAmountKurus)
+      throw new BillingError(409, 'refund_payment_not_verified');
+    const wallet = await store.walletOf(row.userId);
+    await ledger.run(wallet, (l) =>
+      l.refundHeld({ walletId: wallet, operationId: item.holdOperationId, now: this.d.now() }),
+    );
+    if (
+      !(await store.setDeletionRefundItemState(
+        item.id,
+        ['bekliyor'],
+        'basarili',
+        actor,
+        resolution?.reason ?? successReason,
+        resolution,
+      ))
+    )
+      throw new BillingError(409, 'refund_item_conflict');
+    const order = await store.getOrder(item.orderId);
+    if (order && (await store.refundExposure(order.id)) >= item.originalPaidKurus) {
+      order.status = 'iade_edildi';
+      await store.saveOrder(order);
+    }
+    await this.completeIfReady(store, id);
+    // Durable operational evidence survives a process dying before the external invoice call.
+    // The e-Arsiv adapter has no idempotency/requery API, so do not automatically resend invoices.
+    await store.alert('silme_iade_fatura_gerekli', {
+      requestId: id,
+      itemId: item.id,
+      userId: row.userId,
+      orderId: item.orderId,
+      amountKurus: item.approvedAmountKurus,
     });
+    return { userId: row.userId, orderId: item.orderId, amount: item.approvedAmountKurus };
+  }
+  private async finish(actor: string, id: string, itemId: string) {
+    const invoice = await this.tx(id, (store, ledger) =>
+      this.finishInTransaction(store, ledger, actor, id, itemId),
+    );
     if (invoice) await this.d.invoice(invoice.userId, invoice.orderId, invoice.amount);
   }
   async execute(actor: string, id: string) {
@@ -335,8 +345,7 @@ export class DeletionRefundReview {
     itemId: string,
     input: { outcome: 'basarili' | 'basarisiz'; reason: string; providerResultRef?: string },
   ) {
-    let success = false;
-    await this.tx(id, async (store) => {
+    const invoice = await this.tx(id, async (store, ledger) => {
       await this.request(id, store);
       const item = (await store.listDeletionRefundItems(id)).find((i) => i.id === itemId);
       if (!item || item.state !== 'bekliyor') throw new BillingError(409, 'refund_item_not_pending');
@@ -346,8 +355,12 @@ export class DeletionRefundReview {
       if (!(await store.setRefundStatus(item.providerRefundRef, ['bekliyor'], input.outcome)))
         throw new BillingError(409, 'refund_payment_conflict');
       if (input.outcome === 'basarili') {
-        success = true;
-        return;
+        return this.finishInTransaction(store, ledger, actor, id, itemId, {
+          actorId: actor,
+          reason: input.reason,
+          at: this.d.now(),
+          providerResultRef: input.providerResultRef,
+        });
       }
       await store.setDeletionRefundItemState(item.id, ['bekliyor'], 'basarisiz', actor, input.reason, {
         actorId: actor,
@@ -356,13 +369,7 @@ export class DeletionRefundReview {
         providerResultRef: input.providerResultRef,
       });
     });
-    if (success)
-      await this.finish(actor, id, itemId, {
-        actorId: actor,
-        reason: input.reason,
-        at: this.d.now(),
-        providerResultRef: input.providerResultRef,
-      });
+    if (invoice) await this.d.invoice(invoice.userId, invoice.orderId, invoice.amount);
     return this.view(await this.request(id));
   }
 }
