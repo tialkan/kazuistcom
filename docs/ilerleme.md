@@ -16,7 +16,7 @@ Güncel orkestra kaydı, 27 Ekim 2026: main fef96e3; PR44/45 dört yeşil CI ile
 | 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7/#11 main’de; fikstür testleri var, staging ve kaynak üretim onayları açık |
 | 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü; NER karşılaştırması ve bağlama, masked_text | kapı bekliyor | PR #3/#16 main’de; 50 sentetik belge raporu geçti, 200 gerçek karar ve üretim politikası onayı açık |
 | 1 | odeme | Defter, iyzico sandbox | yeniden denetim bekliyor | Silme iadesi beş gerçek admin ucu, atomic karar/kalem/hold, unknown çözüm, D3/replay/ceil/cap ve pendinghold chargeback409; yerel ledger154+billing12 geçti. ADR28/CI/bağımsız denetim açık; fatura outbox entegratör sonrası |
-| 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8/#9/#25 main’de; kabuk, korunan adresler ve axe kapısı geçti |
+| 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | ADR29 ücretsiz/BYOK/platform kredisi fiyatlar sunumu; mevcut plan5+i18n12 test,375/768/1440 axe0/taşma0 ve üretim build yeşil. CI/son kapı bekliyor |
 | 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4/#23/#28 main’de; 7 doğrulama işareti ve künye eksikleri sürüyor, yayım onayı hazır değil |
 | 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main’de; sözleşme 1.1/migration 0003; ADR-0021/0022/0023 kullanıcı tarafından25Ekim onaylandı |
 | 1 | mimar | İkinci istek turu (7), sözleşme v1.2, migration 0004, ADR-0024 güncellemesi, ADR-0026 | kapı bekliyor | PR #31 main’de; sözleşme 1.2/migration 0004, ADR-0024/0026 kullanıcı tarafından25Ekim onaylandı; 27 migration testi geçti |

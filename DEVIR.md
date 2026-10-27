@@ -1,3 +1,16 @@
+## 27 Ekim 2026, on-yuz, ücretsiz kullanım ve fiyatlar (codex/ucretsiz-fiyatlar)
+
+ADR-0029 onayına göre fiyatlar sayfası Ücretsiz/BYOK/Platform kredisi seçeneklerine geçti.
+Tüm özelliklerin ücretsiz olduğu ve BYOK sağlayıcı faturasının kullanıcıya ait olduğu tr/en
+sözlüklerde açık. Eski aylık/yıllık öğrenci, akademisyen ve kurumsal satış satırları kaldırıldı.
+39/109/299 TL paketler ve işlem kredi tutarları değişmedi. Ledger, API veya eski haklar değiştirilmedi.
+Mobilde beş sütun yerine semantik başlık/tanım listesi; tablet/masaüstünde tablo korunur.
+
+Kanıt: plan4.2-4.4 eşliği mevcut5 test, i18n12 test, web/i18n typecheck, kapsam lint/format,
+metin ve üretim build geçti. Üretim sunucusunda375/768/1440: HTTP200, axe0, yatay taşma0.
+Üç ekran görüntüsü gözle incelendi; kanıt /tmp/kazuist-ucretsiz-fiyatlar-2026-10-27/.
+Yeni mirroring test eklenmedi. GitHub CI hesap engeli açık; birleşmedi. Public/lisans değişmedi.
+
 ## 27 Ekim 2026, ücretsiz ürün ve açık kaynak önerisi
 
 ADR-0029 ücretsiz bütün özellikler/BYOK ve yalnız isteğe bağlı platform YZ kredisi gelirini önerir. Public/Apache-2.0 ayrı açık onay bekler. Plan, UI, LICENSE ve görünürlük değişmedi. Mahremiyet kapsamı ve henüz incelenmemiş geçmiş Actions içerikleri docs/istekler/orkestra-acik-kaynak-oneri.md içinde; CI faturalandırma engeli nedeniyle birleştirme yapılmaz.
