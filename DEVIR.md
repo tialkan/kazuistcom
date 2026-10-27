@@ -1,3 +1,13 @@
+## 27 Ekim 2026, ödeme, D9 rezervasyon yükleme maliyeti
+
+loadWallet rezervasyon tahsisleri için geçmişi her rezervasyonda yeniden taramak yerine tek indeks
+kurar: O(E*R) hesap O(E+R) olur. 1800 kayıt ve 101 rezervasyonda tarihsel filtreyle aynı tahsis,
+sıra, çoğul kayıt ve boş tahsis sonucu doğrulandı; PGlite geri yükleme testleriyle birlikte7test geçti.
+Tam geçmiş hâlâ yüklenir. D9 kapanmadı: checkpoint/veri modeli ile wallet/ledger sayfalaması ayrı iştir.
+İlk satış kapısı commitinin üretim web/worker derlemesi, lint, tip ve metin denetimleri geçti.
+Yerel üretim sayfasında 375/768/1440 px görüntüleri incelendi; üç axe ölçümünde ihlal0, taşma0.
+Kanıt: /tmp/kazuist-subscription-sales-ui/axe.json ve odeme-<genişlik>.png.
+
 ## 27 Ekim 2026, ödeme, ADR-0029 yeni abonelik satış kapısı
 
 Yeni abonelik başlatma servis sınırında 409 subscription_sales_closed döner; sağlayıcıya,
