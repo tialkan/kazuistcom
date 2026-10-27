@@ -1,5 +1,15 @@
 # Dalga 1 kapı raporu (kalite-guvenlik)
 
+## Güncel aday ölçümü, 27 Ekim 2026
+
+Kalite-guvenlik izole `1a97d36` adayını ölçtü: JS 569 geçti/3 atlandı, Python 143 geçti/3 atlandı, enjeksiyon 60/60. Tip, lint, biçim, metin (826 dosya), OpenAPI ve web/worker üretim derlemesi geçti. Workspace, E2E/security bağımlılıkları ve frozen all-extras Python audit temiz; lisans taramasında yasaklı lisans yok. Zayıf copyleft inceleme etiketleri korunur. Gitleaks 167 committe sızıntı bulmadı. Scanner iki test ve dokuz negatif alt senaryoyla geçti. Yerel ayrıntı: `/tmp/kazuist-kalite-son-tarama`.
+
+Bağımsız denetçi aynı adayda 76 hedefli testi ve ayrı PostgreSQL18 child-process SIGKILL/kilit kurtarma testini geçirdi; yeni kritik/yüksek/orta bulgu bildirmedi. O6 gerçek kaynak metni/sürümü ve silinen hesapta frozen alıcı düzeltmeleri adayda kapalıdır; gerçek SMTP kabulü ölçülmedi. D3 gerçek süreç çökmesi kanıtı artık vardır; sağlayıcı seviyesinde tam bir kez finansal işlem garantisi çıkarılmaz. PR44/45 main fef96e3'e dörder yeşil CI ile alındı; esbuild bulgusu kapalı. ADR0027 kullanıcı tarafından onaylandı; ADR0028 öneridir, O9 yönetici iade işi sürer.
+
+Dalga1 **5/9, açık**: staging A/AAAA boş; gerçek uygulama sandbox akışı, beş bağlayıcının staging ölçümü ve hukuki hazırlık eksik. Hukuki yedi doğrulama işareti sürer. Final adayda E2E/axe/Lighthouse tekrarlanmadı; eski 108 E2E sonucu bu adaya mal edilmez. GitHub run40405096283 dört işi de adımlar başlamadan hesap ödeme/harcama kısıtıyla durdurdu; son HEAD için dört yeşil CI olmadan birleştirme yok. Orkestranın paralel yerel test denemesi Vitest cache ENOTEMPTY hatasıyla durdu; bu başarı diye sayılmadı, yukarıdaki sayılar kalite ajanının ayrı worktree ölçümüdür.
+
+Önceki bölümler tarihsel kanıttır.
+
 ## Hazırlık yeniden ölçümü, 26 Ekim 2026
 
 Kalite-guvenlik ajanı izole `597d401` üzerinde ölçtü; bağımsız denetçi ayrıca main `ef4479a`, şema `09fb90d`, PR39 `3a241fe` ve rapor düzeltmesi `75e94da` adaylarını inceledi. Dalga 1 kapısı **5/9, açık**. Bu bir sonraki dalgaya veya canlı ödemeye kabul değildir. Aşağıdaki 25 ve 22 Ekim bölümleri tarihsel kanıttır.
