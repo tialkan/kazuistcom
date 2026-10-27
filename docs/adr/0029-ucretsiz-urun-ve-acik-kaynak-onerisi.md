@@ -1,7 +1,7 @@
 # ADR-0029: Ücretsiz ürün ve ayrı açık kaynak yayın kararı
 
 - Tarih: 2026-10-27
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi, 27 Ekim 2026 kullanıcı onayı
 - İlgili kararlar: K-09, K-19; ADR-0009, ADR-0019
 
 ## Bağlam
@@ -28,3 +28,7 @@ Public görünürlük ve Apache-2.0 ayrı, açık kullanıcı onayı gerektirir.
 ## Uygulama ve kabul
 
 ADR onayından sonra orkestra plan 4, K-09 ve ilgili pazarlama/i18n metinlerini uyumlu hale getirir; ödeme ve hukuki metin değişiklikleri kendi onay kapılarından geçer. Görünürlük önerisi için docs/istekler/orkestra-acik-kaynak-oneri.md uygulanır. Üretim ödeme, mevcut hakların azaltılması veya geçmiş temizliği bu öneriyle yetkilendirilmez.
+
+## Onay kaydı
+
+Kullanıcı 27 Ekim 2026 mesajında ADR-0029 kararını açıkça onayladı. Public yayına hazırlık yetkilendirildi; görünürlük değişikliği, lisansın yürürlüğe konması veya yıkıcı geçmiş temizliği bu onaydan çıkarılmaz.

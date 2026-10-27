@@ -1,7 +1,7 @@
 # ADR-0028: Hesap silme iade talebinin yönetici kararı ve kalem bazında yürütülmesi
 
 - Tarih: 2026-10-27
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi, 27 Ekim 2026 kullanıcı onayı
 - Dayanak: plan 4.5/12, 9.4, 17.3/4; ödeme isteği 2246501 ve sonraki işlem sırası mutabakatı
 - Önkoşul: sözleşme 1.3 / migration0005. ADR-0027 onayı bu öneriyi kapsamaz.
 
@@ -89,4 +89,8 @@ Dolu 1.3 veri tabanından yükseltme, NULL eski karar alanları, gerçek kaynak/
 append-only aktör/gerekçe testleri. Sağlayıcı/defter/route entegrasyonunun bağımsız fake/PGlite
 senaryoları ödeme ajanındadır. Bu PR tek başına o uçların uygulanmış olduğunu iddia etmez.
 
-Canlı veya sandbox para iadesi ve canlı migration çalıştırılmadı. ADR-0028 ayrıca Tarık onayı bekler.
+Canlı veya sandbox para iadesi ve canlı migration çalıştırılmadı. ADR-0028, 27 Ekim 2026 kullanıcı mesajıyla onaylandı; canlı işlem veya üretim migration izni değildir.
+
+## Onay kaydı
+
+Kullanıcı 27 Ekim 2026 mesajında ADR-0028 kararını açıkça onayladı. Public yayına hazırlık yetkilendirildi; görünürlük değişikliği, lisansın yürürlüğe konması veya yıkıcı geçmiş temizliği bu onaydan çıkarılmaz.

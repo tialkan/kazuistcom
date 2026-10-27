@@ -1,3 +1,7 @@
+## 27 Ekim 2026: ADR-0028 ve ADR-0029 kullanıcı onayı
+
+Kullanıcı iki kararı açıkça onayladı. Hesap silme iadesi yönetimi ve tüm özellikler/BYOK ücretsiz, tek gelir isteğe bağlı platform YZ kredisi modeli kabul edildi. Yeni abonelik satış sunumu kapatılır; mevcut haklar korunur. Public yayın temizliğinin hazırlanması yetkilidir. K-19, mahremiyet incelemesi ve ayrı somut görünürlük/lisans onayına kadar özel depo olarak korunur; geçmiş silme veya canlı migration yetkisi çıkarılmaz.
+
 # Tarık kararları
 
 Plan dışı ya da plan içinde Tarık onayı bekleyen kararların tarihli kaydı. ADR gerektirenler ayrıca ADR'ye işlenir.
