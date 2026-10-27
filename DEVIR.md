@@ -1,3 +1,22 @@
+## 27 Ekim 2026, mimar, silme iade sözleşmesi 1.4 (codex/mimar-silme-iade)
+
+ADR-0028 ÖNERİ, Tarık onayı bekliyor. ADR-0027 dosyası değiştirilmedi; onay kaydı root43 dalındadır.
+Migration0006 mevcut FK'leri korur; karar reason/key/hash ve orijinal paket başına immutable allocation
+kalemi ekler. Tam tüketici lehine kuruş üst sınırı, gerçek tahsilat/kalan kredi/sahiplik ve diğer iade
+riski DB'de doğrulanır. Karar ve kalem değişimleri aktör/gerekçeyle append-only audit'e girer.
+Belirsiz kalem tamamlanmaz; başarılı payment kanıtı olmadan basarili olamaz. Tamamlanan talebin tutarı
+başarılı kalem toplamıyla aynı olmalıdır. Audit TRUNCATE da engellenir.
+
+Sözleşme iki GET/üç POST tanımlar; admin/passkey/TOTP, strict body, Idempotency-Key ve aktörün
+sunucudan gelmesi şarttır. Route/partial ledger/sağlayıcı entegrasyonu ödeme ajanının ayrı işidir;
+bu PR o uygulamayı tamamlandı saymaz. Ayrıntı docs/istekler/mimar-silme-iade-v1-4.md.
+
+Kanıt: tetikleyicisiz karar geçişi kabulü kırmızıydı; yeni guard'larla dolu1.3 yükseltme8/8,
+DB43/43, contracts127/127; tam Node636 geçti/3 ortam testi atlandı. Build/typecheck/lint,
+OpenAPI lint ve check:text geçti. Audit TRUNCATE eklemesinden sonra DB43 yeniden geçti.
+GitHub CI hesap/billing limiti orkestrada açık kapıdır; dört iş başarılı diye yazılmadı ve kör
+workflow yeniden başlatılmadı. Canlı migration, sandbox veya canlı para iadesi yapılmadı.
+
 ## 25 Ekim 2026, güvenlik bağımlılık düzeltmesi (codex/guvenlik-bagimlilik)
 
 O-09 tarama hataları artık kapıyı kapatır; CLI ikizleriyle kırmızı/yeşil regresyon kanıtı var. pypdf6.21.2,
@@ -42,6 +61,14 @@ Build, tüm typecheck, lint, OpenAPI lint ve check:text geçti. Gerçek Docker/P
 PR CI'da; dört iş yeşil olmadan birleşmez. Canlı migration ve hukuki yayın yapılmadı.
 ADR0027 onayı önceki beş ADR onayından ayrıdır.
 
+=======
+
+## Orkestra, ADR onayları ve teknik açıklar, 26 Ekim 2026
+
+Kullanıcı ADR-0021/0022/0023/0024/0026 kararlarını ve runbook'taki iyzico aktivasyon taslağının gönderimini açıkça onayladı. ADR durumları ve plan 4.5 eşit bölüşüm/gönüllü bildirim atıfları güncellendi. Hukuki yayım onayı verilmedi; künye kullanıcı tarafından doldurulacak. İyzico taslağı kayıtlı hesaptan 26 Ekim 00:32 gönderildi ve Gönderilenler doğrulandı; yanıt bekleniyor. GLiNER yeni export20belge span eşliği1.0; CI37 tam tarama0. Kanıt kalite-bagimlilik isteğinde.
+
+PR #35 (8ee22e9) ve #37 (ef4479a), dörder tamamlanmış yeşil CI işiyle main'e alındı. PR #37 beş ADR kabulünü ve plan düzeltmesini de içerir. Teknik işler ayrı worktree'lerde sürüyor: mimarda kalıcı belge/fiyat sürümleme migration 0005 ve ADR-0027 önerisi, güvenlikte hata yutan tarama ve Python bağımlılık düzeltmeleri, kimlikte PDF/hesap silme entegrasyonu. Yeni ADR-0027 onaylanmış sayılmaz; üretim migration'ı uygulanmaz. Dalga 1 kapısı son ölçümde 5/9, sonraki dalga başlamadı. Biten PR'lar yalnız dört CI işi yeşil tamamlanınca birleştirilecek.
+>>>>>>> cbdd81a
 ## Dalga 1, ödeme, süresi dolmuş rezervasyon property regresyonu, 2026-10-26
 
 Seed `944090688`: 2 promosyon kredisi, iki ayrı 1 kredilik rezervasyon, 5 dakika ilerleme,

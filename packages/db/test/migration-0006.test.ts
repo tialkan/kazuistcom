@@ -221,6 +221,7 @@ describe('migration 0006 on a populated v1.3 database', () => {
     await expect(pg.query("update audit_log set reason='changed' where subject_id=$1", [id])).rejects.toThrow(
       /append only/,
     );
+    await expect(pg.query('truncate audit_log')).rejects.toThrow(/append only/);
     await expect(pg.query('delete from refund_request_items where id=$1', [id])).rejects.toThrow(/immutable/);
   });
   it('does not complete an aggregate request with one successful and one unknown item', async () => {
