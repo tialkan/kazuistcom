@@ -15,7 +15,7 @@ idempotency/requery API'si olmadığı için crash sonrası otomatik fatura rese
 entegratör seçimi ve fatura outbox/kurtarma ayrı açık iştir. Finansal iade tamamlandı ifadesi
 faturanın dış sağlayıcıda kesildiği iddiası değildir.
 
-Yerel ledger153, billing route12, typecheck/lint/metin ve üretim build doğrulandı.
+Yerel ledger154, billing route12, typecheck/lint/metin ve üretim build doğrulandı.
 GitHub CI billing limiti açık; yeşil sayılmadı, birleşmedi. Canlı iade/migration/ağ işlemi yok.
 
 ## 27 Ekim 2026, mimar, silme iade sözleşmesi 1.4 (codex/mimar-silme-iade)

@@ -1,6 +1,6 @@
 ## 27 Ekim uygulama kanıtı
 
-Beş sözleşme ucu gerçek servis/store'a bağlandı. Ledger153 ve HTTP billing12 testleri; özgün
+Beş sözleşme ucu gerçek servis/store'a bağlandı. Ledger154 ve HTTP billing12 testleri; özgün
 ödeme tavanı, açık rezervasyon, eşzamanlı karar, aynı anahtar/farklı gövde, kesin başarısızlıkta açık
 execute, belirsizlikte yeniden göndermeme, gerçek PGlite karar/hold/başarı ve manuel çözüm sınandı.
 Öneri ADR28 onaylı kabul edilmedi. Canlı migration veya para iadesi yapılmadı.
