@@ -15,7 +15,7 @@ Güncel orkestra kaydı, 26 Ekim 2026: main f41457d; PR35/36/37/39/40 dörder ye
 | 1 | yz-gecidi | Sağlayıcılar, BYOK, maskeleme, bütçe | kapı bekliyor | PR #1/#18/#21/#26 main’de; taklit ve 25 Ekim gerçek OpenRouter duman testi kayıtlı, enjeksiyon 60/60 |
 | 1 | veri-toplama | Mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları | kapı bekliyor | PR #7/#11 main’de; fikstür testleri var, staging ve kaynak üretim onayları açık |
 | 1 | anonimlestirme | Anonimleştirme hattı, 50 belge ölçümü; NER karşılaştırması ve bağlama, masked_text | kapı bekliyor | PR #3/#16 main’de; 50 sentetik belge raporu geçti, 200 gerçek karar ve üretim politikası onayı açık |
-| 1 | odeme | Defter, iyzico sandbox | yeniden denetim bekliyor | D3 kalıcı gövde eşlemesi/yarış/crash kurtarma, D8 gerçek kupon/chargeback/fiyat uçları; odaklı 14+7+2 test geçti. D4 compound upsert/geçmiş UUID/planRef uyumu hazır, 0005 mimarda |
+| 1 | odeme | Defter, iyzico sandbox | yeniden denetim bekliyor | Silme iadesi beş gerçek admin ucu, atomic karar/kalem/hold, unknown çözüm, D3/replay/ceil/cap ve pendinghold chargeback409; yerel ledger153+billing12 geçti. ADR28/CI/bağımsız denetim açık; fatura outbox entegratör sonrası |
 | 1 | on-yuz | Tasarım sistemi, kabuk, korunan sayfalar | kapı bekliyor | PR #8/#9/#25 main’de; kabuk, korunan adresler ve axe kapısı geçti |
 | 1 | hukuk-uyum | Hukuki metin taslakları | kapı bekliyor | PR #4/#23/#28 main’de; 7 doğrulama işareti ve künye eksikleri sürüyor, yayım onayı hazır değil |
 | 1 | mimar | Dalga 1 sözleşme istekleri (15), sözleşme v1.1, migration 0003, ADR-0021..0023 | kapı bekliyor | PR #10 main’de; sözleşme 1.1/migration 0003; ADR-0021/0022/0023 kullanıcı tarafından25Ekim onaylandı |

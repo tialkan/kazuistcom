@@ -1,3 +1,4 @@
+import { DeletionRefundReview } from './deletion-review.ts';
 /**
  * Billing service (plan 9.2, 4.5): checkout, server side re-query, webhooks, subscriptions, dunning,
  * cancellation, refunds, chargeback, monthly grants, reconciliation and notices.
@@ -112,6 +113,49 @@ export interface ReconcileResult {
 
 export class BillingService {
   constructor(private readonly d: BillingDeps) {}
+
+  private deletionReview() {
+    return new DeletionRefundReview({
+      store: this.s,
+      ledger: this.d.ledger,
+      now: this.d.now,
+      newId: this.d.newId,
+      providerRefund: (args) => this.providerRefund(args),
+      invoice: (userId, orderId, amount) => this.invoice(userId, orderId, 'iade', amount, 'İade'),
+    });
+  }
+  listDeletionRefundRequests(status: 'bekliyor' | 'onaylandi' | 'reddedildi' | 'tamamlandi', offset = 0) {
+    return this.deletionReview().list(status, offset);
+  }
+  getDeletionRefundRequest(id: string) {
+    return this.deletionReview().detail(id);
+  }
+  decideDeletionRefund(
+    actor: string,
+    key: string,
+    id: string,
+    input: { decision: 'onay' | 'ret'; reason: string },
+  ) {
+    return this.operation(actor, 'deletion-refund.decision', key, { id, ...input }, () =>
+      this.deletionReview().decide(actor, key, id, input),
+    );
+  }
+  executeDeletionRefund(actor: string, key: string, id: string) {
+    return this.operation(actor, 'deletion-refund.execute', key, { id }, () =>
+      this.deletionReview().execute(actor, id),
+    );
+  }
+  resolveDeletionRefundItem(
+    actor: string,
+    key: string,
+    id: string,
+    itemId: string,
+    input: { outcome: 'basarili' | 'basarisiz'; reason: string; providerResultRef?: string },
+  ) {
+    return this.operation(actor, 'deletion-refund.resolve', key, { id, itemId, ...input }, () =>
+      this.deletionReview().resolve(actor, id, itemId, input),
+    );
+  }
 
   private get s(): BillingStore {
     return this.d.store;
@@ -1293,14 +1337,16 @@ export class BillingService {
       resolveBy: Date;
     }[]
   > {
-    return (await this.s.listRefunds('bekliyor')).map((p) => ({
-      refundRef: p.refundRef as string,
-      paymentId: p.providerPaymentId,
-      amountKurus: p.amountKurus,
-      orderId: p.orderId,
-      since: p.at,
-      resolveBy: addBusinessDays(p.at, 3),
-    }));
+    return (await this.s.listRefunds('bekliyor'))
+      .filter((p) => !p.raw?.refundRequestItemId)
+      .map((p) => ({
+        refundRef: p.refundRef as string,
+        paymentId: p.providerPaymentId,
+        amountKurus: p.amountKurus,
+        orderId: p.orderId,
+        since: p.at,
+        resolveBy: addBusinessDays(p.at, 3),
+      }));
   }
 
   /**
@@ -1314,7 +1360,8 @@ export class BillingService {
     actorId?: string,
   ): Promise<void> {
     const row = await this.s.findRefund(refundRef);
-    if (!row || row.status !== 'bekliyor') throw new BillingError(409, 'not_pending');
+    if (!row || row.status !== 'bekliyor' || row.raw?.refundRequestItemId)
+      throw new BillingError(409, 'not_pending');
     if (!(await this.s.setRefundStatus(refundRef, ['bekliyor'], outcome)))
       throw new BillingError(409, 'not_pending');
     const holdOp = typeof row.raw?.holdOp === 'string' ? row.raw.holdOp : null;
@@ -1358,6 +1405,13 @@ export class BillingService {
     if (!order) throw new BillingError(404, 'order_not_found');
     const walletId = await this.s.walletOf(order.userId);
     const balance = await this.d.ledger.run(walletId, (l) => {
+      const wallet = l.wallet(walletId);
+      const lot = wallet.lots.find((item) => item.originRef === `order:${order.id}`);
+      if (
+        lot &&
+        wallet.reservations.some((r) => r.status === 'acik' && r.allocations.some((a) => a.lotId === lot.id))
+      )
+        throw new BillingError(409, 'chargeback_has_open_reservations');
       l.clawback({
         key: `ters_ibraz:order:${order.id}`,
         walletId,

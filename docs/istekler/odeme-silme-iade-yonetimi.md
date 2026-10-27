@@ -1,3 +1,19 @@
+## 27 Ekim uygulama kanıtı
+
+Beş sözleşme ucu gerçek servis/store'a bağlandı. Ledger153 ve HTTP billing12 testleri; özgün
+ödeme tavanı, açık rezervasyon, eşzamanlı karar, aynı anahtar/farklı gövde, kesin başarısızlıkta açık
+execute, belirsizlikte yeniden göndermeme, gerçek PGlite karar/hold/başarı ve manuel çözüm sınandı.
+Öneri ADR28 onaylı kabul edilmedi. Canlı migration veya para iadesi yapılmadı.
+
+Açık rezervasyon varken chargeback409: iade tutmasının harcanmış kredi gibi tekrar borca alınmasını
+önler. İşletim sırası sağlayıcı sonucunu elle doğrulayıp belirsizliği çözmek, ardından chargeback
+kaydıdır. Provider panelde hem iade hem chargeback varsa mükerrer nakit hareketi otomatik çözülmez.
+
+Fatura gerekliliği ledger transaction'ında `billing.silme_iade_fatura_gerekli` audit uyarısıdır.
+Mevcut e-Arşiv adaptöründe idempotency/requery yok; process crash sonrasında otomatik fatura retry
+uygulanmadı. Entegratör + kalıcı fatura outbox ve sağlayıcı kimliğiyle kurtarma açık teknik iştir;
+iade akışının başarılı olması dış fatura teslimi kanıtı değildir.
+
 # O9: hesap silme iade taleplerinin yönetimi
 
 Ödeme, 2026-10-26. Plan 4.5/12 ve 9.4. Bu bir sözleşme/schema isteğidir;

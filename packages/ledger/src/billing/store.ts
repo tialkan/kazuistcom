@@ -45,7 +45,47 @@ export interface RefundRequest {
   reason: string | null;
   amountKurus: number | null;
   status: 'bekliyor' | 'onaylandi' | 'reddedildi' | 'tamamlandi';
+  createdAt?: Date;
+  decidedAt?: Date | null;
+  decidedBy?: string | null;
+  decisionReason?: string | null;
+  decisionKey?: string | null;
+  decisionHash?: string | null;
 }
+export interface DeletionRefundItem {
+  id: string;
+  requestId: string;
+  orderId: string;
+  originalPaidKurus: number;
+  originalCredits: number;
+  unusedCredits: number;
+  approvedAmountKurus: number;
+  holdOperationId: string;
+  providerRefundRef: string;
+  state: PaymentStatus;
+  providerResultRef: string | null;
+  resolvedBy: string | null;
+  resolvedAt: Date | null;
+  resolutionReason: string | null;
+  updatedBy: string;
+  stateReason: string;
+}
+export interface DeletionRefundDecision {
+  status: 'onaylandi' | 'reddedildi';
+  amountKurus: number;
+  actorId: string;
+  reason: string;
+  key: string;
+  hash: string;
+  at: Date;
+}
+export interface DeletionRefundResolution {
+  actorId: string;
+  reason: string;
+  at: Date;
+  providerResultRef?: string;
+}
+
 export type SubStatus = 'aktif' | 'odeme_bekliyor' | 'iptal' | 'sona_erdi';
 export interface Subscription {
   id: string;
@@ -122,6 +162,22 @@ export function planRole(code: Plan): 'ucretsiz' | 'plus' | 'akademisyen' {
 export type OperationClaim =
   { state: 'claimed' } | { state: 'conflict' } | { state: 'pending' } | { state: 'done'; result: unknown };
 export interface BillingStore {
+  getDeletionRefundRequest(id: string): Promise<RefundRequest | null>;
+  listDeletionRefundRequests(status: RefundRequest['status'], offset: number): Promise<RefundRequest[]>;
+  listUserOrders(userId: string): Promise<Order[]>;
+  refundExposure(orderId: string): Promise<number>;
+  listDeletionRefundItems(requestId: string): Promise<DeletionRefundItem[]>;
+  insertDeletionRefundItems(items: DeletionRefundItem[]): Promise<void>;
+  decideDeletionRefundRequest(id: string, decision: DeletionRefundDecision): Promise<boolean>;
+  completeDeletionRefundRequest(id: string, amountKurus: number): Promise<void>;
+  setDeletionRefundItemState(
+    id: string,
+    from: PaymentStatus[],
+    to: PaymentStatus,
+    actor: string,
+    reason: string,
+    resolution?: DeletionRefundResolution,
+  ): Promise<boolean>;
   withRefundRequestTransaction<T>(
     requestId: string,
     ledger: LedgerPort,
@@ -199,6 +255,99 @@ export interface BillingStore {
 }
 
 export class MemoryBillingStore implements BillingStore {
+  deletionRefundItems: DeletionRefundItem[] = [];
+  async getDeletionRefundRequest(id: string) {
+    const r = this.refundRequests.find(
+      (r) =>
+        r.id === id &&
+        this.deletedUsers.has(r.userId) &&
+        !r.orderId &&
+        !r.subscriptionId &&
+        r.reason?.startsWith('hesap_silme:'),
+    );
+    return r ? structuredClone(r) : null;
+  }
+  async listDeletionRefundRequests(status: RefundRequest['status'], offset: number) {
+    return this.refundRequests
+      .filter(
+        (r) =>
+          r.status === status &&
+          this.deletedUsers.has(r.userId) &&
+          !r.orderId &&
+          !r.subscriptionId &&
+          r.reason?.startsWith('hesap_silme:'),
+      )
+      .slice(offset, offset + 51)
+      .map((r) => structuredClone(r));
+  }
+  async listUserOrders(userId: string) {
+    return [...this.orders.values()].filter((o) => o.userId === userId);
+  }
+  async refundExposure(orderId: string) {
+    const payments = this.payments.filter(
+      (p) => p.orderId === orderId && p.kind === 'iade' && p.status !== 'basarisiz',
+    );
+    return (
+      payments.reduce((n, p) => n + p.amountKurus, 0) +
+      this.deletionRefundItems
+        .filter((i) => i.orderId === orderId && !payments.some((p) => p.refundRef === i.providerRefundRef))
+        .reduce((n, i) => n + i.approvedAmountKurus, 0)
+    );
+  }
+  async listDeletionRefundItems(requestId: string) {
+    return structuredClone(this.deletionRefundItems.filter((i) => i.requestId === requestId));
+  }
+  async insertDeletionRefundItems(items: DeletionRefundItem[]) {
+    this.deletionRefundItems.push(...structuredClone(items));
+  }
+  async decideDeletionRefundRequest(id: string, d: DeletionRefundDecision) {
+    const r = this.refundRequests.find((r) => r.id === id && r.status === 'bekliyor' && !r.decisionHash);
+    if (!r) return false;
+    Object.assign(r, {
+      status: d.status,
+      amountKurus: d.amountKurus,
+      decidedBy: d.actorId,
+      decidedAt: d.at,
+      decisionReason: d.reason,
+      decisionKey: d.key,
+      decisionHash: d.hash,
+    });
+    return true;
+  }
+  async completeDeletionRefundRequest(id: string, amountKurus: number) {
+    const r = this.refundRequests.find((r) => r.id === id);
+    if (r?.status === 'onaylandi') {
+      r.status = 'tamamlandi';
+      r.amountKurus = amountKurus;
+    }
+  }
+  async setDeletionRefundItemState(
+    id: string,
+    from: PaymentStatus[],
+    to: PaymentStatus,
+    actor: string,
+    reason: string,
+    resolution?: DeletionRefundResolution,
+  ) {
+    const i = this.deletionRefundItems.find((i) => i.id === id && from.includes(i.state));
+    if (!i) return false;
+    if (i.state === 'basarisiz' && to === 'bekliyor')
+      Object.assign(i, {
+        providerResultRef: null,
+        resolvedBy: null,
+        resolvedAt: null,
+        resolutionReason: null,
+      });
+    Object.assign(i, { state: to, updatedBy: actor, stateReason: reason });
+    if (resolution)
+      Object.assign(i, {
+        providerResultRef: resolution.providerResultRef ?? null,
+        resolvedBy: resolution.actorId,
+        resolvedAt: resolution.at,
+        resolutionReason: resolution.reason,
+      });
+    return true;
+  }
   private activeRefundRequests = new Set<string>();
   async withRefundRequestTransaction<T>(
     requestId: string,
@@ -213,6 +362,9 @@ export class MemoryBillingStore implements BillingStore {
         const boundStore = new MemoryBillingStore();
         Object.assign(boundStore, this);
         boundStore.refundRequests = structuredClone(this.refundRequests);
+        boundStore.deletionRefundItems = structuredClone(this.deletionRefundItems);
+        boundStore.payments = structuredClone(this.payments);
+        boundStore.orders = structuredClone(this.orders);
         boundStore.alerts = [];
         const result = await fn(boundStore, boundLedger);
         const row = boundStore.refundRequests.find((r) => r.id === requestId);
@@ -220,6 +372,19 @@ export class MemoryBillingStore implements BillingStore {
           const index = this.refundRequests.findIndex((r) => r.id === requestId);
           if (index >= 0) this.refundRequests[index] = row;
         }
+        this.deletionRefundItems = this.deletionRefundItems
+          .filter((i) => i.requestId !== requestId)
+          .concat(boundStore.deletionRefundItems.filter((i) => i.requestId === requestId));
+        const scopedOrders = new Set(
+          boundStore.deletionRefundItems.filter((i) => i.requestId === requestId).map((i) => i.orderId),
+        );
+        for (const orderId of scopedOrders) {
+          const order = boundStore.orders.get(orderId);
+          if (order) this.orders.set(orderId, order);
+        }
+        this.payments = this.payments
+          .filter((p) => !p.orderId || !scopedOrders.has(p.orderId))
+          .concat(boundStore.payments.filter((p) => p.orderId && scopedOrders.has(p.orderId)));
         this.alerts.push(...boundStore.alerts);
         return result;
       });
@@ -425,7 +590,8 @@ export class MemoryBillingStore implements BillingStore {
     return true;
   }
   async createRefundRequest(r: RefundRequest) {
-    if (!this.refundRequests.some((x) => x.id === r.id)) this.refundRequests.push({ ...r });
+    if (!this.refundRequests.some((x) => x.id === r.id))
+      this.refundRequests.push({ ...r, createdAt: r.createdAt ?? new Date() });
   }
   async updateRefundRequest(id: string, status: RefundRequest['status'], amountKurus?: number | null) {
     const r = this.refundRequests.find((x) => x.id === id);

@@ -1,3 +1,23 @@
+## 27 Ekim 2026, ödeme, silme iadesi yönetimi (codex/silme-iade-yonetimi)
+
+ADR-0028 önerisinin beş admin ucu gerçek BillingService/PgBillingStore akışına bağlandı.
+Karar, özgün tahsilat/kalan kredi kalemleri ve kısmi tutmalar tek transaction'da; sağlayıcı çağrısı
+transaction dışında ve CAS ile tekil. Belirsiz sonuç otomatik yeniden gönderilmez; ayrı admin
+kalem çözümü aktör/gerekçe/sağlayıcı referansıyla kaydedilir. Eski belirsizlik kuyruğu bu kalemleri dışlar.
+İşlem anahtarı aktör/operasyon/hedef/gövdeye kalıcı bağlanır. Passkey/TOTP, strict body, rate,
+private no-store ve audit aktörü gerçek guard/PGlite testinde sınandı.
+
+Tutar BigInt ile tüketici lehine kuruşa yuvarlanır ve geçmiş iade maruziyetiyle sınırlanır.
+Açık rezervasyon varken chargeback409 döner; iade tutmasının yanlış borç sayılması önlenir.
+Önce sağlayıcı belirsizliği çözülür; başarılı kısmi iade sonrası chargeback yalnız harcanan payı borçlandırır.
+Fatura gerekliliği ledger tamamlanırken kalıcı audit uyarısına yazılır. Mevcut e-Arşiv adaptöründe
+idempotency/requery API'si olmadığı için crash sonrası otomatik fatura resend eklenmedi;
+entegratör seçimi ve fatura outbox/kurtarma ayrı açık iştir. Finansal iade tamamlandı ifadesi
+faturanın dış sağlayıcıda kesildiği iddiası değildir.
+
+Yerel ledger153, billing route12, typecheck/lint/metin ve üretim build doğrulandı.
+GitHub CI billing limiti açık; yeşil sayılmadı, birleşmedi. Canlı iade/migration/ağ işlemi yok.
+
 ## 27 Ekim 2026, mimar, silme iade sözleşmesi 1.4 (codex/mimar-silme-iade)
 
 ADR-0028 ÖNERİ, Tarık onayı bekliyor. ADR-0027 dosyası değiştirilmedi; onay kaydı root43 dalındadır.
