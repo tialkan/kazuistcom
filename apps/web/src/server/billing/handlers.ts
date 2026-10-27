@@ -4,6 +4,10 @@
  * Error body (apiError).
  */
 import {
+  AdminRefundRequestDecisionInput,
+  AdminRefundRequestExecuteInput,
+  AdminRefundRequestItemResolveInput,
+  RefundReviewStatus,
   CancelSubscriptionInput,
   CouponRedeemInput,
   AdminChargebackInput,
@@ -282,3 +286,73 @@ export const adminPriceChangePost = withAuth(
     });
   },
 );
+
+const reviewRate = { name: 'admin-refund-review', limit: 20, windowSec: 60 };
+const privateReview = (value: unknown, status = 200) =>
+  json(value, status, { 'Cache-Control': 'private, no-store' });
+export const adminRefundRequestsGet = withAuth({ admin: true, rate: reviewRate }, async (req) => {
+  const params = new URL(req.url).searchParams;
+  if ([...params.keys()].some((k) => !['status', 'cursor'].includes(k))) return apiError('bad_request');
+  const status = RefundReviewStatus.safeParse(params.get('status') ?? 'bekliyor');
+  const cursor = params.get('cursor') ?? '0';
+  if (!status.success || !/^(0|[1-9][0-9]{0,8})$/.test(cursor)) return apiError('bad_request');
+  return withService(async (s) =>
+    privateReview(await s.listDeletionRefundRequests(status.data, Number(cursor))),
+  );
+});
+type ReviewRoute = { params: Promise<{ requestId: string; itemId?: string }> };
+export function adminRefundRequestGet(req: Request, route: ReviewRoute) {
+  return withAuth({ admin: true, rate: reviewRate }, async () => {
+    const { requestId } = await route.params;
+    if (!uuidRe.test(requestId)) return apiError('not_found');
+    return withService(async (s) => privateReview(await s.getDeletionRefundRequest(requestId)));
+  })(req);
+}
+export function adminRefundRequestMutation(
+  kind: 'decision' | 'execute' | 'resolve',
+  req: Request,
+  route: ReviewRoute,
+) {
+  return withAuth({ admin: true, rate: reviewRate }, async (r, p, ctx) => {
+    const { requestId, itemId } = await route.params;
+    if (!uuidRe.test(requestId) || (kind === 'resolve' && (!itemId || !uuidRe.test(itemId))))
+      return apiError('not_found');
+    const key = idemKey(r);
+    const raw = await body(r);
+    const schema =
+      kind === 'decision'
+        ? AdminRefundRequestDecisionInput
+        : kind === 'execute'
+          ? AdminRefundRequestExecuteInput
+          : AdminRefundRequestItemResolveInput;
+    const parsed = schema.safeParse(raw);
+    if (!key || !parsed.success) return apiError('bad_request');
+    return withService(async (s) => {
+      let result;
+      if (kind === 'decision')
+        result = await s.decideDeletionRefund(
+          p.userId,
+          key,
+          requestId,
+          AdminRefundRequestDecisionInput.parse(raw),
+        );
+      else if (kind === 'execute') result = await s.executeDeletionRefund(p.userId, key, requestId);
+      else
+        result = await s.resolveDeletionRefundItem(
+          p.userId,
+          key,
+          requestId,
+          itemId ?? '',
+          AdminRefundRequestItemResolveInput.parse(raw),
+        );
+      await writeAudit(ctx.db, ctx.config.secret, {
+        actorId: p.userId,
+        action: `billing.deletion_refund.${kind}`,
+        subjectType: 'refund_request',
+        subjectId: requestId,
+        diff: { status: result.status, itemId: itemId ?? null },
+      });
+      return privateReview(result, result.status === 'onaylandi' ? 202 : 200);
+    });
+  })(req);
+}

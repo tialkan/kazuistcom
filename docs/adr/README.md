@@ -32,4 +32,6 @@ ADR-0001..0020 plan.md bölüm 1'deki K-01..K-20 kararlarından türetildi ve "K
 | [0026](0026-sozlesme-v1-2.md) | Sözleşme v1.2: ödeme denetimi, PDF ön bilgi alanları ve parçalama tutarlılığı | Kabul edildi (2026-10-25, kullanıcı onayı). Defter değişmezliği (D6), ürün sürümleme genişletmesi (D4), fesih ve iade idempotency (D3), abonelik onay alanları (O5), dönüş, IFN, D8 ve O-N1 uçları, bildirim alt türleri, PDF alanları, embed.chunks tutarlılığı, ner-runtime; migration 0004. |
 | [0027](0027-kalici-siparis-belgeleri-ve-urun-surumleri.md) | Kalıcı sipariş belgeleri, ürün sürümleri ve silmede iade tercihi | Kabul edildi (2026-10-27, kullanıcı onayı); migration0005 ve sözleşme1.3. Hukuki yayım/canlı migration izni değildir. |
 
+| [0028](0028-hesap-silme-iade-yonetimi.md) | Hesap silme iadesi: yönetici kararı, kalem ve sağlayıcı sonucu | Önerildi, Tarık onayı bekliyor. Orijinal tahsilat/kalan kredi üst sınırı, immutable karar/kalem ve aktör/gerekçe denetimi; migration0006, sözleşme1.4. |
+
 Yeni ADR: sıradaki numarayla, aynı bölüm düzeniyle; sözleşme değişikliği isteyen her istek (docs/istekler/) bir ADR ile sonuçlanır.

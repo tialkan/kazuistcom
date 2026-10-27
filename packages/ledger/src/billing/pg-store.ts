@@ -7,10 +7,13 @@
  */
 import { freezeOrderLegalDocuments } from '@kazuist/db/legal-documents';
 import type { Ledger, PriceTable } from '../index.ts';
-import { listWalletTransactions, walletRunner, type PoolLike, type SqlClient } from '../pg.ts';
+import { listWalletTransactions, walletRunner, withWallet, type PoolLike, type SqlClient } from '../pg.ts';
 import type {
   BillingStore,
   PreparedLegalDocument,
+  DeletionRefundItem,
+  DeletionRefundDecision,
+  DeletionRefundResolution,
   OperationClaim,
   Consent,
   CouponRow,
@@ -68,6 +71,171 @@ export class PgBillingStore implements BillingStore {
       await tx.query('begin');
       await write(tx);
       await tx.query('commit');
+    } catch (error) {
+      await tx.query('rollback');
+      throw error;
+    } finally {
+      client?.release();
+    }
+  }
+
+  private refundRequestOf(r: Row): RefundRequest {
+    return {
+      id: String(r.id),
+      userId: String(r.user_id),
+      orderId: r.order_id as string | null,
+      subscriptionId: r.subscription_id as string | null,
+      reason: r.reason as string | null,
+      amountKurus: r.amount_kurus as number | null,
+      status: r.status as RefundRequest['status'],
+      createdAt: d(r.created_at),
+      decidedAt: dn(r.decided_at),
+      decidedBy: r.decided_by as string | null,
+      decisionReason: r.decision_reason as string | null,
+      decisionKey: r.decision_key as string | null,
+      decisionHash: r.decision_hash as string | null,
+    };
+  }
+  async getDeletionRefundRequest(id: string) {
+    const r = await this.one(
+      `select r.* from refund_requests r join users u on u.id=r.user_id where r.id=$1 and u.deleted_at is not null and r.order_id is null and r.subscription_id is null and r.reason like 'hesap_silme:%'`,
+      [id],
+    );
+    return r ? this.refundRequestOf(r) : null;
+  }
+  async listDeletionRefundRequests(status: RefundRequest['status'], offset: number) {
+    const { rows } = await this.db.query<Row>(
+      `select r.* from refund_requests r join users u on u.id=r.user_id where r.status=$1 and u.deleted_at is not null and r.order_id is null and r.subscription_id is null and r.reason like 'hesap_silme:%' order by r.created_at,r.id limit 51 offset $2`,
+      [status, offset],
+    );
+    return rows.map((r) => this.refundRequestOf(r));
+  }
+  async listUserOrders(userId: string) {
+    const { rows } = await this.db.query<Row>(`${this.orderSql} where o.user_id=$1 order by o.id`, [userId]);
+    return rows.map((r) => this.orderOf(r));
+  }
+  async refundExposure(orderId: string) {
+    const row = await this.one<{ amount: number }>(
+      `select ((select coalesce(sum(amount_kurus),0) from payments where order_id=$1 and provider=$2 and kind='iade' and status in ('hazir','bekliyor','basarili'))+
+      (select coalesce(sum(i.approved_amount_kurus),0) from refund_request_items i where i.order_id=$1 and not exists(select 1 from payments p where p.provider=$2 and p.kind='iade' and p.refund_ref=i.provider_refund_ref and p.status in ('hazir','bekliyor','basarili'))))::int as amount`,
+      [orderId, PROVIDER],
+    );
+    return row?.amount ?? 0;
+  }
+  async listDeletionRefundItems(requestId: string): Promise<DeletionRefundItem[]> {
+    const { rows } = await this.db.query<Row>(
+      'select * from refund_request_items where request_id=$1 order by order_id,id',
+      [requestId],
+    );
+    return rows.map((r) => ({
+      id: String(r.id),
+      requestId,
+      orderId: String(r.order_id),
+      originalPaidKurus: Number(r.original_paid_kurus),
+      originalCredits: Number(r.original_credits),
+      unusedCredits: Number(r.unused_credits),
+      approvedAmountKurus: Number(r.approved_amount_kurus),
+      holdOperationId: String(r.hold_operation_id),
+      providerRefundRef: String(r.provider_refund_ref),
+      state: r.state as PaymentStatus,
+      providerResultRef: r.provider_result_ref as string | null,
+      resolvedBy: r.resolved_by as string | null,
+      resolvedAt: dn(r.resolved_at),
+      resolutionReason: r.resolution_reason as string | null,
+      updatedBy: String(r.updated_by),
+      stateReason: String(r.state_reason),
+    }));
+  }
+  async insertDeletionRefundItems(items: DeletionRefundItem[]) {
+    for (const i of items)
+      await this.db.query(
+        `insert into refund_request_items(id,request_id,order_id,original_paid_kurus,original_credits,unused_credits,approved_amount_kurus,hold_operation_id,provider_refund_ref,state,updated_by,state_reason) values($1,$2,$3,$4,$5,$6,$7,$8,$9,'hazir',$10,$11)`,
+        [
+          i.id,
+          i.requestId,
+          i.orderId,
+          i.originalPaidKurus,
+          i.originalCredits,
+          i.unusedCredits,
+          i.approvedAmountKurus,
+          i.holdOperationId,
+          i.providerRefundRef,
+          i.updatedBy,
+          i.stateReason,
+        ],
+      );
+  }
+  async decideDeletionRefundRequest(id: string, d: DeletionRefundDecision) {
+    const { rows } = await this.db.query(
+      `update refund_requests set status=$2,amount_kurus=$3,decided_by=$4,decided_at=$5,decision_reason=$6,decision_key=$7,decision_hash=$8 where id=$1 and status='bekliyor' and decision_reason is null returning id`,
+      [id, d.status, d.amountKurus, d.actorId, d.at, d.reason, d.key, d.hash],
+    );
+    return rows.length > 0;
+  }
+  async completeDeletionRefundRequest(id: string, amountKurus: number) {
+    await this.db.query(
+      "update refund_requests set status='tamamlandi',amount_kurus=$2 where id=$1 and status='onaylandi'",
+      [id, amountKurus],
+    );
+  }
+  async setDeletionRefundItemState(
+    id: string,
+    from: PaymentStatus[],
+    to: PaymentStatus,
+    actor: string,
+    reason: string,
+    resolution?: DeletionRefundResolution,
+  ) {
+    const { rows } = await this.db.query(
+      `update refund_request_items set state=$3,updated_by=$4,state_reason=$5,updated_at=now(),
+      resolved_by=case when $6::uuid is not null then $6 when state='basarisiz' and $3='bekliyor' then null else resolved_by end,
+      resolved_at=case when $6::uuid is not null then $7::timestamptz when state='basarisiz' and $3='bekliyor' then null else resolved_at end,
+      resolution_reason=case when $6::uuid is not null then $8 when state='basarisiz' and $3='bekliyor' then null else resolution_reason end,
+      provider_result_ref=case when $6::uuid is not null then $9 when state='basarisiz' and $3='bekliyor' then null else provider_result_ref end
+      where id=$1 and state=any($2::text[]) returning id`,
+      [
+        id,
+        from,
+        to,
+        actor,
+        reason,
+        resolution?.actorId ?? null,
+        resolution?.at ?? null,
+        resolution?.reason ?? null,
+        resolution?.providerResultRef ?? null,
+      ],
+    );
+    return rows.length > 0;
+  }
+  async withRefundRequestTransaction<T>(
+    requestId: string,
+    _ledger: LedgerPort,
+    fn: (store: BillingStore, ledger: LedgerPort) => Promise<T>,
+  ): Promise<T> {
+    const write = async (tx: SqlClient) => {
+      const { rows } = await tx.query('select id from refund_requests where id=$1 for update', [requestId]);
+      if (!rows.length) throw new Error('refund_request_not_found');
+      const store = new PgBillingStore(tx, this.hashSubject);
+      const ledger: LedgerPort = {
+        run: (walletId, run) => withWallet(tx, walletId, run, { withinTransaction: true }),
+        movements: (walletId) => listWalletTransactions(tx, walletId),
+      };
+      return fn(store, ledger);
+    };
+    if ('transaction' in this.db && typeof this.db.transaction === 'function')
+      return (
+        this.db as SqlClient & { transaction<T>(fn: (tx: SqlClient) => Promise<T>): Promise<T> }
+      ).transaction(write);
+    const client =
+      'connect' in this.db && typeof this.db.connect === 'function'
+        ? await (this.db as SqlClient & PoolLike).connect()
+        : null;
+    const tx = client ?? this.db;
+    try {
+      await tx.query('begin');
+      const result = await write(tx);
+      await tx.query('commit');
+      return result;
     } catch (error) {
       await tx.query('rollback');
       throw error;

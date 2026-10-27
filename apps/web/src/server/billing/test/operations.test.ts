@@ -1,3 +1,4 @@
+import { adminRefundRequestsGet, adminRefundRequestGet, adminRefundRequestMutation } from '../handlers.ts';
 import { createOTP } from '@better-auth/utils/otp';
 import { randomUUID } from 'node:crypto';
 import { eq } from 'drizzle-orm';
@@ -216,4 +217,149 @@ it('D8: admin routes require role, passkey and TOTP and persist actor audit', as
       ).status,
     );
   expect(statuses).toContain(429);
+});
+
+it('deletion request routes enforce admin MFA, strict bodies and execute the real transactional review', async () => {
+  const owner = await signUp('deleted-review-owner@example.invalid');
+  const ownerId = (await body(await meGet(api('/v1/me', owner.token)))).id as string;
+  const route = { params: Promise.resolve({ requestId: randomUUID() }) };
+  expect((await adminRefundRequestGet(api('/v1/admin/refund-requests/x', null), route)).status).toBe(401);
+  expect((await adminRefundRequestsGet(api('/v1/admin/refund-requests', owner.token))).status).toBe(403);
+  const adm = await admin('deleted-review-admin@example.invalid');
+  expect((await adminRefundRequestsGet(api('/v1/admin/refund-requests', adm.token))).status).toBe(403);
+  await stepUpConfirm(
+    api('/auth/step-up/confirm', adm.token, post({ code: await createOTP(adm.secret).totp() })),
+  );
+  const buyer = {
+    id: ownerId,
+    email: 'test@example.invalid',
+    name: 'A',
+    surname: 'B',
+    identityNumber: '11111111111',
+    ip: '127.0.0.1',
+    city: 'Ankara',
+    country: 'Turkey',
+    address: 'Test',
+  };
+  const pack = await svc.startTopup(
+    ownerId,
+    randomUUID(),
+    {
+      productCode: 'kredi.300',
+      preInfoConsentVersion: 'onb',
+      distanceContractConsentVersion: 'mss',
+      withdrawalWaiver: true,
+    },
+    buyer,
+  );
+  await svc.completeCheckout((await store.getOrder(pack.orderId))?.checkoutToken as string);
+  await h.pg.query('update users set deleted_at=now() where id=$1', [ownerId]);
+  await svc.onAccountDeletion(ownerId);
+  const requests = await store.listRefundRequests(ownerId);
+  const request = requests[0];
+  if (!request) throw new Error('missing request');
+  const params = { params: Promise.resolve({ requestId: request.id }) };
+  const list = await adminRefundRequestsGet(api('/v1/admin/refund-requests', adm.token));
+  expect(list.status).toBe(200);
+  expect(list.headers.get('cache-control')).toBe('private, no-store');
+  const detail = await adminRefundRequestGet(api('/v1/admin/refund-requests/x', adm.token), params);
+  expect(detail.status).toBe(200);
+  expect((await body(detail)).candidates[0].maxRefundKurus).toBe(3900);
+  const input = { decision: 'onay', reason: 'Kullanılmamış paket kredileri doğrulandı.' };
+  expect(
+    (
+      await adminRefundRequestMutation(
+        'decision',
+        api('/v1/admin/refund-requests/x/decision', adm.token, post({ ...input, extra: true })),
+        params,
+      )
+    ).status,
+  ).toBe(400);
+  const before = iyz.refunds.length;
+  const decision = await adminRefundRequestMutation(
+    'decision',
+    api('/v1/admin/refund-requests/x/decision', adm.token, post(input)),
+    params,
+  );
+  expect(decision.status).toBe(200);
+  expect((await body(decision)).status).toBe('tamamlandi');
+  expect(iyz.refunds.length).toBe(before + 1);
+  expect((await svc.wallet(ownerId)).balance).toBe(0);
+  const audit = await h.pg.query<{ actor_id: string }>(
+    "select actor_id from audit_log where subject_id=$1 and action='billing.deletion_refund.decision'",
+    [request.id],
+  );
+  expect(audit.rows[0]?.actor_id).toBe(adm.id);
+});
+it('unknown deletion item routes keep 202 until explicit manual resolution, without a second provider send', async () => {
+  const owner = await signUp('deleted-review-unknown@example.invalid');
+  const ownerId = (await body(await meGet(api('/v1/me', owner.token)))).id as string;
+  const adm = await admin('deleted-review-unknown-admin@example.invalid');
+  await stepUpConfirm(
+    api('/auth/step-up/confirm', adm.token, post({ code: await createOTP(adm.secret).totp() })),
+  );
+  const buyer = {
+    id: ownerId,
+    email: 'test@example.invalid',
+    name: 'A',
+    surname: 'B',
+    identityNumber: '11111111111',
+    ip: '127.0.0.1',
+    city: 'Ankara',
+    country: 'Turkey',
+    address: 'Test',
+  };
+  const pack = await svc.startTopup(
+    ownerId,
+    randomUUID(),
+    {
+      productCode: 'kredi.300',
+      preInfoConsentVersion: 'onb',
+      distanceContractConsentVersion: 'mss',
+      withdrawalWaiver: true,
+    },
+    buyer,
+  );
+  await svc.completeCheckout((await store.getOrder(pack.orderId))?.checkoutToken as string);
+  await h.pg.query('update users set deleted_at=now() where id=$1', [ownerId]);
+  await svc.onAccountDeletion(ownerId);
+  const request = (await store.listRefundRequests(ownerId))[0];
+  if (!request) throw new Error('missing request');
+  const params = { params: Promise.resolve({ requestId: request.id }) };
+  iyz.nextRefund = 'unknown';
+  const before = iyz.refunds.length;
+  const approved = await adminRefundRequestMutation(
+    'decision',
+    api(
+      '/v1/admin/refund-requests/x/decision',
+      adm.token,
+      post({ decision: 'onay', reason: 'Kalan paket kredileri için onay.' }),
+    ),
+    params,
+  );
+  expect(approved.status).toBe(202);
+  const item = (await body(approved)).items[0];
+  const executed = await adminRefundRequestMutation(
+    'execute',
+    api('/v1/admin/refund-requests/x/execute', adm.token, post({})),
+    params,
+  );
+  expect(executed.status).toBe(202);
+  expect(iyz.refunds.length).toBe(before + 1);
+  const resolved = await adminRefundRequestMutation(
+    'resolve',
+    api(
+      '/v1/admin/refund-requests/x/items/x/resolve',
+      adm.token,
+      post({
+        outcome: 'basarili',
+        reason: 'Sağlayıcı panelinde iade doğrulandı.',
+        providerResultRef: 'panel-proof',
+      }),
+    ),
+    { params: Promise.resolve({ requestId: request.id, itemId: item.id }) },
+  );
+  expect(resolved.status).toBe(200);
+  expect((await body(resolved)).status).toBe('tamamlandi');
+  expect(iyz.refunds.length).toBe(before + 1);
 });
