@@ -4,18 +4,18 @@ slug: cerezler
 route: /hukuki/cerezler
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-02.1
+date: 2026-11-02
 status: taslak
 consent_kind: acik_riza_analitik
 alternate: /legal/cookies
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026.
 
 Dayanak: KVKK ve Kişisel Verileri Koruma Kurumu'nun çerez uygulamalarına ilişkin rehberi
-"Çerez Uygulamaları Hakkında Rehber" [DOĞRULANACAK: yayım 20/6/2022 ve sonraki güncelleme tarihi
-ikincil kaynaklardan; kvkk.gov.tr'deki güncel sürümle karşılaştırılacak].
+"Çerez Uygulamaları Hakkında Rehber" (Kurumun internet sitesindeki güncel sürüm: Temmuz 2025, KVKK
+Yayınları No: 69).
 
 ## 1. Kullandığımız çerezler
 

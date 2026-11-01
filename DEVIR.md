@@ -1,3 +1,26 @@
+## 2 Kasım 2026, orkestra: hukuki doğrulama işaretleri, iyzico yanıtı ve CI engeli
+
+Yedi `[DOĞRULANACAK]` işaretinden dördü birincil kaynakla kapatıldı; metinler taslak kalır, yayım onayı verilmedi.
+- topluluk: Yükseköğretim Kurumları Bilimsel Araştırma ve Yayın Etiği Yönergesi m.4/1 altı ihlal türünü aynen sayar
+  (yok.gov.tr/documents/documents/68fb63b8b2511.pdf; son değişiklik 28/8/2025 YÖK Genel Kurulu).
+- cerezler: kvkk.gov.tr/Icerik/7353 güncel rehber sürümü "Temmuz 2025, KVKK Yayınları No: 69".
+- yapay-zeka: m.50, 2 Ağustos 2026'dan beri uygulanır (digital-strategy.ec.europa.eu SSS, 24/7/2026 güncel);
+  Tüzük (AB) 2026/1744 (8/7/2026, ABRG L 24/7/2026, yürürlük 27/7/2026) m.50/2 için dört aylık geçiş (gerekçe 38).
+- on-bilgilendirme: ticaret.gov.tr hakem heyeti bilgilendirme metni, e-Devlet üzerinden TÜBİS başvurusu.
+Dört dosyanın sürümü 2026-11-02.1. Açık kalan üç işaret: gizlilik VUK/TTK saklama süreleri ve iade-ve-kredi
+Abonelik Yönetmeliği değişiklik kontrolü (mevzuat.gov.tr ve resmigazete.gov.tr okuma aracında robots ve
+ağ vekilinde 403; ikincil kaynakla kapatılmadı), cerezler tercih kaydı süresi (tercih paneli kodda yok,
+on-yuz uygulayınca yazılır). Doğrulama: check:text 795 dosya, Prettier, contracts 118, web 88/1 skip geçti.
+
+iyzico 31 Ekim 2026'da yanıtladı: sandbox hesabında abonelik özelliği etkinleştirildi. ADR-0029 yeni abonelik
+satışını kapattığı için bu yalnız eski abonelik akışlarının sandbox testi içindir.
+
+En üst aday PR52 (e4f0eca) Node 26.13 ile bulutta yeniden ölçüldü: typecheck, lint, check:text,
+contracts:lint, build geçti; test i18n12, contracts127, ui31, casuist1, db43, ledger168, worker-node47,
+ai-gateway67/2 skip, web114/1 skip; Python143/3 skip; enjeksiyon60. GitHub Actions run 40456390075 dahil
+27 Ekim'den beri bütün koşular dört işte sıfır adımla failure: hesap ödeme/harcama kısıtı sürüyor.
+Yerel ölçüm CI yerine geçmez; hiçbir PR birleştirilmedi.
+
 ## 25 Ekim 2026, güvenlik bağımlılık düzeltmesi (codex/guvenlik-bagimlilik)
 
 O-09 tarama hataları artık kapıyı kapatır; CLI ikizleriyle kırmızı/yeşil regresyon kanıtı var. pypdf6.21.2,
