@@ -7,10 +7,13 @@ Yedi `[DOĞRULANACAK]` işaretinden dördü birincil kaynakla kapatıldı; metin
 - yapay-zeka: m.50, 2 Ağustos 2026'dan beri uygulanır (digital-strategy.ec.europa.eu SSS, 24/7/2026 güncel);
   Tüzük (AB) 2026/1744 (8/7/2026, ABRG L 24/7/2026, yürürlük 27/7/2026) m.50/2 için dört aylık geçiş (gerekçe 38).
 - on-bilgilendirme: ticaret.gov.tr hakem heyeti bilgilendirme metni, e-Devlet üzerinden TÜBİS başvurusu.
-Dört dosyanın sürümü 2026-11-02.1. Açık kalan üç işaret: gizlilik VUK/TTK saklama süreleri ve iade-ve-kredi
-Abonelik Yönetmeliği değişiklik kontrolü (mevzuat.gov.tr ve resmigazete.gov.tr okuma aracında robots ve
-ağ vekilinde 403; ikincil kaynakla kapatılmadı), cerezler tercih kaydı süresi (tercih paneli kodda yok,
-on-yuz uygulayınca yazılır). Doğrulama: check:text 795 dosya, Prettier, contracts 118, web 88/1 skip geçti.
+Beşinci işaret (cerezler tercih kaydı) koda göre kapatıldı: tercih çerezi ve dil çerezi yok; analitik etkin
+olmadığı için tercih sorulmuyor. better-auth 1.7.11 ve passkey kaynağından okunan giriş doğrulama çerezleri
+tabloya eklendi: state 300 sn (veri tabanı durum stratejisi), better-auth-passkey 300 sn, two_factor 600 sn;
+trust_device arayüzde tetiklenmediği için yazılmadı. EN cookies özeti aynı gerçeğe çekildi.
+Sürümler 2026-11-02.1. Açık kalan iki işaret: gizlilik VUK/TTK saklama süreleri ve iade-ve-kredi Abonelik
+Yönetmeliği değişiklik kontrolü (mevzuat.gov.tr ve resmigazete.gov.tr okuma aracında robots ve ağ vekilinde
+403; ikincil kaynakla kapatılmadı). Doğrulama: check:text 795 dosya, Prettier, contracts 118, web 88/1 skip geçti.
 
 iyzico 31 Ekim 2026'da yanıtladı: sandbox hesabında abonelik özelliği etkinleştirildi. ADR-0029 yeni abonelik
 satışını kapattığı için bu yalnız eski abonelik akışlarının sandbox testi içindir.
