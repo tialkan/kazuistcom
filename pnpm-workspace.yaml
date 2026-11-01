@@ -16,4 +16,10 @@ overrides:
   drizzle-orm: 0.45.4
   # Patch the deprecated loader's development server CORS exposure (GHSA-67mh-4wv8-2f99).
   '@esbuild-kit/core-utils>esbuild': 0.28.2
+  # Patch globparts amplification denial of service in the ESLint toolchain (GHSA-g3hv-75wg-m249).
+  'minimatch@10': 11.0.3
+  # openapi-typescript 7.13.0 still pins @redocly/openapi-core 1.x (minimatch 5); see patches/.
+  '@redocly/openapi-core@1>minimatch': 11.0.3
 dedupePeerDependents: true
+patchedDependencies:
+  '@redocly/openapi-core@1.34.21': patches/@redocly__openapi-core@1.34.21.patch
