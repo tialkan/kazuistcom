@@ -18,7 +18,7 @@ Dayanaklar  : Kazuist.docx (Hukuk Atlası Yazılım Gereksinim ve Tasarım Dokü
 1. Yönetici özeti ve ana kararlar
 2. Değerlendirme: güçlü yanlar, boşluklar, geliştirmeler
 3. Sürüm kapsamı
-4. İş modeli: BYOK, kredi, bakiye yükleyen abonelik
+4. İş modeli: ücretsiz özellikler, BYOK ve platform kredisi
 5. Mimari
 6. Veri katmanı
 7. Arama ve kaynaklı özet (Casuist çekirdeği)
@@ -60,7 +60,7 @@ Atıf kısaltmaları: "wt.N" webtasarim.md'nin N numaralı maddesi, "sy.N" sitey
 
 ## 1. Yönetici özeti ve ana kararlar
 
-Kazuist 1.0; Türk hukuk kaynaklarında arama, her cümlesini kaynağa bağlayan kaynaklı özet, atıf ağı, tez ve makale şablonu, yazma koçu Kalemcik, HMGS hazırlığı dahil pratik çalışmalar ve Turkuaz Kampüs'ü tek hesapta sunan web platformudur. Gelir modeli dört katmanlıdır: ücretsiz kullanım, BYOK (kendi anahtarınla ücretsiz YZ), kredi yükleme ve her ay bakiye yükleyen abonelik.
+Kazuist 1.0; Türk hukuk kaynaklarında arama, her cümlesini kaynağa bağlayan kaynaklı özet, atıf ağı, tez ve makale şablonu, yazma koçu Kalemcik, HMGS hazırlığı dahil pratik çalışmalar ve Turkuaz Kampüs'ü tek hesapta sunan web platformudur. Bütün ürün özellikleri ücretsizdir. YZ işlemleri günlük ücretsiz hak, ücretsiz BYOK veya isteğe bağlı platform kredisiyle çalışır. Tek gelir platform kredisi satışıdır (27 Ekim 2026, ADR-0029).
 
 Hedef takvim (ayrıntı bölüm 18):
 
@@ -86,7 +86,7 @@ Ana kararlar:
 | K-06 | Arama: PostgreSQL içinde hibrit getirme (Türkçe tam metin, vektör, norm ve karar kimliği çözücü, RRF). OpenSearch yalnız ölçüm gerektirirse. | Tek veri tabanı, tek yedek; ölçmeden ağır bileşen eklenmez. |
 | K-07 | YZ: sağlayıcıdan bağımsız geçit. Platform modunda varsayılan Claude Haiku 5.5 (özet, sınıflandırma, çıkarım) ve Claude Sonnet 5.5 (derin özet, zor kural çıkarma). Dışarıya yalnız anonim ve maskeli metin. | Haiku 5.5, 100 bin token altındaki istemde milyon token başına girdi 0,10 USD, çıktı 0,50 USD; standart özet yaklaşık 0,05 TL (4.4). Anthropic DPA'sı KVKK mekanizması içermiyor; bu yüzden kişisel veri gönderilmez. |
 | K-08 | BYOK: varsayılan istemciden doğrudan çağrı; anahtar Kazuist sunucusuna hiç gelmez. Desteklenen: OpenRouter, Anthropic, OpenAI, Google Gemini. | Anlatsın ve sRepetition'daki BYOK deneyimi; en güçlü güvenlik ve KVKK konumu. |
-| K-09 | Gelir: Ücretsiz, BYOK (ücretsiz), süresiz kredi paketleri, her ay kredi yükleyen abonelik, kurumsal (2.0). | İstenen model. Apple 3.1.1 IAP kredilerinin süresinin dolmasını yasaklıyor; iki platformda tek kural. |
+| K-09 | Bütün özellikler ve BYOK ücretsiz; tek gelir isteğe bağlı süresiz platform YZ kredisi satışı. Yeni özellik aboneliği veya kurumsal lisans satışı yok; mevcut bakiye ve abonelik hakları korunur. | Kullanıcının 27 Ekim 2026 açıklaması ve ADR-0029 onayı. Sağlayıcı BYOK bedeli kullanıcıya aittir. |
 | K-10 | Ödeme: web'de iyzico (tek seferlik: Ödeme Formu ve 3D Secure; abonelik: iyzico Abonelik eklentisi), iOS'ta StoreKit 2; tek cüzdan, tek defter. | Şirket adına yerli ödeme kuruluşu; kart verisi bizde tutulmaz. |
 | K-11 | Anonimleştirme Türkiye'deki sunucuda yapılır; ham karar metni yurt dışına çıkmaz. Kural, NER topluluğu ve editör kuyruğu; isim politikası Ek E. | KVKK m.4 ve m.9; SRS 10.2. |
 | K-12 | Veri edinimi: çekirdek dizin (lisans dayanağı açık kaynaklar ve seçili kurullar) ve canlı resmî kaynak federasyonu (talep üzerine getir, anonimleştir, önbellekle). Protokol başvuruları paralel yürür. | FSEK ek m.8 riski toplu çekmede yoğunlaşır; kullanıcı yine geniş kapsam görür. |
@@ -151,7 +151,7 @@ Ana kararlar:
 
 | Soru | Cevap |
 |---|---|
-| Ücretsiz temel ve ücretli paket mi; kurumsal lisans ne zaman? | Evet, bölüm 4. Kurumsal lisans 2.0 (ASBÜ pilotundan sonra, 2027 baharı). |
+| Ücretsiz özellikler ve BYOK mu? | Evet; gelir yalnız isteğe bağlı platform YZ kredileridir. Kurumsal özellik kilidi veya lisans satışı yok (ADR-0029). |
 | Arayüz yalnız Türkçe mi? | Ürün 1.0 Türkçe; i18n hazır; ürün İngilizcesi 2.0. Casuist İngilizce sayfaları sürer. |
 | Hâkim, savcı, avukat adları açık mı? | Ek E. |
 | Kampüs içeride mi, hesaplar ortak mı? | /kampus, ortak hesap, ayrı modül (K-14). |
@@ -190,7 +190,7 @@ Ana kararlar:
 | FR-84 | BYOK: sağlayıcı ve model seçimi; anahtar yalnız tarayıcıda (varsayılan oturumluk) veya iOS Anahtar Zinciri'nde; ücretsiz katman uyarısı; kişisel veri temizleyici. | 1.0 |
 | FR-85 | Cüzdan: bakiye, hareket dökümü, kredi kaynağı (promosyon, abonelik, paket), işlem başına kredi gösterimi; 20 kredi üstü işlemde onay. | 1.0 |
 | FR-86 | Kredi paketi satın alma (iyzico Ödeme Formu, 3D Secure, banka kartı dahil). | 1.0 |
-| FR-87 | Bakiye yükleyen abonelik: aylık ve yıllık ödeme dönemi; her ay kredi yüklemesi; plan özellikleri. | 1.0 |
+| FR-87 | Mevcut abonelik haklarının güvenli devamı/feshi/iadesi; yeni abonelik satışı kapalıdır. Ürün özellikleri aboneliğe bağlanmaz (ADR-0029). | Uyumluluk |
 | FR-88 | Fesih ve iade: hesap sayfasında tek adım; "dönem sonunda" ve "hemen" seçenekleri; yıllık planda kalan bedelin 15 gün içinde iadesi (4.5). | 1.0 |
 | FR-89 | Ödeme bildirimi: her otomatik tahsilattan en az 7 gün önce e-posta; yıllık yenilemede ayrıca 30 gün önce. | 1.0 |
 | FR-90 | e-Arşiv fatura: otomatik düzenleme, e-postayla gönderim, iade faturası. | 1.0 |
@@ -227,11 +227,11 @@ Hiçbir zaman kısılmayanlar: alıntı doğrulaması, anonimleştirme kapılar�
 
 ---
 
-## 4. İş modeli: BYOK, kredi, bakiye yükleyen abonelik
+## 4. İş modeli: ücretsiz özellikler, BYOK ve platform kredisi
 
 ### 4.1 İlkeler
 
-1. YZ gerektirmeyen her şey ücretsiz planda makul sınırla açıktır: arama, filtreler, etiketler, atıf ağını görüntüleme, rehberler, kontrol listesi, onaylı dergi şablonları, oyunlar.
+1. Bütün ürün özellikleri ücretsiz hesaplara açıktır; öğrenci/akademisyen ücretli özellik katmanı yoktur. Güvenlik, kaynak tüketimi ve kötüye kullanım sınırları şeffaf biçimde uygulanır, ücretli özellik kilidine dönüşmez. Mesleki roller ve yönetici yetkileri ödeme durumundan ayrıdır.
 2. YZ işlemi üç yoldan çalışır: günlük ücretsiz hak, BYOK, kredi.
 3. Satın alınan kredinin süresi dolmaz. Apple 3.1.1 IAP ile alınan kredinin süresinin dolmasını yasaklıyor; web'de aynı kural tutarlılık ve sadelik sağlar.
 4. Promosyon kredisi (kayıt hediyesi, kupon, pilot) 90 gün geçerlidir, iade edilmez, nakde çevrilmez.
@@ -239,17 +239,15 @@ Hiçbir zaman kısılmayanlar: alıntı doğrulaması, anonimleştirme kapılar�
 6. İşlem başına kredi ve kalan bakiye her ekranda görünür; 20 kredinin üstündeki işlemde onay sorulur.
 7. Fiyatlar KDV dahil gösterilir.
 
-### 4.2 Planlar (öneri, Tarık onayı)
+### 4.2 Planlar (27 Ekim 2026, ADR-0029 onaylı)
 
-| Plan | Kime | Web fiyatı (KDV dahil) | Her ay yüklenen kredi | Öne çıkan özellikler |
+| Plan | Kime | Web fiyatı (KDV dahil) | Platform kredisi | Öne çıkan özellikler |
 |---|---|---|---|---|
-| Ücretsiz | Hesabı olan herkes | 0 TL | Yok. Günlük hak: 2 kaynaklı özet, edu.tr doğrulanmışsa 5. Açılışta 50 promosyon kredisi. | Arama, filtre, etiket, atıf ağı görüntüleme, rehberler, ayda 1 kılavuzdan şablon, onaylı dergi şablonları, 4 oyun (haftada 3 deste), 100 kayıtlık Kaydettiklerim, Kampüs okuma, takip ve paylaşım |
-| BYOK | Kendi anahtarı olan | 0 TL | Yok | Ücretsiz plan ve tüm YZ işlemleri kendi anahtarıyla, adil kullanım sınırıyla |
-| Öğrenci Plus | Öğrenci, HMGS adayı | 99 TL/ay veya 799 TL/yıl | 1.000 | Tüm desteler, HMGS denemeleri, sınırsız kayıt, dışa aktarma, Kalemcik'in tamamı |
-| Akademisyen | Öğretim elemanı, araştırma görevlisi, doktora öğrencisi | 249 TL/ay veya 1.990 TL/yıl | 3.000 | Plus ve gelişmiş arama, atıf ağı tam görünüm, özel deste oluşturma (derse atama 1.1), uyarılar (1.1) |
-| Kurumsal | Fakülte, enstitü, kütüphane | Teklif | Havuz | 2.0: IP aralığı veya SSO, toplu fatura |
+| Ücretsiz | Hesabı olan herkes | 0 TL | Günlük hak: 2 kaynaklı özet, edu.tr doğrulanmışsa 5. Açılışta 50 promosyon kredisi. | Tüm özellikler; platform YZ işlemleri günlük ücretsiz hakla |
+| BYOK | Kendi sağlayıcı anahtarını kullanan herkes | 0 TL | Platform kredisi gerekmez; sağlayıcı kullanım bedeli kullanıcıya aittir. | Tüm özellikler; YZ işlemleri kendi anahtarıyla, adil kullanım sınırıyla |
+| Platform kredisi | Kendi anahtarını kullanmadan platform YZ hizmetini seçen herkes | Paket ücreti | İsteğe bağlı 300, 1.000 veya 3.000 kredi | Tüm özellikler; platform YZ işlemlerinde kullandıkça kredi düşülür |
 
-Kampüs paylaşımı ücretsizdir; içerik birikimi gelirden önce gelir.
+Platform kredisi yalnız YZ tüketimi içindir; özellik açmaz. Yeni abonelik sunumu kapatılır. Mevcut abonelik, kredi, fesih ve iade hakları korunur; kendiliğinden silinmez veya zorunlu taşınmaz. Günlük ücretsiz hak/promosyon bütçesi mevcut düzeyde kalır, maliyet ölçümüyle ayrıca değerlendirilir.
 
 ### 4.3 Kredi paketleri
 
@@ -276,9 +274,11 @@ Varsayımlar: 1 USD = 50 TL (13 Ekim 2026 satış kuru 49,37; tampon payı). Ant
 
 Ücretsiz hakkın en kötü durum maliyeti: doğrulanmış öğrenci günde 5 özet, ayda en fazla yaklaşık 7 TL. Genel günlük harcama tavanı ve kapatma anahtarı 8.7'dedir.
 
-Plan ekonomisi: Öğrenci Plus 99 TL, KDV hariç 82,5 TL; kredilerin tamamı standart özete giderse (500 özet) model maliyeti yaklaşık 24 TL. Akademisyen 249 TL, KDV hariç 207,5 TL; kredilerin tamamı derin özete giderse (50 derin özet) yaklaşık 92,5 TL. Altyapı ve ödeme komisyonu ayrıca izlenir. Kur ve model fiyatı değişince fiyat tablosu sürümlenir (9.4).
+Kredi ekonomisi: yalnız isteğe bağlı platform YZ tüketimi gelir getirir. İşlem başı model maliyeti, altyapı ve ödeme komisyonu ayrıca izlenir. Kur ve model fiyatı değişince kredi fiyat tablosu sürümlenir (9.4). Ücretsiz özelliklere ücretli katman eklenmez.
 
 ### 4.5 Kurallar
+
+Abonelikle ilgili aşağıdaki kurallar yalnız mevcut hakların korunması, fesih ve iade uyumluluğu içindir; yeni abonelik satışı açılmaz (ADR-0029).
 
 1. Tüketim sırası: süresi en yakın promosyon kredisi, sonra abonelik yüklemesi, sonra paket kredisi; her biri kendi içinde ilk giren ilk çıkar.
 2. Rezervasyon: işlem başlarken tahmini kredi ayrılır, işlem bitince gerçekleşen düşülür, fazlası çözülür. 5 dakikada tamamlanmayan rezervasyon kendiliğinden çözülür.
@@ -291,15 +291,15 @@ Plan ekonomisi: Öğrenci Plus 99 TL, KDV hariç 82,5 TL; kredilerin tamamı sta
 9. Fiyat değişikliği: mevcut abonelere en az 30 gün önce bildirim; yeni fiyat sonraki dönemden geçerli; abone dilediği an fesheder. Bildirim süresi gönüllü ürün taahhüdüdür (ADR-0024).
 10. Başarısız tahsilat: 1., 3. ve 7. gün yeniden deneme; sonra plan Ücretsiz'e iner, mevcut krediler kalır.
 11. Ters ibraz veya Apple iadesi: ilgili kredi geri alınır; bakiye eksiye düşerse yeni YZ işlemi açılmaz.
-12. Hesap silme: kullanılmamış satın alınmış kredi varsa silme ekranında uyarı ve iade talebi seçeneği gösterilir; talep yönetim onayıyla sonuçlanır.
+12. Hesap silme: kullanılmamış satın alınmış kredi varsa silme ekranında uyarı ve iade talebi seçeneği gösterilir. ADR-0028 uyarınca yönetici kararı/kalem/tutma atomik kaydedilir; gerçek tahsilat ve kalan krediye göre tüketici lehine yuvarlanmış/tavanlı iade uygulanır. Belirsiz sağlayıcı sonucu yeniden para göndermez; sonuç, aktör ve gerekçeyle çözülür. Başarılı tüm kalemler doğrulanmadan talep tamamlanmaz.
 
 ### 4.6 iOS fiyatlandırması
 
-Aynı planlar ve paketler IAP olarak sunulur. Apple'ın TRY fiyat basamaklarından web fiyatına en yakın üst basamak seçilir (Küçük İşletme Programı komisyonu %15). Uygulama içinde web fiyatına yönlendirme ve karşılaştırma yapılmaz (3.1.3). Web'de alınan plan ve kredi iOS'ta kullanılır; aynı ürünler IAP olarak da sunulduğu için 3.1.3(b) karşılanır. Rekabet Kurulu'nun Apple hakkında 21.05.2024 tarihli ve 24-23/525-M sayılı kararla açtığı uygulama içi ödeme ve yönlendirme soruşturması sonuçlanırsa bağlantı verme seçeneği yeniden değerlendirilir.
+Kredi paketleri IAP olarak sunulur; yeni otomatik yenilenen abonelik satışı sunulmaz (ADR-0029). Apple'ın TRY fiyat basamaklarından web fiyatına en yakın üst basamak seçilir (Küçük İşletme Programı komisyonu %15). Uygulama içinde web fiyatına yönlendirme ve karşılaştırma yapılmaz (3.1.3). Web'de alınan plan ve kredi iOS'ta kullanılır; aynı ürünler IAP olarak da sunulduğu için 3.1.3(b) karşılanır. Rekabet Kurulu'nun Apple hakkında 21.05.2024 tarihli ve 24-23/525-M sayılı kararla açtığı uygulama içi ödeme ve yönlendirme soruşturması sonuçlanırsa bağlantı verme seçeneği yeniden değerlendirilir.
 
 ### 4.7 Kurumsal ve fatura
 
-1.1: proforma, kurum adına e-Fatura ve havale/EFT ile kredi yükleme (BAP ve proje bütçeleri için, yönetim onaylı). 2.0: kurumsal lisans (IP aralığı veya SSO, havuz kredi).
+1.1: proforma, kurum adına e-Fatura ve havale/EFT ile kredi yükleme (BAP ve proje bütçeleri için, yönetim onaylı). 2.0: kurumlar için SSO veya havuz kredi desteği değerlendirilebilir; ayrı özellik lisansı satılmaz. Yalnız isteğe bağlı platform kredisi bedellidir (ADR-0029).
 
 ---
 
@@ -672,7 +672,7 @@ Yönetim panelinde günlük ve aylık model maliyeti, işlem türüne göre dağ
 ### 9.2 Web ödeme (iyzico)
 
 1. Tek seferlik paket: iyzico Ödeme Formu (3D Secure) başlatılır, dönüşte ödeme sunucudan yeniden sorgulanarak doğrulanır, defter kaydı, e-Arşiv fatura, e-posta. Banka kartı açıktır; öğrenci kitlesinde kredi kartı oranı düşüktür.
-2. Abonelik: iyzico Abonelik eklentisi (panelin eklentiler bölümünden; ilk 3 ay ücretsiz, sonra 199 TL; ücret dönemi resmî sayfadan teyit edilir). Ürün ve fiyat planları API ile tanımlanır: Öğrenci Plus ve Akademisyen, aylık ve yıllık. Yenileme ve başarısız tahsilat bildirimleri webhook ile gelir.
+2. Eski abonelik uyumluluğu: iyzico abonelik kayıtları, yenileme/webhook, fesih ve iadeler mevcut hakları korumak için tutulur. Yeni abonelik checkout ve ürün/plan satışı kapalıdır (ADR-0029); öğrenci/akademisyen ücretli özellikleri sunulmaz.
 3. Kredi yüklemesi: aylık planda her başarılı yenilemede; yıllık planda her ay `worker-node` zamanlayıcısıyla, abonelik etkin oldukça.
 4. Kart verisi yalnız iyzico'da saklanır; Kazuist kart verisi görmez.
 5. Webhook güvenliği: imza doğrulaması, idempotency, ödeme durumunun API'den yeniden sorgulanması; günlük mutabakat işi (iyzico raporu ile defter karşılaştırması, fark varsa uyarı).
@@ -684,7 +684,7 @@ Yönetim panelinde günlük ve aylık model maliyeti, işlem türüne göre dağ
 
 ### 9.3 iOS ödeme (StoreKit 2)
 
-1. Ürünler: tüketilebilir `com.kulular.kazuist.kredi.300`, `.1000`, `.3000`; otomatik yenilenen abonelik grubu "Kazuist Plan": `ogrenci.aylik`, `ogrenci.yillik`, `akademisyen.aylik`, `akademisyen.yillik`.
+1. Yeni ürünler yalnız tüketilebilir `com.kulular.kazuist.kredi.300`, `.1000`, `.3000`; otomatik yenilenen abonelik yeni satışa açılmaz. Varsa eski StoreKit hakları korunur (ADR-0029).
 2. Satın alma öncesi oturum zorunludur (Sign in with Apple dahil); `appAccountToken` Kazuist kullanıcı UUID'sidir.
 3. Sunucu: App Store Server Notifications V2 (imzalı JWS doğrulaması) ve App Store Server API ile işlem doğrulaması. İşlenen olaylar: SUBSCRIBED, DID_RENEW, DID_FAIL_TO_RENEW, EXPIRED, REFUND, REVOKE, CONSUMPTION_REQUEST.
 4. Krediler süresizdir (3.1.1). Abonelikler için "Satın alımları geri yükle".
@@ -1113,7 +1113,7 @@ Dalga 0 sonunda ADR'lerin toplu onayı; Dalga 1 sonunda hukuki taslaklar, fiyat 
 | 12-13 | 11-24 Ocak | Dalga 6: iOS gönderimi; Dalga 7 (1.1) başlar | App Review |
 | | Şubat-Mart 2027 | 1.1; Eurostars teslimi 4 Mart | |
 | | Nisan 2027 | HMGS 2027/1 öncesi 1.200 soru (tarih ÖSYM takviminden) | |
-| | Mayıs-Eylül 2027 | 2.0: kurumsal lisans, İngilizce ürün, karşı içtihat, vaka ağacı, kitle kaynaklı doğrulama, yabancı kaynaklar, widget ve Watch | |
+| | Mayıs-Eylül 2027 | 2.0: kurumsal SSO/havuz kredi desteği, İngilizce ürün, karşı içtihat, vaka ağacı, kitle kaynaklı doğrulama, yabancı kaynaklar, widget ve Watch | |
 
 Kritik yol: iyzico onayı, anonimleştirme altın setinin etiketlenmesi, hukuki metinlerin onayı, HMGS içerik üretimi, Apple kuruluş üyeliği. Kod bu takvimde kritik yol değildir.
 

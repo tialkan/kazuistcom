@@ -1,11 +1,9 @@
 /**
- * Price table, single source (wt.5). Copied from plan.md 4.2, 4.3 and 4.4; approved by Tarik on 2026-10-20
- * (docs/kararlar.md).
- * All prices include VAT (plan 4.1/7). The odeme module will replace this with the versioned
- * price table from packages/ledger; until then this file is the only place prices live.
- * Plan and operation names are content, not UI strings, so they are kept here with the numbers.
+ * Public pricing display from plan.md 4.2-4.4. Free/BYOK model approved on 2026-10-27 (ADR-0029).
+ * Package prices include VAT. Runtime financial catalog remains versioned in packages/ledger.
+ * Plan and operation names are content, kept here alongside the numbers.
  */
-export const fiyatTablosuSurumu = '2026-10-20';
+export const fiyatTablosuSurumu = '2026-10-27';
 
 export type Plan = { ad: string; kime: string; fiyat: string; kredi: string; ozellik: string };
 export const planlar: Plan[] = [
@@ -13,38 +11,22 @@ export const planlar: Plan[] = [
     ad: 'Ücretsiz',
     kime: 'Hesabı olan herkes',
     fiyat: '0 TL',
-    kredi: 'Yok. Günlük hak: 2 kaynaklı özet, edu.tr doğrulanmışsa 5. Açılışta 50 promosyon kredisi.',
-    ozellik:
-      'Arama, filtre, etiket, atıf ağı görüntüleme, rehberler, ayda 1 kılavuzdan şablon, onaylı dergi şablonları, 4 oyun (haftada 3 deste), 100 kayıtlık Kaydettiklerim, Kampüs okuma, takip ve paylaşım',
+    kredi: 'Günlük hak: 2 kaynaklı özet, edu.tr doğrulanmışsa 5. Açılışta 50 promosyon kredisi.',
+    ozellik: 'Tüm özellikler; platform YZ işlemleri günlük ücretsiz hakla',
   },
   {
     ad: 'BYOK',
-    kime: 'Kendi anahtarı olan',
+    kime: 'Kendi sağlayıcı anahtarını kullanan herkes',
     fiyat: '0 TL',
-    kredi: 'Yok',
-    ozellik: 'Ücretsiz plan ve tüm YZ işlemleri kendi anahtarıyla, adil kullanım sınırıyla',
+    kredi: 'Platform kredisi gerekmez; sağlayıcı kullanım bedeli kullanıcıya aittir.',
+    ozellik: 'Tüm özellikler; YZ işlemleri kendi anahtarıyla, adil kullanım sınırıyla',
   },
   {
-    ad: 'Öğrenci Plus',
-    kime: 'Öğrenci, HMGS adayı',
-    fiyat: '99 TL/ay veya 799 TL/yıl',
-    kredi: '1.000',
-    ozellik: 'Tüm desteler, HMGS denemeleri, sınırsız kayıt, dışa aktarma, Kalemcik’in tamamı',
-  },
-  {
-    ad: 'Akademisyen',
-    kime: 'Öğretim elemanı, araştırma görevlisi, doktora öğrencisi',
-    fiyat: '249 TL/ay veya 1.990 TL/yıl',
-    kredi: '3.000',
-    ozellik:
-      'Plus ve gelişmiş arama, atıf ağı tam görünüm, özel deste oluşturma (derse atama 1.1), uyarılar (1.1)',
-  },
-  {
-    ad: 'Kurumsal',
-    kime: 'Fakülte, enstitü, kütüphane',
-    fiyat: 'Teklif',
-    kredi: 'Havuz',
-    ozellik: '2.0: IP aralığı veya SSO, toplu fatura',
+    ad: 'Platform kredisi',
+    kime: 'Kendi anahtarını kullanmadan platform YZ hizmetini seçen herkes',
+    fiyat: 'Paket ücreti',
+    kredi: 'İsteğe bağlı 300, 1.000 veya 3.000 kredi',
+    ozellik: 'Tüm özellikler; platform YZ işlemlerinde kullandıkça kredi düşülür',
   },
 ];
 

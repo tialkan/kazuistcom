@@ -1,0 +1,50 @@
+.mobilePlans {
+  display: none;
+}
+@media (max-width: 47.99rem) {
+  .desktopPlans {
+    display: none;
+  }
+  .mobilePlans {
+    display: block;
+    border-top: 2px solid currentColor;
+    margin-block: 2rem;
+  }
+  .mobilePlans h2 {
+    font-size: 1.3rem;
+    margin-block: 1rem;
+  }
+  .usage {
+    border-bottom: 1px solid var(--kz-color-border);
+    padding-block: 1rem;
+  }
+  .usage h3 {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block: 0 1rem;
+  }
+  .price {
+    font-family: var(--kz-font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .usage dl {
+    margin: 0;
+  }
+  .usage dl > div + div {
+    margin-block-start: 0.75rem;
+  }
+  .usage dt {
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+  .usage dd {
+    margin: 0.15rem 0 0;
+  }
+  .tax {
+    font-size: 0.8rem;
+    margin-block: 0.75rem 0;
+  }
+}
