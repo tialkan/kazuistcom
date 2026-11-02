@@ -43,6 +43,13 @@
       "when": 1792946517162,
       "tag": "0005_frozen_legal_documents",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792996512932,
+      "tag": "0006_deletion_refund_review",
+      "breakpoints": true
     }
   ]
 }

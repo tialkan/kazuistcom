@@ -34,6 +34,52 @@ contracts:lint, build geçti; test i18n12, contracts127, ui31, casuist1, db43, l
 ai-gateway67/2 skip, web114/1 skip; Python143/3 skip; enjeksiyon60. GitHub Actions run 40456390075 dahil
 27 Ekim'den beri bütün koşular dört işte sıfır adımla failure: hesap ödeme/harcama kısıtı sürüyor.
 Yerel ölçüm CI yerine geçmez; hiçbir PR birleştirilmedi.
+## Orkestra iade entegrasyonu, 27 Ekim 2026
+
+43 adayı5a532dc ile49adayıe857d6c, izole278dd78 üzerinde birleştirildi; bu yerel entegrasyon main değildir. İki store çatışması ödeme sahibi tarafından snapshot/deletionfalse ve iade akışları birlikte korunarak çözüldü. Root tip kontrolü, ledger165, web113/1skip, DB43, contracts127 ve worker47 testlerini geçirdi. Web/worker üretim derlemesi, kaynak çatışma dosyalarının lint/biçimi ve metin kontrolü geçti. Bağımsız denetçi son birleşik adayda25testi ve kendi PGlite finansal repro'sunu geçirdi; yeni kritik/yüksek/orta bulgu yok. Ödeme önceki kapsamında ayrıca154ledger/12HTTPtesti ve üretim build geçti. Dalga1kapısı5/9 kalır, ADR28 öneridir ve CI hesap engeli sürer. Canlı işlem veya üretim migration yok.
+
+İade tutarı gerçek tahsilat ve kalan krediyle tavanlı/tüketici lehine yuvarlanır. Unknown sonuç otomatik yeniden gönderilmez. Manuel sonuç ödeme/kalem/defterle atomiktir. Açık hold varken chargeback409 ile güvenli durur. Fatura gerekliliği kalıcı audit'e yazılır; e-Arşiv entegratörü idempotency/requery olmadan otomatik fatura kurtarma tamamlanmış sayılmaz. PGlite/fake testleri gerçek sandbox veya O9 süreç çökmesi kanıtı değildir. Ücretsiz BYOK/özellik ve kredi tekgelir önerisi ayrıPR48/ADR29'da; public yapılmadı.
+
+## 27 Ekim 2026, ödeme, silme iadesi yönetimi (codex/silme-iade-yonetimi)
+
+ADR-0028 önerisinin beş admin ucu gerçek BillingService/PgBillingStore akışına bağlandı.
+Karar, özgün tahsilat/kalan kredi kalemleri ve kısmi tutmalar tek transaction'da; sağlayıcı çağrısı
+transaction dışında ve CAS ile tekil. Belirsiz sonuç otomatik yeniden gönderilmez; ayrı admin
+kalem çözümü aktör/gerekçe/sağlayıcı referansıyla kaydedilir. Eski belirsizlik kuyruğu bu kalemleri dışlar.
+İşlem anahtarı aktör/operasyon/hedef/gövdeye kalıcı bağlanır. Passkey/TOTP, strict body, rate,
+private no-store ve audit aktörü gerçek guard/PGlite testinde sınandı.
+
+Tutar BigInt ile tüketici lehine kuruşa yuvarlanır ve geçmiş iade maruziyetiyle sınırlanır.
+Açık rezervasyon varken chargeback409 döner; iade tutmasının yanlış borç sayılması önlenir.
+Önce sağlayıcı belirsizliği çözülür; başarılı kısmi iade sonrası chargeback yalnız harcanan payı borçlandırır.
+Fatura gerekliliği ledger tamamlanırken kalıcı audit uyarısına yazılır. Mevcut e-Arşiv adaptöründe
+idempotency/requery API'si olmadığı için crash sonrası otomatik fatura resend eklenmedi;
+entegratör seçimi ve fatura outbox/kurtarma ayrı açık iştir. Finansal iade tamamlandı ifadesi
+faturanın dış sağlayıcıda kesildiği iddiası değildir.
+
+Yerel ledger154, billing route12, typecheck/lint/metin ve üretim build doğrulandı.
+GitHub CI billing limiti açık; yeşil sayılmadı, birleşmedi. Canlı iade/migration/ağ işlemi yok.
+
+## 27 Ekim 2026, mimar, silme iade sözleşmesi 1.4 (codex/mimar-silme-iade)
+
+ADR-0028 ÖNERİ, Tarık onayı bekliyor. ADR-0027 dosyası değiştirilmedi; onay kaydı root43 dalındadır.
+Migration0006 mevcut FK'leri korur; karar reason/key/hash ve orijinal paket başına immutable allocation
+kalemi ekler. Tam tüketici lehine kuruş üst sınırı, gerçek tahsilat/kalan kredi/sahiplik ve diğer iade
+riski DB'de doğrulanır. Karar ve kalem değişimleri aktör/gerekçeyle append-only audit'e girer.
+Belirsiz kalem tamamlanmaz; başarılı payment kanıtı olmadan basarili olamaz. Tamamlanan talebin tutarı
+başarılı kalem toplamıyla aynı olmalıdır. Audit TRUNCATE da engellenir.
+
+Sözleşme iki GET/üç POST tanımlar; admin/passkey/TOTP, strict body, Idempotency-Key ve aktörün
+sunucudan gelmesi şarttır. Route/partial ledger/sağlayıcı entegrasyonu ödeme ajanının ayrı işidir;
+bu PR o uygulamayı tamamlandı saymaz. Ayrıntı docs/istekler/mimar-silme-iade-v1-4.md.
+
+Kanıt: tetikleyicisiz karar geçişi kabulü kırmızıydı; yeni guard'larla dolu1.3 yükseltme8/8,
+DB43/43, contracts127/127; tam Node636 geçti/3 ortam testi atlandı. Build/typecheck/lint,
+OpenAPI lint ve check:text geçti. Audit TRUNCATE eklemesinden sonra DB43 yeniden geçti.
+GitHub CI hesap/billing limiti orkestrada açık kapıdır; dört iş başarılı diye yazılmadı ve kör
+workflow yeniden başlatılmadı. Canlı migration, sandbox veya canlı para iadesi yapılmadı.
+
+
 ## Orkestra son aday ölçümü, 27 Ekim 2026
 
 Birleşik aday1a97d36 için izole kalite: JS569/Python143/enjeksiyon60 geçti, toplam6skip; tip/lint/biçim/metin/OpenAPI/build ve güvenlik taramaları temiz. Bağımsız76test ve gerçekPG18 SIGKILL kurtarma geçti. Ayrıntı docs/kalite/dalga-1.md üst bölümündedir. Kapı5/9 açık; staging/sandbox/bağlayıcı/hukuki hazırlık ve gerçekSMTP kabulü eksik. O9 yönetici iade işi ayrı dalda sürer, ADR28 öneridir. CI hesap engeli kalkmadı; hiçbir PR bu nedenle kapı atlanarak birleştirilmedi. Kullanıcının public sorusu görünürlük onayı sayılmadı; depo PRIVATE kalır. Ücretsiz özellik/BYOK ve isteğe bağlı platform kredisi modeli ayrı karar önerisinde hazırlanıyor.

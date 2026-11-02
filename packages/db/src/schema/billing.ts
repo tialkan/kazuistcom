@@ -353,20 +353,85 @@ export const invoices = pgTable('invoices', {
   issuedAt: ts('issued_at').notNull(),
 });
 
-export const refundRequests = pgTable('refund_requests', {
-  id: id(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id),
-  orderId: uuid('order_id').references(() => orders.id),
-  subscriptionId: uuid('subscription_id').references(() => subscriptions.id),
-  reason: text('reason'),
-  amountKurus: integer('amount_kurus'),
-  status: text('status').notNull().default('bekliyor'),
-  decidedBy: uuid('decided_by').references(() => users.id),
-  decidedAt: ts('decided_at'),
-  createdAt: createdAt(),
-});
+export const refundRequests = pgTable(
+  'refund_requests',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    orderId: uuid('order_id').references(() => orders.id),
+    subscriptionId: uuid('subscription_id').references(() => subscriptions.id),
+    reason: text('reason'),
+    amountKurus: integer('amount_kurus'),
+    status: text('status').notNull().default('bekliyor'),
+    decidedBy: uuid('decided_by').references(() => users.id),
+    decidedAt: ts('decided_at'),
+    /** ADR-0028: populated atomically for an administrator's deletion-refund decision. */
+    decisionReason: text('decision_reason'),
+    decisionKey: text('decision_key'),
+    decisionHash: text('decision_hash'),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    check(
+      'refund_requests_decision',
+      sql`(${t.decisionReason} is null and ${t.decisionKey} is null and ${t.decisionHash} is null) or (${t.decisionReason} is not null and ${t.decisionKey} is not null and ${t.decisionHash} is not null and ${t.decidedBy} is not null and ${t.decidedAt} is not null and ${t.status} in ('onaylandi','reddedildi','tamamlandi') and length(trim(${t.decisionReason})) between 10 and 2000 and length(${t.decisionKey}) between 1 and 200 and ${t.decisionHash} ~ '^[0-9a-f]{64}$')`,
+    ),
+  ],
+);
+
+export const refundRequestItems = pgTable(
+  'refund_request_items',
+  {
+    id: id(),
+    requestId: uuid('request_id')
+      .notNull()
+      .references(() => refundRequests.id),
+    orderId: uuid('order_id')
+      .notNull()
+      .references(() => orders.id),
+    originalPaidKurus: integer('original_paid_kurus').notNull(),
+    originalCredits: integer('original_credits').notNull(),
+    unusedCredits: integer('unused_credits').notNull(),
+    approvedAmountKurus: integer('approved_amount_kurus').notNull(),
+    holdOperationId: text('hold_operation_id').notNull().unique(),
+    providerRefundRef: text('provider_refund_ref').notNull().unique(),
+    state: text('state').notNull().default('hazir'),
+    providerResultRef: text('provider_result_ref'),
+    resolvedBy: uuid('resolved_by').references(() => users.id),
+    resolvedAt: ts('resolved_at'),
+    resolutionReason: text('resolution_reason'),
+    updatedBy: uuid('updated_by')
+      .notNull()
+      .references(() => users.id),
+    stateReason: text('state_reason').notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex('refund_request_items_order_uq').on(t.requestId, t.orderId),
+    index('refund_request_items_state_idx').on(t.requestId, t.state),
+    check(
+      'refund_request_items_positive',
+      sql`${t.originalPaidKurus} > 0 and ${t.originalCredits} > 0 and ${t.unusedCredits} > 0 and ${t.unusedCredits} <= ${t.originalCredits} and ${t.approvedAmountKurus} > 0`,
+    ),
+    check(
+      'refund_request_items_cap',
+      sql`${t.approvedAmountKurus} <= ${t.originalPaidKurus} and ${t.approvedAmountKurus} <= ceil(${t.originalPaidKurus}::numeric * ${t.unusedCredits} / ${t.originalCredits})`,
+    ),
+    check('refund_request_items_state', sql`${t.state} in ('hazir','bekliyor','basarili','basarisiz')`),
+    check(
+      'refund_request_items_reference',
+      sql`${t.providerRefundRef} = 'silme:' || ${t.id}::text and length(trim(${t.holdOperationId})) > 0`,
+    ),
+    check('refund_request_items_reason', sql`length(trim(${t.stateReason})) between 10 and 2000`),
+    check(
+      'refund_request_items_resolution',
+      sql`(${t.resolvedBy} is null and ${t.resolvedAt} is null and ${t.resolutionReason} is null) or (${t.resolvedBy} is not null and ${t.resolvedAt} is not null and ${t.resolutionReason} is not null and length(trim(${t.resolutionReason})) between 10 and 2000)`,
+    ),
+  ],
+);
 
 export const iapTransactions = pgTable(
   'iap_transactions',

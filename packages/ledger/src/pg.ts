@@ -88,12 +88,15 @@ export async function loadWallet(
 
   const grantTx = new Map<string, string>();
   const closed = new Map<string, NonNullable<Lot['closedBy']>>();
+  const refundedCredits = new Map<string, number>();
   let walletBal = 0;
   const keys = new Map<string, LedgerTx>();
   for (const e of entries) {
     if (e.code === codes[0]) walletBal += e.side === 'alacak' ? e.credits : -e.credits;
     if (e.kind === 'yukleme' && e.lot_id) grantTx.set(e.lot_id, e.tx_id);
-    if (e.rev && (e.kind === 'iade' || e.kind === 'ters_ibraz' || e.kind === 'apple_iade'))
+    if (e.kind === 'iade' && e.lot_id && e.side === 'borc')
+      refundedCredits.set(e.lot_id, (refundedCredits.get(e.lot_id) ?? 0) + e.credits);
+    if (e.rev && (e.kind === 'ters_ibraz' || e.kind === 'apple_iade'))
       closed.set(e.rev, e.kind as Lot['closedBy'] & string);
     if (!keys.has(e.key))
       keys.set(e.key, {
@@ -116,7 +119,10 @@ export async function loadWallet(
     originRef: l.origin_ref,
     createdAt: new Date(l.created_at),
     grantTxId: grantTx.get(l.id) ?? '',
-    closedBy: closed.get(grantTx.get(l.id) ?? '') ?? null,
+    refundedCredits: refundedCredits.get(l.id) ?? 0,
+    closedBy:
+      closed.get(grantTx.get(l.id) ?? '') ??
+      ((refundedCredits.get(l.id) ?? 0) >= l.original_credits ? 'iade' : null),
   }));
   const reservations: Reservation[] = res.map((r) => ({
     operationId: r.operation_id,
@@ -140,8 +146,13 @@ export async function loadWallet(
  * Run `fn` against the wallet inside one DB transaction and persist what it produced.
  * Returns fn's result. Any error rolls back.
  */
-export async function withWallet<T>(db: SqlClient, walletId: string, fn: (l: Ledger) => T): Promise<T> {
-  await db.query('begin');
+export async function withWallet<T>(
+  db: SqlClient,
+  walletId: string,
+  fn: (l: Ledger) => T,
+  options: { withinTransaction?: boolean } = {},
+): Promise<T> {
+  if (!options.withinTransaction) await db.query('begin');
   try {
     await db.query('select id from wallets where id = $1 for update', [walletId]);
     const { state, keys } = await loadWallet(db, walletId);
@@ -149,10 +160,10 @@ export async function withWallet<T>(db: SqlClient, walletId: string, fn: (l: Led
     ledger.load(state, keys);
     const result = fn(ledger);
     await persist(db, ledger, walletId);
-    await db.query('commit');
+    if (!options.withinTransaction) await db.query('commit');
     return result;
   } catch (err) {
-    await db.query('rollback');
+    if (!options.withinTransaction) await db.query('rollback');
     throw err;
   }
 }

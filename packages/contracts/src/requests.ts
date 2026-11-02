@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import {
+  AdminRefundRequestDecisionInput,
+  AdminRefundRequestExecuteInput,
+  AdminRefundRequestItemResolveInput,
+} from './refund-review.ts';
+import {
   ConsentKind,
   KvkkRelation,
   KvkkReplyChannel,
@@ -262,6 +267,9 @@ export const requestBodies = {
   adminChargeback: AdminChargebackInput,
   adminPriceChange: AdminPriceChangeInput,
   adminResolveRefund: AdminRefundResolveInput,
+  adminDecideRefundRequest: AdminRefundRequestDecisionInput,
+  adminExecuteRefundRequest: AdminRefundRequestExecuteInput,
+  adminResolveRefundRequestItem: AdminRefundRequestItemResolveInput,
   setNotificationPreferences: NotificationPreferencesInput,
   registerWebPush: WebPushSubscriptionInput,
   registerApnsToken: ApnsTokenInput,
