@@ -4,28 +4,30 @@ slug: cerezler
 route: /hukuki/cerezler
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-02.1
+date: 2026-11-02
 status: taslak
 consent_kind: acik_riza_analitik
 alternate: /legal/cookies
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026.
 
 Dayanak: KVKK ve Kişisel Verileri Koruma Kurumu'nun çerez uygulamalarına ilişkin rehberi
-"Çerez Uygulamaları Hakkında Rehber" [DOĞRULANACAK: yayım 20/6/2022 ve sonraki güncelleme tarihi
-ikincil kaynaklardan; kvkk.gov.tr'deki güncel sürümle karşılaştırılacak].
+"Çerez Uygulamaları Hakkında Rehber" (Kurumun internet sitesindeki güncel sürüm: Temmuz 2025, KVKK
+Yayınları No: 69).
 
 ## 1. Kullandığımız çerezler
 
 | Tür | Ne işe yarar | Süre | İzin |
 |---|---|---|---|
 | Zorunlu: oturum çerezi (kazuist.session_token; üretimde __Secure- ön ekli; HttpOnly, Secure, SameSite=Lax) | Girişinizi korur | 30 gün | Gerekmez |
-| Zorunlu: tercih | Çerez tercihinizi hatırlar | [DOĞRULANACAK: tercih kaydı henüz uygulanmadı; on-yuz ajanı uygularken süre yazılır] | Gerekmez |
+| Zorunlu: giriş doğrulama çerezleri (kazuist.state, Google veya Apple ile girişte; kazuist.better-auth-passkey, geçiş anahtarıyla girişte; kazuist.two_factor, ikinci adım doğrulamasında; üretimde __Secure- ön ekli; HttpOnly, Secure, SameSite=Lax) | Giriş adımının sizin başlattığınız işlem olduğunu doğrular | 5 dakika; ikinci adım çerezi 10 dakika | Gerekmez |
 | Analitik (Umami, kendi sunucumuzda) | Hangi sayfaların kullanıldığını kişisel veri tutmadan ölçer | Analitik henüz etkin değildir; etkinleştirilmeden önce bu satır yapılandırmadan güncellenir | Açık rızanız gerekir |
 
-Reklam ve üçüncü taraf izleme çerezi kullanılmaz.
+Reklam ve üçüncü taraf izleme çerezi kullanılmaz. Analitik etkin olmadığı için şu anda çerez tercihi sorulmaz
+ve tercih çerezi kullanılmaz; analitik etkinleştirilmeden önce tercih kaydı ve süresi bu tabloya eklenir ve
+sayfa yeni sürümle onaya sunulur.
 
 Tarayıcı depolaması: kendi YZ anahtarınızı (BYOK) girerseniz anahtar varsayılan olarak yalnız o oturum için
 tarayıcınızda (sessionStorage) tutulur; "bu cihazda hatırla" seçerseniz kalıcı depolamada (localStorage) kalır.
@@ -33,7 +35,7 @@ Anahtar sunucumuza kaydedilmez.
 
 ## 2. Tercih paneli
 
-İlk ziyarette "Kabul et" ve "Reddet" düğmeleri eşit büyüklükte ve eşit görünürlükte gösterilir. Reddetmek
+Bu bölüm analitik etkinleştirildiğinde uygulanır. İlk ziyarette "Kabul et" ve "Reddet" düğmeleri eşit büyüklükte ve eşit görünürlükte gösterilir. Reddetmek
 siteyi kullanmanızı engellemez. Tercihinizi her sayfanın altındaki "Çerez tercihleri" bağlantısından
 değiştirebilirsiniz.
 

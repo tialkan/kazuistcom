@@ -12,6 +12,7 @@ ARG PNPM_VERSION
 RUN npm install -g pnpm@${PNPM_VERSION} && npm cache clean --force
 WORKDIR /repo
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+COPY patches ./patches
 COPY apps/worker-node ./apps/worker-node
 COPY packages ./packages
 RUN pnpm install --frozen-lockfile --filter "@kazuist/worker-node..." \

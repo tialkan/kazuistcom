@@ -36,3 +36,36 @@ Sonuç: hiçbir aday tüm ölçütleri resmî kaynakta karşılamıyor. Kuzey DC
    10. Ek IPv4 ve IPv6 desteği.
 2. Cevapları `docs/runbook/vps-secimi.md` dosyasına eklemek için bana iletin (kişisel iletişim bilgisi olmadan).
 3. Sunucu satın alma kararı ve ödeme sizindir; ajan satın alma yapmaz.
+
+## Güncelleme, 2 Kasım 2026: Radore resmî sayfaları ve satın alma paketi taslağı
+
+Okunan resmî sayfalar: https://radore.com/services/cloud-server, https://radore.com/services/kvkk-compliant-hosting,
+https://radore.com/services/dedicated. Kuzey DC sayfası bu oturumda okuma aracının izin listesinde değildi;
+19 Ekim bilgisi değişmedi.
+
+| Ölçüt | Radore (resmî sayfada) |
+|---|---|
+| Şirket | Radore Veri Merkezi Hizmetleri A.Ş.; MERSİS ve adres sayfada yok |
+| Veri merkezi | "100% hosted inside Türkiye", "Data never leaves the country"; şehir/tesis yazmıyor |
+| ISO 27001 | Var (ayrıca ISO 9001, 22301, 50001, PCI-DSS); belge numarası sayfada yok |
+| KVKK | Veri işleyen rolünde yükümlülükleri yerine getirdiğini yazıyor; "veri işleyen sözleşmesi" adıyla anılmıyor |
+| KVM | Sanallaştırma türü yazılmıyor |
+| Özel ağ | Sayfada yok |
+| Anlık görüntü | Otomatik yedek dahil; snapshot yazmıyor |
+| DDoS | Genel ifade; kapasite yok. Dedicated'da ek hizmet |
+| Ubuntu / IPv6 | Yazmıyor; ek IPv4 kiralanabiliyor |
+
+Hazır bulut paketleri (aylık, KDV hariç, USD): RAM-Elite 4 vCPU / 32 GB / 150 GB NVMe 40,00;
+RAM-Infinity 6 vCPU / 64 GB / 150 GB NVMe 72,00; CPU-Infinity 16 vCPU / 16 GB / 250 GB NVMe 60,00.
+Hiçbiri plan 5.5 hedefini (8 vCPU / 32 GB / 300 GB ve 8 vCPU / 64 GB / 1 TB) tam karşılamıyor; özel yapılandırma
+teklifi gerekir. Dedicated R630 64 GB (2x E5-2680 v4, 2x960 GB SSD, NVMe değil) aylık 259 USD.
+
+### Satın alma paketi taslağı (karar ve ödeme Tarık'ındır)
+
+1. Önce yalnız staging (Dalga 1 kapısı için yeterli): tek sunucu, en az 8 vCPU / 32 GB / 300 GB NVMe, Ubuntu 24.04,
+   Coolify + PostgreSQL/pgvector + Valkey aynı makinede. Staging'de gerçek kişi verisi olmadığı için VPS-2 ayrımı
+   ertelenebilir (plan 5.4).
+2. Üretim için VPS-1 ve VPS-2 aynı sağlayıcıda, özel ağla; özel ağ yazılı teyit edilmeden üretim siparişi verilmez.
+3. Sağlayıcıya gidecek soru listesi yukarıda (1-10). Radore için açık kalanlar: KVM, özel ağ, snapshot,
+   DDoS kapasitesi, veri işleyen sözleşmesi, ISO 27001 belge numarası, Ubuntu 24.04, özel yapılandırma fiyatı.
+4. Fiyatlar sipariş günü yeniden okunur; bu tablo teklif değildir.

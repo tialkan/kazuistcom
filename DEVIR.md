@@ -1,3 +1,39 @@
+## 2 Kasım 2026, orkestra: yeni bağımlılık açıkları (pypdf, minimatch)
+
+2 Kasım'da GitHub Actions yeniden çalıştı; PR53 gitleaks işinin tarama adımı yeni ilanlarla düştü (sızıntı yok).
+- pypdf 6.21.2: CVE-2026-119203/119204/119205/119207/119209, düzeltme 6.21.4. Alt sınır `pypdf>=6.21.4`,
+  uv.lock 6.21.4. Python 143 geçti/3 skip.
+- minimatch <11.0.1 (GHSA-g3hv-75wg-m249, orta): ESLint zinciri `minimatch@10` override ile 11.0.3.
+  openapi-typescript 7.13.0 hâlâ @redocly/openapi-core 1.34.21 (minimatch 5) kullanır; o yol da 11.0.3'e
+  zorlandı ve tek `require("minimatch")` satırı adlandırılmış dışa aktarıma `patches/` ile uyarlandı.
+  Yamalı `match` doğru/yanlış örnekleri, contracts lint ve check:generated geçti. Yalnız geliştirme aracıdır.
+Doğrulama: tarama.sh status0 (pnpm audit0, pip-audit0, gitleaks temiz, lisans yasak yok); typecheck, lint,
+check:text, contracts:lint, build ve workspace testleri geçti. Kök kilit ve workspace dosyası orkestra yetkisiyle değişti.
+## 2 Kasım 2026, orkestra: hukuki doğrulama işaretleri, iyzico yanıtı ve CI engeli
+
+Yedi `[DOĞRULANACAK]` işaretinden dördü birincil kaynakla kapatıldı; metinler taslak kalır, yayım onayı verilmedi.
+- topluluk: Yükseköğretim Kurumları Bilimsel Araştırma ve Yayın Etiği Yönergesi m.4/1 altı ihlal türünü aynen sayar
+  (yok.gov.tr/documents/documents/68fb63b8b2511.pdf; son değişiklik 28/8/2025 YÖK Genel Kurulu).
+- cerezler: kvkk.gov.tr/Icerik/7353 güncel rehber sürümü "Temmuz 2025, KVKK Yayınları No: 69".
+- yapay-zeka: m.50, 2 Ağustos 2026'dan beri uygulanır (digital-strategy.ec.europa.eu SSS, 24/7/2026 güncel);
+  Tüzük (AB) 2026/1744 (8/7/2026, ABRG L 24/7/2026, yürürlük 27/7/2026) m.50/2 için dört aylık geçiş (gerekçe 38).
+- on-bilgilendirme: ticaret.gov.tr hakem heyeti bilgilendirme metni, e-Devlet üzerinden TÜBİS başvurusu.
+Beşinci işaret (cerezler tercih kaydı) koda göre kapatıldı: tercih çerezi ve dil çerezi yok; analitik etkin
+olmadığı için tercih sorulmuyor. better-auth 1.7.11 ve passkey kaynağından okunan giriş doğrulama çerezleri
+tabloya eklendi: state 300 sn (veri tabanı durum stratejisi), better-auth-passkey 300 sn, two_factor 600 sn;
+trust_device arayüzde tetiklenmediği için yazılmadı. EN cookies özeti aynı gerçeğe çekildi.
+Sürümler 2026-11-02.1. Açık kalan iki işaret: gizlilik VUK/TTK saklama süreleri ve iade-ve-kredi Abonelik
+Yönetmeliği değişiklik kontrolü (mevzuat.gov.tr ve resmigazete.gov.tr okuma aracında robots ve ağ vekilinde
+403; ikincil kaynakla kapatılmadı). Doğrulama: check:text 795 dosya, Prettier, contracts 118, web 88/1 skip geçti.
+
+iyzico 31 Ekim 2026'da yanıtladı: sandbox hesabında abonelik özelliği etkinleştirildi. ADR-0029 yeni abonelik
+satışını kapattığı için bu yalnız eski abonelik akışlarının sandbox testi içindir.
+
+En üst aday PR52 (e4f0eca) Node 26.13 ile bulutta yeniden ölçüldü: typecheck, lint, check:text,
+contracts:lint, build geçti; test i18n12, contracts127, ui31, casuist1, db43, ledger168, worker-node47,
+ai-gateway67/2 skip, web114/1 skip; Python143/3 skip; enjeksiyon60. GitHub Actions run 40456390075 dahil
+27 Ekim'den beri bütün koşular dört işte sıfır adımla failure: hesap ödeme/harcama kısıtı sürüyor.
+Yerel ölçüm CI yerine geçmez; hiçbir PR birleştirilmedi.
 ## 27 Ekim 2026, on-yuz, ücretsiz kullanım ve fiyatlar (codex/ucretsiz-fiyatlar)
 
 ADR-0029 onayına göre fiyatlar sayfası Ücretsiz/BYOK/Platform kredisi seçeneklerine geçti.
