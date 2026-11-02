@@ -4,13 +4,13 @@ slug: on-bilgilendirme
 route: /hukuki/on-bilgilendirme
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-02.1
+date: 2026-11-02
 status: taslak
 consent_kind: on_bilgilendirme
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026.
 
 Gösterim kuralları (odeme ajanı için): Bu form ödeme yükümlülüğü altına girmeden hemen önce, en az 12 punto
 eşdeğerinde ve okunaklı gösterilir (Mesafeli Sözleşmeler Yön. m.6). "Ön bilgilendirme formunu okudum ve
@@ -64,8 +64,8 @@ Abonelik belirsiz sürelidir; hesap sayfasından tek adımda fesih edilir. Kural
 Şikâyetler teknoloji@kulular.com adresine iletilebilir. Değeri yürürlükteki parasal sınırın altındaki uyuşmazlıklarda
 tüketici hakem heyetine başvuru zorunludur (6502 sayılı Kanun m.68/1); sınırın üzerindeki uyuşmazlıklarda
 tüketici mahkemesi görevlidir (m.73) ve dava açılmadan önce arabulucuya başvurulmuş olması dava şartıdır
-(m.73/A). Parasal sınır her yıl yeniden değerlenir; güncel tutar Ticaret Bakanlığı duyurusundan izlenir. Başvuru e-Devlet üzerinden Tüketici Bilgi Sistemi'yle de yapılabilir
-[DOĞRULANACAK: başvuru adresi https://tuketici.ticaret.gov.tr, Ticaret Bakanlığı sitesinden].
+(m.73/A). Parasal sınır her yıl yeniden değerlenir; güncel tutar Ticaret Bakanlığı duyurusundan izlenir. Tüketici hakem heyetine başvuru
+e-Devlet kapısı üzerinden Tüketici Bilgi Sistemi (TÜBİS) ile de yapılabilir.
 
 ## 8. Teknik
 
