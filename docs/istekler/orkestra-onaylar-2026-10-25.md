@@ -10,7 +10,10 @@ ve eksik şirket bilgileri içindir. Parola veya token değeri sohbete yazılmaz
 3. Künye: VKN, vergi dairesi ve KEP alanlarını `~/Desktop/kazuist-kunye.txt` dosyasında doldurun; yalnız
    dosya yolunu bildirin. Mevcut dosya varsa üzerine yazılmadı; yoksa boş alanlı, izin 600 şablonu hazırlandı.
 
-4. GitHubActions hesap engeli: https://github.com/settings/billing > Billing and licensing. Ödeme uyarısı varsa hesap sahibi düzeltir; Budgets and alerts > Actions engeli varsa uygun bütçeyi kendisi belirler. Sonrun40405096283 hiçbir adıma başlamadı. Kart/parola/token değeri sohbete yazılmaz; kullanıcı düzeldi bilgisini verince CI yeniden çalıştırılır.
+4. GitHubActions hesap engeli: https://github.com/settings/billing > Billing and licensing. Ödeme uyarısı varsa hesap sahibi düzeltir; Budgets and alerts > Actions engeli varsa uygun bütçeyi kendisi belirler. Sonrun40445808966 hiçbir adıma başlamadı. Kart/parola/token değeri sohbete yazılmaz; kullanıcı düzeldi bilgisini verince CI yeniden çalıştırılır.
+
+5. ADR-0028: hesap silme iadesinin denetlenebilir yönetici kararı ve paket bazında yürütülmesi, PR47/49 somut adaylarıyla öneridir. Canlı iade veya üretim migration izni içermez.
+6. ADR-0029: bütün özellikler/BYOK ücretsiz, gelir yalnız isteğe bağlı platform kredisi olacak şekilde planın uyumu. Kullanıcının ürün açıklaması kaydedildi; plan değişikliği için somut ADR önerisi PR48'de. Public görünürlük ve Apache-2.0 ayrıca onay bekler; geçmiş/log/artifact mahremiyet incelemesi tamamlanmadan yayın yapılmaz. Public sorusu görünürlük izni sayılmadı.
 
 ## Önce orkestranın tamamlayacağı işler
 
@@ -18,8 +21,7 @@ ve eksik şirket bilgileri içindir. Parola veya token değeri sohbete yazılmaz
   Kullanıcıdan teknik sağlayıcı seçimi istenmez; ücretli satın alma ve DNS için somut onay ayrı alınır.
 - Hukuki metinlerdeki yedi doğrulama işareti ve künye alanları kapanınca son yayım onayı sunulacak.
   Bu aşamada tamamlanmamış metinlere yayım onayı istenmiyor.
-- Python bağımlılık açıkları ve tarama hata kodu davranışı, PDF/kalıcı sözleşme teslimi, gerçek sandbox
-  akışı ve dolu rapor eşlemesi açık teknik işlerdir. Bunlar kullanıcıya devredilmez.
+- Python bağımlılık açıkları/tarama hata kodu ve rapor eşlemesi main üzerinde düzeltildi; PDF/kalıcı belge adayı yerel kaliteyi geçti fakat son CI kapısı hesap engelinde. O9 yönetici iade adayının bağımsız denetimi ve gerçek sandbox/staging kabulü sürüyor. Bunlar kullanıcıya devredilmez.
 
 ## Sonuç
 

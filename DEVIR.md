@@ -34,6 +34,24 @@ contracts:lint, build geçti; test i18n12, contracts127, ui31, casuist1, db43, l
 ai-gateway67/2 skip, web114/1 skip; Python143/3 skip; enjeksiyon60. GitHub Actions run 40456390075 dahil
 27 Ekim'den beri bütün koşular dört işte sıfır adımla failure: hesap ödeme/harcama kısıtı sürüyor.
 Yerel ölçüm CI yerine geçmez; hiçbir PR birleştirilmedi.
+## 27 Ekim 2026, on-yuz, ücretsiz kullanım ve fiyatlar (codex/ucretsiz-fiyatlar)
+
+ADR-0029 onayına göre fiyatlar sayfası Ücretsiz/BYOK/Platform kredisi seçeneklerine geçti.
+Tüm özelliklerin ücretsiz olduğu ve BYOK sağlayıcı faturasının kullanıcıya ait olduğu tr/en
+sözlüklerde açık. Eski aylık/yıllık öğrenci, akademisyen ve kurumsal satış satırları kaldırıldı.
+39/109/299 TL paketler ve işlem kredi tutarları değişmedi. Ledger, API veya eski haklar değiştirilmedi.
+Mobilde beş sütun yerine semantik başlık/tanım listesi; tablet/masaüstünde tablo korunur.
+
+Kanıt: plan4.2-4.4 eşliği mevcut5 test, i18n12 test, web/i18n typecheck, kapsam lint/format,
+metin ve üretim build geçti. Üretim sunucusunda375/768/1440: HTTP200, axe0, yatay taşma0.
+Üç ekran görüntüsü gözle incelendi; kanıt /tmp/kazuist-ucretsiz-fiyatlar-2026-10-27/.
+Yeni mirroring test eklenmedi. GitHub CI hesap engeli açık; birleşmedi. Public/lisans değişmedi.
+
+## 27 Ekim 2026, ücretsiz ürün ve açık kaynak önerisi
+
+ADR-0029 ücretsiz bütün özellikler/BYOK ve yalnız isteğe bağlı platform YZ kredisi gelirini önerir. Public/Apache-2.0 ayrı açık onay bekler. Plan, UI, LICENSE ve görünürlük değişmedi. Mahremiyet kapsamı ve henüz incelenmemiş geçmiş Actions içerikleri docs/istekler/orkestra-acik-kaynak-oneri.md içinde; CI faturalandırma engeli nedeniyle birleştirme yapılmaz.
+
+
 ## Orkestra iade entegrasyonu, 27 Ekim 2026
 
 43 adayı5a532dc ile49adayıe857d6c, izole278dd78 üzerinde birleştirildi; bu yerel entegrasyon main değildir. İki store çatışması ödeme sahibi tarafından snapshot/deletionfalse ve iade akışları birlikte korunarak çözüldü. Root tip kontrolü, ledger165, web113/1skip, DB43, contracts127 ve worker47 testlerini geçirdi. Web/worker üretim derlemesi, kaynak çatışma dosyalarının lint/biçimi ve metin kontrolü geçti. Bağımsız denetçi son birleşik adayda25testi ve kendi PGlite finansal repro'sunu geçirdi; yeni kritik/yüksek/orta bulgu yok. Ödeme önceki kapsamında ayrıca154ledger/12HTTPtesti ve üretim build geçti. Dalga1kapısı5/9 kalır, ADR28 öneridir ve CI hesap engeli sürer. Canlı işlem veya üretim migration yok.

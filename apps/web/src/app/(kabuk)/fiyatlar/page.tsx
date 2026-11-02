@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ortak } from '@kazuist/i18n';
 import { Tablo } from '@kazuist/ui';
 import { islemler, paketler, planlar } from './fiyatlar.ts';
+import styles from './fiyatlar.module.css';
 
 const t = ortak('tr');
 const f = t.fiyatlar;
@@ -16,19 +17,46 @@ export default function FiyatlarSayfasi() {
         <h1>{f.baslik}</h1>
         <p className="sayfa-ust__giris">{f.giris}</p>
       </header>
-      <Tablo
-        baslik={f.planlar}
-        satirAnahtari={(p) => p.ad}
-        sutunlar={[
-          { anahtar: 'ad', baslik: s.plan, hucre: (p) => p.ad },
-          { anahtar: 'kime', baslik: s.kime, hucre: (p) => p.kime },
-          { anahtar: 'fiyat', baslik: s.fiyat, hucre: (p) => p.fiyat },
-          { anahtar: 'kredi', baslik: s.kredi, hucre: (p) => p.kredi },
-          { anahtar: 'ozellik', baslik: s.ozellik, hucre: (p) => p.ozellik },
-        ]}
-        satirlar={planlar}
-        not={f.kdv}
-      />
+      <section className={styles.mobilePlans} aria-labelledby="kullanim-secenekleri">
+        <h2 id="kullanim-secenekleri">{f.planlar}</h2>
+        {planlar.map((p) => (
+          <article key={p.ad} className={styles.usage}>
+            <h3>
+              {p.ad} <span className={styles.price}>{p.fiyat}</span>
+            </h3>
+            <dl>
+              <div>
+                <dt>{s.kime}</dt>
+                <dd>{p.kime}</dd>
+              </div>
+              <div>
+                <dt>{s.kredi}</dt>
+                <dd>{p.kredi}</dd>
+              </div>
+              <div>
+                <dt>{s.ozellik}</dt>
+                <dd>{p.ozellik}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+        <p className={styles.tax}>{f.kdv}</p>
+      </section>
+      <div className={styles.desktopPlans}>
+        <Tablo
+          baslik={f.planlar}
+          satirAnahtari={(p) => p.ad}
+          sutunlar={[
+            { anahtar: 'ad', baslik: s.plan, hucre: (p) => p.ad },
+            { anahtar: 'kime', baslik: s.kime, hucre: (p) => p.kime },
+            { anahtar: 'fiyat', baslik: s.fiyat, hucre: (p) => p.fiyat },
+            { anahtar: 'kredi', baslik: s.kredi, hucre: (p) => p.kredi },
+            { anahtar: 'ozellik', baslik: s.ozellik, hucre: (p) => p.ozellik },
+          ]}
+          satirlar={planlar}
+          not={f.kdv}
+        />
+      </div>
       <Tablo
         baslik={f.paketler}
         satirAnahtari={(p) => p.ad}
