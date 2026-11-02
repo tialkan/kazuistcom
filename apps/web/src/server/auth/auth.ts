@@ -56,7 +56,7 @@ export function authMethodFor(ctx: HookCtx | null | undefined): AuthMethod | nul
 /** Cross module account events (odeme: promo credits on sign up, cancellation and refunds on deletion). */
 export interface AccountHooks {
   onSignup(userId: string): Promise<void>;
-  onDeletion(userId: string): Promise<void>;
+  onDeletion(userId: string, options?: { requestRefund: boolean }): Promise<void>;
 }
 
 export const noAccountHooks: AccountHooks = { onSignup: async () => {}, onDeletion: async () => {} };

@@ -1,10 +1,11 @@
 openapi: 3.1.0
 info:
   title: Kazuist API
-  version: 1.2.0
+  version: 1.3.0
   summary: Kazuist web and iOS API contract (single source of truth).
   description: |
-    Contract v1.2 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md and
+    Contract v1.3 for Kazuist (plan.md Ek C.1; changes in docs/adr/0027-kalici-siparis-belgeleri-ve-urun-surumleri.md,
+    docs/adr/0023-sozlesme-v1-1.md and
     docs/adr/0026-sozlesme-v1-2.md). All endpoints
     validate input with zod and reject unknown fields. Every error body is `{code, message, requestId}` and
     never exposes internal structure. Paths are relative to the `/api` prefix of the web application.
@@ -154,9 +155,47 @@ paths:
       tags: [account]
       operationId: deleteMe
       summary: Delete account (KVKK m.7)
+      description: An absent body or absent requestRefund preserves the default refund request choice (true).
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MeDeleteInput' }
       responses:
         '202': { $ref: '#/components/responses/Accepted' }
+        '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/me/orders/{orderId}/legal-documents:
+    get:
+      tags: [account]
+      operationId: listMyOrderLegalDocuments
+      summary: Read the authenticated user's frozen order documents
+      description: |
+        Own orders only; unavailable snapshots are never recreated from current texts.
+        Responses contain personal data and require Cache-Control private, no-store.
+        Neither documents nor buyer fields are logged or sent to external push services.
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: The complete frozen document set for this order.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [documents]
+                additionalProperties: false
+                properties:
+                  documents:
+                    type: array
+                    minItems: 2
+                    maxItems: 3
+                    items: { $ref: '#/components/schemas/OrderLegalDocument' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
   /v1/me/edu-verification:
     post:
       tags: [account]
@@ -2245,6 +2284,20 @@ components:
         avatar: { type: [string, 'null'] }
         tone: { type: [string, 'null'], enum: [nazik, dogrudan, null] }
         plan: { type: string, enum: [ucretsiz, byok, ogrenci_plus, akademisyen] }
+    OrderLegalDocument:
+      type: object
+      additionalProperties: false
+      required: [slug, version, text, sha256]
+      properties:
+        slug: { type: string, enum: [on-bilgilendirme, mesafeli-satis, abonelik] }
+        version: { type: string, minLength: 1 }
+        text: { type: string, minLength: 1 }
+        sha256: { type: string, pattern: '^[0-9a-f]{64}$' }
+    MeDeleteInput:
+      type: object
+      additionalProperties: false
+      properties:
+        requestRefund: { type: boolean, default: true }
     MePatch:
       type: object
       additionalProperties: false

@@ -15,12 +15,12 @@
   "dependencies": {
     "@kazuist/contracts": "workspace:*",
     "@pdf-lib/fontkit": "1.1.1",
-    "pdf-lib": "1.17.1"
+    "pdf-lib": "1.17.1",
+    "@kazuist/db": "workspace:*"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.5.10",
     "@electric-sql/pglite-pgvector": "0.0.11",
-    "@kazuist/db": "workspace:*",
     "drizzle-orm": "0.45.4",
     "fast-check": "4.10.2"
   }

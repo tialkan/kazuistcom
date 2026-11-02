@@ -34,6 +34,95 @@ contracts:lint, build geçti; test i18n12, contracts127, ui31, casuist1, db43, l
 ai-gateway67/2 skip, web114/1 skip; Python143/3 skip; enjeksiyon60. GitHub Actions run 40456390075 dahil
 27 Ekim'den beri bütün koşular dört işte sıfır adımla failure: hesap ödeme/harcama kısıtı sürüyor.
 Yerel ölçüm CI yerine geçmez; hiçbir PR birleştirilmedi.
+## Orkestra son aday ölçümü, 27 Ekim 2026
+
+Birleşik aday1a97d36 için izole kalite: JS569/Python143/enjeksiyon60 geçti, toplam6skip; tip/lint/biçim/metin/OpenAPI/build ve güvenlik taramaları temiz. Bağımsız76test ve gerçekPG18 SIGKILL kurtarma geçti. Ayrıntı docs/kalite/dalga-1.md üst bölümündedir. Kapı5/9 açık; staging/sandbox/bağlayıcı/hukuki hazırlık ve gerçekSMTP kabulü eksik. O9 yönetici iade işi ayrı dalda sürer, ADR28 öneridir. CI hesap engeli kalkmadı; hiçbir PR bu nedenle kapı atlanarak birleştirilmedi. Kullanıcının public sorusu görünürlük onayı sayılmadı; depo PRIVATE kalır. Ücretsiz özellik/BYOK ve isteğe bağlı platform kredisi modeli ayrı karar önerisinde hazırlanıyor.
+
+## Orkestra CI hesap engeli, 27 Ekim 2026
+
+GitHubActions run40405096283 sonHEAD50d0c15 için dört işi de2-3saniyede ve sıfır adımla failure yaptı. Jobannotation: recentaccountpaymentsfailed veya spendinglimit artırımı gerekiyor. Kullanıcıya https://github.com/settings/billing > Billing and licensing / Budgets and alerts > Actions hesabıadımı verildi; ödeme/kart/token değeri istenmedi. Kör tekrar veya kapıgevşetme yok. ADR27 onaylıdır, ancak43 sonHEAD dörtgreenolmadanbirleşmez. Yerel geliştirme/test ve O6/O9 işleri devameder.
+## 27 Ekim 2026, kimlik: gerçek ödeme öncesi metin ve silinmiş hesapta sözleşme teslimi
+
+`codex/checkout-metin`, birleşik aday 50d0c15 üstünde ayrı inceleme değişikliğidir; PR42 değiştirilmedi.
+Ödeme ekranı yer tutucu yerine aynı yayımlanmış Türkçe kaynağın gövdesini ve kabul edilecek sürümünü
+birlikte gösterir. Paket/abonelik başlığı kaynak metinden gelir. Gerçek oturum adı/e-postası ve seçili
+ürünün alanları `orderFields`/`fillLegalDoc` üzerinden hazırlanır; geçmiş PDF yeniden üretilmez. Eksik
+ad/soyadda tahminî alıcı yazılmaz. Taslak, boş künye, eksik alan, yanlış sürüm veya sözleşme türünde
+metin ve ödeme kapalıdır. İçerik/tutar değişirse kutu onayları yeniden alınır. Tablo ve kod dahil gövdede
+en az 12pt korunur. Teyit/cayma kutuları ve ürün adları i18n üzerinden gerçek metindir. Hukuki yayım
+onayı verilmedi; mevcut canlı kaynaklar bu kapıyı aşmaz.
+
+Sözleşme işi, genel `deleted_at` kontrolünden önce yalnız sipariş sahibi ve değişmez belge takımından
+çözülür. Alıcı yalnız her iki snapshot'ın aynı ve geçerli `ALICI_EPOSTA` alanıdır; güncel kullanıcı
+e-postasına veya başka bir varsayılana dönülmez. Böylece ödeme sonrası silinen hesapta sözleşme işi
+atlanmaz. Diğer ödeme, takip ve kampanya bildirimleri silinmiş kullanıcıda hâlâ `no_user` ile atlanır;
+dış push'a özel sözleşme içeriği gitmez. Eksik/bozuk/çelişen alıcıda gönderim ve teslim kaydı yoktur.
+
+Kanıt: yer tutucu+yanlış başlık ve silinmiş hesapta atlanan sözleşme için önce kırmızı testler, sonra
+yeşil regresyonlar. Web 111 geçti/1 mevcut skip; worker 47 geçti. İki uygulamanın typecheck ve üretim
+derlemesi geçti; değişen kod ESLint, tam Prettier ve metin kontrolü temiz. Tarayıcıda yayımlanmış
+sentetik fikstürle 375/768/1440px görüntü, WCAG2A/AA+2.1AA axe 0 ve gövde/tablo/kod alt sınırı 16px
+(12pt) doğrulandı. Görünen üç sürüm fake checkout POST'uyla aynı; gerçek /odeme kapalı kaldı. Yerel
+fikstür rotası kaldırıldı. Kanıt dizini: Codex visualizations/2026/10/25/
+01a1736a-3c34-7d40-ae4e-8f8808e87e0c/checkout-metin. SMTP testleri taklittir; canlı gönderim yapılmadı.
+CI hesap faturalama sınırı nedeniyle root tarafından bloklu bildirildi; yeniden çalıştırma tetiklenmedi.
+
+## Orkestra, 27 Ekim 2026
+
+Kullanıcı ADR-0027'yi açıkça onayladı. Kabul kaydı bu dalda işlendi; hukuki metin yayını ve canlı migration izni çıkarılmaz. PR44/45 dörder tamamlanmış yeşil CI işiyle main fef96e3'e alındı. Birleşik43 adayı main ile güncellendi; sonHEAD dört CI işi tamamlanmadan birleşmez. Eski38/41/42PR'ları aynı kapsamın kaynaklarıdır, birleşik43 sonrasında yinelenen değişiklik olarak kapatılacak.
+
+O6gerçek ödemeöncesi metin gösterimi ve silinmiş kullanıcıya kalıcı sözleşme teslim yarışı kimlikte; O9iade taleplerinin yönetici kararı/ödeme akışı ödeme+mimarın ayrıworktree'lerinde sürüyor. YeniADR0028 öneri kalır. Güncel Dalga1kapısı5/9; sonraki dalga başlamadı. İyzico aktivasyon yanıtı, gerçekuygulama sandbox/staging, bağlayıcılar ve hukuki hazırlık açık.
+
+## 26 Ekim 2026, kimlik: kalıcı PDF teslimi ve hesap silme tercihi (codex/belge-teslim)
+
+O6 teknik hat tamamlandı: satın alma anındaki onaylı Türkçe sürüm ve alanlar snapshot olarak doğrulanır;
+PDF yalnız hash ve tam belge takımı kontrolünden geçen kayıttan üretilir. Gömülü DejaVu Sans, 12 punto,
+sayfa bölme ve sayfa numarası vardır. SMTP PDF eklerini taşır; sağlayıcının alıcıyı kabul etmesi ve
+messageId dönmesi sonrasında teslim kaydı yazılır. Gönderim yoksa, kayıt eksikse veya bozuksa iş hata
+verir; genel ödeme metniyle tamamlanmaz. Order kilidi paralel gönderimleri sıralar, kayıtlı teslim
+tekrarı göndermez. SMTP kabulü ile DB commit atomik değildir; bu aralıktaki hata aynı Message-ID ile
+tekrar denemeye yol açabilir, sağlayıcı seviyesinde tam bir kez teslim garantisi verilmez.
+
+Kendi siparişinin kalıcı metinlerine erişim ucu private/no-store ve IDOR kontrollüdür. O9 silme ekranı
+wallet API'den gerçek bakiye ve kullanılmamış paket toplamını gösterir. İade tercihi strict DELETE gövdesiyle
+users.deletion_request_refund alanına silme durumu ile aynı güncellemede yazılır ve kancaya iletilir.
+Gövdesiz eski istemcilerde varsayılan true. Ödeme ajanının atomik checkout ve günlük tercih kurtarma
+entegrasyonu bu dalın bağımlılığıdır; ödeme dosyaları o ajanın commitlerinden alındı.
+
+Doğrulama: web 92 geçti/1 mevcut skip, worker 43 geçti (SMTP alıcı kabulü/ID sınırları dahil), ledger 134 geçti; sonra eklenen onaylı alıntıyı
+koruma testiyle belge hedefli 7 test geçti. Web ve worker üretim derlemesi, tipler ve değişen kod lint
+kontrolü geçti. PDF iki sayfa Poppler ile render edilip gözle incelendi; metin çıkarımı Türkçe glifleri,
+12.00pt alt sınırını ve gömülü fontu doğruladı. Silme ekranı 375/768/1440px, mock wallet ve iade opt-out
+isteğiyle doğrulandı; yeni bölümün WCAG2A/AA ve 2.1AA axe sonucu 0. Yerel kanıtlar Codex
+visualizations/2026/10/25/01a1736a-3c34-7d40-ae4e-8f8808e87e0c/belge-teslim dizinindedir.
+
+Canlı gönderim yapılmadı. Hukuki taslak/yayım kapısı korunur; ADR-0027 ve hukuki yayım onayları hâlâ
+beklenir. Root katkısı: worker direct PDF bağımlılıkları, font build kopyası ve Docker font yolu.
+## Dalga 1, ödeme, checkout snapshot ve silme tercihi entegrasyonu, 2026-10-26
+
+Durum: `codex/odeme-snapshot-deletion`; şema 0005/mimar `1b49422` ve snapshot helper/kimlik
+`db10a07` bağımlılıkları dala birleştirildi. Ödeme uygulaması `47ce6c4` kimliğe iletildi.
+Checkout önce kabul edilen metin sürümünü, gerçek tutarı ve alıcı alanlarını dondurur; draft,
+eksik alan veya değişen sürüm sağlayıcı formu açılmadan reddedilir. Sunucu production context'i
+snapshot factory olmadan checkout açmaz. Paket ön bilgi+mesafeli satış, abonelik ön bilgi+abonelik
+takımı, kaynak ve dolu metin SHA-256 özetiyle saklanır. PDF/worker belge dosyalarına dokunulmadı.
+
+`PgBillingStore.saveCheckout`: order, tüm consent satırları ve freezeOrderLegalDocuments aynı
+transaction client'ıyla yazılır; hatada tamamı rollback olur. Özel snapshot satırı içerebilen SQL hata
+detayları API/log hatasına taşınmaz. İdempotent checkout replay mevcut order sonucunu kullanır;
+geçmiş belge güncel dosyadan üretilmez. Depo helper'ı runtime kullanıldığı için ledger `@kazuist/db`
+bağımlılığı dev'den runtime'a alındı; yalnız ledger lock importer taşıması orkestra yetkisiyle yapıldı.
+
+`onAccountDeletion(userId,{requestRefund?:boolean})`: false seçimi canlı abonelik iptalini korur,
+iade talebi açmaz. Seçim verilmezse users.deletion_request_refund okunur (varsayılan true).
+Günlük kurtarma false tercihli yalnız paket hesabını seçmez; canlı aboneliği varsa iptal eder.
+Tercihin kullanıcı silme kaydıyla atomik yazılması kimlik ajanındadır.
+
+Kanıt: önce snapshot takım kaydı ve rollback testleri 2 kırmızıydı. Son PGlite 6/6, web factory 2/2;
+ana senaryolarla hedefli 20/20. Tam Node workspace 626 geçti, 3 ortam testi atlandı; typecheck,
+lint ve check:text yeşil. Build ilk turda DB barrel'in migration URL çözümü nedeniyle kırıldı;
+mimar c2f7b95 alt yol export'u ve ödeme 37ac0f6 import düzeltmesiyle yeniden build geçti.
+Gerçek ödeme/ağ/sır çağrısı yok. O8 rapor/mutabakat işi orkestradadır.
 
 ## 25 Ekim 2026, güvenlik bağımlılık düzeltmesi (codex/guvenlik-bagimlilik)
 
@@ -56,6 +145,22 @@ Bağımsız denetimin O6yer tutucu gösterim ve O9silme iadesi yönetimi kalanla
 
 En üstteki bölüm günceldir. Her ajan işini bitirince kendi bölümünü en üste ekler.
 
+## Dalga 1, mimar, kalıcı belgeler ve ürün sürümleri (codex/mimar-kalici-belge), 2026-10-26
+
+PR #38 açık, birleştirilmedi. Sözleşme/db 1.3.0; ADR-0027 öneri, Tarık onayı bekliyor.
+Migration0005: ürün kodu tekilliği kalkar, birleşik sürüm tekilliği ve eski ürün UUID ilişkileri kalır;
+ürün finansal sürüm alanları değişmez. Kalıcı sipariş belgeleri, SHA-256/sürüm/sahiplik denetimi,
+değişmez sağlayıcı kabul kanıtı ve silmede kalıcı iade tercihi eklendi.
+
+`@kazuist/db` freezeOrderLegalDocuments ve recordOrderLegalDocumentDelivery mevcut transaction client alır.
+Entegrasyon ayrıntısı `docs/istekler/mimar-kalici-belge-entegrasyonu.md`.
+Main PR35 D4 uyumu ve PR37 güvenlik/onay önkoşulları dala alındı; önceki ON CONFLICT(code)
+uyumsuzluğu kapandı. Orkestra yetkisiyle ledger D4 testindeki elle DROP satırı IF EXISTS yapıldı;
+aynı test 0004 ve 0005 üstünde çalışır.
+Doğrulama: DB35/35, contracts121/121; tam Node616 geçti,3 ortam testi atlandı.
+Build, tüm typecheck, lint, OpenAPI lint ve check:text geçti. Gerçek Docker/PostgreSQL ölçümü
+PR CI'da; dört iş yeşil olmadan birleşmez. Canlı migration ve hukuki yayın yapılmadı.
+ADR0027 onayı önceki beş ADR onayından ayrıdır.
 ## Orkestra, ADR onayları ve teknik açıklar, 26 Ekim 2026
 
 Kullanıcı ADR-0021/0022/0023/0024/0026 kararlarını ve runbook'taki iyzico aktivasyon taslağının gönderimini açıkça onayladı. ADR durumları ve plan 4.5 eşit bölüşüm/gönüllü bildirim atıfları güncellendi. Hukuki yayım onayı verilmedi; künye kullanıcı tarafından doldurulacak. İyzico taslağı kayıtlı hesaptan 26 Ekim 00:32 gönderildi ve Gönderilenler doğrulandı; yanıt bekleniyor. GLiNER yeni export20belge span eşliği1.0; CI37 tam tarama0. Kanıt kalite-bagimlilik isteğinde.

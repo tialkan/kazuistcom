@@ -118,7 +118,7 @@ export function fillLegalDoc(p: {
   let quoteDropped = false;
   const kept = paras.filter((para) => {
     const t = para.trim();
-    if (!quoteDropped && t.startsWith('>')) {
+    if (!quoteDropped && /^>\s*TASLAK[,\s]/.test(t)) {
       quoteDropped = true;
       return false;
     }
@@ -127,3 +127,6 @@ export function fillLegalDoc(p: {
   const text = kept.join('\n\n').replace(/{{([A-Z_]+)}}/g, (_, k: string) => p.fields[k] as string);
   return { ok: true, text: `Metin sürümü: ${p.version}\nSipariş: ${p.orderId}\n\n${text.trim()}\n` };
 }
+
+export * from './contract-snapshot.ts';
+export * from './contract-pdf.ts';

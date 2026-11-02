@@ -3,15 +3,13 @@
   "urun": "Seçilen ürün",
   "fiyatKdvDahil": "Fiyat (KDV dahil)",
   "onBilgilendirme": {
-    "baslik": "Ön bilgilendirme formu",
-    "metin": "[hukuk-uyum:on-bilgilendirme-formu]"
+    "baslik": "Ön bilgilendirme formu"
   },
   "mesafeliSozlesme": {
-    "baslik": "Mesafeli satış sözleşmesi",
-    "metin": "[hukuk-uyum:mesafeli-satis-sozlesmesi]"
+    "baslik": "Mesafeli satış sözleşmesi"
   },
-  "teyitKutusu": "[hukuk-uyum:teyit-kutusu-metni]",
-  "caymaIstisnasiKutusu": "[hukuk-uyum:cayma-istisnasi-kutusu-metni]",
+  "teyitKutusu": "Ön bilgilendirme formunu ve mesafeli satış sözleşmesini okudum ve onaylıyorum.",
+  "caymaIstisnasiKutusu": "Dijital içeriğin hemen sunulmasını istiyorum. Kredileri kullanmaya başladığımda cayma hakkımı kaybedeceğimi kabul ediyorum.",
   "odemeyeGec": "Ödemeye geç",
   "odemeKapali": "Ödeme, gerekli kutular işaretlenince açılır.",
   "donus": {
@@ -24,7 +22,8 @@
   "iyzicoFormu": "iyzico ödeme formu",
   "hata": {
     "genel": "Ödeme başlatılamadı. Lütfen yeniden deneyin.",
-    "girisGerekli": "Ödeme için giriş yapmanız gerekiyor."
+    "girisGerekli": "Ödeme için giriş yapmanız gerekiyor.",
+    "adSoyadGerekli": "Ödeme için profilinizde adınızı ve soyadınızı tamamlayın."
   },
   "bildirim": {
     "odeme_7_gun": {
@@ -63,5 +62,18 @@
       "baslik": "Sözleşme ve ön bilgilendirme formu",
       "metin": "Siparişinizde kabul ettiğiniz ön bilgilendirme formu ve sözleşme, kazuist.com/hukuki sayfalarında yayımlanan sürümdür."
     }
+  },
+  "teyitAbonelikKutusu": "Ön bilgilendirme formunu ve abonelik sözleşmesini, seçtiğim ödeme döneminin şartlarıyla birlikte okudum ve onaylıyorum.",
+  "metinSurumu": "Metin sürümü",
+  "hukukiTablo": "Sözleşme tablosu",
+  "hukukiMetinKapali": "Ödeme şu anda kullanılamıyor. Lütfen daha sonra yeniden deneyin.",
+  "urunAdlari": {
+    "kredi.300": "Başlangıç kredi paketi (300 kredi)",
+    "kredi.1000": "Standart kredi paketi (1.000 kredi)",
+    "kredi.3000": "Yoğun kredi paketi (3.000 kredi)",
+    "ogrenci.aylik": "Öğrenci Plus, aylık",
+    "ogrenci.yillik": "Öğrenci Plus, yıllık",
+    "akademisyen.aylik": "Akademisyen, aylık",
+    "akademisyen.yillik": "Akademisyen, yıllık"
   }
 }

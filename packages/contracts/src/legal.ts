@@ -137,3 +137,12 @@ export function legalPdfMissingFields(
 ): string[] {
   return (fm.pdf_fields ?? []).filter((f) => !values[f]?.trim());
 }
+
+/** Restricted owner-only API response. Never log or queue this content. ADR-0027. */
+export const OrderLegalDocument = z.strictObject({
+  slug: z.enum(['on-bilgilendirme', 'mesafeli-satis', 'abonelik']),
+  version: z.string().min(1),
+  text: z.string().min(1),
+  sha256: z.string().regex(/^[0-9a-f]{64}$/),
+});
+export type OrderLegalDocument = z.infer<typeof OrderLegalDocument>;

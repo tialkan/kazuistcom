@@ -8,7 +8,11 @@
       "edu": "Your Kazuist student verification code",
       "kvkk-guest": "Your Kazuist KVKK application code"
     },
-    "kodMetni": "Your code: {kod}\n\nThe code is valid for 10 minutes. If you did not request it, you can ignore this message."
+    "kodMetni": "Your code: {kod}\n\nThe code is valid for 10 minutes. If you did not request it, you can ignore this message.",
+    "sozlesme": {
+      "konu": "Your Kazuist order documents",
+      "metin": "The pre-contract information and agreement you accepted are attached as PDFs. You can keep these documents."
+    }
   },
   "hata": {
     "girisGerekli": "Please sign in to continue.",
@@ -63,6 +67,20 @@
     "hedef": {
       "baslik": "Target profession",
       "aciklama": "Choose the profession you aim for and your avatar. The choice is optional."
+    },
+    "silme": {
+      "baslik": "Delete your account",
+      "yukleniyor": "Loading your balance.",
+      "hata": "Your balance could not be loaded. Try again.",
+      "yeniden": "Try again",
+      "bakiye": "Your current balance: {kredi} credits.",
+      "uyari": "Unused purchased credits: {kredi}. You cannot use these credits after deleting your account.",
+      "iade": "Request a refund for unused purchased credits. This request requires administrator review and does not guarantee a refund.",
+      "onay": "I understand that my account will be closed and my sessions will end.",
+      "sil": "Delete my account",
+      "siliniyor": "Closing your account.",
+      "silindi": "Your account was closed. Data deletion is queued according to retention rules.",
+      "islemHata": "Your account could not be closed. Please try again."
     }
   },
   "bildirim": {

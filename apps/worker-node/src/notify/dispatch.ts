@@ -2,6 +2,7 @@ import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
 import type { ClaimedJob } from '@kazuist/db/jobs';
 import type { SqlClient } from '../queue.ts';
 import { renderBillingNotice } from '../billing/notice-text.ts';
+import { deliverLegalDocuments } from './legal-delivery.ts';
 import { channelAllows, commercialAllowed, type Prefs } from './prefs.ts';
 import { isQuietHour, nextSendTime } from './quiet-hours.ts';
 import {
@@ -32,6 +33,8 @@ export interface NotifyDeps {
   iys: IysChecker;
   now?: () => Date;
   appUrl: string;
+  /** Tests can inject the same licensed font without a runtime asset path. */
+  legalPdfFontBytes?: Uint8Array;
 }
 
 export interface DispatchResult {
@@ -72,6 +75,28 @@ const asPrefs = (row: { email: unknown; web_push: unknown; apns: unknown } | und
 export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<DispatchResult> {
   const payload = NotifyPayload.parse(rawPayload);
   const now = deps.now?.() ?? new Date();
+  // A contract cannot complete by falling back to a generic notification or a push transport.
+  if (
+    payload.type === 'odeme' &&
+    (payload.subtype === 'sozlesme' || payload.refId?.startsWith('sozlesme:'))
+  ) {
+    if (!payload.refId?.startsWith('sozlesme:')) throw new Error('Contract order reference is missing');
+    const orderId = payload.refId.slice('sozlesme:'.length);
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId))
+      throw new Error('Invalid contract order reference');
+    const result = await deliverLegalDocuments({
+      db: deps.db,
+      orderId,
+      userId: payload.userId,
+      email: deps.email,
+      now,
+      fontBytes: deps.legalPdfFontBytes,
+    });
+    return result === 'sent'
+      ? { status: 'sent', sent: ['email'] }
+      : { status: 'skipped', reason: 'already_delivered', sent: [] };
+  }
+
   const { rows: users } = await deps.db.query<{ email: string; deleted_at: Date | null }>(
     'select email, deleted_at from users where id = $1',
     [payload.userId],

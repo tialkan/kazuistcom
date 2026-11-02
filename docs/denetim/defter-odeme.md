@@ -223,3 +223,10 @@ Adaylar: main ef4479a, şema09fb90d, rezervasyon testi3a241fe, mutabakat75e94da;
 - Güvenlik: PR35/37 dört CI işi ayrı sorgulandı; küçükONNXtest ve GLiNERartifactSHA doğrulandı. Manifestparity çalışması denetçi tarafından tekrar çalıştırılmadı.
 
 Kapı:5/9; sonraki dalga ve canlı ödeme kabulü verilmez.
+
+
+## 27 Ekim gerçek PostgreSQL süreç çökmesi ölçümü (orkestra)
+
+D3 için önceki bağımsız rapordaki gerçek process-kill veri yokluğu ayrıca ölçüldü. Orkestra yalnız kendisine ait geçici, Unix socket kullanan ve TCP dinlemeyen yeni initdb kümesinde gerçek PgBillingStore kodunu çalıştırdı. Ayrı Node süreç claimOperation ile kalıcı hash satırını ve session advisorylock'u aldı. İkinci depo aynıhash'te pending, farklıhash'te conflict gördü. Sahip süreç SIGKILL ile sonlandırıldı; yeni sahip aynı kalıcı pending kaydı claimed olarak devraldı, finish sonrası özgün sonuç replay edildi ve farklıhash yine conflict oldu. Test geçti; sağlayıcı çağrısı yok. Küme test sonunda durduruldu, kullanıcı/üretim verisi kullanılmadı.
+
+Yeniden üretme kaynağı: docs/denetim/repro/d3-pg-process-crash.mts. Yalnız `/tmp/kazuist-d3-crash.*` Unix socket'li yeni özel testkümesi ve `KAZUIST_D3_CRASH_SOCKET` ile, `pnpm --filter @kazuist/db exec tsx <betiğin mutlak yolu>` komutuyla çalışır. Bu orkestra ölçümüdür; bağımsız denetçi yeniden çalıştırmış sayılmaz. Providerstate ile süreç ölümü arasındaki dağıtık atomiklik hakkında daha geniş garanti verilmez.

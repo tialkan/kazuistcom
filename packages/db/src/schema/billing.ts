@@ -8,6 +8,7 @@ import {
   jsonb,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   uniqueIndex,
   uuid,
@@ -157,15 +158,14 @@ export const priceTables = pgTable('price_tables', {
 });
 
 /**
- * One row per product and price table version (audit D4, ADR-0026). Expand step: (code, price_table_id) is
- * unique; the code-only unique constraint stays until the billing store writes and reads versions, then a
- * later migration drops it and orders.product_id points at the version that was sold.
+ * One row per product and price table version (audit D4, ADR-0027). Code alone is not unique.
+ * Orders and subscriptions keep the immutable product id of the version originally sold.
  */
 export const products = pgTable(
   'products',
   {
     id: id(),
-    code: text('code').notNull().unique(),
+    code: text('code').notNull(),
     kind: text('kind').notNull(),
     priceTableId: uuid('price_table_id')
       .notNull()
@@ -418,4 +418,58 @@ export const idempotencyKeys = pgTable(
     createdAt: createdAt(),
   },
   (t) => [uniqueIndex('idempotency_keys_uq').on(t.userId, t.operation, t.key)],
+);
+
+/** Frozen order documents; contain personal data and stay in the restricted Turkish database. */
+export const orderLegalDocuments = pgTable(
+  'order_legal_documents',
+  {
+    orderId: uuid('order_id')
+      .notNull()
+      .references(() => orders.id),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    slug: text('slug').notNull(),
+    version: text('version').notNull(),
+    filledText: text('filled_text').notNull(),
+    sha256: text('sha256').notNull(),
+    sourceSha256: text('source_sha256'),
+    fields: jsonb('fields').$type<Record<string, string>>().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.orderId, t.slug] }),
+    index('order_legal_documents_user_idx').on(t.userId, t.orderId),
+    check('order_legal_documents_slug', sql`${t.slug} in ('on-bilgilendirme', 'mesafeli-satis', 'abonelik')`),
+    check(
+      'order_legal_documents_hash',
+      sql`${t.sha256} = encode(sha256(convert_to(${t.filledText}, 'UTF8')), 'hex')`,
+    ),
+    check(
+      'order_legal_documents_source_hash',
+      sql`${t.sourceSha256} is null or ${t.sourceSha256} ~ '^[0-9a-f]{64}$'`,
+    ),
+    check(
+      'order_legal_documents_filled',
+      sql`length(${t.filledText}) > 0 and position('{{' in ${t.filledText}) = 0 and position('[DOĞRULANACAK' in ${t.filledText}) = 0`,
+    ),
+    check('order_legal_documents_fields', sql`jsonb_typeof(${t.fields}) = 'object'`),
+  ],
+);
+
+/** Written only after the real email provider accepts the complete, frozen document set. */
+export const orderLegalDocumentDeliveries = pgTable(
+  'order_legal_document_deliveries',
+  {
+    orderId: uuid('order_id')
+      .primaryKey()
+      .references(() => orders.id),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id),
+    providerMessageId: text('provider_message_id').notNull(),
+    deliveredAt: ts('delivered_at').notNull(),
+  },
+  (t) => [check('order_legal_deliveries_message', sql`length(trim(${t.providerMessageId})) > 0`)],
 );

@@ -5,10 +5,12 @@
  * payments_charge_uq, payments_refund_uq, webhook_events_provider_event_uq, notices_uq,
  * coupon_redemptions_uq).
  */
+import { freezeOrderLegalDocuments } from '@kazuist/db/legal-documents';
 import type { Ledger, PriceTable } from '../index.ts';
 import { listWalletTransactions, walletRunner, type PoolLike, type SqlClient } from '../pg.ts';
 import type {
   BillingStore,
+  PreparedLegalDocument,
   OperationClaim,
   Consent,
   CouponRow,
@@ -37,6 +39,42 @@ const d = (v: unknown): Date => (v instanceof Date ? v : new Date(String(v)));
 const dn = (v: unknown): Date | null => (v === null || v === undefined ? null : d(v));
 
 export class PgBillingStore implements BillingStore {
+  async deletionRefundPreference(userId: string) {
+    const row = await this.one<{ deletion_request_refund: boolean }>(
+      'select deletion_request_refund from users where id=$1',
+      [userId],
+    );
+    return row?.deletion_request_refund ?? true;
+  }
+  async saveCheckout(order: Order, consents: Consent[], documents: readonly PreparedLegalDocument[]) {
+    const write = async (tx: SqlClient) => {
+      const store = new PgBillingStore(tx, this.hashSubject);
+      await store.saveOrder(order);
+      await store.addConsents(consents);
+      if (documents.length) await freezeOrderLegalDocuments(tx, order.id, order.userId, documents);
+    };
+    if ('transaction' in this.db && typeof this.db.transaction === 'function') {
+      await (
+        this.db as SqlClient & { transaction<T>(fn: (tx: SqlClient) => Promise<T>): Promise<T> }
+      ).transaction(write);
+      return;
+    }
+    const client =
+      'connect' in this.db && typeof this.db.connect === 'function'
+        ? await (this.db as SqlClient & PoolLike).connect()
+        : null;
+    const tx = client ?? this.db;
+    try {
+      await tx.query('begin');
+      await write(tx);
+      await tx.query('commit');
+    } catch (error) {
+      await tx.query('rollback');
+      throw error;
+    } finally {
+      client?.release();
+    }
+  }
   private operationLocks = new Map<string, () => Promise<void>>();
   private async lockOperation(id: string): Promise<(() => Promise<void>) | null> {
     if ('connect' in this.db && typeof this.db.connect === 'function') {
@@ -263,7 +301,7 @@ export class PgBillingStore implements BillingStore {
     const { rows } = await this.db.query<{ user_id: string }>(
       `select u.id as user_id from users u where u.deleted_at is not null and (
          exists (select 1 from subscriptions s where s.user_id = u.id and s.status in ('aktif', 'odeme_bekliyor'))
-         or (exists (select 1 from wallets w join credit_lots l on l.wallet_id = w.id
+         or (u.deletion_request_refund and exists (select 1 from wallets w join credit_lots l on l.wallet_id = w.id
                       where w.user_id = u.id and l.source = 'paket' and l.remaining_credits > 0)
              and not exists (select 1 from refund_requests r where r.user_id = u.id and r.reason like 'hesap_silme:%'))
        )`,

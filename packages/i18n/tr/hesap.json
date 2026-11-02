@@ -8,7 +8,11 @@
       "edu": "Kazuist öğrenci doğrulama kodunuz",
       "kvkk-guest": "Kazuist KVKK başvurusu doğrulama kodunuz"
     },
-    "kodMetni": "Kodunuz: {kod}\n\nKod 10 dakika geçerlidir. Bu isteği siz yapmadıysanız bu iletiyi yok sayabilirsiniz."
+    "kodMetni": "Kodunuz: {kod}\n\nKod 10 dakika geçerlidir. Bu isteği siz yapmadıysanız bu iletiyi yok sayabilirsiniz.",
+    "sozlesme": {
+      "konu": "Kazuist sipariş belgeleriniz",
+      "metin": "Siparişiniz için onayladığınız ön bilgilendirme formu ve sözleşme PDF olarak ektedir. Belgeleri saklayabilirsiniz."
+    }
   },
   "hata": {
     "girisGerekli": "Bu işlem için giriş yapmanız gerekir.",
@@ -63,6 +67,20 @@
     "hedef": {
       "baslik": "Hedef meslek",
       "aciklama": "Hedeflediğiniz mesleği ve avatarınızı seçebilirsiniz. Seçim zorunlu değildir."
+    },
+    "silme": {
+      "baslik": "Hesabınızı silin",
+      "yukleniyor": "Bakiyeniz yükleniyor.",
+      "hata": "Bakiyeniz yüklenemedi. Yeniden deneyin.",
+      "yeniden": "Yeniden deneyin",
+      "bakiye": "Güncel bakiyeniz: {kredi} kredi.",
+      "uyari": "Kullanılmamış satın alınmış krediniz: {kredi}. Hesabınızı sildiğinizde bu kredileri kullanamazsınız.",
+      "iade": "Kullanılmamış satın alınmış kredilerim için iade talebi açın. Talep yönetim incelemesiyle sonuçlanır; bu seçim iade onayı değildir.",
+      "onay": "Hesabımın kapatılacağını ve oturumlarımın sonlandırılacağını anladım.",
+      "sil": "Hesabımı sil",
+      "siliniyor": "Hesabınız kapatılıyor.",
+      "silindi": "Hesabınız kapatıldı. Veri silme işlemi saklama kuralları çerçevesinde sıraya alındı.",
+      "islemHata": "Hesabınız kapatılamadı. Lütfen yeniden deneyin."
     }
   },
   "bildirim": {
