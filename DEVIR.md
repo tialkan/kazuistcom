@@ -51,6 +51,26 @@ Yeni mirroring test eklenmedi. GitHub CI hesap engeli açık; birleşmedi. Publi
 
 ADR-0029 ücretsiz bütün özellikler/BYOK ve yalnız isteğe bağlı platform YZ kredisi gelirini önerir. Public/Apache-2.0 ayrı açık onay bekler. Plan, UI, LICENSE ve görünürlük değişmedi. Mahremiyet kapsamı ve henüz incelenmemiş geçmiş Actions içerikleri docs/istekler/orkestra-acik-kaynak-oneri.md içinde; CI faturalandırma engeli nedeniyle birleştirme yapılmaz.
 
+## 27 Ekim 2026, ödeme, D9 rezervasyon yükleme maliyeti
+
+loadWallet rezervasyon tahsisleri için geçmişi her rezervasyonda yeniden taramak yerine tek indeks
+kurar: O(E*R) hesap O(E+R) olur. 1800 kayıt ve 101 rezervasyonda tarihsel filtreyle aynı tahsis,
+sıra, çoğul kayıt ve boş tahsis sonucu doğrulandı; PGlite geri yükleme testleriyle birlikte7test geçti.
+Tam geçmiş hâlâ yüklenir. D9 kapanmadı: checkpoint/veri modeli ile wallet/ledger sayfalaması ayrı iştir.
+İlk satış kapısı commitinin üretim web/worker derlemesi, lint, tip ve metin denetimleri geçti.
+Yerel üretim sayfasında 375/768/1440 px görüntüleri incelendi; üç axe ölçümünde ihlal0, taşma0.
+Kanıt: /tmp/kazuist-subscription-sales-ui/axe.json ve odeme-<genişlik>.png.
+
+## 27 Ekim 2026, ödeme, ADR-0029 yeni abonelik satış kapısı
+
+Yeni abonelik başlatma servis sınırında 409 subscription_sales_closed döner; sağlayıcıya,
+replay veya veri tabanına erişmez. Fiyat API yalnız üç kredi paketini sunar. Eski abonelik
+bağlantıları alıcı/sözleşme yüklemeden satışın kapalı olduğunu gösterir. Tarihsel fiyat
+kataloğu, callback, yenileme, fesih, iade ve rol hakları korunur. Eski abonelik kurulumları
+üretim bayrağı olmadan yalnız test fixture sınıfındadır; legacy senaryolar atlanmadı.
+Defter167, web odeme sayfası ve gerçek admin handler9 test, ledger/web tip ve lint geçti.
+Üretim derlemesi ve üç genişlik görsel/axe doğrulaması ayrıca sonuçlandırılacak.
+D9 tüm geçmiş yükleme ve hareket listesinin sayfalamasız olması açık kalır.
 
 ## Orkestra iade entegrasyonu, 27 Ekim 2026
 

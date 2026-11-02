@@ -8,7 +8,11 @@ import { depsFromService } from '../../../../apps/worker-node/src/billing/deps.t
 import { FakeEArsiv } from '../../src/billing/earsiv.ts';
 import { FAKE_CFG, FakeIyzico } from '../../src/billing/fake-iyzico.ts';
 import { HttpIyzico, IYZICO_SANDBOX_BASE_URL, IyzicoError } from '../../src/billing/iyzico.ts';
-import { BillingService, type Buyer, type ConsentVersions } from '../../src/billing/service.ts';
+import {
+  HistoricalBillingService as BillingService,
+  type Buyer,
+  type ConsentVersions,
+} from './historical-subscription.ts';
 import { MemoryBillingStore, MemoryLedgerPort } from '../../src/billing/store.ts';
 import { addDays, addMonths } from '../../src/index.ts';
 

@@ -37,12 +37,12 @@ beforeEach(() => {
   state.published = true;
 });
 const html = async () =>
-  renderToStaticMarkup(await OdemePage({ searchParams: Promise.resolve({ urun: 'ogrenci.yillik' }) }));
-it('wires the signed-in buyer and selected subscription into its published legal source', async () => {
+  renderToStaticMarkup(await OdemePage({ searchParams: Promise.resolve({ urun: 'kredi.300' }) }));
+it('wires the signed-in buyer and selected package into its published legal source', async () => {
   const body = await html();
   expect(body).toContain('Çağrı Özgür');
   expect(body).toContain('cagri@example.invalid');
-  expect(body).toContain('Abonelik sözleşmesi');
+  expect(body).toContain('mesafeli-satis');
   expect(body).toContain('2026-10-27.1');
   expect(body.match(/disabled=""/g)).toHaveLength(1);
 });
@@ -66,4 +66,13 @@ it('keeps the actual page closed on draft sources even for a signed-in buyer', a
   expect(body).not.toContain('cagri@example.invalid');
   expect(body).toContain('Ödeme şu anda kullanılamıyor.');
   expect(body.match(/disabled=""/g)).toHaveLength(3);
+});
+
+it('closes legacy subscription links without showing consent or buyer fields', async () => {
+  const body = renderToStaticMarkup(
+    await OdemePage({ searchParams: Promise.resolve({ urun: 'ogrenci.yillik' }) }),
+  );
+  expect(body).toContain('Yeni abonelik satışı kapalıdır');
+  expect(body).not.toContain('cagri@example.invalid');
+  expect(body).not.toContain('type="checkbox"');
 });

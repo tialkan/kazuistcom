@@ -124,6 +124,15 @@ export async function loadWallet(
       closed.get(grantTx.get(l.id) ?? '') ??
       ((refundedCredits.get(l.id) ?? 0) >= l.original_credits ? 'iade' : null),
   }));
+  // Index once instead of rescanning the complete history for every reservation (audit D9).
+  // The full immutable history is still loaded; checkpointing/pagination is a separate change.
+  const allocationsByKey = new Map<string, Reservation['allocations']>();
+  for (const entry of entries) {
+    if (entry.code !== codes[0] || !entry.lot_id) continue;
+    const allocations = allocationsByKey.get(entry.key) ?? [];
+    allocations.push({ lotId: entry.lot_id, credits: entry.credits });
+    allocationsByKey.set(entry.key, allocations);
+  }
   const reservations: Reservation[] = res.map((r) => ({
     operationId: r.operation_id,
     walletId,
@@ -131,9 +140,7 @@ export async function loadWallet(
     actualCredits: r.actual_credits,
     status: r.status,
     expiresAt: new Date(r.expires_at),
-    allocations: entries
-      .filter((e) => e.key === `rezervasyon:${r.operation_id}` && e.code === codes[0] && e.lot_id)
-      .map((e) => ({ lotId: e.lot_id as string, credits: e.credits })),
+    allocations: allocationsByKey.get(`rezervasyon:${r.operation_id}`) ?? [],
   }));
   const lotSum = stateLots.reduce((s, l) => s + l.remainingCredits, 0);
   return {

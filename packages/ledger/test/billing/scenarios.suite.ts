@@ -4,7 +4,7 @@ import { addDays, addMonths } from '../../src/index.ts';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { FakeEArsiv } from '../../src/billing/earsiv.ts';
 import { FAKE_CFG, FakeIyzico } from '../../src/billing/fake-iyzico.ts';
-import { BillingService, type Buyer } from '../../src/billing/service.ts';
+import { HistoricalBillingService as BillingService, type Buyer } from './historical-subscription.ts';
 import type { BillingStore, CouponRow, LedgerPort, Subscription } from '../../src/billing/store.ts';
 
 export interface ScenarioEnv {

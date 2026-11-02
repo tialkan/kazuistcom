@@ -23,6 +23,7 @@ Güncel orkestra kaydı, 27 Ekim 2026: main fef96e3; PR44/45 dört yeşil CI ile
 | 1 | kalite-guvenlik | Dalga 1 kapısının yeniden ölçümü | kapı bekliyor | 25 Ekim: 5/9; O-09 kod/regresyon hazır, O-07 all-extras audit0; akdeniz/hushmark ve GLiNER mevcut ONNX eşlik kanıtlı; GLiNER yeni export disk engeli, final CI/denetim bekliyor. codex/guvenlik-bagimlilik |
 | 1 | mimar | Kalıcı sipariş belgeleri, D4 daraltma ve silmede iade tercihi, sözleşme1.3, migration0005, ADR0027 | PR açık | PR38; mainPR35/37 dahil; DB35/contracts121, tamNode616 ve build/typecheck/lint temiz; dörtCI kapısı bekleniyor; ADR27 kullanıcı tarafından27Ekim onaylandı |
 | 1 | mimar | Silme iade yönetimi sözleşme1.4, migration0006, ADR0028 | PR açık | Öneri onay bekliyor; DB43/contracts127, tamNode636 ve build/tip/lint geçti; GitHubCI hesap limiti açık, route/defter entegrasyonu ödemede |
+| 1 | odeme | ADR0029 yeni abonelik satışını kapatma ve D9 maliyet azaltma | sürüyor | Yeni servis409 ve yalnız paket satış görünümü; tarihsel yenileme/fesih/iade regresyonları korunur; D9 tam yükleme açık |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |
