@@ -1,3 +1,14 @@
+## 2 Kasım 2026, orkestra: yeni bağımlılık açıkları (pypdf, minimatch)
+
+2 Kasım'da GitHub Actions yeniden çalıştı; PR53 gitleaks işinin tarama adımı yeni ilanlarla düştü (sızıntı yok).
+- pypdf 6.21.2: CVE-2026-119203/119204/119205/119207/119209, düzeltme 6.21.4. Alt sınır `pypdf>=6.21.4`,
+  uv.lock 6.21.4. Python 143 geçti/3 skip.
+- minimatch <11.0.1 (GHSA-g3hv-75wg-m249, orta): ESLint zinciri `minimatch@10` override ile 11.0.3.
+  openapi-typescript 7.13.0 hâlâ @redocly/openapi-core 1.34.21 (minimatch 5) kullanır; o yol da 11.0.3'e
+  zorlandı ve tek `require("minimatch")` satırı adlandırılmış dışa aktarıma `patches/` ile uyarlandı.
+  Yamalı `match` doğru/yanlış örnekleri, contracts lint ve check:generated geçti. Yalnız geliştirme aracıdır.
+Doğrulama: tarama.sh status0 (pnpm audit0, pip-audit0, gitleaks temiz, lisans yasak yok); typecheck, lint,
+check:text, contracts:lint, build ve workspace testleri geçti. Kök kilit ve workspace dosyası orkestra yetkisiyle değişti.
 ## Orkestra son aday ölçümü, 27 Ekim 2026
 
 Birleşik aday1a97d36 için izole kalite: JS569/Python143/enjeksiyon60 geçti, toplam6skip; tip/lint/biçim/metin/OpenAPI/build ve güvenlik taramaları temiz. Bağımsız76test ve gerçekPG18 SIGKILL kurtarma geçti. Ayrıntı docs/kalite/dalga-1.md üst bölümündedir. Kapı5/9 açık; staging/sandbox/bağlayıcı/hukuki hazırlık ve gerçekSMTP kabulü eksik. O9 yönetici iade işi ayrı dalda sürer, ADR28 öneridir. CI hesap engeli kalkmadı; hiçbir PR bu nedenle kapı atlanarak birleştirilmedi. Kullanıcının public sorusu görünürlük onayı sayılmadı; depo PRIVATE kalır. Ücretsiz özellik/BYOK ve isteğe bağlı platform kredisi modeli ayrı karar önerisinde hazırlanıyor.
