@@ -1,3 +1,14 @@
+## 2 Kasım 2026, orkestra: yeni bağımlılık açıkları (pypdf, minimatch)
+
+2 Kasım'da GitHub Actions yeniden çalıştı; PR53 gitleaks işinin tarama adımı yeni ilanlarla düştü (sızıntı yok).
+- pypdf 6.21.2: CVE-2026-119203/119204/119205/119207/119209, düzeltme 6.21.4. Alt sınır `pypdf>=6.21.4`,
+  uv.lock 6.21.4. Python 143 geçti/3 skip.
+- minimatch <11.0.1 (GHSA-g3hv-75wg-m249, orta): ESLint zinciri `minimatch@10` override ile 11.0.3.
+  openapi-typescript 7.13.0 hâlâ @redocly/openapi-core 1.34.21 (minimatch 5) kullanır; o yol da 11.0.3'e
+  zorlandı ve tek `require("minimatch")` satırı adlandırılmış dışa aktarıma `patches/` ile uyarlandı.
+  Yamalı `match` doğru/yanlış örnekleri, contracts lint ve check:generated geçti. Yalnız geliştirme aracıdır.
+Doğrulama: tarama.sh status0 (pnpm audit0, pip-audit0, gitleaks temiz, lisans yasak yok); typecheck, lint,
+check:text, contracts:lint, build ve workspace testleri geçti. Kök kilit ve workspace dosyası orkestra yetkisiyle değişti.
 ## Orkestra iade entegrasyonu, 27 Ekim 2026
 
 43 adayı5a532dc ile49adayıe857d6c, izole278dd78 üzerinde birleştirildi; bu yerel entegrasyon main değildir. İki store çatışması ödeme sahibi tarafından snapshot/deletionfalse ve iade akışları birlikte korunarak çözüldü. Root tip kontrolü, ledger165, web113/1skip, DB43, contracts127 ve worker47 testlerini geçirdi. Web/worker üretim derlemesi, kaynak çatışma dosyalarının lint/biçimi ve metin kontrolü geçti. Bağımsız denetçi son birleşik adayda25testi ve kendi PGlite finansal repro'sunu geçirdi; yeni kritik/yüksek/orta bulgu yok. Ödeme önceki kapsamında ayrıca154ledger/12HTTPtesti ve üretim build geçti. Dalga1kapısı5/9 kalır, ADR28 öneridir ve CI hesap engeli sürer. Canlı işlem veya üretim migration yok.

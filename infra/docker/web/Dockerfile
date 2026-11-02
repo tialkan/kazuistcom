@@ -11,6 +11,7 @@ ARG PNPM_VERSION
 RUN npm install -g pnpm@${PNPM_VERSION} && npm cache clean --force
 WORKDIR /repo
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+COPY patches ./patches
 COPY apps ./apps
 COPY packages ./packages
 COPY content ./content
