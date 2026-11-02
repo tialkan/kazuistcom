@@ -9,6 +9,31 @@
   Yamalı `match` doğru/yanlış örnekleri, contracts lint ve check:generated geçti. Yalnız geliştirme aracıdır.
 Doğrulama: tarama.sh status0 (pnpm audit0, pip-audit0, gitleaks temiz, lisans yasak yok); typecheck, lint,
 check:text, contracts:lint, build ve workspace testleri geçti. Kök kilit ve workspace dosyası orkestra yetkisiyle değişti.
+## 2 Kasım 2026, orkestra: hukuki doğrulama işaretleri, iyzico yanıtı ve CI engeli
+
+Yedi `[DOĞRULANACAK]` işaretinden dördü birincil kaynakla kapatıldı; metinler taslak kalır, yayım onayı verilmedi.
+- topluluk: Yükseköğretim Kurumları Bilimsel Araştırma ve Yayın Etiği Yönergesi m.4/1 altı ihlal türünü aynen sayar
+  (yok.gov.tr/documents/documents/68fb63b8b2511.pdf; son değişiklik 28/8/2025 YÖK Genel Kurulu).
+- cerezler: kvkk.gov.tr/Icerik/7353 güncel rehber sürümü "Temmuz 2025, KVKK Yayınları No: 69".
+- yapay-zeka: m.50, 2 Ağustos 2026'dan beri uygulanır (digital-strategy.ec.europa.eu SSS, 24/7/2026 güncel);
+  Tüzük (AB) 2026/1744 (8/7/2026, ABRG L 24/7/2026, yürürlük 27/7/2026) m.50/2 için dört aylık geçiş (gerekçe 38).
+- on-bilgilendirme: ticaret.gov.tr hakem heyeti bilgilendirme metni, e-Devlet üzerinden TÜBİS başvurusu.
+Beşinci işaret (cerezler tercih kaydı) koda göre kapatıldı: tercih çerezi ve dil çerezi yok; analitik etkin
+olmadığı için tercih sorulmuyor. better-auth 1.7.11 ve passkey kaynağından okunan giriş doğrulama çerezleri
+tabloya eklendi: state 300 sn (veri tabanı durum stratejisi), better-auth-passkey 300 sn, two_factor 600 sn;
+trust_device arayüzde tetiklenmediği için yazılmadı. EN cookies özeti aynı gerçeğe çekildi.
+Sürümler 2026-11-02.1. Açık kalan iki işaret: gizlilik VUK/TTK saklama süreleri ve iade-ve-kredi Abonelik
+Yönetmeliği değişiklik kontrolü (mevzuat.gov.tr ve resmigazete.gov.tr okuma aracında robots ve ağ vekilinde
+403; ikincil kaynakla kapatılmadı). Doğrulama: check:text 795 dosya, Prettier, contracts 118, web 88/1 skip geçti.
+
+iyzico 31 Ekim 2026'da yanıtladı: sandbox hesabında abonelik özelliği etkinleştirildi. ADR-0029 yeni abonelik
+satışını kapattığı için bu yalnız eski abonelik akışlarının sandbox testi içindir.
+
+En üst aday PR52 (e4f0eca) Node 26.13 ile bulutta yeniden ölçüldü: typecheck, lint, check:text,
+contracts:lint, build geçti; test i18n12, contracts127, ui31, casuist1, db43, ledger168, worker-node47,
+ai-gateway67/2 skip, web114/1 skip; Python143/3 skip; enjeksiyon60. GitHub Actions run 40456390075 dahil
+27 Ekim'den beri bütün koşular dört işte sıfır adımla failure: hesap ödeme/harcama kısıtı sürüyor.
+Yerel ölçüm CI yerine geçmez; hiçbir PR birleştirilmedi.
 ## Orkestra iade entegrasyonu, 27 Ekim 2026
 
 43 adayı5a532dc ile49adayıe857d6c, izole278dd78 üzerinde birleştirildi; bu yerel entegrasyon main değildir. İki store çatışması ödeme sahibi tarafından snapshot/deletionfalse ve iade akışları birlikte korunarak çözüldü. Root tip kontrolü, ledger165, web113/1skip, DB43, contracts127 ve worker47 testlerini geçirdi. Web/worker üretim derlemesi, kaynak çatışma dosyalarının lint/biçimi ve metin kontrolü geçti. Bağımsız denetçi son birleşik adayda25testi ve kendi PGlite finansal repro'sunu geçirdi; yeni kritik/yüksek/orta bulgu yok. Ödeme önceki kapsamında ayrıca154ledger/12HTTPtesti ve üretim build geçti. Dalga1kapısı5/9 kalır, ADR28 öneridir ve CI hesap engeli sürer. Canlı işlem veya üretim migration yok.

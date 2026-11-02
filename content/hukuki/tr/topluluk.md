@@ -4,12 +4,12 @@ slug: topluluk
 route: /hukuki/topluluk
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-02.1
+date: 2026-11-02
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026.
 
 Turkuaz Kampüs, hukuk öğrencileri ve akademisyenlerin çalışmalarını paylaştığı bir alandır.
 
@@ -24,9 +24,9 @@ Kendi makaleniz, bildiriniz, tezinizin özeti, posteriniz, ders notunuz ve hakk�
    anonimleştirilmemiş karar.
 3. Hakaret, taciz, nefret söylemi, tehdit.
 4. Reklam, avukatlık bürosu tanıtımı veya iş getirme amaçlı paylaşım.
-5. Bilimsel araştırma ve yayın etiğine aykırı içerik: YÖK Bilimsel Araştırma ve Yayın Etiği Yönergesi'nde
-   sayılan intihal, sahtecilik, çarpıtma, tekrar yayım, dilimleme ve haksız yazarlık gibi ihlaller
-   [DOĞRULANACAK: Yönergenin güncel metni ve ihlal türleri listesi, yok.gov.tr].
+5. Bilimsel araştırma ve yayın etiğine aykırı içerik: Yükseköğretim Kurumları Bilimsel Araştırma ve Yayın
+   Etiği Yönergesi m.4/1'de sayılan intihal, sahtecilik, çarpıtma, tekrar yayım, dilimleme ve haksız yazarlık
+   gibi ihlaller.
 6. Zararlı yazılım veya kişileri yanıltan bağlantı.
 
 ## Şikâyet ve uygulama
