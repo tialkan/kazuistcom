@@ -1,3 +1,18 @@
+## 2 Kasım 2026, orkestra: bekleyen PR'ların birleştirilmesi
+
+Kullanıcı 2 Kasım'da "hallet" diyerek açık PR'ların birleştirilmesini istedi. Her PR yalnız son HEAD'inde
+dört CI işi (node, python, docker, gitleaks) completed/success iken birleştirildi.
+- Squash: #55 (pypdf/minimatch, f3614a3), #53 (hukuki işaretler, 9459def), #54 (VPS paketi, b967e97).
+- Merge commit (yığın ortak geçmişi korunsun diye): #43 (30457f3), #50 (7605f44), #51 (ca4e4d6), #52 (fd18cc4).
+- İçerikleri birleşenlerde main'e girdiği için kapatıldı: #38, #41, #42 (#43'te); #47, #49 (#50'de); #48 (#51'de).
+  Her birinin HEAD'i main atasıdır; #42'nin HEAD'i olan merge commit'in iki ebeveyni de main'dedir.
+- Yığın güncellemelerinde yalnız DEVIR.md ve docs/ilerleme.md üst bölümleri çatıştı; iki taraf korundu.
+  Her ara adayda yerel build, typecheck, lint, check:text ve workspace testleri geçti; son main ağacı #52
+  HEAD'iyle (26c6e87) aynıdır: ledger168, web114/1 skip, db43, contracts127, worker-node47.
+Açık PR kalmadı. ADR-0027/0028/0029 kabulleri PR açıklamalarındaki 27 Ekim kullanıcı onayına dayanır; bu
+birleştirme canlı migration, canlı ödeme, hukuki yayım veya depo görünürlüğü değişikliği değildir. Dalga 1
+kapısı 5/9 açık kalır (staging, gerçek sandbox akışı, bağlayıcıların staging çalışması, künye ve iki hukuki işaret).
+
 ## 2 Kasım 2026, orkestra: yeni bağımlılık açıkları (pypdf, minimatch)
 
 2 Kasım'da GitHub Actions yeniden çalıştı; PR53 gitleaks işinin tarama adımı yeni ilanlarla düştü (sızıntı yok).
@@ -32,8 +47,8 @@ satışını kapattığı için bu yalnız eski abonelik akışlarının sandbox
 En üst aday PR52 (e4f0eca) Node 26.13 ile bulutta yeniden ölçüldü: typecheck, lint, check:text,
 contracts:lint, build geçti; test i18n12, contracts127, ui31, casuist1, db43, ledger168, worker-node47,
 ai-gateway67/2 skip, web114/1 skip; Python143/3 skip; enjeksiyon60. GitHub Actions run 40456390075 dahil
-27 Ekim'den beri bütün koşular dört işte sıfır adımla failure: hesap ödeme/harcama kısıtı sürüyor.
-Yerel ölçüm CI yerine geçmez; hiçbir PR birleştirilmedi.
+27 Ekim'den 2 Kasım gecesine kadar bütün koşular dört işte sıfır adımla failure verdi (hesap ödeme/harcama
+kısıtı); kısıt 2 Kasım'da kalktı, birleştirme aşağıdaki orkestra bölümündedir.
 ## 27 Ekim 2026, on-yuz, ücretsiz kullanım ve fiyatlar (codex/ucretsiz-fiyatlar)
 
 ADR-0029 onayına göre fiyatlar sayfası Ücretsiz/BYOK/Platform kredisi seçeneklerine geçti.

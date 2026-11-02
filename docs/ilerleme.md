@@ -3,7 +3,7 @@
 Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sürüyor, PR açık, kapı bekliyor, tamam.
 "Tamam" yalnız kalite-guvenlik kapı raporuyla yazılır (plan 17.3/7).
 
-Güncel orkestra kaydı, 27 Ekim 2026: main fef96e3; PR44/45 dört yeşil CI ile birleşti. Birleşik aday1a97d36 yerel kalite ve bağımsız denetimden geçti; son HEAD CI hesap engeli nedeniyle birleşmedi. ADR27 onaylı, ADR28 öneri. O6 adayda kapalı, O9 yönetici iade işi sürüyor. Dalga1 kapısı5/9 açık. İyzico talebi26Ekim00:32 gönderildi; aktivasyon yanıtı beklenir. Public görünürlük onayı yok; ücretsiz özellik/BYOK ve platform kredisi modeli kayda hazırlanıyor.
+Güncel orkestra kaydı, 2 Kasım 2026: CI hesap kısıtı kalktı; #43, #50, #51, #52, #53, #54 ve #55 dörder yeşil CI işiyle main'e alındı, #38/#41/#42/#47/#48/#49 içerildikleri için kapatıldı. Açık PR yok. Dalga 1 kapısı 5/9; staging, gerçek sandbox akışı, bağlayıcıların staging çalışması ve hukuki hazırlık açık. Dalga 2 başlamadı.
 
 | Dalga | Ajan | İş | Durum | Not |
 |---|---|---|---|---|
