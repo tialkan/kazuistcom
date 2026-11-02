@@ -4,13 +4,13 @@ slug: yapay-zeka
 route: /hukuki/yapay-zeka
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-02.1
+date: 2026-11-02
 status: taslak
 alternate: /legal/ai
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026. Mevcut sayfanın güncellenmiş hâlidir.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026. Mevcut sayfanın güncellenmiş hâlidir.
 
 ## 1. Kazuist'te yapay zekânın rolü
 
@@ -92,8 +92,10 @@ yönlü özeti tutulur.
 
 Kazuist'in ürettiği özetler yapay zekâ ile üretilmiştir ve arayüzde bu şekilde işaretlenir. Kazuist,
 yargı makamlarına karar desteği sunmak amacıyla tasarlanmamıştır; hedef kullanıcısı öğrenci, akademisyen
-ve meslek adaylarıdır. AB Yapay Zekâ Tüzüğü kapsamındaki risk sınıflandırması kullanım amacına göre ayrıca
-değerlendirilir [DOĞRULANACAK: Tüzüğün ilgili madde ve uygulama tarihleri, eur-lex.europa.eu].
+ve meslek adaylarıdır. AB Yapay Zekâ Tüzüğü'nün (Tüzük (AB) 2024/1689) yapay zekâ ile üretilen içeriğe ilişkin şeffaflık
+yükümlülükleri (m.50) 2 Ağustos 2026'dan beri uygulanır; Tüzük (AB) 2026/1744 bu tarihten önce piyasada
+olan sistemler için makinece okunabilir işaretleme yükümlülüğüne (m.50/2) dört aylık geçiş süresi tanımıştır.
+Risk sınıflandırması kullanım amacına göre ayrıca değerlendirilir.
 
 ## 7. Krediler
 
