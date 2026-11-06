@@ -18,13 +18,17 @@
     "@kazuist/ledger": "workspace:*",
     "@kazuist/ui": "workspace:*",
     "better-auth": "1.7.11",
+    "docx": "9.15.2",
     "drizzle-orm": "0.45.4",
+    "fflate": "0.8.3",
     "iovalkey": "0.4.0",
     "next": "16.4.2",
     "nodemailer": "10.1.7",
     "pg": "8.23.1",
     "react": "19.3.1",
     "react-dom": "19.3.1",
+    "unpdf": "2.1.0",
+    "yaml": "2.9.1",
     "zod": "4.6.7"
   },
   "devDependencies": {
