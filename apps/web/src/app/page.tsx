@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: a.baslik, description: a.aciklama };
 
 const ornekler = [a.ornekler['1'], a.ornekler['2'], a.ornekler['3'], a.ornekler['4']];
 
-/** Product home (plan 13.1): purpose sentence, large search box, sample questions, Kampus band. */
+/** Product home (plan 13.1): purpose sentence, large search box, sample questions, /tespit band (ADR-0031). */
 export default function Home() {
   return (
     <>
@@ -117,11 +117,16 @@ export default function Home() {
         </dl>
       </section>
 
-      <section className="ana-kampus" aria-labelledby="kampus-baslik">
+      {/* /tespit is live and owned by the yazma module; it is not a module tab (docs/istekler/yazma-tespit.md). */}
+      <section className="ana-tespit" aria-labelledby="tespit-baslik">
         <div className="sayfa">
-          <h2 id="kampus-baslik">{a.kampusBaslik}</h2>
-          <p>{a.kampusMetin}</p>
-          <ModulBagi href="/kampus">{a.kampusBag}</ModulBagi>
+          <div className="ana-tespit__metin">
+            <h2 id="tespit-baslik">{a.tespitBaslik}</h2>
+            <p>{a.tespitMetin}</p>
+          </div>
+          <Link href="/tespit" className="ana-tespit__bag">
+            {a.tespitBag}
+          </Link>
         </div>
       </section>
     </>
