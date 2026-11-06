@@ -1,0 +1,443 @@
+/* /ara: paper and ink (plan 12). One accent colour; cards are ruled, not shadowed (wt.31). */
+
+.fikstur {
+  max-width: var(--kz-reading-max);
+  margin-top: var(--kz-space-4);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-warning);
+  background: var(--kz-color-surface-muted);
+  font-size: var(--kz-text-sm);
+}
+
+.form {
+  margin-block: var(--kz-space-6) var(--kz-space-4);
+}
+
+.formSatir {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--kz-space-3);
+}
+
+.formSatir > :last-child {
+  margin-bottom: var(--kz-space-6);
+}
+
+.formAlan {
+  flex: 1 1 20rem;
+  min-width: 0;
+}
+
+.filtreler {
+  margin-top: var(--kz-space-2);
+  border-top: 1px solid var(--kz-color-border);
+  padding-top: var(--kz-space-3);
+}
+
+.filtreler > summary,
+.acilir > summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.filtreIzgara {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0 var(--kz-space-4);
+  margin-top: var(--kz-space-3);
+}
+
+.filtreIzgara select {
+  min-height: 44px;
+}
+
+.filtreEylem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-4);
+}
+
+.tanima {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-2);
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+
+.atif {
+  padding: 0 var(--kz-space-2);
+  border: 1px solid var(--kz-color-border);
+  border-radius: var(--kz-radius-sm);
+  color: var(--kz-color-text);
+}
+
+/* Sourced summary */
+.ozet {
+  margin-block: var(--kz-space-8);
+  padding-top: var(--kz-space-4);
+  border-top: 2px solid var(--kz-color-text);
+}
+
+.ozetAciklama,
+.ozetNot,
+.ozetGiris {
+  max-width: var(--kz-reading-max);
+}
+
+.ozetNot {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+
+.ozetDurum {
+  min-height: 1.6em;
+  margin-top: var(--kz-space-3);
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+
+.ozetKagit {
+  margin-top: var(--kz-space-4);
+  padding: var(--kz-space-6) var(--kz-space-4);
+  background: var(--kz-color-surface);
+  border: 1px solid var(--kz-color-border);
+}
+
+.ozetCumle {
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-lg);
+  line-height: var(--kz-leading-body);
+}
+
+.ozetEk,
+.ozetUyari {
+  margin-top: var(--kz-space-1);
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-warning);
+}
+
+.ozetEk::before,
+.ozetUyari::before {
+  content: '! ';
+  font-weight: 700;
+}
+
+.dayanakDugme {
+  min-height: 44px;
+  margin-top: var(--kz-space-1);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--kz-color-accent);
+  font: inherit;
+  font-size: var(--kz-text-sm);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.dayanak figure {
+  margin: var(--kz-space-2) 0;
+  padding-left: var(--kz-space-3);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-border);
+}
+
+.dayanak figcaption {
+  font-size: var(--kz-text-xs);
+  color: var(--kz-color-text-muted);
+}
+
+.dayanak blockquote {
+  margin: var(--kz-space-1) 0 0;
+}
+
+.dayanak mark {
+  background: var(--kz-color-surface-muted);
+  color: var(--kz-color-text);
+  box-shadow: inset 0 -2px 0 var(--kz-color-accent);
+}
+
+.cekimser {
+  margin-top: var(--kz-space-4);
+  padding: var(--kz-space-4);
+  border: 1px dashed var(--kz-color-text-muted);
+  max-width: var(--kz-reading-max);
+}
+
+.ozetSatir + .ozetSatir {
+  border-top: 1px solid var(--kz-color-border);
+}
+
+.ozetSatir > .dayanakDugme,
+.ozetSatir > .dayanak {
+  max-width: var(--kz-reading-max);
+}
+
+.ozetKaynaklar {
+  margin-top: var(--kz-space-6);
+}
+
+.ozetKaynaklar ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-2);
+  padding: 0;
+  list-style: none;
+}
+
+.sabitUyarilar {
+  margin-top: var(--kz-space-4);
+  max-width: var(--kz-reading-max);
+  font-size: var(--kz-text-sm);
+}
+
+/* Results */
+.sonuclar {
+  margin-block: var(--kz-space-8);
+}
+
+.sonucUst {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--kz-space-2);
+}
+
+.sayiMetni {
+  color: var(--kz-color-text-muted);
+}
+
+.sekmeler {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-1) var(--kz-space-4);
+  margin: var(--kz-space-3) 0 var(--kz-space-4);
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--kz-color-border);
+}
+
+.sekme,
+.sekmeEtkin {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kz-space-2);
+  min-height: 44px;
+  color: var(--kz-color-text);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+
+.sekmeEtkin {
+  font-weight: 700;
+  border-bottom-color: var(--kz-color-accent);
+}
+
+.sekme:hover {
+  border-bottom-color: var(--kz-color-border);
+}
+
+.sayi {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+
+.liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kart {
+  padding-block: var(--kz-space-6);
+  border-bottom: 1px solid var(--kz-color-border);
+  max-width: 52rem;
+}
+
+.kartTur {
+  margin: 0;
+  font-size: var(--kz-text-xs);
+  letter-spacing: 0.04em;
+  color: var(--kz-color-text-muted);
+}
+
+.etiketler {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-2);
+  margin: var(--kz-space-2) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kartBaslik {
+  margin: var(--kz-space-2) 0 var(--kz-space-1);
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-lg);
+  line-height: var(--kz-leading-tight);
+}
+
+.kunye {
+  margin: 0;
+  font-size: var(--kz-text-xs);
+  color: var(--kz-color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.neden {
+  margin: var(--kz-space-3) 0 0;
+  font-size: var(--kz-text-sm);
+}
+
+.nedenBaslik {
+  font-weight: 600;
+}
+
+.alinti {
+  margin: var(--kz-space-2) 0 0;
+  padding-left: var(--kz-space-3);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-border);
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-sm);
+  max-width: var(--kz-reading-max);
+}
+
+.uyariMetni {
+  margin: var(--kz-space-2) 0 0;
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-warning);
+}
+
+.veriGunu {
+  margin: var(--kz-space-2) 0 0;
+  font-size: var(--kz-text-xs);
+  color: var(--kz-color-text-muted);
+}
+
+.eylemler {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-2) var(--kz-space-6);
+  margin-top: var(--kz-space-3);
+}
+
+.eylem {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--kz-color-accent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.eylem:disabled {
+  color: var(--kz-color-text-muted);
+  text-decoration: none;
+  cursor: default;
+}
+
+.kaydet {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-2);
+}
+
+.hataMetni {
+  color: var(--kz-color-danger);
+  font-size: var(--kz-text-sm);
+}
+
+.sayfalama {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-4);
+  margin-top: var(--kz-space-6);
+}
+
+/* Help and official sites */
+.bilgiler {
+  display: grid;
+  gap: var(--kz-space-4);
+  margin-block: var(--kz-space-8);
+  padding-top: var(--kz-space-4);
+  border-top: 1px solid var(--kz-color-border);
+}
+
+.resmi ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--kz-space-6);
+  padding: 0;
+  list-style: none;
+}
+
+.resmi a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.etiketSozluk {
+  display: grid;
+  gap: var(--kz-space-3);
+  margin: var(--kz-space-3) 0 0;
+}
+
+.etiketSozluk > div {
+  display: grid;
+  grid-template-columns: minmax(10rem, 14rem) 1fr;
+  gap: var(--kz-space-3);
+  align-items: baseline;
+}
+
+.etiketSozluk dd {
+  margin: 0;
+}
+
+.altBaslik {
+  margin-top: var(--kz-space-4);
+  font-size: var(--kz-text-md);
+}
+
+.ornekler {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--kz-space-6);
+  padding: 0;
+  list-style: none;
+}
+
+.ornekler a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+@media (max-width: 40rem) {
+  .etiketSozluk > div {
+    grid-template-columns: 1fr;
+    gap: var(--kz-space-1);
+  }
+
+  .ozetKagit {
+    padding: var(--kz-space-4) var(--kz-space-3);
+  }
+}

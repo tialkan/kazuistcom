@@ -1,6 +1,39 @@
 {
   "baslik": "Sourced summary",
   "sabitUyari": "This summary was produced only from the sources below and the basis of each sentence is shown next to it. Do not copy the summary into your text; read the original source and cite it.",
+  "danismanlikUyarisi": "Kazuist does not give legal advice and does not give opinions on your personal situation.",
   "cekimser": "No summary supported by sources could be produced for this question.",
-  "dayanagiGoster": "Show basis"
+  "cekimserAciklama": "You can look at the sources below directly.",
+  "dayanagiGoster": "Show basis",
+  "dayanagiGizle": "Hide basis",
+  "alintiBaslik": "Verbatim basis in the source",
+  "aciklama": "The summary is drawn only from the sources found; a sentence without a verbatim basis in its source is not shown.",
+  "dugme": "Write a sourced summary",
+  "yeniden": "Write the summary again",
+  "hazirlaniyor": "The summary is being written; each sentence is checked against its source before it is shown.",
+  "tamamlandi": "The summary is complete.",
+  "girisGerekli": "Sign in for a sourced summary.",
+  "girisBag": "Sign in",
+  "aktarim": "Your question is cleared of personal data and sent with the most relevant source passages to an Anthropic model through OpenRouter. The question and the summary are not recorded.",
+  "kredi": "A standard summary uses your daily free allowance (2 a day, 5 with edu.tr verification); after that it uses 2 credits. If no summary can be produced, no allowance or credit is used.",
+  "kaynaklar": "Sources it relies on",
+  "cumleKaynaklari": "Sources of this sentence",
+  "kaynakNo": "Source {no}",
+  "destekleyici": "Supporting source",
+  "dusmedi": "No credit was charged for this summary.",
+  "harcanan": "{kredi} credits were used for this summary.",
+  "uyari": {
+    "veriGunu": "The time bound wording in this sentence relies on data older than 7 days; check the current version of the source.",
+    "guncellik": "The basis of the time bound wording in this sentence does not appear to be in force or its status is unknown; check the source.",
+    "destekleyici": "This sentence relies on a supporting source, not on a binding one."
+  },
+  "hata": {
+    "genel": "The summary could not be produced. Please try again.",
+    "krediYetersiz": "Your free allowance for today is used up and you do not have enough credits.",
+    "saglayiciYok": "The summary service is not available right now. Please try again later.",
+    "saglayiciIzinYok": "The provider you chose cannot be used for this operation.",
+    "izinGerekli": "To summarise through the server with your own key, first give your AI relay consent.",
+    "cokFazla": "Too many summaries were requested in a short time. Please try again shortly.",
+    "baglanti": "The connection was lost; the summary could not be completed."
+  }
 }

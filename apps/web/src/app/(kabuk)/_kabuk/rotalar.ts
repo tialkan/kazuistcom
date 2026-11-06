@@ -16,7 +16,7 @@ export const moduller = [
  * closed modules render as "yakında" text instead of a link, so no link points at a 404
  * (docs/istekler/kalite-on-yuz-baglantilar.md).
  */
-export const acikModuller: ReadonlySet<string> = new Set<string>([]);
+export const acikModuller: ReadonlySet<string> = new Set<string>(['/ara', '/kaydettiklerim']);
 export const modulAcik = (href: string) => acikModuller.has(href);
 
 /** Legal documents of plan 11 served under /hukuki/<slug>. */
