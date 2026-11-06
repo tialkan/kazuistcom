@@ -97,11 +97,6 @@
   color: var(--kz-color-text);
   border-bottom-color: var(--kz-color-accent);
 }
-.kabuk-modul--kampus a:hover,
-.kabuk-modul--kampus a[aria-current='page'] {
-  color: var(--kz-color-kampus);
-  border-bottom-color: var(--kz-color-kampus);
-}
 .kabuk-moduller .modul-kapali {
   display: inline-flex;
   align-items: center;
@@ -121,13 +116,6 @@
 .kabuk-alt li .modul-kapali {
   display: inline-block;
   padding: 0.35rem 0;
-}
-.ana-kampus .modul-kapali {
-  font-weight: 700;
-}
-.ana-kampus .modul-kapali,
-.ana-kampus .modul-kapali__not {
-  color: var(--kz-color-kampus-contrast);
 }
 .kabuk-icerik:focus {
   outline: none;
@@ -331,11 +319,13 @@
   margin: 0;
   color: var(--kz-color-text-muted);
 }
-.ana-kampus {
-  background: var(--kz-color-kampus);
-  color: var(--kz-color-kampus-contrast);
+/* /tespit band: paper and ink with the margin-note rule, no second colour (plan 12.2, ADR-0031). */
+.ana-tespit {
+  background: var(--kz-color-surface);
+  border-top: 1px solid var(--kz-color-border);
+  border-bottom: 1px solid var(--kz-color-border);
 }
-.ana-kampus .sayfa {
+.ana-tespit .sayfa {
   padding-top: var(--kz-space-8);
   padding-bottom: var(--kz-space-8);
   display: flex;
@@ -343,27 +333,32 @@
   gap: var(--kz-space-4) var(--kz-space-8);
   align-items: center;
 }
-.ana-kampus h2 {
-  margin: 0;
+.ana-tespit__metin {
+  flex: 1 1 18rem;
+  max-width: 40rem;
+  padding-left: var(--kz-space-4);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-accent);
+}
+.ana-tespit h2 {
+  margin: 0 0 var(--kz-space-2);
   font-size: var(--kz-text-2xl);
 }
-.ana-kampus p {
+.ana-tespit p {
   margin: 0;
-  max-width: 36rem;
-  flex: 1 1 18rem;
 }
-.ana-kampus a {
+.ana-tespit__bag {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   padding: 0 var(--kz-space-4);
-  border: 1.5px solid currentColor;
+  border: 1.5px solid var(--kz-color-text);
+  color: var(--kz-color-text);
   font-weight: 700;
   text-decoration: none;
 }
-.ana-kampus a:hover {
-  color: inherit;
-  background: rgb(255 255 255 / 0.12);
+.ana-tespit__bag:hover {
+  background: var(--kz-color-text);
+  color: var(--kz-color-bg);
 }
 
 /* Lists inside pages */

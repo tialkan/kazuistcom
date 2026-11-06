@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "baslik": "Kaydettiklerim",
+    "aciklama": "Kaydettiğiniz hukuk kaynakları ve kaynakçanızın dışa aktarımı."
+  },
+  "baslik": "Kaydettiğiniz kaynaklar",
+  "giris": "Aramada kaydettiğiniz mevzuat ve kararlar burada durur; kaynakçanızı buradan kopyalayabilir ya da dosya olarak indirebilirsiniz.",
+  "uyari": "Kaynakçanıza yalnızca okuduğunuz ve kullandığınız kaynakları koyun.",
+  "girisGerekli": {
+    "baslik": "Kaydettiklerinizi görmek için giriş yapın",
+    "aciklama": "Kaydetme ve kaynakça hesabınızla çalışır.",
+    "bag": "Giriş yap"
+  },
+  "bos": {
+    "baslik": "Henüz kaydettiğiniz kaynak yok",
+    "aciklama": "Arama sonuçlarındaki Kaydet düğmesiyle kaynak ekleyebilirsiniz.",
+    "bag": "Aramaya git"
+  },
+  "liste": {
+    "baslik": "Liste",
+    "sayi": "{sayi} kaynak",
+    "kaydedilme": "Kaydedilme: {tarih}",
+    "not": "Not",
+    "kaynagaGit": "Kaynağa git",
+    "kaynagaGitEtiket": "{baslik}, resmî kaynağında yeni sekmede açılır",
+    "kaldir": "Listeden çıkar",
+    "kaldiriliyor": "Çıkarılıyor",
+    "kaldirHata": "Çıkarılamadı. Lütfen yeniden deneyin."
+  },
+  "disa": {
+    "baslik": "Kaynakçayı dışa aktarın",
+    "kopyala": "Kaynakçayı kopyala",
+    "kopyalandi": "Kaynakça panoya kopyalandı.",
+    "kopyalaHata": "Pano kullanılamadı; metni aşağıdan seçip kopyalayın.",
+    "metinEtiketi": "Kaynakça metni",
+    "ris": "RIS dosyası indir (Zotero, EndNote)",
+    "bibtex": "BibTeX dosyası indir",
+    "bicimNotu": "İSNAD 2, OSCOLA ve Bluebook biçimleri hazırlanıyor. Şimdilik RIS veya BibTeX dosyasını Zotero ya da EndNote'a aktarıp bu biçimleri oradan seçebilirsiniz."
+  },
+  "hata": {
+    "kayitYok": "Bu kaynak kaydedilemedi; kayıt bulunamadı ya da gösterimden kaldırıldı.",
+    "zatenKayitli": "Bu kaynak zaten kaydedilmiş.",
+    "bicimHazirDegil": "Bu biçim henüz hazır değil; RIS veya BibTeX kullanın.",
+    "yuklenemedi": "Kaydettikleriniz şu anda yüklenemedi. Lütfen birkaç dakika sonra yeniden deneyin."
+  }
+}

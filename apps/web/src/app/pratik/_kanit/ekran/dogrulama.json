@@ -1,0 +1,2693 @@
+{
+  "genislikler": {},
+  "kontroller": [
+    {
+      "ad": "HTTP 200: /pratik 375",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: merkez 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/deste/anayasa-hukuku 375",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: deste 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/hmgs 375",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: hmgs 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/hmgs/deneme 375",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: deneme-hazir 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/editor 375",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: editor-yetkisiz 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/bugun 375",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: bugun 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: mod düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: oyun düğmesi odakta 375",
+      "tamam": true,
+      "ayrinti": "Olay kartıOlayı okuyun, uygulanacak hükmü seçin. (3 kart)"
+    },
+    {
+      "ad": "olay: Başla düğmesi odakta 375",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: olay-soru 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: kart 1 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "olay: kart 1 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: olay-sonuc 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "olay: kart 2 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "olay: kart 3 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: olay-tur-sonu 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: puan ve ilerleme gösterilir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: yanlışlar listesi ve tekrar düğmesi 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: ikinci tur başlar 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: mod düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: oyun düğmesi odakta 375",
+      "tamam": true,
+      "ayrinti": "Hâlâ geçerli mi?Hüküm bugün geçerli mi, değişti mi, yürürlükten mi kalktı? (4 ka"
+    },
+    {
+      "ad": "hala: Başla düğmesi odakta 375",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: hala-soru 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: kart 1 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 1 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hala-sonuc 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "hala: kart 2 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "hala: kart 3 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 4 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hala-tur-sonu 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: puan ve ilerleme gösterilir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: yanlışlar listesi ve tekrar düğmesi 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: ikinci tur başlar 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: mod düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: oyun düğmesi odakta 375",
+      "tamam": true,
+      "ayrinti": "Doğru mu yanlış mı?Hızlı doğru ya da yanlış turu. (9 kart)"
+    },
+    {
+      "ad": "dogruyanlis: Başla düğmesi odakta 375",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-soru 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: kart 1 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 1 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-sonuc 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 2 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 3 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 4 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 5 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 6 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 7 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 8 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 9 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-tur-sonu 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: puan ve ilerleme gösterilir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: yanlışlar listesi ve tekrar düğmesi 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: ikinci tur başlar 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: mod düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: oyun düğmesi odakta 375",
+      "tamam": true,
+      "ayrinti": "Hangisi önce?İki düzenlemeden önce geleni seçin. (2 kart)"
+    },
+    {
+      "ad": "hangisi: Başla düğmesi odakta 375",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-soru 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: kart 1 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "hangisi: kart 1 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-sonuc 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 odak soru metninde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 sonuç metinle söylenir 375",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hangisi: kart 2 doğru seçenek işaretli 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 odak sonuç bloğuna gelir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 açıklama ve alıntı ve kaynak var 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: Devam düğmesine Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-tur-sonu 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: puan ve ilerleme gösterilir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: yanlışlar listesi ve tekrar düğmesi 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: ikinci tur başlar 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 375",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 375",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 375",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: günlük yeni kart sınırı 10 375",
+      "tamam": true,
+      "ayrinti": "kayıtlı 10"
+    },
+    {
+      "ad": "çalışma: seri 1 gün 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "çalışma: yarın tekrar kartları bugün yeniden gelmez, yeni kart sınırı dolu 375",
+      "tamam": true,
+      "ayrinti": "İçeriğe atla\nKazuist\nFiyatlar\nAr-Ge: Casuist\nAraştırma zamanı\nyakında\nAtıf ağı\nyakında\nRehberler\nyakında\nYazma zamanı\nyakında\nEğlenerek öğrenme\nTurkuaz Kampüs\nyakında\nKaydettiklerim\nyakında\n\nPratik\n\nM"
+    },
+    {
+      "ad": "deneme: kısmi deneme açıkça söylenir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: deneme-sinav 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "deneme: geri sayım gösterilir 375",
+      "tamam": true,
+      "ayrinti": "0 sa 12 dk 0 sn"
+    },
+    {
+      "ad": "deneme: seçim metinle gösterilir, sonuç gösterilmez 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: yenilemeden sonra yanıt korunur 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: işaret düğmesi basılı durumu bildirir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: onay penceresinde odak vazgeç düğmesinde 375",
+      "tamam": true,
+      "ayrinti": "Hayır, devam et"
+    },
+    {
+      "ad": "yatay taşma yok: deneme-sonuc 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "deneme: puan, baraj sonucu ve konu raporu 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: sonuç geçmişe yazıldı, yanlış ve boşlar tekrar destesinde 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: yeni kart sınırı kullanılmadı 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hmgs-rapor 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik 768",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: merkez 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/deste/anayasa-hukuku 768",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: deste 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/hmgs 768",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: hmgs 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/hmgs/deneme 768",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: deneme-hazir 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/editor 768",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: editor-yetkisiz 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/bugun 768",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: bugun 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: mod düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: oyun düğmesi odakta 768",
+      "tamam": true,
+      "ayrinti": "Olay kartıOlayı okuyun, uygulanacak hükmü seçin. (3 kart)"
+    },
+    {
+      "ad": "olay: Başla düğmesi odakta 768",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: olay-soru 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: kart 1 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "olay: kart 1 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: olay-sonuc 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "olay: kart 2 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "olay: kart 3 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: olay-tur-sonu 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: puan ve ilerleme gösterilir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: yanlışlar listesi ve tekrar düğmesi 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: ikinci tur başlar 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: mod düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: oyun düğmesi odakta 768",
+      "tamam": true,
+      "ayrinti": "Hâlâ geçerli mi?Hüküm bugün geçerli mi, değişti mi, yürürlükten mi kalktı? (4 ka"
+    },
+    {
+      "ad": "hala: Başla düğmesi odakta 768",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: hala-soru 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: kart 1 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 1 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hala-sonuc 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 2 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 3 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 4 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hala-tur-sonu 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: puan ve ilerleme gösterilir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: yanlışlar listesi ve tekrar düğmesi 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: ikinci tur başlar 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: mod düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: oyun düğmesi odakta 768",
+      "tamam": true,
+      "ayrinti": "Doğru mu yanlış mı?Hızlı doğru ya da yanlış turu. (9 kart)"
+    },
+    {
+      "ad": "dogruyanlis: Başla düğmesi odakta 768",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-soru 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: kart 1 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 1 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-sonuc 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 2 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 3 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 4 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 5 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 6 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 7 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 8 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 9 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-tur-sonu 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: puan ve ilerleme gösterilir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: yanlışlar listesi ve tekrar düğmesi 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: ikinci tur başlar 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: mod düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: oyun düğmesi odakta 768",
+      "tamam": true,
+      "ayrinti": "Hangisi önce?İki düzenlemeden önce geleni seçin. (2 kart)"
+    },
+    {
+      "ad": "hangisi: Başla düğmesi odakta 768",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-soru 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: kart 1 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "hangisi: kart 1 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-sonuc 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 odak soru metninde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 sonuç metinle söylenir 768",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hangisi: kart 2 doğru seçenek işaretli 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 odak sonuç bloğuna gelir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 açıklama ve alıntı ve kaynak var 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: Devam düğmesine Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-tur-sonu 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: puan ve ilerleme gösterilir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: yanlışlar listesi ve tekrar düğmesi 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: ikinci tur başlar 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 768",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 768",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 768",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: günlük yeni kart sınırı 10 768",
+      "tamam": true,
+      "ayrinti": "kayıtlı 10"
+    },
+    {
+      "ad": "çalışma: seri 1 gün 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "çalışma: yarın tekrar kartları bugün yeniden gelmez, yeni kart sınırı dolu 768",
+      "tamam": true,
+      "ayrinti": "İçeriğe atla\nKazuist\nFiyatlar\nAr-Ge: Casuist\nHedefim\nMeslek seçin\nAraştırma zamanı\nyakında\nAtıf ağı\nyakında\nRehberler\nyakında\nYazma zamanı\nyakında\nEğlenerek öğrenme\nTurkuaz Kampüs\nyakında\nKaydettikler"
+    },
+    {
+      "ad": "deneme: kısmi deneme açıkça söylenir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: deneme-sinav 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "deneme: geri sayım gösterilir 768",
+      "tamam": true,
+      "ayrinti": "0 sa 12 dk 0 sn"
+    },
+    {
+      "ad": "deneme: seçim metinle gösterilir, sonuç gösterilmez 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: yenilemeden sonra yanıt korunur 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: işaret düğmesi basılı durumu bildirir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: onay penceresinde odak vazgeç düğmesinde 768",
+      "tamam": true,
+      "ayrinti": "Hayır, devam et"
+    },
+    {
+      "ad": "yatay taşma yok: deneme-sonuc 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "deneme: puan, baraj sonucu ve konu raporu 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: sonuç geçmişe yazıldı, yanlış ve boşlar tekrar destesinde 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: yeni kart sınırı kullanılmadı 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hmgs-rapor 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik 1440",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: merkez 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/deste/anayasa-hukuku 1440",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: deste 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/hmgs 1440",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: hmgs 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/hmgs/deneme 1440",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: deneme-hazir 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/editor 1440",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: editor-yetkisiz 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "HTTP 200: /pratik/bugun 1440",
+      "tamam": true,
+      "ayrinti": "200"
+    },
+    {
+      "ad": "yatay taşma yok: bugun 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: mod düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: oyun düğmesi odakta 1440",
+      "tamam": true,
+      "ayrinti": "Olay kartıOlayı okuyun, uygulanacak hükmü seçin. (3 kart)"
+    },
+    {
+      "ad": "olay: Başla düğmesi odakta 1440",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: olay-soru 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: kart 1 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "olay: kart 1 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 1 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: olay-sonuc 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "olay: kart 2 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 2 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "olay: kart 3 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: kart 3 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: olay-tur-sonu 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "olay: puan ve ilerleme gösterilir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: yanlışlar listesi ve tekrar düğmesi 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "olay: ikinci tur başlar 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: mod düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: oyun düğmesi odakta 1440",
+      "tamam": true,
+      "ayrinti": "Hâlâ geçerli mi?Hüküm bugün geçerli mi, değişti mi, yürürlükten mi kalktı? (4 ka"
+    },
+    {
+      "ad": "hala: Başla düğmesi odakta 1440",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: hala-soru 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: kart 1 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 1 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 1 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hala-sonuc 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 2 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 2 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hala: kart 3 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 3 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "hala: kart 4 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: kart 4 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hala-tur-sonu 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hala: puan ve ilerleme gösterilir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: yanlışlar listesi ve tekrar düğmesi 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hala: ikinci tur başlar 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: mod düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: oyun düğmesi odakta 1440",
+      "tamam": true,
+      "ayrinti": "Doğru mu yanlış mı?Hızlı doğru ya da yanlış turu. (9 kart)"
+    },
+    {
+      "ad": "dogruyanlis: Başla düğmesi odakta 1440",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-soru 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: kart 1 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 1 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 1 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-sonuc 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 2 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 2 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 3 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 3 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 4 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 4 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 5 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 5 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 6 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 6 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 7 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 7 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 8 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 8 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "dogruyanlis: kart 9 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: kart 9 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: dogruyanlis-tur-sonu 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "dogruyanlis: puan ve ilerleme gösterilir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: yanlışlar listesi ve tekrar düğmesi 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "dogruyanlis: ikinci tur başlar 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: mod düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: oyun düğmesi odakta 1440",
+      "tamam": true,
+      "ayrinti": "Hangisi önce?İki düzenlemeden önce geleni seçin. (2 kart)"
+    },
+    {
+      "ad": "hangisi: Başla düğmesi odakta 1440",
+      "tamam": true,
+      "ayrinti": "Başla"
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-soru 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: kart 1 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Doğru yanıt"
+    },
+    {
+      "ad": "hangisi: kart 1 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 1 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-sonuc 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 odak soru metninde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 sonuç metinle söylenir 1440",
+      "tamam": true,
+      "ayrinti": "Yanlış yanıt"
+    },
+    {
+      "ad": "hangisi: kart 2 doğru seçenek işaretli 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 odak sonuç bloğuna gelir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: kart 2 açıklama ve alıntı ve kaynak var 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: Devam düğmesine Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hangisi-tur-sonu 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "hangisi: puan ve ilerleme gösterilir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: yanlışlar listesi ve tekrar düğmesi 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "hangisi: ikinci tur başlar 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 1440",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 1440",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: derece düğmeleri sıradaki tekrarı gösterir 1440",
+      "tamam": true,
+      "ayrinti": "ZorSonraki tekrar: 2 gün sonra"
+    },
+    {
+      "ad": "çalışma: günlük yeni kart sınırı 10 1440",
+      "tamam": true,
+      "ayrinti": "kayıtlı 10"
+    },
+    {
+      "ad": "çalışma: seri 1 gün 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "çalışma: yarın tekrar kartları bugün yeniden gelmez, yeni kart sınırı dolu 1440",
+      "tamam": true,
+      "ayrinti": "İçeriğe atla\nKazuist\nFiyatlar\nAr-Ge: Casuist\nHedefim\nMeslek seçin\nAraştırma zamanı\nyakında\nAtıf ağı\nyakında\nRehberler\nyakında\nYazma zamanı\nyakında\nEğlenerek öğrenme\nTurkuaz Kampüs\nyakında\nKaydettikler"
+    },
+    {
+      "ad": "deneme: kısmi deneme açıkça söylenir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: deneme-sinav 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "deneme: geri sayım gösterilir 1440",
+      "tamam": true,
+      "ayrinti": "0 sa 12 dk 0 sn"
+    },
+    {
+      "ad": "deneme: seçim metinle gösterilir, sonuç gösterilmez 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: yenilemeden sonra yanıt korunur 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: işaret düğmesi basılı durumu bildirir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: onay penceresinde odak vazgeç düğmesinde 1440",
+      "tamam": true,
+      "ayrinti": "Hayır, devam et"
+    },
+    {
+      "ad": "yatay taşma yok: deneme-sonuc 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "deneme: puan, baraj sonucu ve konu raporu 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: sonuç geçmişe yazıldı, yanlış ve boşlar tekrar destesinde 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "deneme: yeni kart sınırı kullanılmadı 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: hmgs-rapor 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    }
+  ],
+  "axe": {
+    "merkez-375": [],
+    "deste-375": [],
+    "hmgs-375": [],
+    "deneme-hazir-375": [],
+    "editor-yetkisiz-375": [],
+    "bugun-375": [],
+    "olay-soru-375": [],
+    "olay-sonuc-375": [],
+    "olay-tur-sonu-375": [],
+    "hala-soru-375": [],
+    "hala-sonuc-375": [],
+    "hala-tur-sonu-375": [],
+    "dogruyanlis-soru-375": [],
+    "dogruyanlis-sonuc-375": [],
+    "dogruyanlis-tur-sonu-375": [],
+    "hangisi-soru-375": [],
+    "hangisi-sonuc-375": [],
+    "hangisi-tur-sonu-375": [],
+    "calisma-hazir-375": [],
+    "calisma-sonuc-375": [],
+    "calisma-bitti-375": [],
+    "deneme-sinav-375": [],
+    "deneme-onay-375": [],
+    "deneme-sonuc-375": [],
+    "hmgs-rapor-375": [],
+    "merkez-768": [],
+    "deste-768": [],
+    "hmgs-768": [],
+    "deneme-hazir-768": [],
+    "editor-yetkisiz-768": [],
+    "bugun-768": [],
+    "olay-soru-768": [],
+    "olay-sonuc-768": [],
+    "olay-tur-sonu-768": [],
+    "hala-soru-768": [],
+    "hala-sonuc-768": [],
+    "hala-tur-sonu-768": [],
+    "dogruyanlis-soru-768": [],
+    "dogruyanlis-sonuc-768": [],
+    "dogruyanlis-tur-sonu-768": [],
+    "hangisi-soru-768": [],
+    "hangisi-sonuc-768": [],
+    "hangisi-tur-sonu-768": [],
+    "calisma-hazir-768": [],
+    "calisma-sonuc-768": [],
+    "calisma-bitti-768": [],
+    "deneme-sinav-768": [],
+    "deneme-onay-768": [],
+    "deneme-sonuc-768": [],
+    "hmgs-rapor-768": [],
+    "merkez-1440": [],
+    "deste-1440": [],
+    "hmgs-1440": [],
+    "deneme-hazir-1440": [],
+    "editor-yetkisiz-1440": [],
+    "bugun-1440": [],
+    "olay-soru-1440": [],
+    "olay-sonuc-1440": [],
+    "olay-tur-sonu-1440": [],
+    "hala-soru-1440": [],
+    "hala-sonuc-1440": [],
+    "hala-tur-sonu-1440": [],
+    "dogruyanlis-soru-1440": [],
+    "dogruyanlis-sonuc-1440": [],
+    "dogruyanlis-tur-sonu-1440": [],
+    "hangisi-soru-1440": [],
+    "hangisi-sonuc-1440": [],
+    "hangisi-tur-sonu-1440": [],
+    "calisma-hazir-1440": [],
+    "calisma-sonuc-1440": [],
+    "calisma-bitti-1440": [],
+    "deneme-sinav-1440": [],
+    "deneme-onay-1440": [],
+    "deneme-sonuc-1440": [],
+    "hmgs-rapor-1440": []
+  },
+  "hataSayisi": 0
+}

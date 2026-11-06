@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "baslik": "Ara",
+    "aciklama": "Mevzuat, mahkeme kararları ve kurul kararlarında arayın; her sonucun künyesini, otorite sınıfını ve resmî kaynağını görün."
+  },
+  "baslik": "Hukuk kaynaklarında arayın",
+  "giris": "Bir soru, kavram, madde atfı (KVKK m.11, TBK 49) ya da esas ve karar numarası yazın.",
+  "form": {
+    "etiket": "Aranacak soru veya atıf",
+    "ipucu": "Örnek: kişisel verilerin silinmesi, KVKK m.11, 4. HD 2021/26076 E., 2024/10643 K.",
+    "dugme": "Ara",
+    "filtreler": "Tarih, mahkeme ve otorite filtreleri",
+    "siralama": "Sıralama",
+    "uygula": "Filtreleri uygula",
+    "temizle": "Filtreleri temizle",
+    "tarihBaslangic": "Başlangıç tarihi",
+    "tarihBitis": "Bitiş tarihi",
+    "mahkeme": "Mahkeme, daire veya kurum",
+    "mahkemeIpucu": "Örnek: Yargıtay, Hukuk Genel Kurulu, Kişisel Verileri Koruma Kurulu",
+    "otorite": "Otorite sınıfı",
+    "tumOtoriteler": "Tüm otorite sınıfları"
+  },
+  "tur": {
+    "baslik": "Kaynak türü",
+    "tumu": "Tümü",
+    "mevzuat": "Mevzuat",
+    "karar": "Mahkeme kararı",
+    "kurul_karari": "Kurum kararı",
+    "makale": "Makale",
+    "kitap": "Kitap",
+    "tez": "Tez",
+    "ab_hukuku": "AB hukuku"
+  },
+  "sirala": {
+    "ilgililik": "İlgililik",
+    "onem": "Önem",
+    "tarih_yeni": "En yeni",
+    "tarih_eski": "En eski"
+  },
+  "otorite": {
+    "baglayici_norm": "Bağlayıcı norm",
+    "baglayici_karar": "Bağlayıcı karar",
+    "yuksek_emsal": "Yüksek emsal",
+    "emsal": "Emsal",
+    "emsal_sinirli": "Sınırlı emsal",
+    "idari_karar": "İdari karar",
+    "doktrin": "Doktrin",
+    "karsilastirmali": "Karşılaştırmalı"
+  },
+  "etiket": {
+    "yeni": "Yeni",
+    "yerlesik": "Yerleşik",
+    "eski": "Eski",
+    "oncu": "Öncü",
+    "anonimlestirildi": "Anonimleştirildi",
+    "ilgililik_yuksek": "İlgililik: yüksek",
+    "ilgililik_orta": "İlgililik: orta",
+    "ilgililik_arka_plan": "İlgililik: arka plan",
+    "guncellik_uyarisi": "Güncellik uyarısı",
+    "canli_kaynak": "Canlı kaynak",
+    "veri_gunu": "Veri günü eski"
+  },
+  "durum": {
+    "yururlukte": "Yürürlükte",
+    "degisti": "Değişti",
+    "yururlukten_kalkti": "Yürürlükten kalktı",
+    "bozuldu": "Bozuldu",
+    "onandi": "Onandı",
+    "kesinlesti": "Kesinleşti",
+    "bilinmiyor": "Durumu bilinmiyor"
+  },
+  "sonuc": {
+    "baslik": "Sonuçlar",
+    "sayi": "{toplam} sonuç",
+    "sayfa": "Sayfa {sayfa} / {sayfalar}",
+    "sayfalama": "Sonuç sayfaları",
+    "onceki": "Önceki sayfa",
+    "sonraki": "Sonraki sayfa",
+    "kaynagaGit": "Kaynağa git",
+    "kaynagaGitEtiket": "{baslik}, resmî kaynağında yeni sekmede açılır",
+    "kaydet": "Kaydet",
+    "kaydedildi": "Kaydedildi",
+    "kaydediliyor": "Kaydediliyor",
+    "kaydetGiris": "Kaydetmek için giriş yapın",
+    "kaydetHata": "Kaydedilemedi. Lütfen yeniden deneyin.",
+    "zatenKayitli": "Bu kaynak zaten kayıtlı.",
+    "eskiUyari": "Bu kaynak 10 yıldan eski; hâlâ geçerli olup olmadığını kontrol edin.",
+    "veriGunu": "Veri günü: {tarih}",
+    "tanima": "Tanınan atıflar",
+    "otoriteEtiket": "Otorite sınıfı",
+    "durumEtiket": "Durum",
+    "ulke": "Yargı çevresi: {ulke}",
+    "neden": {
+      "baslik": "Neden ilgili",
+      "kimlik": "Aradığınız numara veya madde bu kayıtla birebir eşleşiyor.",
+      "norm": "Sorudaki {atif} bu kayıtta geçiyor.",
+      "terim": "Başlıkta veya pasajda sorunuzdaki terimler geçiyor.",
+      "anlam": "Sorunuza yakın bir pasaj içeriyor."
+    }
+  },
+  "bos": {
+    "baslik": "Aramak istediğiniz konuyu yazın",
+    "aciklama": "Kavram, madde atfı ya da esas ve karar numarasıyla arayabilirsiniz.",
+    "ornekler": "Örnek aramalar",
+    "ornek": {
+      "1": "kişisel verilerin silinmesi",
+      "2": "KVKK m.11",
+      "3": "kişilik hakkının zedelenmesi manevi tazminat",
+      "4": "unutulma hakkı"
+    },
+    "sonucYok": "Bu aramayla eşleşen kaynak bulunamadı",
+    "sonucYokAciklama": "Daha genel bir ifade deneyin, filtreleri kaldırın ya da aşağıdaki resmî sitelerde arayın."
+  },
+  "hata": {
+    "baslik": "Arama tamamlanamadı",
+    "kullanilamaz": "Arama şu anda kullanılamıyor. Lütfen birkaç dakika sonra yeniden deneyin.",
+    "gecersiz": "Arama ifadesi veya filtrelerden biri geçersiz. Aramayı 500 karakterden kısa tutun ve tarihleri takvimden seçin."
+  },
+  "canli": {
+    "baslik": "Canlı kaynak",
+    "aciklama": "Bu sonuçlar resmî arama arayüzünden şimdi getirildi ve çekirdek dizinde yer almıyor."
+  },
+  "fikstur": {
+    "baslik": "Örnek derlem",
+    "metin": "Bu ortamda arama örnek derlem üzerinde çalışır: Kişisel Verilerin Korunması Kanunu'nun tamamı, Türk Borçlar Kanunu m.49-75, Anayasa'nın beş maddesi, yedi Yargıtay kararı, bir Kişisel Verileri Koruma Kurulu karar özeti ve GDPR m.1-2. Metinler resmî kaynaklardan 7 Kasım 2026'da alındı."
+  },
+  "taranan": {
+    "baslik": "Taranan kaynakları göster",
+    "aciklama": "Arama yalnız aşağıdaki resmî kaynaklardan derlenen kayıtlarda çalışır. Kararlar dizine girmeden önce kişisel verilerden arındırılır.",
+    "mevzuat": "Mevzuat Bilgi Sistemi: kanun maddeleri",
+    "yargitay": "Yargıtay Karar Arama: kararlar",
+    "kvkk": "Kişisel Verileri Koruma Kurulu: karar özetleri",
+    "eurlex": "EUR-Lex: seçili AB tüzükleri"
+  },
+  "etiketler": {
+    "baslik": "Etiketler ne anlama geliyor?",
+    "yeni": "Yayım veya karar tarihi son 3 yıl içinde.",
+    "yerlesik": "Yayım veya karar tarihi 3 ile 10 yıl arasında.",
+    "eski": "10 yıldan eski; hâlâ geçerli olup olmadığını kontrol edin.",
+    "oncu": "Genel kurul, içtihadı birleştirme veya büyük daire kararı ya da çok atıf alan kaynak.",
+    "anonimlestirildi": "Kişisel veriler gösterimden önce maskelendi.",
+    "ilgililik": "Bu aramaya göre yeniden hesaplanan yakınlık: yüksek, orta veya arka plan.",
+    "guncellik_uyarisi": "Mevzuat sonradan değişti, yürürlükten kalktı ya da karar bozuldu.",
+    "canli_kaynak": "Resmî arama arayüzünden anlık getirildi; çekirdek dizinde yok.",
+    "veri_gunu": "Kaynak 7 günden uzun süredir yeniden çekilmedi.",
+    "otorite": "Otorite sınıfı şekil ve metinle gösterilir: bağlayıcı norm, bağlayıcı karar, yüksek emsal, emsal, sınırlı emsal, idari karar, doktrin, karşılaştırmalı."
+  },
+  "resmi": {
+    "baslik": "Bu soruyu resmî sitelerde arayın",
+    "aciklama": "Google Akademik ve DergiPark sorunuzla açılır; diğer bağlantılar ilgili kurumun arama sayfasına gider.",
+    "scholar": "Google Akademik",
+    "dergipark": "DergiPark",
+    "yoktez": "YÖK Ulusal Tez Merkezi",
+    "uyap": "UYAP Emsal Karar Arama",
+    "aym": "Anayasa Mahkemesi Kararlar Bilgi Bankası",
+    "yargitay": "Yargıtay Karar Arama",
+    "danistay": "Danıştay Karar Arama",
+    "yeniSekme": "yeni sekmede açılır"
+  }
+}

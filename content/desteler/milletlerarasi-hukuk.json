@@ -1,0 +1,125 @@
+{
+  "sema": 1,
+  "slug": "milletlerarasi-hukuk",
+  "baslik": "Milletlerarası Hukuk",
+  "aciklama": "Andlaşmaların iç hukuktaki yeri ve yürürlüğe konulması. Kartlar Anayasa m.90 ve m.92 hükümlerine bağlıdır.",
+  "hmgsAlani": "milletlerarasi-hukuk",
+  "kartlar": [
+    {
+      "id": "milletlerarasi-hukuk.001",
+      "oyun": "dogru_yanlis",
+      "soru": "Usulüne göre yürürlüğe konulmuş milletlerarası andlaşmalar kanun hükmündedir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Madde 90'ın beşinci fıkrası iç hukukta andlaşmaların kanun hükmünde olduğunu söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "90",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Usulüne göre yürürlüğe konulmuş milletlerarası andlaşmalar kanun hükmündedir."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "452b2f5b9d23dc6a"
+        }
+      ],
+      "hmgsAlani": "milletlerarasi-hukuk",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m90"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "milletlerarasi-hukuk.002",
+      "oyun": "dogru_yanlis",
+      "soru": "Usulüne göre yürürlüğe konulmuş milletlerarası andlaşmalar hakkında Anayasaya aykırılık iddiasıyla Anayasa Mahkemesine başvurulabilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde 90 bu yolu kapatır: andlaşmalar hakkında Anayasaya aykırılık iddiasıyla Anayasa Mahkemesine başvurulamaz.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "90",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Bunlar hakkında Anayasaya aykırılık iddiası ile Anayasa Mahkemesine başvurulamaz."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "452b2f5b9d23dc6a"
+        }
+      ],
+      "hmgsAlani": "milletlerarasi-hukuk",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m90"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "milletlerarasi-hukuk.003",
+      "oyun": "dogru_yanlis",
+      "soru": "Temel hak ve özgürlüklere ilişkin usulüne göre yürürlüğe konulmuş milletlerarası andlaşmalarla kanunların aynı konuda farklı hükümler içermesi nedeniyle çıkacak uyuşmazlıklarda milletlerarası andlaşma hükümleri esas alınır.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Bu çatışma kuralı 2004 tarihli 5170 sayılı Kanunla 90. maddeye eklenmiştir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "90",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Usulüne göre yürürlüğe konulmuş temel hak ve özgürlüklere ilişkin milletlerarası andlaşmalarla kanunların aynı konuda farklı hükümler içermesi nedeniyle çıkabilecek uyuşmazlıklarda milletlerarası andlaşma hükümleri esas alınır."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "452b2f5b9d23dc6a"
+        }
+      ],
+      "hmgsAlani": "milletlerarasi-hukuk",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m90"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "milletlerarasi-hukuk.004",
+      "oyun": "olay_karti",
+      "soru": "Teknik ilişkileri düzenleyen, süresi sekiz ay olan ve Devlet Maliyesi bakımından yüklenme getirmeyen bir andlaşma, Meclis onayı beklenmeden yayımlanarak yürürlüğe konmak isteniyor. Usulü düzenleyen madde hangisidir?",
+      "secenekler": ["Anayasa m.7", "Anayasa m.90", "Anayasa m.92", "Anayasa m.104", "Anayasa m.153"],
+      "dogruIndex": 1,
+      "aciklama": "Madde 90, bu nitelikteki andlaşmaların şartlarıyla birlikte yayımlanma ile yürürlüğe konabileceğini ve iki ay içinde Meclisin bilgisine sunulacağını söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "90",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Ekonomik, ticarî veya teknik ilişkileri düzenleyen ve süresi bir yılı aşmayan andlaşmalar, Devlet Maliyesi bakımından bir yüklenme getirmemek, kişi hallerine ve Türklerin yabancı memleketlerdeki mülkiyet haklarına dokunmamak şartıyla, yayımlanma ile yürürlüğe konabilir."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "452b2f5b9d23dc6a"
+        }
+      ],
+      "hmgsAlani": "milletlerarasi-hukuk",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m90"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    }
+  ]
+}

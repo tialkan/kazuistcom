@@ -14,10 +14,10 @@ describe('Turkish case mapping (plan 12.4, 12.10)', () => {
     expect(lowerTr('I')).toBe('ı');
   });
   it('round-trips real words', () => {
-    for (const w of ['ılık', 'istinaf', 'şerh', 'Yargıtay', 'içtihadı birleştirme', 'Kampüs']) {
+    for (const w of ['ılık', 'istinaf', 'şerh', 'Yargıtay', 'içtihadı birleştirme', 'Üsküdar']) {
       expect(lowerTr(upperTr(w))).toBe(lowerTr(w));
     }
-    expect(upperTr('Turkuaz Kampüs')).toBe('TURKUAZ KAMPÜS');
+    expect(upperTr('İstanbul Üniversitesi')).toBe('İSTANBUL ÜNİVERSİTESİ');
   });
 });
 
@@ -29,10 +29,14 @@ describe('number formatting', () => {
 });
 
 describe('proper names are not translated (wt.88)', () => {
-  it('keeps brand and sub-brand names identical in en', () => {
+  it('keeps brand and company names identical in en', () => {
     expect(ortak('en').marka).toBe(ortak('tr').marka);
-    expect(ortak('en').gezinme.sekme.kampus).toBe(ortak('tr').gezinme.sekme.kampus);
     expect(ortak('en').altBilgi.telif).toBe(ortak('tr').altBilgi.telif);
+  });
+  it('has no Turkuaz Kampus key after ADR-0031', () => {
+    for (const dil of ['tr', 'en'] as const) {
+      expect(JSON.stringify(ortak(dil))).not.toMatch(/kampus|Kampüs/i);
+    }
   });
   it('keeps the fixed warnings in the source text required by plan 7.5', () => {
     expect(ortak('tr').uyari.intihal).toBe('Kazuist intihale ve etik ihlaline aracılık etmez.');

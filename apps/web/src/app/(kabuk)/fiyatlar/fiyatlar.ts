@@ -42,8 +42,6 @@ export const islemler: Islem[] = [
   { ad: 'Kaynaklı özet (standart)', kredi: '2' },
   { ad: 'Derin özet (20 kaynak, otorite ayrımı)', kredi: '60' },
   { ad: 'Kılavuzdan şablon (kural çıkarma)', kredi: '30' },
-  { ad: 'Kampüs YZ özeti', kredi: '3' },
-  { ad: 'Poster taslağı', kredi: '4' },
   { ad: 'Kısaltmalar cetveli', kredi: '2' },
   { ad: 'Kart taslağı (akademisyen)', kredi: '1' },
   { ad: 'Arama, atıf ağı, onaylı dergi şablonu', kredi: '0' },

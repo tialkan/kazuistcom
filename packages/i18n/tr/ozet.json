@@ -1,6 +1,39 @@
 {
   "baslik": "Kaynaklı özet",
   "sabitUyari": "Bu özet yalnızca aşağıdaki kaynaklardan üretildi ve her cümlenin dayanağı yanında gösteriliyor. Özeti metninize kopyalamayın; asıl kaynağı okuyup ona atıf yapın.",
+  "danismanlikUyarisi": "Kazuist hukuki danışmanlık vermez ve kişisel durumunuz için görüş bildirmez.",
   "cekimser": "Bu soruya kaynaklarla desteklenebilen bir özet çıkarılamadı.",
-  "dayanagiGoster": "Dayanağı göster"
+  "cekimserAciklama": "Aşağıdaki kaynaklara doğrudan bakabilirsiniz.",
+  "dayanagiGoster": "Dayanağı göster",
+  "dayanagiGizle": "Dayanağı gizle",
+  "alintiBaslik": "Kaynaktaki birebir dayanak",
+  "aciklama": "Özet yalnız bulunan kaynaklardan çıkarılır; kaynağında birebir dayanağı bulunmayan cümle gösterilmez.",
+  "dugme": "Kaynaklı özet çıkar",
+  "yeniden": "Özeti yeniden çıkar",
+  "hazirlaniyor": "Özet hazırlanıyor; her cümle gösterilmeden önce kaynağında doğrulanıyor.",
+  "tamamlandi": "Özet tamamlandı.",
+  "girisGerekli": "Kaynaklı özet için giriş yapın.",
+  "girisBag": "Giriş yap",
+  "aktarim": "Sorunuz kişisel verilerden arındırılır ve en ilgili kaynak pasajlarıyla birlikte OpenRouter üzerinden Anthropic modeline gönderilir. Soru ve özet kayda yazılmaz.",
+  "kredi": "Standart özet günlük ücretsiz hakkınızdan düşer (günde 2, edu.tr doğrulamasıyla 5); hak bitince 2 kredi kullanılır. Özet çıkarılamazsa hak ve kredi düşmez.",
+  "kaynaklar": "Dayandığı kaynaklar",
+  "cumleKaynaklari": "Bu cümlenin kaynakları",
+  "kaynakNo": "Kaynak {no}",
+  "destekleyici": "Destekleyici kaynak",
+  "dusmedi": "Bu özet için kredi düşülmedi.",
+  "harcanan": "Bu özet için {kredi} kredi kullanıldı.",
+  "uyari": {
+    "veriGunu": "Bu cümledeki zamana bağlı ifade, 7 günden eski veriye dayanıyor; kaynağın güncel hâlini kontrol edin.",
+    "guncellik": "Bu cümledeki zamana bağlı ifadenin dayanağı yürürlükte görünmüyor ya da durumu bilinmiyor; kaynağı kontrol edin.",
+    "destekleyici": "Bu cümle bağlayıcı bir kaynağa değil, destekleyici kaynağa dayanıyor."
+  },
+  "hata": {
+    "genel": "Özet çıkarılamadı. Lütfen yeniden deneyin.",
+    "krediYetersiz": "Bugünkü ücretsiz hakkınız bitti ve yeterli krediniz yok.",
+    "saglayiciYok": "Özet hizmeti şu anda kullanılamıyor. Lütfen daha sonra yeniden deneyin.",
+    "saglayiciIzinYok": "Seçtiğiniz sağlayıcı bu işlem için kullanılamıyor.",
+    "izinGerekli": "Kendi anahtarınızla sunucu üzerinden özet için önce yapay zekâ aktarım onayınızı vermeniz gerekir.",
+    "cokFazla": "Kısa sürede çok fazla özet istendi. Lütfen biraz sonra yeniden deneyin.",
+    "baglanti": "Bağlantı kesildi; özet tamamlanamadı."
+  }
 }

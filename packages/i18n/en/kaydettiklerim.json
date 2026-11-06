@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "baslik": "Saved",
+    "aciklama": "Legal sources you saved and the export of your bibliography."
+  },
+  "baslik": "Sources you saved",
+  "giris": "Legislation and decisions you saved while searching stay here; you can copy your bibliography or download it as a file.",
+  "uyari": "Put only the sources you read and use into your bibliography.",
+  "girisGerekli": {
+    "baslik": "Sign in to see what you saved",
+    "aciklama": "Saving and the bibliography work with your account.",
+    "bag": "Sign in"
+  },
+  "bos": {
+    "baslik": "You have not saved any source yet",
+    "aciklama": "Add sources with the Save button in the search results.",
+    "bag": "Go to search"
+  },
+  "liste": {
+    "baslik": "List",
+    "sayi": "{sayi} sources",
+    "kaydedilme": "Saved on: {tarih}",
+    "not": "Note",
+    "kaynagaGit": "Go to source",
+    "kaynagaGitEtiket": "{baslik} opens at its official source in a new tab",
+    "kaldir": "Remove from list",
+    "kaldiriliyor": "Removing",
+    "kaldirHata": "Could not remove. Please try again."
+  },
+  "disa": {
+    "baslik": "Export your bibliography",
+    "kopyala": "Copy bibliography",
+    "kopyalandi": "Bibliography copied to the clipboard.",
+    "kopyalaHata": "The clipboard is not available; select the text below and copy it.",
+    "metinEtiketi": "Bibliography text",
+    "ris": "Download RIS file (Zotero, EndNote)",
+    "bibtex": "Download BibTeX file",
+    "bicimNotu": "İSNAD 2, OSCOLA and Bluebook formats are in preparation. For now you can import the RIS or BibTeX file into Zotero or EndNote and choose these styles there."
+  },
+  "hata": {
+    "kayitYok": "This source could not be saved; the record was not found or was removed from display.",
+    "zatenKayitli": "This source is already saved.",
+    "bicimHazirDegil": "This format is not ready yet; use RIS or BibTeX.",
+    "yuklenemedi": "Your saved sources could not be loaded right now. Please try again in a few minutes."
+  }
+}

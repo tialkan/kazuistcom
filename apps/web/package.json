@@ -13,6 +13,7 @@
   "dependencies": {
     "@better-auth/passkey": "1.7.11",
     "@kazuist/ai-gateway": "workspace:*",
+    "@kazuist/casuist": "workspace:*",
     "@kazuist/contracts": "workspace:*",
     "@kazuist/db": "workspace:*",
     "@kazuist/i18n": "workspace:*",

@@ -9,6 +9,77 @@ Yeni sözleşme veya şema değişikliği yok; ihtiyaçlar docs/istekler/yazma-*
 - eval/rules: beş gerçek DergiPark kılavuzu, altın etiketler, ölçüm betiği. Plan 15.3/3: "3 kılavuzda hatasız .docx" geçti; "çekirdek %95" **geçmedi** (canlı model ölçümü yok, 5/10 kılavuz). Word ve Google Docs elle kontrol kaydı bekliyor (eval/rules/el-kontrol-kaydi.md).
 - Doğrulama: web 307 test, worker-node 77, i18n 15, python docxcheck 43; typecheck, lint, prettier, check:text, üretim derlemesi; 375/768/1440 axe 0 ihlal ve taşma 0 (eval/rules/ekran, gerçek PostgreSQL 18, gerçek docxcheck servisi, Brave).
 - Açık: orkestra kayıtları (kalemcik.daily, docxcheck bağlama, pyproject testpaths), YZ bütçe ve kredi girişi (yz-gecidi), 10 enstitü/dergi kılavuzu ve canlı ölçüm, DergiPark protokolü olmadan otomatik çekme yapılmadı, editör kuyruğuna düşen dergi taslakları için yönetim arayüzü kimlik/orkestra'da.
+## 7 Kasım 2026, casuist: /ara, kaynaklı özet ve /kaydettiklerim (codex/dalga2-casuist)
+
+Dalga 2 casuist ilk teslimi; PR açık, birleştirilmedi. `packages/contracts` ve `packages/db` değişmedi.
+- Çekirdek `packages/casuist`: Ek D.2 normalizasyonu; norm çözücü (kanun numaraları mevzuat.gov.tr resmî metniyle
+  doğrulandı, `src/laws.ts`); 6.5 kalıplarıyla karar çözücü; kimlik, tam metin ve vektör kollarını RRF (k=60) ile
+  birleştiren arama; ilgililik (sıra kanıtla ölçeklenir) ve önem puanı; 7.3 etiketleri; Ek F otorite sınıfı;
+  `MemoryBackend` (fikstür) ve `sqlBackend` (records, chunks, `turkish` tsvector, halfvec HNSW, citation_edges);
+  pasaj seçimi (künye satırı pasajın ilk satırıdır, sayılar onunla doğrulanır); Ek D.2 satır doğrulayıcısı
+  (`./validator` girişi tarayıcıda çalışır, test Node yerleşiği kullanmadığını zorlar); SSE olay akışı ve çekimserlik;
+  RIS ve BibTeX. Canlı federasyon `LiveSource` arayüzü 1,2 sn bütçeyle hazır, bağdaştırıcı yok.
+- Fikstür: 75 kayıt, resmî kaynaklardan 7 Kasım'da alındı (KVKK tamamı, TBK m.49-75, Anayasa 5 madde, 7 Yargıtay
+  kararı, 1 KVKK Kurul özeti, GDPR m.1-2). Kaynak, özetler ve üretim komutu `packages/casuist/fixtures/KAYNAK.md`.
+  Üretimde fikstür kapalıdır; veritabanı yoksa arama 503 döner.
+- Uçlar: `GET /v1/search`, `/v1/records/:id`, `/v1/norms/resolve` (IP hız sınırlı, yalnız `masked_text`, gizli kayıt
+  yok); `POST /v1/answers` (SSE; yz-gecidi üzerinden yalnız maskeli metin; günlük 2 ücretsiz, edu.tr ile 5; sonra 2
+  kredi; doğrulanmış cümle yoksa hak ve kredi geri; BYOK aktarma `yz_aktarim` onayı ister); `prepare` ve `verify`
+  (tek kullanımlık nonce, imzalı istem, sunucuda yeniden doğrulama); `/v1/library` GET/POST/DELETE ve export
+  (ris, bibtex; İSNAD/OSCOLA/Bluebook CSL kararına kadar 400 ve açıklama).
+- Arayüz: `/ara` (form, filtreler, türe göre sayılı sekmeler, sonuç kartı, kenar şerhli özet, dayanağı göster,
+  sabit uyarılar, etiket sözlüğü, resmî siteler) ve `/kaydettiklerim` (liste, çıkarma, kaynakçayı kopyala, indir).
+  `acikModuller` içine `/ara` ve `/kaydettiklerim` eklendi.
+- Ölçüm: `node eval/rag/olc.ts --yaz`; 50 soru (36 cevaplı, 10 cevapsız, 4 tuzak). Fikstürde ilk 10'da beklenen kaynak
+  36/36, doğrulayıcı 144 saldırgan satırın hiçbirini göstermedi, birebir alıntılı 36/36 satırı kabul etti. Gerçek
+  corpus ve model gerektiren 7.6 eşikleri (çekimserlik, desteksiz cümle, p95'ler, ad sızıntısı) ölçülmedi, geçti
+  sayılmadı. Rapor `eval/rag/raporlar/dalga-2-fikstur.md`.
+- Doğrulama: casuist 104, web 227 geçti/1 skip (PGlite üstünde gerçek göçlerle SQL arka ucu, özet ve kütüphane
+  uçları, taklit sağlayıcı), tüm çalışma alanı testleri, typecheck, lint, check:text, üretim derlemesi. Yerel
+  PostgreSQL 18 + pgvector'de göçler ve fikstür yüklemesi, üretim sunucusunda arama ve 375/768/1440 px axe 0, yatay
+  taşma 0 (özet ekranı taklit SSE ile; görüntüler yerel çalışma klasöründe).
+- Açık: kilit dosyası güncellemesi (orkestra), sözleşme önerileri ve komşu ajan işleri
+  `docs/istekler/casuist-dalga2.md` ve `casuist-kaydettiklerim.md`; embedding servisi ve eval/embed, embed.chunks
+  tüketicisi ve uzlaştırma işi, BYOK istemci arayüzü, zaman çizelgesi (FR-13), CSL biçimleri, gerçek corpus ölçümü.
+## 7 Kasım 2026, pratik: FSRS, dört oyun, HMGS destesi ve deneme, onay akışı (codex/dalga2-pratik)
+
+Yeni bağımlılık yok; contracts ve db değişmedi (istekler `docs/istekler/pratik-*.md`). Menüde `/pratik` açıldı
+(`acikModuller`).
+- Motor `apps/web/src/app/pratik/_alan/`: `fsrs.ts` FSRS-6, bağımlılıksız, ts-fsrs 6.0.0 (MIT) referansıyla 8 senaryo x 14
+  adım sekiz ondalığa eşleşir (`referans/`); fuzz kapalı, gün sınırı UTC+3, dakika adımı yok. `kart.ts` kart modeli
+  (plan 10.6/1 alanları, durum hesaplanır), `onay.ts` iki editör kuralları, `depo.ts` ilerleme (günlük yeni kart sınırı
+  10, tekrar sınırsız, seri), `oyun.ts` tur mantığı, `deneme.ts` 120 soru/155 dk dağılımı, baraj 70, konu raporu.
+- Arayüz: `/pratik`, `/pratik/bugun`, `/pratik/deste/[slug]`, `/pratik/hmgs`, `/pratik/hmgs/deneme`, `/pratik/editor`.
+  Doğru/yanlış işareti şekil ve metindir (FR-58), açıklama, kaynak, birebir kanun alıntısı, "kanunu aç". İlerleme
+  tarayıcıda `localStorage`; sunucuda yalnız `GET /api/v1/decks` ve `/decks/{id}/cards`.
+- İçerik `content/desteler/`: 7 deste, 59 özgün kart, 61 kaynak denetimi `dogrula.ts` ile birebir geçti (Anayasa
+  anayasa.gov.tr, TMK mevzuat.gov.tr). Hiçbir kart editör onayı almadı, bu yüzden üretimde görünür kart 0 ve sayfalar
+  bunu dürüstçe söyler. Staging'de `PRATIK_ONIZLEME=1` onay bekleyen kartları gösterir. 13 alanda deste yok.
+- Kaynak erişimi: mevzuat.gov.tr tarayıcı olmayan istemcilere zaman aşımı veriyor. TMK sayfasını ve Anayasa'nın
+  karşılaştırma kopyasını keşif sırasında tek seferlik tarayıcı kimliğiyle okudum (2 istek); sonra bunu bıraktım,
+  kalan kaynaklar anayasa.gov.tr'den dürüst kimlikle alındı. Betik `--yerel` ile tarayıcıdan kaydedilmiş sayfa alır;
+  TMK kartlarının editör tarafından kendi kaydettiği sayfayla yeniden doğrulanması önerilir.
+- Doğrulama: typecheck, lint, check:text, tüm testler (web 321 geçti/1 skip, i18n 14), üretim derlemesi; 375/768/1440
+  px klavyeyle dört oyun, çalışma, kısmi deneme: 522 kontrol ve 75 axe taraması, 0 sorun, taşma 0
+  (`apps/web/src/app/pratik/_kanit/`, 9 ekran x 3 genişlik). Ekran okuyucuyla elle deneme yapılmadı.
+- Açık: editör onayı (Tarık ve ikinci editör), diğer 13 alan için kaynak, veri tabanı eşlemesi ve sözleşme
+  (pratik-sozlesme.md), akademisyen özel destesi (FR-61 1.1 derse atama; özel deste oluşturma yok, YZ taslağı
+  geçidi ve kredi kaydı gerekir), konu piktogramları (FR-57) yok.
+## 7 Kasım 2026, on-yuz: Turkuaz Kampüs arayüzden çıktı, /tespit bağlantısı
+
+Dal codex/on-yuz-kampus-cikar (ADR-0031). Yeni bağımlılık yok; contracts ve db değişmedi; `acikModuller` kümesine dokunulmadı.
+- Kabuk: `rotalar.ts` modül listesinden `kampus` çıktı (altı sekme), `ModulGezinmesi.tsx` ve `kabuk.css` Kampüs sınıfları silindi.
+- Ana sayfa: Kampüs bandının yerinde /tespit tanıtımı (`.ana-tespit`, kâğıt zemin, şerh çizgisi; ikinci renk yok).
+  Alt bilgi "Ürün" listesine "Yazım kuralları ve iz denetleyicisi" bağlantısı; metinler `ortak.json`
+  (`gezinme.tespit`, `anasayfa.tespit*`). Üst menüde modül sekmesi olarak eklenmedi.
+- packages/ui: `--kz-color-kampus*` belirteçleri, `Etiket` ve `HalkaGrafik` `kampus` türleri ve CSS sınıfları
+  kaldırıldı; token testi tek vurgu rengini zorlar. i18n testi `ortak.json`da Kampüs anahtarı kalmadığını zorlar.
+- /fiyatlar: "Kampüs YZ özeti" ve "Poster taslağı" satırları çıktı; plan.md 4.4 güncellenene kadar test bu iki
+  satırı `adr0031Kaldirilan` kümesiyle dışarıda tutar. `docs/tasarim/yon.md` renk tablosu güncellendi.
+- Doğrulama: ui 31, i18n 14, web 185 geçti/1 skip; typecheck, lint, check:text, üretim derlemesi yeşil;
+  17 sayfa x 375/768/1440 ekran görüntüsü yenilendi, axe 0 ihlal ve yatay taşma 0 (docs/tasarim/ekran/axe-sonuc.json).
+- Açık: docs/istekler/on-yuz-kampus-temizligi.md (kimlik: takedown.ts, admin testi, hesap.json; mimar: şema ve
+  sözleşme; odeme: ledger fiyatları; orkestra: plan.md 4.4, 12.2, 13.1; hukuk-uyum: `topluluk` belgesi ve metinler).
 
 ## 6 Kasım 2026, orkestra: Hetzner barındırma, Kampüs kapsam dışı, /tespit
 
