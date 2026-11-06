@@ -1,0 +1,547 @@
+{
+  "sema": 1,
+  "slug": "anayasa-hukuku",
+  "baslik": "Anayasa Hukuku",
+  "aciklama": "Anayasanın temel ilkeleri, temel haklar ve yargı güvenceleri üzerine kartlar. Her kart Anayasa Mahkemesinin yayımladığı güncel metne bağlıdır.",
+  "hmgsAlani": "anayasa-hukuku",
+  "kartlar": [
+    {
+      "id": "anayasa-hukuku.001",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 2. maddesine göre Türkiye Cumhuriyeti demokratik, lâik ve liberal bir hukuk Devletidir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde, Cumhuriyetin niteliklerini demokratik, lâik ve sosyal bir hukuk Devleti olarak sayar. Üçüncü nitelik liberal değil, sosyaldir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "2",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["demokratik, lâik ve sosyal bir hukuk Devletidir"],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "f629846667c409e8"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m2"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.002",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 4. maddesine göre Devletin şeklinin Cumhuriyet olduğu hakkındaki hüküm değiştirilemez, ancak değiştirilmesi teklif edilebilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde, hükmün hem değiştirilemeyeceğini hem de değiştirilmesinin teklif edilemeyeceğini söyler. Teklif yasağı da değişmezlik güvencesinin parçasıdır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "4",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["değiştirilemez ve değiştirilmesi teklif edilemez"],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "ef252d038088fb85"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m4"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.003",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 6. maddesine göre hiçbir kimse veya organ, kaynağını Anayasadan almayan bir Devlet yetkisi kullanamaz.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Madde, egemenliğin Millete ait olduğunu ve Devlet yetkisinin kaynağının Anayasa olması gerektiğini belirtir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "6",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Hiçbir kimse veya organ kaynağını Anayasadan almayan bir Devlet yetkisi kullanamaz."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "2c58657811700502"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m6"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.004",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 6. maddesine göre egemenliğin kullanılması, Anayasada gösterilen şartlar varsa belirli bir zümreye veya sınıfa bırakılabilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde, egemenliğin kullanılmasının hiçbir surette hiçbir kişiye, zümreye veya sınıfa bırakılamayacağını söyler; istisna öngörmez.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "6",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Egemenliğin kullanılması, hiçbir surette hiçbir kişiye, zümreye veya sınıfa bırakılamaz."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "2c58657811700502"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m6"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.005",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 7. maddesine göre yasama yetkisi Türkiye Büyük Millet Meclisinindir ve bu yetki, gerekli görülen hâllerde Cumhurbaşkanına devredilebilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde, yetkinin Meclise ait olduğunu ve devredilemeyeceğini söyler. Devre izin veren bir hâl yoktur.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "7",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Yasama yetkisi Türk Milleti adına Türkiye Büyük Millet Meclisinindir. Bu yetki devredilemez."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "8d8e23f9c60b6f41"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m7"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.006",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 11. maddesine göre Anayasa hükümleri; yasama, yürütme ve yargı organlarını, idare makamlarını ve diğer kuruluş ve kişileri bağlayan temel hukuk kurallarıdır.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Madde, Anayasa hükümlerinin bağlayıcılığını ve kanunların Anayasaya aykırı olamayacağını düzenler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "11",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Anayasa hükümleri, yasama, yürütme ve yargı organlarını, idare makamlarını ve diğer kuruluş ve kişileri bağlayan temel hukuk kurallarıdır."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "2736002edb197bb2"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m11"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.007",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 13. maddesine göre temel hak ve hürriyetler, ölçülülük ilkesine uyulması şartıyla Anayasada belirtilmeyen sebeplerle de sınırlanabilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Sınırlama yalnızca Anayasanın ilgili maddelerinde belirtilen sebeplere bağlı olarak ve ancak kanunla yapılabilir. Ölçülülük ek bir sınırdır, sebep sayısını artırmaz.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "13",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "yalnızca Anayasanın ilgili maddelerinde belirtilen sebeplere bağlı olarak ve ancak kanunla sınırlanabilir"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "9b0f900da4285e4b"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m13"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.008",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 38. maddesine göre kanuna aykırı olarak elde edilmiş bulgular, delil olarak kabul edilemez.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Madde, hukuka aykırı delil yasağını Anayasa düzeyinde güvence altına alır (2001 tarihli 4709 sayılı Kanunla eklenen fıkra).",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "38",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Kanuna aykırı olarak elde edilmiş bulgular, delil olarak kabul edilemez."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "2a367c1335686c72"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m38"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.009",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 38. maddesine göre hiç kimse, yalnızca sözleşmeden doğan bir yükümlülüğü yerine getirememesinden dolayı özgürlüğünden alıkonulabilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde tam tersini söyler: sözleşmeden doğan yükümlülüğün yerine getirilememesi tek başına özgürlükten alıkoymanın sebebi olamaz.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "38",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Hiç kimse, yalnızca sözleşmeden doğan bir yükümlülüğü yerine getirememesinden dolayı özgürlüğünden alıkonulamaz."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "2a367c1335686c72"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m38"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.010",
+      "oyun": "olay_karti",
+      "soru": "Bir kaymakam, kişi hürriyetinin kısıtlanması sonucunu doğuran bir idari yaptırım uygulamak istiyor. Bu yaptırımın uygulanmasını Anayasanın hangi maddesi engeller?",
+      "secenekler": ["Anayasa m.36", "Anayasa m.37", "Anayasa m.38", "Anayasa m.125", "Anayasa m.138"],
+      "dogruIndex": 2,
+      "aciklama": "Madde 38'e göre idare, kişi hürriyetinin kısıtlanması sonucunu doğuran bir müeyyide uygulayamaz. Silahlı Kuvvetlerin iç düzeni için kanunla istisna getirilebilir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "38",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["İdare, kişi hürriyetinin kısıtlanması sonucunu doğuran bir müeyyide uygulayamaz."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "2a367c1335686c72"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m38"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.011",
+      "oyun": "olay_karti",
+      "soru": "Bir sanığın, kanunen tabi olduğu mahkeme yerine bu iş için sonradan kurulan bir heyet önünde yargılanması öngörülüyor. Bu uygulamayı yasaklayan hüküm hangisidir?",
+      "secenekler": ["Anayasa m.36", "Anayasa m.37", "Anayasa m.38", "Anayasa m.125", "Anayasa m.138"],
+      "dogruIndex": 1,
+      "aciklama": "Madde 37 kanunî hâkim güvencesini düzenler: kimse kanunen tabi olduğu mahkemeden başka bir merci önüne çıkarılamaz.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "37",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Hiç kimse kanunen tabî olduğu mahkemeden başka bir merci önüne çıkarılamaz."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "e9ab396667a23100"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m37"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.012",
+      "oyun": "olay_karti",
+      "soru": "Bir mahkeme, görev ve yetkisi içinde olduğunu bile bile davaya bakmaktan kaçınıyor. Hangi hüküm bu davranışı yasaklar?",
+      "secenekler": ["Anayasa m.36", "Anayasa m.37", "Anayasa m.38", "Anayasa m.125", "Anayasa m.138"],
+      "dogruIndex": 0,
+      "aciklama": "Madde 36, hak arama hürriyetini düzenler ve hiçbir mahkemenin görev ve yetkisi içindeki davaya bakmaktan kaçınamayacağını söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "36",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Hiçbir mahkeme, görev ve yetkisi içindeki davaya bakmaktan kaçınamaz."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "11d9bfea003debf9"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m36"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.013",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Yürütme yetkisi ve görevi, Cumhurbaşkanı ve Bakanlar Kurulu tarafından, Anayasaya ve kanunlara uygun olarak kullanılır ve yerine getirilir.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 1,
+      "aciklama": "21/1/2017 tarihli ve 6771 sayılı Kanunla 8. maddedeki \"ve Bakanlar Kurulu\" ibaresi metinden çıkarıldı. Bugün yürütme yetkisi ve görevi Cumhurbaşkanı tarafından kullanılır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "8",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["bu fıkrada yer alan “ve Bakanlar Kurulu” ibaresi madde metninden çıkarılmıştır"],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "3872e76f04034d73"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m8"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.014",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Yargı yetkisi, Türk Milleti adına bağımsız mahkemelerce kullanılır.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 1,
+      "aciklama": "6771 sayılı Kanunla 9. maddeye \"ve tarafsız\" ibaresi eklendi. Bugünkü metin: yargı yetkisi, Türk Milleti adına bağımsız ve tarafsız mahkemelerce kullanılır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "9",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Yargı yetkisi, Türk Milleti adına bağımsız ve tarafsız mahkemelerce kullanılır.",
+            "“ve tarafsız” ibaresi eklenmiştir"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "44937c76892bb2d0"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m9"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.015",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Anayasanın 91. maddesine göre Türkiye Büyük Millet Meclisi, Bakanlar Kurulunu belirli konularda kanun hükmünde kararname çıkarmaya yetkili kılabilir.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 2,
+      "aciklama": "91. madde 6771 sayılı Kanunun 16. maddesiyle mülga edildi (21/1/2017). Metinde madde numarasının yanında \"Mülga\" notu yer alır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "91",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["MADDE 91- (Mülga: 21/1/2017-6771/16 md.)"],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "5b95ca9f5995d80e"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m91"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.016",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Yasama yetkisi Türk Milleti adına Türkiye Büyük Millet Meclisinindir. Bu yetki devredilemez.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 0,
+      "aciklama": "Anayasa Mahkemesinin yayımladığı güncel metinde 7. madde değişiklik veya mülga notu taşımaz; hüküm yürürlüktedir (kontrol tarihi 7 Kasım 2026).",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "7",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Yasama yetkisi Türk Milleti adına Türkiye Büyük Millet Meclisinindir. Bu yetki devredilemez."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "8d8e23f9c60b6f41"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m7"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.017",
+      "oyun": "hangisi_once",
+      "soru": "Aşağıdaki iki Anayasadan hangisi daha önce kabul edilmiştir? (Kabul tarihine göre)",
+      "secenekler": ["1961 Anayasası (334 sayılı)", "1982 Anayasası (2709 sayılı)"],
+      "dogruIndex": 0,
+      "aciklama": "1961 Anayasası 9/7/1961 tarihinde, 1982 Anayasası 18/10/1982 tarihinde kabul edilmiştir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "334",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası (1961)",
+          "madde": null,
+          "bolum": "kunye",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/onceki-anayasalar/1961-anayasasi/",
+          "alintilar": ["Kabul Tarihi : 9/7/1961"],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "aef0e7195dcf4c50"
+        },
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": null,
+          "bolum": "kunye",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Kabul Tarihi : 18/10/1982"],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "baf6e50efe1fb040"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709", "onceki-anayasa:334"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-hukuku.018",
+      "oyun": "hangisi_once",
+      "soru": "Anayasanın 10. maddesine eklenen iki fıkradan hangisi daha önce eklenmiştir?",
+      "secenekler": [
+        "Kadınlar ve erkeklerin eşit haklara sahip olduğunu belirten fıkra",
+        "Çocuklar, yaşlılar, özürlüler ve harp ve vazife şehitlerinin dul ve yetimleri ile malul ve gaziler için alınacak tedbirlerin eşitlik ilkesine aykırı sayılmayacağını belirten fıkra"
+      ],
+      "dogruIndex": 0,
+      "aciklama": "Kadın erkek eşitliği fıkrası 7/5/2004 tarihli 5170 sayılı Kanunla, korunmaya muhtaç gruplar için alınacak tedbirlere ilişkin fıkra 7/5/2010 tarihli 5982 sayılı Kanunla eklenmiştir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "10",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "(Ek fıkra: 7/5/2004-5170/1 md.) Kadınlar ve erkekler eşit haklara sahiptir.",
+            "(Ek fıkra: 7/5/2010-5982/1 md.) Çocuklar, yaşlılar, özürlüler"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "55e0af56e3a70623"
+        }
+      ],
+      "hmgsAlani": "anayasa-hukuku",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m10"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "sema": 1,
+  "slug": "genel-kamu-hukuku",
+  "baslik": "Genel Kamu Hukuku",
+  "aciklama": "Devlet organları ve yetkileri. Kartlar Anayasanın yasama, yürütme ve yargıya ilişkin hükümlerine bağlıdır.",
+  "hmgsAlani": "genel-kamu-hukuku",
+  "kartlar": [
+    {
+      "id": "genel-kamu-hukuku.001",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasaya göre Cumhurbaşkanı Devletin başıdır ve yürütme yetkisi Cumhurbaşkanına aittir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Madde 104, 6771 sayılı Kanunla değiştirilmiş hâliyle Cumhurbaşkanını Devletin başı ve yürütme yetkisinin sahibi sayar.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "104",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Cumhurbaşkanı Devletin başıdır. Yürütme yetkisi Cumhurbaşkanına aittir."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "c80f13dd70fd98b7"
+        }
+      ],
+      "hmgsAlani": "genel-kamu-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m104"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "genel-kamu-hukuku.002",
+      "oyun": "dogru_yanlis",
+      "soru": "Cumhurbaşkanı, Cumhurbaşkanı yardımcıları ile bakanları atar ve görevlerine son verir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Atama ve görevden alma yetkisi 104. maddede Cumhurbaşkanına verilmiştir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "104",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Cumhurbaşkanı yardımcıları ile bakanları atar ve görevlerine son verir."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "c80f13dd70fd98b7"
+        }
+      ],
+      "hmgsAlani": "genel-kamu-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m104"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "genel-kamu-hukuku.003",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasaya göre Cumhurbaşkanı, kanunları tekrar görüşülmek üzere Türkiye Büyük Millet Meclisine geri gönderebilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Geri gönderme yetkisi 104. maddede sayılan yetkiler arasındadır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "104",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Kanunları tekrar görüşülmek üzere Türkiye Büyük Millet Meclisine geri gönderir."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "c80f13dd70fd98b7"
+        }
+      ],
+      "hmgsAlani": "genel-kamu-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m104"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "genel-kamu-hukuku.004",
+      "oyun": "dogru_yanlis",
+      "soru": "Hâkimler görevlerinde bağımsızdırlar ve yargı yetkisinin kullanılmasında kendilerine tavsiye ve telkinde bulunulabilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde 138, hiçbir organ, makam, merci veya kişinin hâkimlere emir ve talimat veremeyeceğini, genelge gönderemeyeceğini, tavsiye ve telkinde bulunamayacağını söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "138",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Hiçbir organ, makam, merci veya kişi, yargı yetkisinin kullanılmasında mahkemelere ve hâkimlere emir ve talimat veremez; genelge gönderemez; tavsiye ve telkinde bulunamaz."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "a3fe86e62bc27b95"
+        }
+      ],
+      "hmgsAlani": "genel-kamu-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m138"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "genel-kamu-hukuku.005",
+      "oyun": "olay_karti",
+      "soru": "Bir belediye başkanı, aleyhine verilmiş bir mahkeme kararının yerine getirilmesini bilerek geciktiriyor. Hangi madde idareye bunu yasaklar?",
+      "secenekler": ["Anayasa m.36", "Anayasa m.37", "Anayasa m.125", "Anayasa m.138", "Anayasa m.153"],
+      "dogruIndex": 3,
+      "aciklama": "Madde 138'e göre yasama ve yürütme organları ile idare, mahkeme kararlarına uymak zorundadır; kararları değiştiremez ve yerine getirilmesini geciktiremez.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "138",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "bu organlar ve idare, mahkeme kararlarını hiçbir suretle değiştiremez ve bunların yerine getirilmesini geciktiremez"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "a3fe86e62bc27b95"
+        }
+      ],
+      "hmgsAlani": "genel-kamu-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m138"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "genel-kamu-hukuku.006",
+      "oyun": "olay_karti",
+      "soru": "Türkiye Büyük Millet Meclisi tatildeyken ülke ani bir silahlı saldırıya uğruyor ve silahlı kuvvet kullanılmasına derhal karar verilmesi kaçınılmaz oluyor. Karar yetkisini düzenleyen hüküm hangisidir?",
+      "secenekler": ["Anayasa m.7", "Anayasa m.90", "Anayasa m.92", "Anayasa m.104", "Anayasa m.153"],
+      "dogruIndex": 2,
+      "aciklama": "Madde 92 bu hâlde Cumhurbaşkanının da Türk Silahlı Kuvvetlerinin kullanılmasına karar verebileceğini söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "92",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Türkiye Büyük Millet Meclisi tatilde veya ara vermede iken ülkenin ani bir silahlı saldırıya uğraması ve bu sebeple silahlı kuvvet kullanılmasına derhal karar verilmesinin kaçınılmaz olması halinde Cumhurbaşkanı da, Türk Silahlı Kuvvetlerinin kullanılmasına karar verebilir."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "e76ba02362250aeb"
+        }
+      ],
+      "hmgsAlani": "genel-kamu-hukuku",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m92"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    }
+  ]
+}

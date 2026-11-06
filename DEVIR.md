@@ -1,3 +1,28 @@
+## 7 Kasım 2026, pratik: FSRS, dört oyun, HMGS destesi ve deneme, onay akışı (codex/dalga2-pratik)
+
+Yeni bağımlılık yok; contracts ve db değişmedi (istekler `docs/istekler/pratik-*.md`). Menüde `/pratik` açıldı
+(`acikModuller`).
+- Motor `apps/web/src/app/pratik/_alan/`: `fsrs.ts` FSRS-6, bağımlılıksız, ts-fsrs 6.0.0 (MIT) referansıyla 8 senaryo x 14
+  adım sekiz ondalığa eşleşir (`referans/`); fuzz kapalı, gün sınırı UTC+3, dakika adımı yok. `kart.ts` kart modeli
+  (plan 10.6/1 alanları, durum hesaplanır), `onay.ts` iki editör kuralları, `depo.ts` ilerleme (günlük yeni kart sınırı
+  10, tekrar sınırsız, seri), `oyun.ts` tur mantığı, `deneme.ts` 120 soru/155 dk dağılımı, baraj 70, konu raporu.
+- Arayüz: `/pratik`, `/pratik/bugun`, `/pratik/deste/[slug]`, `/pratik/hmgs`, `/pratik/hmgs/deneme`, `/pratik/editor`.
+  Doğru/yanlış işareti şekil ve metindir (FR-58), açıklama, kaynak, birebir kanun alıntısı, "kanunu aç". İlerleme
+  tarayıcıda `localStorage`; sunucuda yalnız `GET /api/v1/decks` ve `/decks/{id}/cards`.
+- İçerik `content/desteler/`: 7 deste, 59 özgün kart, 61 kaynak denetimi `dogrula.ts` ile birebir geçti (Anayasa
+  anayasa.gov.tr, TMK mevzuat.gov.tr). Hiçbir kart editör onayı almadı, bu yüzden üretimde görünür kart 0 ve sayfalar
+  bunu dürüstçe söyler. Staging'de `PRATIK_ONIZLEME=1` onay bekleyen kartları gösterir. 13 alanda deste yok.
+- Kaynak erişimi: mevzuat.gov.tr tarayıcı olmayan istemcilere zaman aşımı veriyor. TMK sayfasını ve Anayasa'nın
+  karşılaştırma kopyasını keşif sırasında tek seferlik tarayıcı kimliğiyle okudum (2 istek); sonra bunu bıraktım,
+  kalan kaynaklar anayasa.gov.tr'den dürüst kimlikle alındı. Betik `--yerel` ile tarayıcıdan kaydedilmiş sayfa alır;
+  TMK kartlarının editör tarafından kendi kaydettiği sayfayla yeniden doğrulanması önerilir.
+- Doğrulama: typecheck, lint, check:text, tüm testler (web 321 geçti/1 skip, i18n 14), üretim derlemesi; 375/768/1440
+  px klavyeyle dört oyun, çalışma, kısmi deneme: 522 kontrol ve 75 axe taraması, 0 sorun, taşma 0
+  (`apps/web/src/app/pratik/_kanit/`, 9 ekran x 3 genişlik). Ekran okuyucuyla elle deneme yapılmadı.
+- Açık: editör onayı (Tarık ve ikinci editör), diğer 13 alan için kaynak, veri tabanı eşlemesi ve sözleşme
+  (pratik-sozlesme.md), akademisyen özel destesi (FR-61 1.1 derse atama; özel deste oluşturma yok, YZ taslağı
+  geçidi ve kredi kaydı gerekir), konu piktogramları (FR-57) yok.
+
 ## 6 Kasım 2026, orkestra: Hetzner barındırma, Kampüs kapsam dışı, /tespit
 
 Kullanıcı kararlarıyla ADR-0030 (Hetzner Cloud, AB konumu; staging hemen, üretimde kişisel veri KVKK m.9 aktarım dayanağı ve bildirim tamamlanmadan işlenmez) ve ADR-0031 (Turkuaz Kampüs kapsam dışı, /tespit 1.0 kapsamında) yazıldı; plan.md K-03, K-14, 0/6, 1, 5.5, 10.7, URL tablosu ve Dalga 2 satırı güncellendi.

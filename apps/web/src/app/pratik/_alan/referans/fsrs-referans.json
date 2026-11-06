@@ -1,0 +1,2181 @@
+{
+  "kaynak": "ts-fsrs@6.0.0",
+  "senaryolar": [
+    {
+      "hedefHatirlama": 0.9,
+      "baslangic": "2026-11-07T09:00:00.000Z",
+      "adimlar": [
+        {
+          "simdi": "2026-11-07T09:28:38.143Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2026-11-15T09:28:38.143Z",
+            "stability": 8.2956,
+            "difficulty": 1,
+            "scheduledDays": 8,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 8
+          }
+        },
+        {
+          "simdi": "2026-11-22T09:41:44.093Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-01-16T09:41:44.093Z",
+            "stability": 54.86091838,
+            "difficulty": 1,
+            "scheduledDays": 55,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 36,
+            "3": 55,
+            "4": 96
+          }
+        },
+        {
+          "simdi": "2026-12-12T10:28:16.534Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-06-13T10:28:16.534Z",
+            "stability": 182.79719698,
+            "difficulty": 1,
+            "scheduledDays": 183,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 96,
+            "3": 123,
+            "4": 183
+          }
+        },
+        {
+          "simdi": "2026-12-22T11:07:40.275Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-07-25T11:07:40.275Z",
+            "stability": 214.77622025,
+            "difficulty": 1,
+            "scheduledDays": 215,
+            "reps": 4,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 4,
+            "2": 202,
+            "3": 215,
+            "4": 243
+          }
+        },
+        {
+          "simdi": "2027-01-06T11:48:16.267Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-09-24T11:48:16.267Z",
+            "stability": 261.1344776,
+            "difficulty": 1,
+            "scheduledDays": 261,
+            "reps": 5,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 5,
+            "2": 243,
+            "3": 261,
+            "4": 302
+          }
+        },
+        {
+          "simdi": "2027-01-06T12:31:48.370Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-09-25T12:31:48.370Z",
+            "stability": 261.1344776,
+            "difficulty": 1,
+            "scheduledDays": 262,
+            "reps": 6,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 5,
+            "2": 261,
+            "3": 262,
+            "4": 263
+          }
+        },
+        {
+          "simdi": "2027-01-24T12:35:52.099Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2028-01-21T12:35:52.099Z",
+            "stability": 362.02992068,
+            "difficulty": 1,
+            "scheduledDays": 362,
+            "reps": 7,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 5,
+            "2": 294,
+            "3": 315,
+            "4": 362
+          }
+        },
+        {
+          "simdi": "2027-02-27T13:25:57.404Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2028-05-29T13:25:57.404Z",
+            "stability": 457.2607755,
+            "difficulty": 1,
+            "scheduledDays": 457,
+            "reps": 8,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 6,
+            "2": 419,
+            "3": 457,
+            "4": 540
+          }
+        },
+        {
+          "simdi": "2027-03-15T14:14:05.909Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2028-09-05T14:14:05.909Z",
+            "stability": 540.31041461,
+            "difficulty": 1,
+            "scheduledDays": 540,
+            "reps": 9,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 6,
+            "2": 484,
+            "3": 502,
+            "4": 540
+          }
+        },
+        {
+          "simdi": "2027-03-29T15:05:45.189Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2028-10-12T15:05:45.189Z",
+            "stability": 563.10676645,
+            "difficulty": 4.01060897,
+            "scheduledDays": 563,
+            "reps": 10,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 6,
+            "2": 563,
+            "3": 578,
+            "4": 611
+          }
+        },
+        {
+          "simdi": "2027-03-29T15:10:23.399Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2028-10-13T15:10:23.399Z",
+            "stability": 563.10676645,
+            "difficulty": 4.00182673,
+            "scheduledDays": 564,
+            "reps": 11,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 6,
+            "2": 563,
+            "3": 564,
+            "4": 565
+          }
+        },
+        {
+          "simdi": "2027-04-13T15:55:07.292Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2028-11-24T15:55:07.292Z",
+            "stability": 591.32331526,
+            "difficulty": 3.99305327,
+            "scheduledDays": 591,
+            "reps": 12,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 6,
+            "2": 580,
+            "3": 591,
+            "4": 616
+          }
+        },
+        {
+          "simdi": "2027-05-14T16:48:31.794Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2029-02-21T16:48:31.794Z",
+            "stability": 648.50983828,
+            "difficulty": 3.98428859,
+            "scheduledDays": 649,
+            "reps": 13,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 6,
+            "2": 626,
+            "3": 649,
+            "4": 698
+          }
+        },
+        {
+          "simdi": "2027-06-05T17:21:18.314Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2029-04-24T17:21:18.314Z",
+            "stability": 688.88777505,
+            "difficulty": 3.97553267,
+            "scheduledDays": 689,
+            "reps": 14,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 6,
+            "2": 673,
+            "3": 689,
+            "4": 724
+          }
+        }
+      ]
+    },
+    {
+      "hedefHatirlama": 0.85,
+      "baslangic": "2026-11-07T09:00:00.000Z",
+      "adimlar": [
+        {
+          "simdi": "2026-11-07T09:25:35.572Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2026-11-08T09:25:35.572Z",
+            "stability": 0.212,
+            "difficulty": 6.4133,
+            "scheduledDays": 1,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 4,
+            "4": 16
+          }
+        },
+        {
+          "simdi": "2026-12-12T09:26:17.398Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2026-12-17T09:26:17.398Z",
+            "stability": 2.88052361,
+            "difficulty": 7.60420977,
+            "scheduledDays": 5,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 5,
+            "3": 9,
+            "4": 16
+          }
+        },
+        {
+          "simdi": "2026-12-25T10:01:55.827Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-01-20T10:01:55.827Z",
+            "stability": 13.56991763,
+            "difficulty": 7.59183393,
+            "scheduledDays": 26,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 18,
+            "3": 26,
+            "4": 44
+          }
+        },
+        {
+          "simdi": "2027-01-15T10:16:53.781Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-04-28T10:16:53.781Z",
+            "stability": 54.20094293,
+            "difficulty": 6.77236542,
+            "scheduledDays": 103,
+            "reps": 4,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 51,
+            "3": 67,
+            "4": 103
+          }
+        },
+        {
+          "simdi": "2027-02-11T10:17:13.040Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-02-16T10:17:13.040Z",
+            "stability": 2.72154683,
+            "difficulty": 8.92432683,
+            "scheduledDays": 5,
+            "reps": 5,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 5,
+            "2": 146,
+            "3": 174,
+            "4": 236
+          }
+        },
+        {
+          "simdi": "2027-02-11T10:19:54.300Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-02-18T10:19:54.300Z",
+            "stability": 2.72154683,
+            "difficulty": 8.55011535,
+            "scheduledDays": 7,
+            "reps": 6,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 5,
+            "3": 6,
+            "4": 7
+          }
+        },
+        {
+          "simdi": "2027-02-21T10:20:57.308Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-03-06T10:20:57.308Z",
+            "stability": 6.73130085,
+            "difficulty": 9.02272737,
+            "scheduledDays": 13,
+            "reps": 7,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 13,
+            "3": 18,
+            "4": 29
+          }
+        },
+        {
+          "simdi": "2027-02-27T10:46:37.455Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-03-17T10:46:37.455Z",
+            "stability": 9.61929706,
+            "difficulty": 9.33646926,
+            "scheduledDays": 18,
+            "reps": 8,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 18,
+            "3": 22,
+            "4": 30
+          }
+        },
+        {
+          "simdi": "2027-03-22T10:59:18.291Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-05-16T10:59:18.291Z",
+            "stability": 28.96775898,
+            "difficulty": 9.09997658,
+            "scheduledDays": 55,
+            "reps": 9,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 30,
+            "3": 38,
+            "4": 55
+          }
+        },
+        {
+          "simdi": "2027-04-11T11:51:25.731Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-06-30T11:51:25.731Z",
+            "stability": 41.81297781,
+            "difficulty": 9.08610497,
+            "scheduledDays": 80,
+            "reps": 10,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 4,
+            "2": 70,
+            "3": 80,
+            "4": 101
+          }
+        },
+        {
+          "simdi": "2027-04-11T12:22:39.791Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-07-02T12:22:39.791Z",
+            "stability": 41.81297781,
+            "difficulty": 8.76595221,
+            "scheduledDays": 82,
+            "reps": 11,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 4,
+            "2": 80,
+            "3": 81,
+            "4": 82
+          }
+        },
+        {
+          "simdi": "2027-04-12T12:38:59.262Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-07-03T12:38:59.262Z",
+            "stability": 42.74032814,
+            "difficulty": 8.75241463,
+            "scheduledDays": 82,
+            "reps": 12,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 4,
+            "2": 81,
+            "3": 82,
+            "4": 83
+          }
+        },
+        {
+          "simdi": "2027-05-03T13:31:22.680Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-08-23T13:31:22.680Z",
+            "stability": 58.75945359,
+            "difficulty": 8.73889058,
+            "scheduledDays": 112,
+            "reps": 13,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 5,
+            "2": 100,
+            "3": 112,
+            "4": 139
+          }
+        },
+        {
+          "simdi": "2027-05-20T14:05:45.954Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-09-24T14:05:45.954Z",
+            "stability": 66.80457226,
+            "difficulty": 9.14804517,
+            "scheduledDays": 127,
+            "reps": 14,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 5,
+            "2": 127,
+            "3": 138,
+            "4": 160
+          }
+        }
+      ]
+    },
+    {
+      "hedefHatirlama": 0.9,
+      "baslangic": "2026-11-07T09:00:00.000Z",
+      "adimlar": [
+        {
+          "simdi": "2026-11-07T09:55:55.219Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2026-11-09T09:55:55.219Z",
+            "stability": 1.2931,
+            "difficulty": 5.11217071,
+            "scheduledDays": 2,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 8
+          }
+        },
+        {
+          "simdi": "2026-11-27T10:42:24.474Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2026-12-13T10:42:24.474Z",
+            "stability": 16.47733575,
+            "difficulty": 5.10228691,
+            "scheduledDays": 16,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 10,
+            "3": 16,
+            "4": 30
+          }
+        },
+        {
+          "simdi": "2026-12-29T11:28:43.601Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-02-14T11:28:43.601Z",
+            "stability": 47.03503185,
+            "difficulty": 6.73389818,
+            "scheduledDays": 47,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 47,
+            "3": 67,
+            "4": 112
+          }
+        },
+        {
+          "simdi": "2027-01-17T12:09:46.431Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-03-22T12:09:46.431Z",
+            "stability": 63.85796288,
+            "difficulty": 7.81703778,
+            "scheduledDays": 64,
+            "reps": 4,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 64,
+            "3": 75,
+            "4": 99
+          }
+        },
+        {
+          "simdi": "2027-02-06T12:09:50.864Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-04-24T12:09:50.864Z",
+            "stability": 76.8708434,
+            "difficulty": 8.53607632,
+            "scheduledDays": 77,
+            "reps": 5,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 77,
+            "3": 85,
+            "4": 104
+          }
+        },
+        {
+          "simdi": "2027-02-06T12:25:16.297Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-04-26T12:25:16.297Z",
+            "stability": 76.8708434,
+            "difficulty": 8.03212961,
+            "scheduledDays": 79,
+            "reps": 6,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 77,
+            "3": 78,
+            "4": 79
+          }
+        },
+        {
+          "simdi": "2027-03-02T13:17:23.569Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-03-05T13:17:23.569Z",
+            "stability": 2.98868728,
+            "difficulty": 9.33840275,
+            "scheduledDays": 3,
+            "reps": 7,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 91,
+            "3": 100,
+            "4": 121
+          }
+        },
+        {
+          "simdi": "2027-03-27T13:57:36.008Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-03-28T13:57:36.008Z",
+            "stability": 0.91473197,
+            "difficulty": 9.76776585,
+            "scheduledDays": 1,
+            "reps": 8,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 7,
+            "3": 10,
+            "4": 16
+          }
+        },
+        {
+          "simdi": "2027-04-29T14:43:04.550Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-05-02T14:43:04.550Z",
+            "stability": 2.71792195,
+            "difficulty": 9.83106052,
+            "scheduledDays": 3,
+            "reps": 9,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 3,
+            "3": 4,
+            "4": 7
+          }
+        },
+        {
+          "simdi": "2027-05-03T15:03:16.059Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-05-08T15:03:16.059Z",
+            "stability": 4.60397501,
+            "difficulty": 9.81645783,
+            "scheduledDays": 5,
+            "reps": 10,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 4,
+            "3": 5,
+            "4": 6
+          }
+        },
+        {
+          "simdi": "2027-05-03T15:58:03.852Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-05-09T15:58:03.852Z",
+            "stability": 4.60397501,
+            "difficulty": 9.80186974,
+            "scheduledDays": 6,
+            "reps": 11,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 5,
+            "3": 6,
+            "4": 7
+          }
+        },
+        {
+          "simdi": "2027-05-14T16:11:58.457Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-05-21T16:11:58.457Z",
+            "stability": 7.02438201,
+            "difficulty": 9.85370027,
+            "scheduledDays": 7,
+            "reps": 12,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 7,
+            "3": 9,
+            "4": 12
+          }
+        },
+        {
+          "simdi": "2027-06-15T16:27:19.279Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-07-06T16:27:19.279Z",
+            "stability": 21.29168883,
+            "difficulty": 9.79004209,
+            "scheduledDays": 21,
+            "reps": 13,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 12,
+            "3": 15,
+            "4": 21
+          }
+        },
+        {
+          "simdi": "2027-06-24T17:16:05.520Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-07-20T17:16:05.520Z",
+            "stability": 25.54973252,
+            "difficulty": 9.77548042,
+            "scheduledDays": 26,
+            "reps": 14,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 24,
+            "3": 26,
+            "4": 29
+          }
+        }
+      ]
+    },
+    {
+      "hedefHatirlama": 0.85,
+      "baslangic": "2026-11-07T09:00:00.000Z",
+      "adimlar": [
+        {
+          "simdi": "2026-11-07T09:07:07.309Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2026-11-11T09:07:07.309Z",
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "scheduledDays": 4,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 4,
+            "4": 16
+          }
+        },
+        {
+          "simdi": "2026-11-13T09:39:39.481Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2026-12-08T09:39:39.481Z",
+            "stability": 12.88248078,
+            "difficulty": 4.75285849,
+            "scheduledDays": 25,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 25,
+            "3": 38,
+            "4": 67
+          }
+        },
+        {
+          "simdi": "2026-11-18T10:04:26.587Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-01-07T10:04:26.587Z",
+            "stability": 26.33954398,
+            "difficulty": 4.743334,
+            "scheduledDays": 50,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 40,
+            "3": 50,
+            "4": 73
+          }
+        },
+        {
+          "simdi": "2026-12-13T10:48:19.736Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-03-30T10:48:19.736Z",
+            "stability": 56.16184461,
+            "difficulty": 6.49560852,
+            "scheduledDays": 107,
+            "reps": 4,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 4,
+            "2": 107,
+            "3": 145,
+            "4": 227
+          }
+        },
+        {
+          "simdi": "2027-01-02T11:14:09.800Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-06-17T11:14:09.800Z",
+            "stability": 86.9130052,
+            "difficulty": 6.48434128,
+            "scheduledDays": 166,
+            "reps": 5,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 5,
+            "2": 142,
+            "3": 166,
+            "4": 217
+          }
+        },
+        {
+          "simdi": "2027-01-02T11:58:31.445Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-01-08T11:58:31.445Z",
+            "stability": 2.96809186,
+            "difficulty": 8.82965526,
+            "scheduledDays": 6,
+            "reps": 6,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 6,
+            "2": 166,
+            "3": 167,
+            "4": 168
+          }
+        },
+        {
+          "simdi": "2027-01-19T12:04:18.892Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-02-09T12:04:18.892Z",
+            "stability": 10.75517506,
+            "difficulty": 8.81605397,
+            "scheduledDays": 21,
+            "reps": 7,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 15,
+            "3": 21,
+            "4": 33
+          }
+        },
+        {
+          "simdi": "2027-02-10T12:56:33.892Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-03-18T12:56:33.892Z",
+            "stability": 18.93443833,
+            "difficulty": 9.19926982,
+            "scheduledDays": 36,
+            "reps": 8,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 36,
+            "3": 46,
+            "4": 69
+          }
+        },
+        {
+          "simdi": "2027-03-14T12:57:58.819Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-03-18T12:57:58.819Z",
+            "stability": 1.94999177,
+            "difficulty": 9.72203381,
+            "scheduledDays": 4,
+            "reps": 9,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 4,
+            "2": 54,
+            "3": 67,
+            "4": 93
+          }
+        },
+        {
+          "simdi": "2027-04-11T13:46:53.241Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-04-23T13:46:53.241Z",
+            "stability": 6.48459873,
+            "difficulty": 9.70754015,
+            "scheduledDays": 12,
+            "reps": 10,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 9,
+            "3": 12,
+            "4": 20
+          }
+        },
+        {
+          "simdi": "2027-04-11T14:10:15.547Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-04-13T14:10:15.547Z",
+            "stability": 0.90000611,
+            "difficulty": 9.88909881,
+            "scheduledDays": 2,
+            "reps": 11,
+            "lapses": 3,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 12,
+            "3": 13,
+            "4": 14
+          }
+        },
+        {
+          "simdi": "2027-04-24T14:22:41.272Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-05-03T14:22:41.272Z",
+            "stability": 4.7831081,
+            "difficulty": 9.83726917,
+            "scheduledDays": 9,
+            "reps": 12,
+            "lapses": 3,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 4,
+            "3": 6,
+            "4": 9
+          }
+        },
+        {
+          "simdi": "2027-05-28T15:17:38.420Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-05-30T15:17:38.420Z",
+            "stability": 1.18704738,
+            "difficulty": 9.93173985,
+            "scheduledDays": 2,
+            "reps": 13,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 17,
+            "3": 22,
+            "4": 33
+          }
+        },
+        {
+          "simdi": "2027-07-01T15:20:03.505Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-07-07T15:20:03.505Z",
+            "stability": 3.02183874,
+            "difficulty": 9.9399141,
+            "scheduledDays": 6,
+            "reps": 14,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 6,
+            "3": 8,
+            "4": 13
+          }
+        }
+      ]
+    },
+    {
+      "hedefHatirlama": 0.9,
+      "baslangic": "2026-11-07T09:00:00.000Z",
+      "adimlar": [
+        {
+          "simdi": "2026-11-07T09:45:05.470Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2026-11-09T09:45:05.470Z",
+            "stability": 1.2931,
+            "difficulty": 5.11217071,
+            "scheduledDays": 2,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 8
+          }
+        },
+        {
+          "simdi": "2026-11-18T10:30:17.064Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2026-12-12T10:30:17.064Z",
+            "stability": 24.48853243,
+            "difficulty": 3.4641143,
+            "scheduledDays": 24,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 9,
+            "3": 14,
+            "4": 24
+          }
+        },
+        {
+          "simdi": "2026-11-26T10:46:34.916Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2026-11-28T10:46:34.916Z",
+            "stability": 1.97777004,
+            "difficulty": 7.83692718,
+            "scheduledDays": 2,
+            "reps": 3,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 39,
+            "3": 48,
+            "4": 69
+          }
+        },
+        {
+          "simdi": "2026-12-07T11:43:52.915Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2026-12-14T11:43:52.915Z",
+            "stability": 6.782991,
+            "difficulty": 8.54927984,
+            "scheduledDays": 7,
+            "reps": 4,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 7,
+            "3": 10,
+            "4": 17
+          }
+        },
+        {
+          "simdi": "2026-12-30T12:28:11.181Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-01-19T12:28:11.181Z",
+            "stability": 20.49775059,
+            "difficulty": 8.53595893,
+            "scheduledDays": 20,
+            "reps": 5,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 15,
+            "3": 20,
+            "4": 32
+          }
+        },
+        {
+          "simdi": "2026-12-30T12:49:52.053Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-01-01T12:49:52.053Z",
+            "stability": 1.61286931,
+            "difficulty": 9.50400802,
+            "scheduledDays": 2,
+            "reps": 6,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 20,
+            "3": 21,
+            "4": 22
+          }
+        },
+        {
+          "simdi": "2027-02-05T12:53:55.967Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-02-12T12:53:55.967Z",
+            "stability": 6.81447106,
+            "difficulty": 9.48973238,
+            "scheduledDays": 7,
+            "reps": 7,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 5,
+            "3": 7,
+            "4": 11
+          }
+        },
+        {
+          "simdi": "2027-03-11T13:50:08.571Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-03-12T13:50:08.571Z",
+            "stability": 1.37409328,
+            "difficulty": 9.81750687,
+            "scheduledDays": 1,
+            "reps": 8,
+            "lapses": 3,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 13,
+            "3": 17,
+            "4": 26
+          }
+        },
+        {
+          "simdi": "2027-03-17T14:00:18.872Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-03-18T14:00:18.872Z",
+            "stability": 0.47785617,
+            "difficulty": 9.92524411,
+            "scheduledDays": 1,
+            "reps": 9,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 3,
+            "3": 4,
+            "4": 5
+          }
+        },
+        {
+          "simdi": "2027-04-21T14:53:58.857Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-04-25T14:53:58.857Z",
+            "stability": 3.80041377,
+            "difficulty": 9.88549254,
+            "scheduledDays": 4,
+            "reps": 10,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 4
+          }
+        },
+        {
+          "simdi": "2027-04-21T15:01:41.762Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-04-26T15:01:41.762Z",
+            "stability": 3.80041377,
+            "difficulty": 9.87083542,
+            "scheduledDays": 5,
+            "reps": 11,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 4,
+            "3": 5,
+            "4": 6
+          }
+        },
+        {
+          "simdi": "2027-05-18T15:29:02.596Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-05-27T15:29:02.596Z",
+            "stability": 9.24116887,
+            "difficulty": 9.85619295,
+            "scheduledDays": 9,
+            "reps": 12,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 7,
+            "3": 9,
+            "4": 14
+          }
+        },
+        {
+          "simdi": "2027-05-22T15:52:47.318Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-05-23T15:52:47.318Z",
+            "stability": 1.18661044,
+            "difficulty": 9.93795997,
+            "scheduledDays": 1,
+            "reps": 13,
+            "lapses": 5,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 10,
+            "3": 11,
+            "4": 13
+          }
+        },
+        {
+          "simdi": "2027-05-31T16:29:00.759Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-06-02T16:29:00.759Z",
+            "stability": 2.38358704,
+            "difficulty": 9.94404331,
+            "scheduledDays": 2,
+            "reps": 14,
+            "lapses": 5,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 5
+          }
+        }
+      ]
+    },
+    {
+      "hedefHatirlama": 0.85,
+      "baslangic": "2026-11-07T09:00:00.000Z",
+      "adimlar": [
+        {
+          "simdi": "2026-11-07T09:06:16.183Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2026-11-11T09:06:16.183Z",
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "scheduledDays": 4,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 4,
+            "4": 16
+          }
+        },
+        {
+          "simdi": "2026-11-13T09:06:58.391Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2026-11-14T09:06:58.391Z",
+            "stability": 0.7012251,
+            "difficulty": 7.39450274,
+            "scheduledDays": 1,
+            "reps": 2,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 25,
+            "3": 38,
+            "4": 67
+          }
+        },
+        {
+          "simdi": "2026-12-21T09:17:14.082Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2026-12-22T09:17:14.082Z",
+            "stability": 0.41956821,
+            "difficulty": 9.12881914,
+            "scheduledDays": 1,
+            "reps": 3,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 10,
+            "3": 16,
+            "4": 29
+          }
+        },
+        {
+          "simdi": "2027-01-22T09:34:22.920Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-01-26T09:34:22.920Z",
+            "stability": 2.09938871,
+            "difficulty": 9.40689792,
+            "scheduledDays": 4,
+            "reps": 4,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 4,
+            "3": 6,
+            "4": 11
+          }
+        },
+        {
+          "simdi": "2027-01-24T10:07:56.666Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-01-31T10:07:56.666Z",
+            "stability": 3.63731793,
+            "difficulty": 9.39271939,
+            "scheduledDays": 7,
+            "reps": 5,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 6,
+            "3": 7,
+            "4": 9
+          }
+        },
+        {
+          "simdi": "2027-01-24T10:08:12.634Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-01-31T10:08:12.634Z",
+            "stability": 3.63731793,
+            "difficulty": 9.5820872,
+            "scheduledDays": 7,
+            "reps": 6,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 7,
+            "3": 8,
+            "4": 9
+          }
+        },
+        {
+          "simdi": "2027-02-16T10:59:35.365Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-03-17T10:59:35.365Z",
+            "stability": 15.40435578,
+            "difficulty": 9.42766859,
+            "scheduledDays": 29,
+            "reps": 7,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 14,
+            "3": 19,
+            "4": 29
+          }
+        },
+        {
+          "simdi": "2027-03-06T11:33:12.452Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-04-15T11:33:12.452Z",
+            "stability": 20.95501898,
+            "difficulty": 9.60528811,
+            "scheduledDays": 40,
+            "reps": 8,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 40,
+            "3": 47,
+            "4": 62
+          }
+        },
+        {
+          "simdi": "2027-04-03T12:21:58.481Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-04-07T12:21:58.481Z",
+            "stability": 1.97461171,
+            "difficulty": 9.85548926,
+            "scheduledDays": 4,
+            "reps": 9,
+            "lapses": 3,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 4,
+            "2": 53,
+            "3": 62,
+            "4": 81
+          }
+        },
+        {
+          "simdi": "2027-04-21T12:27:28.936Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-04-29T12:27:28.936Z",
+            "stability": 4.08845785,
+            "difficulty": 9.88929541,
+            "scheduledDays": 8,
+            "reps": 10,
+            "lapses": 3,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 8,
+            "3": 10,
+            "4": 16
+          }
+        },
+        {
+          "simdi": "2027-04-21T13:15:12.714Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-04-22T13:15:12.714Z",
+            "stability": 0.68792676,
+            "difficulty": 9.94884052,
+            "scheduledDays": 1,
+            "reps": 11,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 8,
+            "3": 9,
+            "4": 10
+          }
+        },
+        {
+          "simdi": "2027-04-26T13:59:18.477Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-04-30T13:59:18.477Z",
+            "stability": 1.9178281,
+            "difficulty": 9.93412005,
+            "scheduledDays": 4,
+            "reps": 12,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 3,
+            "3": 4,
+            "4": 6
+          }
+        },
+        {
+          "simdi": "2027-05-11T14:25:03.138Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-05-18T14:25:03.138Z",
+            "stability": 3.73163347,
+            "difficulty": 9.94149419,
+            "scheduledDays": 7,
+            "reps": 13,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 7,
+            "3": 9,
+            "4": 14
+          }
+        },
+        {
+          "simdi": "2027-06-05T14:32:19.717Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-06-21T14:32:19.717Z",
+            "stability": 8.63778649,
+            "difficulty": 9.92678107,
+            "scheduledDays": 16,
+            "reps": 14,
+            "lapses": 4,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 13,
+            "3": 16,
+            "4": 25
+          }
+        }
+      ]
+    },
+    {
+      "hedefHatirlama": 0.9,
+      "baslangic": "2026-11-07T09:00:00.000Z",
+      "adimlar": [
+        {
+          "simdi": "2026-11-07T09:19:09.985Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2026-11-10T09:19:09.985Z",
+            "stability": 2.3065,
+            "difficulty": 2.11810397,
+            "scheduledDays": 3,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 8
+          }
+        },
+        {
+          "simdi": "2026-11-08T09:49:18.579Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2026-11-15T09:49:18.579Z",
+            "stability": 7.31530068,
+            "difficulty": 2.11121424,
+            "scheduledDays": 7,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 5,
+            "3": 7,
+            "4": 12
+          }
+        },
+        {
+          "simdi": "2026-11-27T09:53:12.642Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-01-19T09:53:12.642Z",
+            "stability": 53.32900889,
+            "difficulty": 2.1043314,
+            "scheduledDays": 53,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 35,
+            "3": 53,
+            "4": 93
+          }
+        },
+        {
+          "simdi": "2026-11-27T10:22:12.373Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-01-20T10:22:12.373Z",
+            "stability": 53.32900889,
+            "difficulty": 2.09745544,
+            "scheduledDays": 54,
+            "reps": 4,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 53,
+            "3": 54,
+            "4": 55
+          }
+        },
+        {
+          "simdi": "2026-12-03T10:36:02.516Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-02-07T10:36:02.516Z",
+            "stability": 65.60150077,
+            "difficulty": 4.73915103,
+            "scheduledDays": 66,
+            "reps": 5,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 66,
+            "3": 74,
+            "4": 92
+          }
+        },
+        {
+          "simdi": "2026-12-03T10:53:06.693Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2026-12-06T10:53:06.693Z",
+            "stability": 2.71790409,
+            "difficulty": 8.25602309,
+            "scheduledDays": 3,
+            "reps": 6,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 66,
+            "3": 67,
+            "4": 68
+          }
+        },
+        {
+          "simdi": "2026-12-16T11:28:54.962Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2026-12-24T11:28:54.962Z",
+            "stability": 7.80034123,
+            "difficulty": 8.82749523,
+            "scheduledDays": 8,
+            "reps": 7,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 8,
+            "3": 11,
+            "4": 19
+          }
+        },
+        {
+          "simdi": "2026-12-21T12:07:20.869Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-01-01T12:07:20.869Z",
+            "stability": 10.59360626,
+            "difficulty": 9.20686506,
+            "scheduledDays": 11,
+            "reps": 8,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 11,
+            "3": 12,
+            "4": 16
+          }
+        },
+        {
+          "simdi": "2027-01-29T12:21:38.327Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-02-24T12:21:38.327Z",
+            "stability": 25.7547035,
+            "difficulty": 9.19288656,
+            "scheduledDays": 26,
+            "reps": 9,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 20,
+            "3": 26,
+            "4": 39
+          }
+        },
+        {
+          "simdi": "2027-02-28T13:13:45.705Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-04-25T13:13:45.705Z",
+            "stability": 56.1791916,
+            "difficulty": 8.90841523,
+            "scheduledDays": 56,
+            "reps": 10,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 36,
+            "3": 42,
+            "4": 56
+          }
+        },
+        {
+          "simdi": "2027-02-28T13:19:47.737Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-04-26T13:19:47.737Z",
+            "stability": 56.1791916,
+            "difficulty": 8.89473518,
+            "scheduledDays": 57,
+            "reps": 11,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 56,
+            "3": 57,
+            "4": 58
+          }
+        },
+        {
+          "simdi": "2027-03-23T14:00:36.429Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-06-03T14:00:36.429Z",
+            "stability": 72.36852233,
+            "difficulty": 8.88106881,
+            "scheduledDays": 72,
+            "reps": 12,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 66,
+            "3": 72,
+            "4": 87
+          }
+        },
+        {
+          "simdi": "2027-03-29T14:33:40.604Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-06-14T14:33:40.604Z",
+            "stability": 77.04919994,
+            "difficulty": 8.86741611,
+            "scheduledDays": 77,
+            "reps": 13,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 75,
+            "3": 77,
+            "4": 81
+          }
+        },
+        {
+          "simdi": "2027-04-24T14:59:29.026Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-07-21T14:59:29.026Z",
+            "stability": 87.92781439,
+            "difficulty": 9.2333664,
+            "scheduledDays": 88,
+            "reps": 14,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 88,
+            "3": 95,
+            "4": 111
+          }
+        }
+      ]
+    },
+    {
+      "hedefHatirlama": 0.85,
+      "baslangic": "2026-11-07T09:00:00.000Z",
+      "adimlar": [
+        {
+          "simdi": "2026-11-07T09:28:21.581Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2026-11-08T09:28:21.581Z",
+            "stability": 0.212,
+            "difficulty": 6.4133,
+            "scheduledDays": 1,
+            "reps": 1,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 2,
+            "3": 4,
+            "4": 16
+          }
+        },
+        {
+          "simdi": "2026-11-17T09:50:07.414Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2026-11-30T09:50:07.414Z",
+            "stability": 6.78515227,
+            "difficulty": 5.20002037,
+            "scheduledDays": 13,
+            "reps": 2,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 1,
+            "2": 4,
+            "3": 7,
+            "4": 13
+          }
+        },
+        {
+          "simdi": "2026-11-23T10:32:07.896Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2027-01-02T10:32:07.896Z",
+            "stability": 20.8824716,
+            "difficulty": 5.19004872,
+            "scheduledDays": 40,
+            "reps": 3,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 29,
+            "3": 40,
+            "4": 63
+          }
+        },
+        {
+          "simdi": "2026-12-22T10:48:46.616Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2027-07-26T10:48:46.616Z",
+            "stability": 113.3475567,
+            "difficulty": 3.56801552,
+            "scheduledDays": 216,
+            "reps": 4,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 4,
+            "2": 96,
+            "3": 134,
+            "4": 216
+          }
+        },
+        {
+          "simdi": "2027-01-30T11:40:14.383Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2028-02-19T11:40:14.383Z",
+            "stability": 201.78278546,
+            "difficulty": 3.55967587,
+            "scheduledDays": 385,
+            "reps": 5,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 7,
+            "2": 317,
+            "3": 385,
+            "4": 532
+          }
+        },
+        {
+          "simdi": "2027-01-30T12:07:20.401Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2028-02-19T12:07:20.401Z",
+            "stability": 201.78278546,
+            "difficulty": 5.7098411,
+            "scheduledDays": 385,
+            "reps": 6,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 8,
+            "2": 385,
+            "3": 386,
+            "4": 387
+          }
+        },
+        {
+          "simdi": "2027-02-09T12:17:03.622Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2028-03-19T12:17:03.622Z",
+            "stability": 211.81581954,
+            "difficulty": 7.13722097,
+            "scheduledDays": 404,
+            "reps": 7,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 8,
+            "2": 404,
+            "3": 416,
+            "4": 444
+          }
+        },
+        {
+          "simdi": "2027-03-07T12:57:16.072Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2028-05-19T12:57:16.072Z",
+            "stability": 230.06712494,
+            "difficulty": 8.08478225,
+            "scheduledDays": 439,
+            "reps": 8,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 8,
+            "2": 439,
+            "3": 462,
+            "4": 512
+          }
+        },
+        {
+          "simdi": "2027-03-12T13:52:53.464Z",
+          "derece": 4,
+          "sonuc": {
+            "due": "2028-06-09T13:52:53.464Z",
+            "stability": 238.60606168,
+            "difficulty": 7.4300341,
+            "scheduledDays": 455,
+            "reps": 9,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 8,
+            "2": 444,
+            "3": 447,
+            "4": 455
+          }
+        },
+        {
+          "simdi": "2027-03-13T14:11:29.850Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2028-06-12T14:11:29.850Z",
+            "stability": 239.72571531,
+            "difficulty": 7.41783244,
+            "scheduledDays": 457,
+            "reps": 10,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 8,
+            "2": 456,
+            "3": 457,
+            "4": 459
+          }
+        },
+        {
+          "simdi": "2027-03-13T14:40:47.167Z",
+          "derece": 3,
+          "sonuc": {
+            "due": "2028-06-13T14:40:47.167Z",
+            "stability": 239.72571531,
+            "difficulty": 7.40564298,
+            "scheduledDays": 458,
+            "reps": 11,
+            "lapses": 0,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 8,
+            "2": 457,
+            "3": 458,
+            "4": 459
+          }
+        },
+        {
+          "simdi": "2027-04-03T15:30:01.003Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-04-11T15:30:01.003Z",
+            "stability": 4.32338568,
+            "difficulty": 9.13248086,
+            "scheduledDays": 8,
+            "reps": 12,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 8,
+            "2": 483,
+            "3": 500,
+            "4": 538
+          }
+        },
+        {
+          "simdi": "2027-04-23T16:23:00.541Z",
+          "derece": 2,
+          "sonuc": {
+            "due": "2027-05-11T16:23:00.541Z",
+            "stability": 9.33931821,
+            "difficulty": 9.40932874,
+            "scheduledDays": 18,
+            "reps": 13,
+            "lapses": 1,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 2,
+            "2": 18,
+            "3": 24,
+            "4": 38
+          }
+        },
+        {
+          "simdi": "2027-05-24T16:52:41.466Z",
+          "derece": 1,
+          "sonuc": {
+            "due": "2027-05-27T16:52:41.466Z",
+            "stability": 1.52462049,
+            "difficulty": 9.79107874,
+            "scheduledDays": 3,
+            "reps": 14,
+            "lapses": 2,
+            "state": 2
+          },
+          "onizleme": {
+            "1": 3,
+            "2": 31,
+            "3": 40,
+            "4": 59
+          }
+        }
+      ]
+    }
+  ]
+}
