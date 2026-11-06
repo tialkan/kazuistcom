@@ -1,0 +1,330 @@
+/* /tespit: paper and ink, one accent. Values come from the design tokens only. */
+
+.surum {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+
+.bolum {
+  max-width: 62rem;
+  margin-block: var(--kz-space-12);
+  padding-top: var(--kz-space-6);
+  border-top: 2px solid var(--kz-color-text);
+}
+.bolum > h2 {
+  font-size: var(--kz-text-2xl);
+}
+.okuma {
+  max-width: var(--kz-reading-max);
+}
+
+/* Copy and download */
+.istemEylem {
+  display: grid;
+  gap: var(--kz-space-3);
+}
+.dugmeSirasi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-3);
+}
+.durum {
+  min-height: 1.6em;
+  margin: 0;
+  font-weight: 600;
+}
+.yedek textarea {
+  font-family: var(--kz-font-mono);
+  font-size: var(--kz-text-sm);
+  min-height: 16rem;
+}
+
+/* Checker */
+.denetleyici {
+  display: grid;
+  gap: var(--kz-space-4);
+}
+.gizlilik,
+.uyari {
+  max-width: var(--kz-reading-max);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-accent);
+  background: var(--kz-color-surface);
+}
+.uyari {
+  border-left-color: var(--kz-color-warning);
+}
+.gizlilik h3,
+.uyari h3 {
+  font-size: var(--kz-text-md);
+  margin-bottom: var(--kz-space-1);
+}
+.gizlilik p,
+.uyari p {
+  margin: 0;
+}
+.form {
+  display: grid;
+  gap: var(--kz-space-2);
+  max-width: 62rem;
+}
+.metinAlani textarea {
+  min-height: 14rem;
+}
+.sonuc h3 {
+  font-size: var(--kz-text-xl);
+  scroll-margin-top: var(--kz-space-4);
+}
+.sonuc h3:focus {
+  outline: none;
+}
+.sonuc h3:focus-visible {
+  outline: 2px solid var(--kz-color-focus);
+  outline-offset: 4px;
+}
+.sonuc h4 {
+  margin-top: var(--kz-space-8);
+  font-size: var(--kz-text-lg);
+}
+.not {
+  max-width: var(--kz-reading-max);
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-sm);
+}
+
+.ozet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: var(--kz-space-4);
+  margin: 0 0 var(--kz-space-4);
+}
+.sayi {
+  padding-top: var(--kz-space-2);
+  border-top: 2px solid var(--kz-color-text);
+}
+.sayi dt {
+  font-size: var(--kz-text-xs);
+  font-weight: 600;
+  color: var(--kz-color-text-muted);
+}
+.sayi dd {
+  margin: 0;
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-2xl);
+  line-height: var(--kz-leading-tight);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.olcumler {
+  max-width: var(--kz-reading-max);
+  padding-left: 1.2rem;
+}
+.olcumler li {
+  margin-bottom: var(--kz-space-2);
+}
+
+.filtre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-3);
+  margin-bottom: var(--kz-space-2);
+}
+.filtre select {
+  min-height: 44px;
+  padding: 0 var(--kz-space-3);
+  border: 1.5px solid var(--kz-color-text-muted);
+  border-radius: var(--kz-radius-sm);
+  background: var(--kz-color-surface);
+  color: var(--kz-color-text);
+  font: inherit;
+}
+
+.bulgular {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 62rem;
+  border-top: 2px solid var(--kz-color-text);
+}
+.bulgu {
+  padding: var(--kz-space-3) 0 var(--kz-space-3) var(--kz-space-4);
+  border-bottom: 1px solid var(--kz-color-border);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-border);
+}
+.bulgu[data-siddet='kesin'] {
+  border-left-color: var(--kz-color-accent);
+}
+.bulgu[data-siddet='olasi'] {
+  border-left-color: var(--kz-color-warning);
+}
+.bulguUst {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-1) var(--kz-space-3);
+  align-items: baseline;
+  margin: 0 0 var(--kz-space-1);
+  font-size: var(--kz-text-sm);
+}
+.kuralBagi {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  font-weight: 700;
+}
+.siddet {
+  font-weight: 700;
+}
+.siddet[data-siddet='kesin'] {
+  color: var(--kz-color-accent);
+}
+.siddet[data-siddet='olasi'] {
+  color: var(--kz-color-warning);
+}
+.konum {
+  color: var(--kz-color-text-muted);
+}
+.alinti {
+  margin: 0 0 var(--kz-space-1);
+  overflow-wrap: anywhere;
+}
+.kuralOzet {
+  margin: 0 0 var(--kz-space-2);
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-sm);
+}
+.baglamaDugmesi {
+  min-height: 44px;
+  padding: 0 var(--kz-space-3);
+  border: 0;
+  background: transparent;
+  color: var(--kz-color-text);
+  font: inherit;
+  font-size: var(--kz-text-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+/* Marks: severity is told by text in the list and by line style here, never by colour alone. */
+.sonuc mark {
+  color: inherit;
+  background: color-mix(in srgb, var(--kz-color-accent) 10%, transparent);
+  text-decoration-line: underline;
+  text-underline-offset: 0.25em;
+}
+.sonuc mark[data-siddet='kesin'] {
+  background: color-mix(in srgb, var(--kz-color-accent) 18%, transparent);
+  text-decoration-style: solid;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--kz-color-accent);
+}
+.sonuc mark[data-siddet='olasi'] {
+  background: color-mix(in srgb, var(--kz-color-warning) 14%, transparent);
+  text-decoration-style: dashed;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--kz-color-warning);
+}
+.sonuc mark[data-siddet='zayif'] {
+  background: transparent;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--kz-color-text-muted);
+}
+.sonuc mark[data-siddet='bilgi'] {
+  background: transparent;
+  text-decoration: none;
+  outline: 1px solid var(--kz-color-text-muted);
+  outline-offset: 1px;
+}
+.isaretli {
+  max-width: 62rem;
+  max-height: 32rem;
+  overflow: auto;
+  padding: var(--kz-space-4);
+  border: 1.5px solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.75;
+}
+
+/* Rule set */
+.icindekiler {
+  columns: 2 18rem;
+  column-gap: var(--kz-space-8);
+  list-style: none;
+  padding: 0;
+  margin: var(--kz-space-6) 0;
+  max-width: 62rem;
+}
+.icindekiler li {
+  break-inside: avoid;
+}
+.icindekiler a {
+  display: inline-flex;
+  gap: var(--kz-space-2);
+  align-items: baseline;
+  min-height: 44px;
+  padding-block: var(--kz-space-2);
+}
+.kuralBolumu {
+  max-width: 62rem;
+  margin-top: var(--kz-space-12);
+}
+.kuralBolumu h3 {
+  display: grid;
+  gap: var(--kz-space-1);
+  font-size: var(--kz-text-xl);
+  margin-bottom: var(--kz-space-1);
+}
+.bolumNo {
+  font-family: var(--kz-font-body);
+  font-size: var(--kz-text-xs);
+  font-weight: 700;
+  color: var(--kz-color-accent);
+}
+.sayiNotu {
+  margin-top: 0;
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-sm);
+}
+.maddeler {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--kz-space-4);
+  border-top: 1px solid var(--kz-color-border);
+}
+.madde {
+  display: grid;
+  grid-template-columns: 3.25rem 1fr;
+  gap: var(--kz-space-3);
+  padding: var(--kz-space-3) 0;
+  border-bottom: 1px solid var(--kz-color-border);
+  max-width: var(--kz-reading-max);
+  overflow-wrap: anywhere;
+}
+.madde:target {
+  background: color-mix(in srgb, var(--kz-color-accent) 8%, transparent);
+  outline: 2px solid var(--kz-color-accent);
+  outline-offset: 2px;
+}
+.maddeNo {
+  color: var(--kz-color-accent);
+  font-weight: 700;
+}
+
+@media (max-width: 47.99rem) {
+  .bolum {
+    margin-block: var(--kz-space-8);
+  }
+  .dugmeSirasi > * {
+    flex: 1 1 100%;
+  }
+  .madde {
+    grid-template-columns: 2.75rem 1fr;
+    gap: var(--kz-space-2);
+  }
+}

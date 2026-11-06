@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "baslik": "Yapay zekâ izleri: yazım kuralları ve denetleyici",
+    "aciklama": "Akademik metinlerdeki yapay zekâ yazı alışkanlıklarını ayıklamak için 159 maddelik kural seti ve tarayıcıda çalışan iz denetleyicisi. Ücretsiz, girişsiz; metniniz cihazınızdan çıkmaz."
+  },
+  "baslik": "Metninizdeki yapay zekâ izlerini ayıklayın",
+  "giris": "Bu sayfada iki şey var: bir yapay zekâ asistanına verebileceğiniz yazım kuralı seti ve metninizi tarayıcınızda tarayan bir iz denetleyicisi. İkisi de ücretsizdir, giriş gerektirmez.",
+  "amac": "Amaç bir dedektörü kandırmak değil. Yapay zekânın bilinen kötü yazı alışkanlıklarını metinden ayıklamak ve her iddianın dayanağını korumak. Kurumunuz veya dergi yapay zekâ kullanımını beyan etmenizi istiyorsa beyan edersiniz.",
+  "surumSatiri": "Sürüm {surum}, {donem}. {bolum} bölüm, {madde} madde.",
+  "istem": {
+    "baslik": "İstemi tek tıkla kopyalayın",
+    "aciklama": "Kural setinin tamamı tek bir istem olarak hazır. Kopyalayıp kullandığınız yapay zekâ asistanına yapıştırın. Asistan metninizi almadan önce size sekiz soru sorar; cevaplarınıza göre çalışır.",
+    "kopyala": "Bütün istemi kopyala",
+    "indir": ".md olarak indir",
+    "kopyalandi": "İstem panoya kopyalandı.",
+    "kopyalanamadi": "Pano kullanılamadı. İstemin tamamı aşağıda seçili duruyor; Ctrl+C (Mac’te Cmd+C) ile kopyalayın.",
+    "yedekEtiket": "İstemin tam metni",
+    "yedekIpucu": "Metin seçili. Kopyalamak için Ctrl+C veya Cmd+C tuşlarına basın."
+  },
+  "denetleyici": {
+    "baslik": "Metninizi tarayıcıda denetleyin",
+    "aciklama": "Metni yapıştırın; sözcük ve kalıp listeleri, sohbet kalıntıları, atıf izleri, çizgiler, yer tutucular ve cümle ritmi kural numarasıyla işaretlenir.",
+    "gizlilik": {
+      "baslik": "Metniniz cihazınızdan çıkmaz",
+      "metin": "Denetim bu sayfada, tarayıcınızın içinde çalışır. Yapıştırdığınız metin hiçbir sunucuya ve hiçbir yapay zekâ sağlayıcısına gönderilmez; kaydedilmez, loglanmaz. Sayfayı kapattığınızda metin gider."
+    },
+    "uyari": {
+      "baslik": "Bu bir yapay zekâ dedektörü değildir",
+      "metin": "Sonuç, metni kimin yazdığına dair bir hüküm vermez. Yalnızca kural setindeki izlerin sayısını ve yoğunluğunu gösterir. Yanlış pozitifler olur: ana dili dışında yazanlar, kalıplaşmış resmî üslup ve kısa metinler sık yanlış işaretlenir. Tek bir iz kanıt değildir; güçlü gösterge, farklı iz türlerinin aynı metinde kümelenmesidir (kural 9.3, 9.4, 9.5)."
+    },
+    "alan": {
+      "etiket": "Denetlenecek metin",
+      "ipucu": "En çok {sinir} karakter. Başlıklar ve paragraflar satır sonuyla ayrılır.",
+      "yertutucu": "Metninizi buraya yapıştırın."
+    },
+    "dugme": {
+      "denetle": "Metni denetle",
+      "ornek": "Örnek metni yükle",
+      "temizle": "Temizle"
+    },
+    "hata": {
+      "bos": "Önce denetlenecek bir metin yapıştırın.",
+      "uzun": "Metin en çok {sinir} karakter olabilir; şu an {sayi} karakter var."
+    },
+    "durum": {
+      "iz": "Denetim bitti. {sayi} iz bulundu.",
+      "yok": "Denetim bitti. Listedeki kalıplardan hiçbiri bulunmadı. Bu, metnin kural setine uyduğunu göstermez; yalnız bu denetleyicinin ölçtüğü izlerin görülmediğini söyler.",
+      "temizlendi": "Metin ve sonuçlar temizlendi."
+    },
+    "sonuc": {
+      "baslik": "Sonuç",
+      "ozetBaslik": "İz sayısı ve yoğunluk",
+      "sozcuk": "Sözcük",
+      "cumle": "Cümle",
+      "kesin": "Kesin iz",
+      "olasi": "Olası iz",
+      "zayif": "Zayıf iz",
+      "bilgi": "Açık işaret",
+      "yogunluk": "1000 sözcükte iz",
+      "turSayisi": "İz bulunan iz türü",
+      "aciklama": "Kesin iz: metinde hiç olmaması gereken kalıntı (sohbet cümlesi, atıf izi, yer tutucu, Markdown artığı). Olası iz: kural setinde adı geçen kalıp. Zayıf iz: tek başına sorun olmayan, yoğunlaştığında anlam kazanan sözcük. Açık işaret: yazarın bilerek koyduğu [KAYNAK GEREKLİ] gibi işaretler; iz sayılmaz.",
+      "turlerBaslik": "İz türlerine göre dağılım",
+      "tur": "İz türü",
+      "adet": "Adet"
+    },
+    "tur": {
+      "sohbet": "Sohbet kalıntısı",
+      "atif": "Atıf izi",
+      "yerTutucu": "Yer tutucu",
+      "cizgi": "Uzun ve orta çizgi",
+      "sozcuk": "Sözcük listesi",
+      "kalip": "Kalıp ve geçiş",
+      "ritim": "Ritim",
+      "bicim": "Biçim",
+      "turkce": "Türkçeye özgü",
+      "dogruluk": "Doğruluk"
+    },
+    "ritim": {
+      "baslik": "Ritim ölçümü",
+      "not": "Bu sayılar bir dedektör puanı değildir; yalnız tekdüzeliğin göstergesidir (kural 10.6).",
+      "olcu": "Ölçü",
+      "deger": "Değer",
+      "olculmedi": "ölçülmedi",
+      "cumleSayisi": "Cümle sayısı",
+      "ortalama": "Ortalama cümle uzunluğu (sözcük)",
+      "enKisa": "En kısa cümle (sözcük)",
+      "enUzun": "En uzun cümle (sözcük)",
+      "sapma": "Standart sapma (sözcük)",
+      "degiskenlik": "Değişkenlik katsayısı (sapma / ortalama)",
+      "mektedir": "-mektedir ile biten cümle oranı",
+      "dir": "-dır ile biten cümle oranı"
+    },
+    "olcum": {
+      "baslik": "Ölçüm uyarıları",
+      "degiskenlik": "Cümle uzunluğu tekdüze görünüyor (değişkenlik katsayısı {deger}). Eşik 0,30 buluşsal bir sınırdır; kural metninde sayısal eşik yoktur.",
+      "mektedirDir": "Cümlelerin %{deger} oranı -mektedir veya -dır ile bitiyor. Kural, bir paragrafta yarıdan fazlasını sınırlar.",
+      "tirnak": "Düz tırnak (\") ile kıvrık tırnak (“ ”) birlikte kullanılmış. Birini seçin.",
+      "kesme": "Düz kesme işareti (') ile kıvrık kesme işareti (’) birlikte kullanılmış. Birini seçin.",
+      "kisaMetin": "Metin yalnız {deger} sözcük. Kısa metinlerde ölçümler güvenilmez; yanlış pozitif ihtimali yüksektir."
+    },
+    "tekrar": {
+      "baslik": "Tekrar sayımı",
+      "not": "Metinde en sık geçen bağlaç ve kalıp fiiller. Sayım okumanın yerine geçmez (kural 10.4).",
+      "ifade": "İfade",
+      "adet": "Adet"
+    },
+    "bulgular": {
+      "baslik": "Bulgular",
+      "sonuc": "{sayi} bulgu, metindeki sıraya göre.",
+      "bos": "Bulgu yok.",
+      "kural": "Kural {kural}",
+      "konum": "satır {satir}, sütun {sutun}",
+      "aralik": "paragraf düzeyinde",
+      "kuraliGoster": "Kural metni",
+      "metindeGoster": "Metinde göster",
+      "filtre": "Gösterilecek bulgular",
+      "filtreTum": "Tümü",
+      "filtreKesin": "Yalnız kesin izler",
+      "filtreKesinOlasi": "Kesin ve olası izler",
+      "kirpildi": "{toplam} bulgunun ilk {gosterilen} tanesi gösteriliyor.",
+      "tumunuGoster": "Hepsini göster"
+    },
+    "isaretli": {
+      "baslik": "İşaretli metin",
+      "aciklama": "Çizgi biçimi şiddeti gösterir: düz kalın çizgi kesin, kesik çizgi olası, noktalı çizgi zayıf iz. Ayrıntı için bulgu listesine bakın.",
+      "etiket": "Bulguları işaretlenmiş metin"
+    },
+    "ornek": "[Makale Başlığı]\n\nElbette, işte düzeltilmiş metin:\n\nGünümüzde yapay zekâ araçları akademik yazımda önemli bir rol oynamaktadır. Bu bağlamda yapılan çalışmalar, konunun kapsamlı bir şekilde ele alınması gerektiğini vurgulamaktadır. Birçok çalışmalarda üç farklı yöntemler denenmiştir. Araştırmalar göstermektedir ki bu yaklaşım hem bir risk hem bir fırsattır. Veriler 2025-XX-XX tarihinde toplanmıştır.:contentReference[oaicite:0]{index=0} Sonuçlar tabloda gösterilmektedir. Bulgular tartışılmaktadır. Öneriler sunulmaktadır.\n\nÖrneklem 214 öğrenciden oluştu. Fark küçüktü ve anlamlı değildi [KAYNAK GEREKLİ]."
+  },
+  "kurallar": {
+    "baslik": "Yazım kuralı seti",
+    "aciklama": "İstemin okunur hâli. Her madde bölüm.madde numarasıyla anılır; denetleyicinin bulguları bu numaralara bağlanır. Bölüm 9’un ikinci listesi 9.7 ile 9.12 olarak numaralanır, çünkü kaynak metinde numara yeniden 1’den başlar.",
+    "bolumler": "Bölümler",
+    "bolum": "Bölüm {no}",
+    "maddeSayisi": "{sayi} madde"
+  }
+}
