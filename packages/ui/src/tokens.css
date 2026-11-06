@@ -1,7 +1,7 @@
 /*
  * Kazuist design tokens (plan 12, docs/tasarim/yon.md). Direction: paper and ink.
  * Light theme only in 1.0 (K-15). One accent colour (rubric red, the colour of marginal notes in
- * classical commentaries). Turquoise is reserved for the Turkuaz Kampus sub-brand.
+ * classical commentaries). There is no second brand colour: Turkuaz Kampus is out of scope (ADR-0031).
  * Contrast ratios against --kz-color-bg are listed next to text colours and checked in test/tokens.test.ts.
  */
 :root {
@@ -23,9 +23,6 @@
   --kz-color-authority-high: #a1351f;
   --kz-color-authority-precedent: #3f4f5e;
   --kz-color-authority-other: #6b655b;
-  /* Turkuaz Kampus sub-brand, the only second colour (plan 12.2) */
-  --kz-color-kampus: #0d6e6c; /* 5.8:1 */
-  --kz-color-kampus-contrast: #fffdf8;
   /* Margin note (kenar serhi), the signature element */
   --kz-serh-width: 15rem;
   --kz-serh-rule: 2px;

@@ -1,0 +1,554 @@
+/* /pratik: paper and ink, one accent. Values come from the design tokens only. Mobile first, 375 px up. */
+
+.bolum {
+  max-width: 62rem;
+  margin-block: var(--kz-space-8);
+  padding-top: var(--kz-space-4);
+  border-top: 2px solid var(--kz-color-text);
+}
+.bolum > h2 {
+  font-size: var(--kz-text-xl);
+}
+
+.not {
+  max-width: 62rem;
+  margin-block: var(--kz-space-6);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-warning);
+  background: var(--kz-color-surface);
+}
+.not h2,
+.not h3 {
+  font-size: var(--kz-text-md);
+  margin-bottom: var(--kz-space-1);
+}
+.not p {
+  margin: 0 0 var(--kz-space-2);
+}
+
+.ipucu {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+.sabitNotlar {
+  max-width: 62rem;
+  margin-block: var(--kz-space-12) var(--kz-space-8);
+  padding-top: var(--kz-space-4);
+  border-top: 1px solid var(--kz-color-border);
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+
+/* Today panel, numbers */
+.sayilar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-2) var(--kz-space-6);
+  margin: 0 0 var(--kz-space-4);
+  padding: 0;
+  list-style: none;
+}
+.sayilar strong {
+  font-family: var(--kz-font-mono);
+  font-size: var(--kz-text-lg);
+}
+.eylemler {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-3);
+  margin-block: var(--kz-space-4);
+}
+.ayarlar {
+  margin-top: var(--kz-space-6);
+  max-width: 40rem;
+}
+.ayarlar summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+.ayarAlani {
+  display: grid;
+  gap: var(--kz-space-1);
+  margin-bottom: var(--kz-space-4);
+}
+.ayarAlani label {
+  font-weight: 600;
+}
+.ayarAlani p {
+  margin: 0;
+}
+
+/* Lists on the hub */
+.oyunListesi,
+.desteListesi,
+.modListesi {
+  display: grid;
+  gap: var(--kz-space-3);
+  margin: var(--kz-space-4) 0;
+  padding: 0;
+  list-style: none;
+}
+.oyunListesi {
+  grid-template-columns: 1fr;
+}
+.oyunKutusu {
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border: 1px solid var(--kz-color-border);
+  border-top: 3px solid var(--kz-color-text);
+  background: var(--kz-color-surface);
+}
+.oyunKutusu h3 {
+  font-size: var(--kz-text-md);
+  margin-bottom: var(--kz-space-1);
+}
+.oyunKutusu p {
+  margin: 0 0 var(--kz-space-1);
+}
+.desteListesi li {
+  min-height: 44px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-1);
+}
+.desteListesi a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.modListesi {
+  grid-template-columns: 1fr;
+}
+.modDugme {
+  display: grid;
+  gap: var(--kz-space-1);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border: 1.5px solid var(--kz-color-text);
+  border-radius: var(--kz-radius-sm);
+  background: var(--kz-color-surface);
+  color: var(--kz-color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.modDugme:hover:not(:disabled) {
+  background: var(--kz-color-surface-muted);
+}
+.modDugme:disabled {
+  border-style: dashed;
+  color: var(--kz-color-text-muted);
+  cursor: not-allowed;
+}
+.modDugme span {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+
+/* Session */
+.oturum {
+  max-width: 62rem;
+  margin-block: var(--kz-space-6);
+}
+.oturum h2 {
+  font-size: var(--kz-text-xl);
+}
+.durumSatiri {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--kz-space-2) var(--kz-space-6);
+}
+.durumSatiri p {
+  margin: 0;
+}
+.ilerleme {
+  display: block;
+  width: 100%;
+  height: 0.75rem;
+  margin-block: var(--kz-space-2) var(--kz-space-4);
+  accent-color: var(--kz-color-text);
+}
+.rozet {
+  display: inline-block;
+  padding: 0 var(--kz-space-2);
+  border: 1.5px solid var(--kz-color-text);
+  font-size: var(--kz-text-xs);
+  font-weight: 700;
+}
+.buyukSayi {
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-2xl);
+  margin-bottom: var(--kz-space-1);
+}
+.sayac {
+  font-family: var(--kz-font-mono);
+  font-size: var(--kz-text-lg);
+}
+
+/* The card */
+.kart {
+  margin-block: var(--kz-space-4);
+  padding: var(--kz-space-4);
+  border: 1px solid var(--kz-color-border);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-accent);
+  background: var(--kz-color-surface);
+}
+.oyunEtiketi {
+  margin: 0;
+  font-size: var(--kz-text-xs);
+  font-weight: 700;
+  color: var(--kz-color-accent);
+  letter-spacing: 0.04em;
+}
+.yonerge {
+  margin: 0 0 var(--kz-space-2);
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+.soru {
+  margin-bottom: var(--kz-space-4);
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-lg);
+  line-height: var(--kz-leading-body);
+  outline-offset: 4px;
+}
+.oyun_hala_gecerli_mi .soru,
+.oyun_dogru_yanlis .soru {
+  padding-left: var(--kz-space-4);
+  border-left: 3px solid var(--kz-color-text);
+}
+.secenekler {
+  display: grid;
+  gap: var(--kz-space-2);
+}
+.sec_dogru_yanlis,
+.sec_hangisi_once {
+  grid-template-columns: 1fr;
+}
+.secenek {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--kz-space-1) var(--kz-space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--kz-space-3);
+  border: 1.5px solid var(--kz-color-text-muted);
+  border-radius: var(--kz-radius-sm);
+  background: var(--kz-color-bg);
+  color: var(--kz-color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.secenek:hover {
+  background: var(--kz-color-surface-muted);
+}
+.secenek[aria-disabled='true'] {
+  cursor: default;
+}
+.secenekNo {
+  display: inline-grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1.5px solid currentColor;
+  font-family: var(--kz-font-mono);
+  font-size: var(--kz-text-sm);
+  font-weight: 700;
+}
+.secenekMetni {
+  align-self: center;
+}
+.secenekIsareti {
+  grid-column: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kz-space-2);
+  font-size: var(--kz-text-sm);
+  font-weight: 700;
+}
+/* Right, wrong and selected differ by border weight and style as well as by the mark and its text. */
+.secenek_dogru {
+  border: 3px solid var(--kz-color-success);
+  background: var(--kz-color-surface);
+}
+.secenek_dogru .secenekIsareti {
+  color: var(--kz-color-success);
+}
+.secenek_yanlis {
+  border: 3px dashed var(--kz-color-danger);
+  background: var(--kz-color-surface);
+}
+.secenek_yanlis .secenekIsareti {
+  color: var(--kz-color-danger);
+}
+.secenek_secili {
+  border: 3px double var(--kz-color-text);
+  background: var(--kz-color-surface-muted);
+}
+
+/* Feedback (FR-58) */
+.geri {
+  margin-block: var(--kz-space-4);
+  padding: var(--kz-space-4);
+  border: 1px solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+  outline-offset: 4px;
+}
+.geriDogru {
+  border-left: 4px solid var(--kz-color-success);
+}
+.geriYanlis {
+  border-left: 4px dashed var(--kz-color-danger);
+}
+.geriBaslik {
+  display: flex;
+  align-items: center;
+  gap: var(--kz-space-2);
+  font-size: var(--kz-text-lg);
+}
+.geriDogru .geriBaslik {
+  color: var(--kz-color-success);
+}
+.geriYanlis .geriBaslik {
+  color: var(--kz-color-danger);
+}
+.geri h4 {
+  margin: var(--kz-space-4) 0 var(--kz-space-1);
+  font-size: var(--kz-text-sm);
+  letter-spacing: 0.04em;
+  color: var(--kz-color-text-muted);
+}
+.kanunListesi {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.kanunKunye {
+  margin: 0 0 var(--kz-space-1);
+  font-weight: 600;
+}
+.alinti {
+  margin: 0 0 var(--kz-space-3);
+  padding: var(--kz-space-2) var(--kz-space-4);
+  border-left: 3px solid var(--kz-color-text);
+  font-family: var(--kz-font-heading);
+  background: var(--kz-color-bg);
+}
+.alinti p {
+  margin: 0;
+}
+.dogrulama {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+.baglantilar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-2) var(--kz-space-4);
+}
+.baglantilar a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* Rating */
+.derece {
+  margin-block: var(--kz-space-4);
+}
+.derece .eylemler .kz-dugme {
+  flex-direction: column;
+  gap: 0;
+  padding-block: var(--kz-space-2);
+}
+.dereceSure {
+  font-size: var(--kz-text-xs);
+  font-weight: 400;
+}
+
+/* Round end */
+.yanlisListesi {
+  display: grid;
+  gap: var(--kz-space-4);
+  max-width: 48rem;
+  padding-left: var(--kz-space-6);
+}
+.yanlisListesi p {
+  margin: 0 0 var(--kz-space-1);
+}
+.ozet {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--kz-space-3);
+  max-width: 32rem;
+  margin: var(--kz-space-4) 0;
+}
+.ozet div {
+  padding: var(--kz-space-2) var(--kz-space-3);
+  border: 1px solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+}
+.ozet dt {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+.ozet dd {
+  margin: 0;
+  font-family: var(--kz-font-mono);
+  font-size: var(--kz-text-lg);
+  font-weight: 700;
+}
+.barajSonucu {
+  display: flex;
+  align-items: center;
+  gap: var(--kz-space-2);
+  font-weight: 700;
+}
+.barajSonucu[data-baraj='gecti'] {
+  color: var(--kz-color-success);
+}
+.barajSonucu[data-baraj='kaldi'] {
+  color: var(--kz-color-danger);
+}
+
+/* Question navigator of the exam */
+.palet {
+  max-width: 62rem;
+  margin-block: var(--kz-space-6);
+  padding-top: var(--kz-space-4);
+  border-top: 1px solid var(--kz-color-border);
+}
+.palet h3 {
+  font-size: var(--kz-text-md);
+}
+.paletListesi {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(3.25rem, 1fr));
+  gap: var(--kz-space-2);
+  margin: var(--kz-space-3) 0;
+  padding: 0;
+  list-style: none;
+}
+.paletDugme {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: var(--kz-space-1);
+  border: 1.5px solid var(--kz-color-text-muted);
+  border-radius: var(--kz-radius-sm);
+  background: var(--kz-color-bg);
+  color: var(--kz-color-text);
+  font: inherit;
+  font-family: var(--kz-font-mono);
+  cursor: pointer;
+}
+.paletDugme[data-yanitli='evet'] {
+  border-width: 3px;
+  background: var(--kz-color-surface-muted);
+}
+.paletDugme[aria-current='step'] {
+  outline: 3px solid var(--kz-color-text);
+  outline-offset: 2px;
+}
+.paletIsaret {
+  font-size: var(--kz-text-xs);
+  line-height: 1;
+}
+
+/* Tables */
+.tabloSar {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.tablo {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: var(--kz-text-sm);
+}
+.tablo th,
+.tablo td {
+  padding: var(--kz-space-2) var(--kz-space-3);
+  border-bottom: 1px solid var(--kz-color-border);
+  text-align: left;
+  vertical-align: top;
+}
+.tablo thead th,
+.tablo tfoot th,
+.tablo tfoot td {
+  border-bottom: 2px solid var(--kz-color-text);
+  font-weight: 700;
+}
+.tablo tbody th {
+  font-weight: 600;
+}
+.tablo td {
+  font-family: var(--kz-font-mono);
+}
+.tablo a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.denemeListesi {
+  padding-left: var(--kz-space-6);
+}
+
+/* Editor queue */
+.kuyruk {
+  display: grid;
+  gap: var(--kz-space-2);
+  margin: var(--kz-space-4) 0;
+  padding: 0;
+  list-style: none;
+}
+.kuyruk details {
+  padding: var(--kz-space-2) var(--kz-space-4);
+  border: 1px solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+}
+.kuyruk summary {
+  min-height: 44px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-2);
+  cursor: pointer;
+}
+.editorSecenekler {
+  padding-left: var(--kz-space-6);
+}
+
+@media (min-width: 40rem) {
+  .oyunListesi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .modListesi {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sec_dogru_yanlis,
+  .sec_hangisi_once {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sec_hala_gecerli_mi {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .ozet {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-width: 48rem;
+  }
+}
+
+@media (min-width: 64rem) {
+  .oyunListesi {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

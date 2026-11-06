@@ -6,7 +6,6 @@
     "ara": "Search",
     "yazma": "Writing",
     "pratik": "Practice",
-    "kampus": "Campus",
     "hesap": "My account",
     "ana": "Main navigation",
     "moduller": "Modules",
@@ -19,10 +18,10 @@
       "rehberler": "Guides",
       "yazma": "Writing",
       "pratik": "Learn by playing",
-      "kampus": "Turkuaz Kampüs",
       "kaydettiklerim": "Saved"
     },
-    "yakinda": "coming soon"
+    "yakinda": "coming soon",
+    "tespit": "Writing rules and trace checker"
   },
   "hedefim": {
     "etiket": "My goal",
@@ -106,9 +105,9 @@
       "pratik": "Revise topics with card games and HMGS decks.",
       "rehberler": "Article and thesis guides, Zotero and EndNote walkthroughs, a pre-submission checklist."
     },
-    "kampusBaslik": "Turkuaz Kampüs",
-    "kampusMetin": "A feed where researchers share their work, abstracts and posters. Reading and following are free.",
-    "kampusBag": "Go to Kampüs",
+    "tespitBaslik": "Writing rules and trace checker",
+    "tespitMetin": "Remove the known bad writing habits of AI from your text: give the rule set to your assistant as one prompt and check your text in the browser. Free and without sign-in; your text never leaves your device.",
+    "tespitBag": "Open the rules and the checker",
     "enNotu": "Casuist research and the Eurostars partner call:"
   },
   "fiyatlar": {

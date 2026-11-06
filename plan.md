@@ -145,7 +145,7 @@ Ana kararlar:
 | Ortak yazar ilanı | Kabul | 2.0 | Kampüs akışı oturduktan sonra. |
 | Tez konusu çakışma kontrolü | Değiştirilerek kabul | 2.0 | Fikirler eser olarak korunmaz; açık listeleme fikir kaybı riski taşır. Varsayılan gizli eşleşme: iki taraf da katılmış ve konu benzerliği eşiği aşılmışsa ikisine birden bildirim. |
 | İsim maskeleme önerisi | Değiştirilerek kabul | 1.0 | Not dayanak göstermeden "kesinlikle maskelenmeli" diyor. Plan: taraf, tanık ve vekil her zaman maskeli; hâkim ve üye adları yalnız resmî kaynağın açık yayımladığı yüksek mahkeme kararlarında korunur ve hiçbir zaman aranabilir veya profillenebilir değildir (Ek E). |
-| Kampüs ilk yıl /kampus altında | Kabul | 1.0 | K-14. |
+| Kampüs ilk yıl /kampus altında | Kaldırıldı | - | ADR-0031. |
 
 ### 2.4 SRS bölüm 14 açık sorularına cevaplar
 
@@ -154,7 +154,7 @@ Ana kararlar:
 | Ücretsiz özellikler ve BYOK mu? | Evet; gelir yalnız isteğe bağlı platform YZ kredileridir. Kurumsal özellik kilidi veya lisans satışı yok (ADR-0029). |
 | Arayüz yalnız Türkçe mi? | Ürün 1.0 Türkçe; i18n hazır; ürün İngilizcesi 2.0. Casuist İngilizce sayfaları sürer. |
 | Hâkim, savcı, avukat adları açık mı? | Ek E. |
-| Kampüs içeride mi, hesaplar ortak mı? | /kampus, ortak hesap, ayrı modül (K-14). |
+| Kampüs içeride mi, hesaplar ortak mı? | Kampüs kapsam dışıdır (ADR-0031). |
 | Hangi LLM sağlayıcısı ve sözleşme? | K-07 ve 8.10. |
 | Atıf ağı ilk aşamada hangi daire ve kurullar? | 1.0: Yargıtay HGK ve İBK, AYM. 1.1: Yargıtay CGK, Danıştay İDDK ve VDDK. 2.0: seçili daireler. |
 
@@ -174,7 +174,7 @@ Ana kararlar:
 | Rehberler | FR-32..38 | FR-32..37 | FR-38 panelden düzenleme | |
 | Yazma zamanı | FR-39..56 | Tamamı (FR-43 hariç), FR-91, FR-92 | FR-43 | Word eklentisi |
 | Pratik | FR-57..62 | 4 oyun, FR-94, FR-93; akademisyene özel deste | FR-61 derse atama ve rapor | FR-99 |
-| Turkuaz Kampüs | FR-63..73 | FR-63..71 | | FR-72, FR-73, FR-101, FR-102 |
+| Turkuaz Kampüs | FR-63..73 | | | Kapsam dışı (ADR-0031) |
 | Anonimleştirme | FR-74..80 | Tamamı | | |
 | Ödeme ve kredi | yok | FR-84..90 | Kurumsal fatura, havale ile yükleme | Kurumsal lisans |
 | Mevzuat sürümleri | yok | Veri | FR-96, FR-97 | FR-103 |
@@ -221,7 +221,7 @@ Kişiye özgü hukuki görüş, Google Scholar sonuçlarını çekme, OCR, SMS, 
 
 ### 3.4 Kapsam kısma sırası
 
-Takvim kayarsa şu sırayla 1.1'e kayar: Kampüs poster taslağı (FR-65), AYM atıf ağı (HGK ve İBK kalır), derin özet, dergi profili hedefinin 60'tan 25'e inmesi, HMGS soru hedefinin 600'den 400'e inmesi, EUR-Lex seti.
+Takvim kayarsa şu sırayla 1.1'e kayar: AYM atıf ağı (HGK ve İBK kalır), derin özet, dergi profili hedefinin 60'tan 25'e inmesi, HMGS soru hedefinin 600'den 400'e inmesi, EUR-Lex seti.
 
 Hiçbir zaman kısılmayanlar: alıntı doğrulaması, anonimleştirme kapıları, ödeme defteri testleri, hukuki metinler, güvenlik kapıları, URL koruma.
 
@@ -266,8 +266,6 @@ Varsayımlar: 1 USD = 50 TL (13 Ekim 2026 satış kuru 49,37; tampon payı). Ant
 | Kaynaklı özet (standart) | Haiku 5.5 | 8.000 / 300 | 0,00095 USD = 0,048 TL | 2 | %29 |
 | Derin özet (20 kaynak, otorite ayrımı) | Sonnet 5.5 | 14.000 / 900 | 0,037 USD = 1,85 TL | 60 | %37, sınırda; pilotta ölçülür |
 | Kılavuzdan şablon (kural çıkarma) | Haiku 5.5; doğrulama düşerse Sonnet 5.5 | 40.000 / 2.000 | Haiku 0,25 TL; düşüşte 5,25 TL; %10 düşüşle beklenen 0,75 TL | 30 | %30 |
-| Kampüs YZ özeti | Haiku 5.5 | 12.000 / 400 | 0,07 TL | 3 | %28 |
-| Poster taslağı | Haiku 5.5 | 12.000 / 600 | 0,075 TL | 4 | %23 |
 | Kısaltmalar cetveli | Sözlük ve Haiku 5.5 | 3.000 / 500 | 0,03 TL | 2 | %17 |
 | Kart taslağı (akademisyen) | Haiku 5.5 | 3.000 / 300 | 0,02 TL | 1 | %27 |
 | Arama, atıf ağı, onaylı dergi şablonu | Yok | | 0 | 0 | |
@@ -626,7 +624,6 @@ Her modda, sorgu ve kullanıcı metni dışarı çıkmadan önce: yapısal tanı
 | Kaynaklı özet | Haiku 5.5 | Hızlı sınıf | 12.000 / 400 |
 | Derin özet | Sonnet 5.5 | Orta sınıf | 20.000 / 1.200 |
 | Kural çıkarma | Haiku 5.5, düşüşte Sonnet 5.5 | Orta sınıf | 80.000 / 3.000 |
-| Kampüs özeti, poster | Haiku 5.5 | Hızlı sınıf | 16.000 / 800 |
 | Atıf çıkarma (toplu, anonim metin) | Haiku 5.5, Batch API (%50 indirim) | Kullanılmaz | 20.000 / 1.500 |
 | Kart taslağı (editör hattı) | Sonnet 5.5 | Kullanılmaz | 6.000 / 800 |
 | Kart taslağı (akademisyen) | Haiku 5.5 | Hızlı sınıf | 3.000 / 400 |
@@ -815,7 +812,7 @@ Eurostars ve IP: `docs/ip/arka-plan-kaydi.md` dosyası modül listesi, ilk commi
 webtasarim.md'nin tamamı bağlayıcıdır. Kazuist'e özgü kararlar (parantez içleri webtasarim.md maddeleri):
 
 1. Tek amaç cümlesi: "Hukuk kaynağını bulun, dayanağını görün, metninizi kurallarına uygun yazın."
-2. Yön: kâğıt ve mürekkep. Açık zemin, koyu mürekkep metin, tek vurgu rengi. Turkuaz yalnız Turkuaz Kampüs alt markasında kullanılır; ikinci renk modül kimliği taşıdığı için gerekçelidir (wt.11). Karanlık tema 1.0'da yoktur (wt.24 bilinçli karar).
+2. Yön: kâğıt ve mürekkep. Açık zemin, koyu mürekkep metin, tek vurgu rengi. İkinci marka rengi yoktur (ADR-0031 ile Turkuaz alt markası kalktı). Karanlık tema 1.0'da yoktur (wt.24 bilinçli karar).
 3. İmza öğesi "kenar şerhi": klasik şerh düzeninden gelen, cümleyle aynı hizada sağ kenarda duran kaynak notları. Mobilde cümle altına satır içi çip olarak katlanır. Ziyaretçi Kazuist'i ekran görüntüsünden bu düzenle tanır (wt.10).
 4. Tipografi (yasaklı listeden değil, wt.26): okuma ve başlık için Literata veya Source Serif 4; arayüz için IBM Plex Sans; künye, esas ve karar numarası için IBM Plex Mono. Fontlar yerel, alt kümeli, `font-display: swap` (wt.121). Alt küme Türkçe glifleri kapsar; İıŞşĞğÇçÖöÜü ve büyük-küçük dönüşüm testi CI'da.
 5. Belirteçler tek dosyada (`packages/ui/tokens.css`): renk, boşluk, tipografi ölçeği, köşe, gölge (wt.12). Her öğe aynı köşe ve gölgeyi taşımaz (wt.31).
@@ -838,7 +835,7 @@ webtasarim.md'nin tamamı bağlayıcıdır. Kazuist'e özgü kararlar (parantez 
 
 | Rota | İçerik |
 |---|---|
-| / | Ürün ana sayfası: büyük arama kutusu, örnek sorular, kısa tanım, Turkuaz Kampüs bandı |
+| / | Ürün ana sayfası: büyük arama kutusu, örnek sorular, kısa tanım, /tespit tanıtım bandı |
 | /ara | Sonuçlar ve kaynaklı özet |
 | /mevzuat/[kanun-no]/madde-[n] | Mevzuat maddesi (sürümleriyle) |
 | /karar/[kurum]/[kimlik-slug] | Karar sayfası (ör. /karar/yargitay-hgk/e-2013-19-199-k-2013-1418) |
@@ -1153,7 +1150,7 @@ Ajanlar aşağıdaki varsayılanlarla ilerler; Tarık değiştirirse ADR ile gü
 | 3 | Cloudflare proxy | Kapalı (DNS only) |
 | 4 | İsim politikası | Ek E |
 | 5 | Eğitim botları | Corpus sayfalarında engelli |
-| 6 | Kampüs 1.0 kapsamı | FR-63..71 |
+| 6 | Kampüs 1.0 kapsamı | Kaldırıldı (ADR-0031) |
 | 7 | HMGS hedefi | 1.0'da 600 onaylı soru |
 | 8 | Hukuki metinler | Taslak, Tarık onayıyla yayım |
 | 9 | Erken geçiş tarihi | 16 Kasım 2026 haftası, Tarık onayıyla |
@@ -1486,7 +1483,7 @@ permissionMode: acceptEdits
 color: pink
 ---
 Rolün iOS uygulamasıdır. ~/Desktop/promptlar/appstore.md'nin tamamını ve plan.md 9.3, 16 ile Ek J'yi oku. Başka uygulamanın App ID'sini, takımını, sertifikasını kullanma; güncel Xcode, SDK ve Apple belgelerini doğrula.
-Dalga 2-4: apps/ios/project.yml; swift-openapi-generator istemcisi; sekmeler (Ara, Pratik, Yazma, Kampüs, Hesap); kaynaklı özet (doğrulama sunucuda), kayıt sayfaları, Kaydettiklerim; pratik ve HMGS çevrimdışı; Kalemcik ve bildirimler; rehberler çevrimdışı; Kampüs okuma; StoreKit 2 ürünleri ve yapılandırma dosyası, appAccountToken; FR-109 izin ekranı; BYOK ayarı ve uzaktan bayrak; hesap silme; Dynamic Type ve VoiceOver; PrivacyInfo.xcprivacy; docs/appstore/tr-metadata.json; 1320 x 2868 ekran görüntüleri; arşiv, yükleme, TestFlight.
+Dalga 2-4: apps/ios/project.yml; swift-openapi-generator istemcisi; sekmeler (Ara, Pratik, Yazma, Hesap); kaynaklı özet (doğrulama sunucuda), kayıt sayfaları, Kaydettiklerim; pratik ve HMGS çevrimdışı; Kalemcik ve bildirimler; rehberler çevrimdışı; Kampüs okuma; StoreKit 2 ürünleri ve yapılandırma dosyası, appAccountToken; FR-109 izin ekranı; BYOK ayarı ve uzaktan bayrak; hesap silme; Dynamic Type ve VoiceOver; PrivacyInfo.xcprivacy; docs/appstore/tr-metadata.json; 1320 x 2868 ekran görüntüleri; arşiv, yükleme, TestFlight.
 Dalga 6: as.12 ve as.15 sırasıyla gönderim (Tarık onayıyla); durumları as.2'ye göre raporla.
 Bitti: gerçek cihazda temel akışlar; Waiting for Review ve submission ID kaydı.
 ```

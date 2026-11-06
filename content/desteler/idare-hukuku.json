@@ -1,0 +1,214 @@
+{
+  "sema": 1,
+  "slug": "idare-hukuku",
+  "baslik": "İdare Hukuku",
+  "aciklama": "İdarenin kuruluşu, düzenleyici işlemler ve idarenin sorumluluğu. Kartlar Anayasanın idareye ilişkin hükümlerine bağlıdır.",
+  "hmgsAlani": "idare-hukuku",
+  "kartlar": [
+    {
+      "id": "idare-hukuku.001",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Kamu tüzelkişiliği, ancak kanunla veya kanunun açıkça verdiği yetkiye dayanılarak kurulur.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 1,
+      "aciklama": "6771 sayılı Kanunla bu ibare \"kanunla veya Cumhurbaşkanlığı kararnamesiyle\" şeklinde değiştirildi.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "123",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Kamu tüzelkişiliği, kanunla veya Cumhurbaşkanlığı kararnamesiyle kurulur.",
+            "“ancak kanunla veya kanunun açıkça verdiği yetkiye dayanılarak” ibaresi “kanunla veya Cumhurbaşkanlığı kararnamesiyle” şeklinde değiştirilmiştir"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "1fd0cae1cd3fb5f5"
+        }
+      ],
+      "hmgsAlani": "idare-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m123"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idare-hukuku.002",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Başbakanlık, bakanlıklar ve kamu tüzelkişileri, kendi görev alanlarını ilgilendiren kanunların ve tüzüklerin uygulanmasını sağlamak üzere yönetmelikler çıkarabilirler.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 1,
+      "aciklama": "6771 sayılı Kanunla \"Başbakanlık\" yerine \"Cumhurbaşkanı\", \"tüzüklerin\" yerine \"Cumhurbaşkanlığı kararnamelerinin\" ibaresi getirildi.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "124",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Cumhurbaşkanı, bakanlıklar ve kamu tüzelkişileri, kendi görev alanlarını ilgilendiren kanunların ve Cumhurbaşkanlığı kararnamelerinin uygulanmasını sağlamak üzere ve bunlara aykırı olmamak şartıyla, yönetmelikler çıkarabilirler."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "1d74548c50fc8281"
+        }
+      ],
+      "hmgsAlani": "idare-hukuku",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m124"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idare-hukuku.003",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Mahallî idarelerin seçimleri, 67 nci maddedeki esaslara göre beş yılda bir yapılır.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 0,
+      "aciklama": "Cümle 127. maddenin 1995 tarihli değişik fıkrasında yer alır ve güncel metinde durmaktadır. Aynı fıkradaki ikinci cümle 2017'de mülga edildi, ilk cümle yürürlüktedir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "127",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Mahalli idarelerin seçimleri, 67 nci maddedeki esaslara göre beş yılda bir yapılır."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "9fc80aeb29c03a98"
+        }
+      ],
+      "hmgsAlani": "idare-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m127"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idare-hukuku.004",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasanın 125. maddesine göre idare, kendi eylem ve işlemlerinden doğan zararı ödemekle yükümlüdür.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Madde 125 idarenin sorumluluğunu Anayasa düzeyinde güvence altına alır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "125",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["İdare, kendi eylem ve işlemlerinden doğan zararı ödemekle yükümlüdür."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "ed409252e581b4d4"
+        }
+      ],
+      "hmgsAlani": "idare-hukuku",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m125"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idare-hukuku.005",
+      "oyun": "dogru_yanlis",
+      "soru": "Mahallî idareler; il, belediye veya köy halkının mahallî müşterek ihtiyaçlarını karşılamak üzere kuruluş esasları kanunla belirtilen kamu tüzelkişileridir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Tanım 127. maddenin ilk fıkrasındadır. Karar organlarının seçmenlerce seçilmesi tanımın parçasıdır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "127",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "il, belediye veya köy halkının mahallî müşterek ihtiyaçlarını karşılamak üzere kuruluş esasları kanunla belirtilen"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "9fc80aeb29c03a98"
+        }
+      ],
+      "hmgsAlani": "idare-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m127"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idare-hukuku.006",
+      "oyun": "olay_karti",
+      "soru": "Bir bakanlık, görev alanındaki bir kanunun uygulanmasını sağlamak için, kanuna aykırı olmamak şartıyla genel nitelikte bir düzenleme çıkarmak istiyor. Bu yetkinin Anayasadaki dayanağı hangisidir?",
+      "secenekler": ["Anayasa m.123", "Anayasa m.124", "Anayasa m.125", "Anayasa m.126", "Anayasa m.127"],
+      "dogruIndex": 1,
+      "aciklama": "Madde 124 yönetmelik çıkarma yetkisini düzenler: kanunların uygulanmasını sağlamak üzere ve bunlara aykırı olmamak şartıyla.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "124",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["ve bunlara aykırı olmamak şartıyla, yönetmelikler çıkarabilirler"],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "1d74548c50fc8281"
+        }
+      ],
+      "hmgsAlani": "idare-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m124"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idare-hukuku.007",
+      "oyun": "olay_karti",
+      "soru": "Bir belediyenin hukuka aykırı bir işlemi yüzünden bir vatandaş maddi zarara uğruyor. Zararın ödenmesi yükümlülüğünün Anayasadaki dayanağı hangisidir?",
+      "secenekler": ["Anayasa m.123", "Anayasa m.124", "Anayasa m.125", "Anayasa m.126", "Anayasa m.127"],
+      "dogruIndex": 2,
+      "aciklama": "Madde 125'in son fıkrası idarenin kendi eylem ve işlemlerinden doğan zararı ödemekle yükümlü olduğunu söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "125",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["İdare, kendi eylem ve işlemlerinden doğan zararı ödemekle yükümlüdür."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "ed409252e581b4d4"
+        }
+      ],
+      "hmgsAlani": "idare-hukuku",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m125"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    }
+  ]
+}

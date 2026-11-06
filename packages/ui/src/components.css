@@ -287,9 +287,6 @@ textarea.kz-alan__girdi {
 .kz-etiket--emsal {
   color: var(--kz-color-authority-precedent);
 }
-.kz-etiket--kampus {
-  color: var(--kz-color-kampus);
-}
 
 /* Source chip */
 .kz-cip {
@@ -396,9 +393,6 @@ a.kz-cip:hover .kz-cip__kunye {
   stroke-width: 10;
   stroke-linecap: butt;
   transition: stroke-dasharray var(--kz-duration-base) var(--kz-ease);
-}
-.kz-halka--kampus .kz-halka__dolgu {
-  stroke: var(--kz-color-kampus);
 }
 .kz-halka__yuzde {
   font-family: var(--kz-font-heading);

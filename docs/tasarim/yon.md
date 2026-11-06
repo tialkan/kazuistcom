@@ -24,7 +24,10 @@ sayfadan türer: açık kâğıt zemin, koyu mürekkep metin, tek vurgu olarak l
 | --kz-color-text | #1c1b19 | Mürekkep metin, birincil düğme |
 | --kz-color-text-muted | #57524a | İkincil metin (7:1 üstü) |
 | --kz-color-accent | #a1351f | Tek vurgu: lâl. Şerh çizgisi, etkin sekme, üst etiket |
-| --kz-color-kampus | #0d6e6c | Yalnız Turkuaz Kampüs (bant, sekme, Kampüs bileşenleri) |
+
+İkinci marka rengi yoktur. Turkuaz Kampüs kapsam dışına çıktığı için (ADR-0031) turkuaz belirteci, Kampüs
+sekmesi ve ana sayfa Kampüs bandı kaldırıldı; bandın yerinde /tespit tanıtımı kâğıt, mürekkep ve şerh
+çizgisiyle durur.
 
 Başarı, uyarı ve hata renkleri vardır ama hiçbir zaman tek başına bilgi taşımaz. Tüm metin renkleri kâğıt ve
 yüzey üzerinde 4.5:1'i geçer; packages/ui/test/tokens.test.ts bunu ölçer. Karanlık tema 1.0'da yoktur (K-15).

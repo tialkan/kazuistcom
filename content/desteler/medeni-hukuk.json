@@ -1,0 +1,320 @@
+{
+  "sema": 1,
+  "slug": "medeni-hukuk",
+  "baslik": "Medeni Hukuk",
+  "aciklama": "Temel kurallar: hukukun uygulanması, dürüstlük, ispat, kişilerin ehliyeti ve kişiliğin başlangıcı. Kartlar Türk Medeni Kanununa bağlıdır.",
+  "hmgsAlani": "medeni-hukuk",
+  "kartlar": [
+    {
+      "id": "medeni-hukuk.001",
+      "oyun": "dogru_yanlis",
+      "soru": "Kanunda uygulanabilir bir hüküm yoksa hâkim, önce bilimsel görüşlere göre karar verir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde 1'e göre hâkim kanunda hüküm yoksa örf ve âdet hukukuna göre, o da yoksa kendisi kanun koyucu olsaydı koyacağı kurala göre karar verir. Bilimsel görüşler ve yargı kararları karar verirken yararlanılacak kaynaklardır.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "1",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": [
+            "Kanunda uygulanabilir bir hüküm yoksa, hâkim, örf ve âdet hukukuna göre, bu da yoksa kendisi kanun koyucu olsaydı nasıl bir kural koyacak idiyse ona göre karar verir."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "0a1cccef50dd86c5"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:4721:m1"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.002",
+      "oyun": "olay_karti",
+      "soru": "Bir kiraya veren, kira sözleşmesinden doğan hakkını yalnızca kiracıya zarar vermek amacıyla ve açıkça kötüye kullanıyor. Hukuk düzeninin bu davranışı korumamasının dayanağı hangi maddedir?",
+      "secenekler": ["TMK m.1", "TMK m.2", "TMK m.3", "TMK m.6", "TMK m.11"],
+      "dogruIndex": 1,
+      "aciklama": "TMK m.2'nin ikinci cümlesi, bir hakkın açıkça kötüye kullanılmasını hukuk düzeninin korumayacağını söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "2",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": ["Bir hakkın açıkça kötüye kullanılmasını hukuk düzeni korumaz."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "2b521e5c123df0b1"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:4721:m2"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.003",
+      "oyun": "dogru_yanlis",
+      "soru": "Kanunun iyiniyete hukukî bir sonuç bağladığı durumlarda, durumun gereklerine göre kendisinden beklenen özeni göstermeyen kimse iyiniyet iddiasında bulunamaz.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "TMK m.3 iyiniyeti karine olarak kabul eder ama beklenen özeni göstermeyen kimsenin iyiniyet iddiasında bulunamayacağını söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "3",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": [
+            "Ancak, durumun gereklerine göre kendisinden beklenen özeni göstermeyen kimse iyiniyet iddiasında bulunamaz."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "74d2bfb2ecbb61e8"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:4721:m3"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.004",
+      "oyun": "olay_karti",
+      "soru": "Davacı, bir olgudan hak çıkardığını söylüyor ama olgunun varlığını ispat etmek istemiyor; kanunda ispat yüküne ilişkin aksi bir hüküm de yok. Genel ispat kuralı hangi maddededir?",
+      "secenekler": ["TMK m.1", "TMK m.2", "TMK m.3", "TMK m.6", "TMK m.11"],
+      "dogruIndex": 3,
+      "aciklama": "TMK m.6'ya göre kanunda aksine hüküm yoksa taraflardan her biri hakkını dayandırdığı olguların varlığını ispatla yükümlüdür.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "6",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": [
+            "Kanunda aksine bir hüküm bulunmadıkça, taraflardan her biri, hakkını dayandırdığı olguların varlığını ispatla yükümlüdür."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "5569b7eb3319ff7a"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:4721:m6"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.005",
+      "oyun": "dogru_yanlis",
+      "soru": "Hak ehliyeti yalnızca ergin kişilere tanınmıştır.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "TMK m.8'e göre her insanın hak ehliyeti vardır; erginlik hak ehliyetinin değil fiil ehliyetinin koşuludur.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "8",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": ["Her insanın hak ehliyeti vardır."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "839c7cf0a8b27037"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:4721:m8"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.006",
+      "oyun": "dogru_yanlis",
+      "soru": "Fiil ehliyeti için ayırt etme gücüne sahip olmak yeterlidir; erginlik aranmaz.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "TMK m.10'a göre ayırt etme gücüne sahip ve kısıtlı olmayan her ergin kişinin fiil ehliyeti vardır. Erginlik koşulların biridir.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "10",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": ["Ayırt etme gücüne sahip ve kısıtlı olmayan her ergin kişinin fiil ehliyeti vardır."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "0667f172bdd882c7"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:4721:m10"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.007",
+      "oyun": "olay_karti",
+      "soru": "Onsekiz yaşını henüz doldurmamış bir kişi evlenmiştir. Bu kişinin ergin sayılıp sayılmayacağını hangi madde belirler?",
+      "secenekler": ["TMK m.6", "TMK m.8", "TMK m.9", "TMK m.10", "TMK m.11"],
+      "dogruIndex": 4,
+      "aciklama": "TMK m.11'e göre erginlik onsekiz yaşın doldurulmasıyla başlar ve evlenme kişiyi ergin kılar.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "11",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": ["Erginlik onsekiz yaşın doldurulmasıyla başlar. Evlenme kişiyi ergin kılar."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "c46043961ed9b63d"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:4721:m11"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.008",
+      "oyun": "dogru_yanlis",
+      "soru": "Kişilik, çocuğun sağ olarak tamamıyla doğduğu anda başlar ve ölümle sona erer.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "TMK m.28 kişiliğin başlangıcını ve sonunu böyle belirler. Çocuk hak ehliyetini, sağ doğmak koşuluyla, ana rahmine düştüğü andan başlayarak elde eder.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "28",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": ["Kişilik, çocuğun sağ olarak tamamıyla doğduğu anda başlar ve ölümle sona erer."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "9b24e9e6dcd863f8"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:4721:m28"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.009",
+      "oyun": "dogru_yanlis",
+      "soru": "Adın değiştirilmesinden zarar gören kimse, bunu öğrendiği günden başlayarak altı ay içinde değiştirme kararının kaldırılmasını dava edebilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "TMK m.27'ye göre süre bir yıldır.",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "27",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": [
+            "bunu öğrendiği günden başlayarak bir yıl içinde değiştirme kararının kaldırılmasını dava edebilir"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "af11bc2882a43b2d"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:4721:m27"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "medeni-hukuk.010",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Adın değiştirilmesi, ancak haklı sebeplere dayanılarak hâkimden istenebilir.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 0,
+      "aciklama": "TMK m.27'nin ilk fıkrası güncel metinde durur. Aynı maddenin ikinci fıkrası 14/11/2024 tarihli 7532 sayılı Kanunla değiştirilmiştir, ilk fıkra yürürlüktedir (kontrol tarihi 7 Kasım 2026).",
+      "kaynaklar": [
+        {
+          "kaynak": "mevzuat.gov.tr",
+          "kanunNo": "4721",
+          "kanunAdi": "Türk Medeni Kanunu",
+          "madde": "27",
+          "bolum": "madde",
+          "url": "https://www.mevzuat.gov.tr/mevzuat?MevzuatNo=4721&MevzuatTur=1&MevzuatTertip=5",
+          "mevzuatTur": 1,
+          "tertip": 5,
+          "alintilar": [
+            "Adın değiştirilmesi, ancak haklı sebeplere dayanılarak hâkimden istenebilir.",
+            "(Değişik ikinci fıkra:14/11/2024-7532/12 md.)"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "af11bc2882a43b2d"
+        }
+      ],
+      "hmgsAlani": "medeni-hukuk",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:4721:m27"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    }
+  ]
+}
