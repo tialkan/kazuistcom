@@ -1,3 +1,21 @@
+## 6 Kasım 2026, tespit: /tespit sayfası (yazım kuralları ve iz denetleyici)
+
+Dal codex/tespit. Yeni bağımlılık yok; sözleşme (contracts, db) değişmedi.
+- Sayfa `apps/web/src/app/tespit/`: bütün istemi kopyalayan düğme (navigator.clipboard, aria-live durum satırı, pano yoksa
+  seçili textarea yedeği), `/tespit/yazim-kurallari.md` indirme ucu (ASCII dosya adı), kural setinin 11 bölüm ve 159
+  madde olarak okunur gösterimi (her madde `#kural-<bölüm>-<sıra>` bağlantısı) ve tarayıcıda çalışan iz denetleyici.
+- Tek kaynak `docs/tespit/yazim-kurallari.md`. `_veri/kurallar.json` onun ayrıştırılmış hâlidir; yeniden üretim
+  `node apps/web/src/app/tespit/_veri/uret.ts`. Denetleyici kataloğu (`_veri/izler.ts`) her girdiyi kural numarasına ve
+  kuralın metnindeki birebir terime bağlar; test ikisini karşılaştırır.
+- Kural id'si `<bölüm>.<sıra>`; Bölüm 9'un ikinci listesi kaynakta 1'den başladığı için 9.7 ile 9.12 olarak numaralanır.
+- Sunum: "yapay zekâ yazdı" ya da "%X yapay zekâ" yok; şiddete göre iz sayısı, 1000 sözcükte iz, ritim ölçümü (10.6) ve
+  yanlış pozitif uyarısı (9.3, 9.4, 9.5). Metin sunucuya gitmez; test kaynakta ağ, depolama, log yolu olmadığını zorlar.
+- check-text.mjs değişmedi ve devre dışı bırakılmadı: kural verisi taranan yollarda (content, packages/i18n) durmaz.
+- Doğrulama: typecheck, lint, check:text, tüm workspace testleri (web 185 geçti/1 skip, i18n 13), üretim derlemesi;
+  375/768/1440 px axe 0 ihlal, yatay taşma 0 (docs/tespit/ekran). Pano, yedek yol, indirme ve ağ isteği ölçümü Playwright ile.
+- Açık: gezinme bağlantısı (on-yuz), site haritası ve indeksleme (seo), e2e listesi (kalite-guvenlik): docs/istekler/yazma-tespit.md.
+  Ekran okuyucuyla elle deneme ve Word/Google Docs gibi dış araçlarla ilgili bir kayıt bu işin kapsamında değildir.
+
 ## 2 Kasım 2026, orkestra: bekleyen PR'ların birleştirilmesi
 
 Kullanıcı 2 Kasım'da "hallet" diyerek açık PR'ların birleştirilmesini istedi. Her PR yalnız son HEAD'inde

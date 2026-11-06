@@ -1,0 +1,59 @@
+{
+  "genislikler": {
+    "375": {
+      "acilis": {
+        "durum": 200,
+        "axe": [],
+        "tasma": 0
+      },
+      "sonuc": {
+        "axe": [],
+        "tasma": 0
+      }
+    },
+    "768": {
+      "acilis": {
+        "durum": 200,
+        "axe": [],
+        "tasma": 0
+      },
+      "sonuc": {
+        "axe": [],
+        "tasma": 0
+      }
+    },
+    "1440": {
+      "acilis": {
+        "durum": 200,
+        "axe": [],
+        "tasma": 0
+      },
+      "sonuc": {
+        "axe": [],
+        "tasma": 0
+      }
+    }
+  },
+  "islev": {
+    "kopyalaPano": true,
+    "kopyalaDurumRole": "polite",
+    "yedekKopyadaYok": true,
+    "indirmeAdi": "kazuist-yazim-kurallari.md",
+    "indirmeIcerik": true,
+    "denetimIstekSayisi": 0,
+    "denetimIstekleri": [],
+    "metinHicbirIstekte": true,
+    "durumMetni": "Denetim bitti. 6 iz bulundu.",
+    "odakBaslikta": "tespit-sonuc-baslik",
+    "kesinSayisi": "3",
+    "kuralBagi": "#kural-4-8",
+    "kuralHedefiVar": true,
+    "bosHata": "!\nÖnce denetlenecek bir metin yapıştırın.",
+    "uzunHata": "!\nMetin en çok 100.000 karakter olabilir; şu an 120.000 karakter var.",
+    "yedekMesaj": "Pano kullanılamadı. İstemin tamamı aşağıda seçili duruyor; Ctrl+C (Mac’te Cmd+C) ile kopyalayın.",
+    "yedekSecili": true,
+    "yedekDeger": 30419,
+    "yedekAxe": [],
+    "reddedildiYedek": true
+  }
+}
