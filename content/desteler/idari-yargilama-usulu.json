@@ -1,0 +1,156 @@
+{
+  "sema": 1,
+  "slug": "idari-yargilama-usulu",
+  "baslik": "İdari Yargılama Usulü",
+  "aciklama": "Dava süresi, yürütmenin durdurulması ve idari yargı denetiminin sınırı. Anayasa m.125 çerçevesinde.",
+  "hmgsAlani": "idari-yargilama-usulu",
+  "kartlar": [
+    {
+      "id": "idari-yargilama-usulu.001",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasaya göre idarî işlemlere karşı açılacak davalarda süre, yazılı bildirim tarihinden başlar.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Süre başlangıcı yazılı bildirim tarihidir; bu kural 125. maddede Anayasa düzeyinde yer alır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "125",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["İdarî işlemlere karşı açılacak davalarda süre, yazılı bildirim tarihinden başlar."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "ed409252e581b4d4"
+        }
+      ],
+      "hmgsAlani": "idari-yargilama-usulu",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m125"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idari-yargilama-usulu.002",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasaya göre yürütmenin durdurulmasına karar verilebilmesi için, telafisi güç veya imkânsız zararların doğması ile idarî işlemin açıkça hukuka aykırı olması şartlarından birinin gerçekleşmesi yeterlidir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Şartlar birlikte aranır: telafisi güç veya imkânsız zararların doğması ve idarî işlemin açıkça hukuka aykırı olması.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "125",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "İdarî işlemin uygulanması halinde telafisi güç veya imkânsız zararların doğması ve idarî işlemin açıkça hukuka aykırı olması şartlarının birlikte gerçekleşmesi durumunda gerekçe gösterilerek yürütmenin durdurulmasına karar verilebilir."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "ed409252e581b4d4"
+        }
+      ],
+      "hmgsAlani": "idari-yargilama-usulu",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m125"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idari-yargilama-usulu.003",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasaya göre idari yargı yetkisi, idarî eylem ve işlemlerin hukuka uygunluğunun denetimi ile sınırlıdır ve gerektiğinde yerindelik denetimi şeklinde de kullanılabilir.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Yargı yetkisi hukuka uygunluk denetimi ile sınırlıdır; hiçbir surette yerindelik denetimi şeklinde kullanılamaz.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "125",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Yargı yetkisi, idarî eylem ve işlemlerin hukuka uygunluğunun denetimi ile sınırlı olup, hiçbir surette yerindelik denetimi şeklinde kullanılamaz."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "ed409252e581b4d4"
+        }
+      ],
+      "hmgsAlani": "idari-yargilama-usulu",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m125"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idari-yargilama-usulu.004",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Cumhurbaşkanının tek başına yapacağı işlemler ile Yüksek Askerî Şuranın kararları yargı denetimi dışındadır.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 2,
+      "aciklama": "6771 sayılı Kanunla bu cümle 125. madde metninden çıkarıldı. Bugün idarenin her türlü eylem ve işlemine karşı yargı yolu açıktır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "125",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "“Cumhurbaşkanının tek başına yapacağı işlemler ile Yüksek Askerî Şuranın kararları yargı denetimi dışındadır. Ancak,” ibaresi madde metninden çıkarılmıştır",
+            "İdarenin her türlü eylem ve işlemlerine karşı yargı yolu açıktır."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "ed409252e581b4d4"
+        }
+      ],
+      "hmgsAlani": "idari-yargilama-usulu",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m125"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "idari-yargilama-usulu.005",
+      "oyun": "olay_karti",
+      "soru": "Bir kişiye tebliğ edilen idarî işleme karşı dava açma süresinin ne zaman başladığı tartışılıyor. Anayasada süre başlangıcını düzenleyen madde hangisidir?",
+      "secenekler": ["Anayasa m.36", "Anayasa m.37", "Anayasa m.125", "Anayasa m.138", "Anayasa m.152"],
+      "dogruIndex": 2,
+      "aciklama": "Madde 125, idarî işlemlere karşı açılacak davalarda sürenin yazılı bildirim tarihinden başlayacağını söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "125",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["İdarî işlemlere karşı açılacak davalarda süre, yazılı bildirim tarihinden başlar."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "ed409252e581b4d4"
+        }
+      ],
+      "hmgsAlani": "idari-yargilama-usulu",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m125"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    }
+  ]
+}

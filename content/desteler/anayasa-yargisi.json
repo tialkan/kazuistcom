@@ -1,0 +1,285 @@
+{
+  "sema": 1,
+  "slug": "anayasa-yargisi",
+  "baslik": "Anayasa Yargısı",
+  "aciklama": "Anayasa Mahkemesinin görevleri, bireysel başvuru, somut norm denetimi ve kararların etkisi.",
+  "hmgsAlani": "anayasa-yargisi",
+  "kartlar": [
+    {
+      "id": "anayasa-yargisi.001",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasa Mahkemesi, Anayasa değişikliklerini hem şekil hem esas bakımından inceler ve denetler.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Anayasa değişiklikleri yalnızca şekil bakımından denetlenir; kanunlar ise şekil ve esas bakımından denetlenir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "148",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Anayasa değişikliklerini ise sadece şekil bakımından inceler ve denetler."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "82e5f819e8ddbcb7"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m148"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-yargisi.002",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasa Mahkemesinin iptal kararları, aksi belirtilmedikçe geriye yürür.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Madde 153'e göre iptal kararları geriye yürümez.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "153",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["İptal kararları geriye yürümez."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "271374ead750630e"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 1,
+      "kaynakKayitIdleri": ["mevzuat:2709:m153"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-yargisi.003",
+      "oyun": "dogru_yanlis",
+      "soru": "Bir davaya bakmakta olan mahkeme, taraflardan birinin ileri sürdüğü aykırılık iddiasının ciddi olduğu kanısına varırsa, Anayasa Mahkemesinin vereceği karara kadar davayı geri bırakır.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Madde 152 somut norm denetiminin temelidir: ciddi görülen aykırılık iddiasında dava geri bırakılır ve Anayasa Mahkemesi kararı beklenir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "152",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "taraflardan birinin ileri sürdüğü aykırılık iddiasının ciddi olduğu kanısına varırsa, Anayasa Mahkemesinin bu konuda vereceği karara kadar davayı geri bırakır"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "f381fd779e7ab07f"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m152"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-yargisi.004",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasa Mahkemesi, itiraz yoluyla önüne gelen işte, işin kendisine gelişinden başlamak üzere altı ay içinde kararını verir ve açıklar.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 1,
+      "aciklama": "Süre altı ay değil, beş aydır. Bu süre içinde karar verilmezse mahkeme davayı yürürlükteki kanun hükümlerine göre sonuçlandırır.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "152",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Anayasa Mahkemesi, işin kendisine gelişinden başlamak üzere beş ay içinde kararını verir ve açıklar."
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "f381fd779e7ab07f"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m152"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-yargisi.005",
+      "oyun": "dogru_yanlis",
+      "soru": "Anayasa Mahkemesi iptal hükmünün yürürlüğe gireceği tarihi ayrıca kararlaştırırsa, bu tarih kararın Resmî Gazetede yayımlandığı günden başlayarak bir yılı geçemez.",
+      "secenekler": ["Doğru", "Yanlış"],
+      "dogruIndex": 0,
+      "aciklama": "Madde 153, iptal hükmünün yürürlüğe girişinin ertelenebileceğini ve ertelemenin yayım gününden başlayarak bir yılı geçemeyeceğini söyler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "153",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Bu tarih, kararın Resmî Gazetede yayımlandığı günden başlayarak bir yılı geçemez."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "271374ead750630e"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m153"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-yargisi.006",
+      "oyun": "olay_karti",
+      "soru": "A, kamu gücü tarafından Anayasada güvence altına alınmış bir temel hakkının ihlal edildiği iddiasıyla Anayasa Mahkemesine bireysel başvuru yapmayı düşünüyor ve kabul edilebilirlik için gerekenleri araştırıyor. Hangi madde başvurunun şartını düzenler?",
+      "secenekler": ["Anayasa m.148", "Anayasa m.149", "Anayasa m.152", "Anayasa m.153", "Anayasa m.138"],
+      "dogruIndex": 0,
+      "aciklama": "Madde 148 bireysel başvuruyu düzenler ve başvuruda bulunabilmek için olağan kanun yollarının tüketilmiş olmasını şart koşar.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "148",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": ["Başvuruda bulunabilmek için olağan kanun yollarının tüketilmiş olması şarttır."],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "82e5f819e8ddbcb7"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m148"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-yargisi.007",
+      "oyun": "olay_karti",
+      "soru": "Bir asliye hukuk mahkemesi, önündeki davada uygulayacağı kanun hükmünü Anayasaya aykırı görüyor. Mahkemenin izleyeceği yolu hangi madde düzenler?",
+      "secenekler": ["Anayasa m.148", "Anayasa m.149", "Anayasa m.152", "Anayasa m.153", "Anayasa m.138"],
+      "dogruIndex": 2,
+      "aciklama": "Madde 152, mahkemenin aykırılığı kendisi görmesi veya ciddi bulması hâlinde davayı geri bırakmasını ve Anayasa Mahkemesinin kararını beklemesini düzenler.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "152",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "Bir davaya bakmakta olan mahkeme, uygulanacak bir kanun veya Cumhurbaşkanlığı kararnamesinin hükümlerini Anayasaya aykırı görürse"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "f381fd779e7ab07f"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m152"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-yargisi.008",
+      "oyun": "hala_gecerli_mi",
+      "soru": "Anayasa Mahkemesi, kanunların, kanun hükmünde kararnamelerin ve Türkiye Büyük Millet Meclisi İçtüzüğünün Anayasaya şekil ve esas bakımlarından uygunluğunu denetler.",
+      "secenekler": ["Hâlâ geçerli", "Değişti", "Geçersiz (yürürlükten kalktı)"],
+      "dogruIndex": 1,
+      "aciklama": "6771 sayılı Kanunla \"kanun hükmünde kararname\" ibaresi \"Cumhurbaşkanlığı kararnamesi\" olarak değiştirildi. Bugünkü metin kanunları, Cumhurbaşkanlığı kararnamelerini ve İçtüzüğü sayar.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "148",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "kanunların, Cumhurbaşkanlığı kararnamelerinin ve Türkiye Büyük Millet Meclisi İçtüzüğünün Anayasaya şekil ve esas bakımlarından uygunluğunu denetler"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "82e5f819e8ddbcb7"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 2,
+      "kaynakKayitIdleri": ["mevzuat:2709:m148"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    },
+    {
+      "id": "anayasa-yargisi.009",
+      "oyun": "hangisi_once",
+      "soru": "Anayasa Mahkemesine bireysel başvuru yolunu getiren iki düzenlemeden hangisi daha önce yapılmıştır?",
+      "secenekler": [
+        "Anayasanın 148. maddesine \"bireysel başvuruları karara bağlar\" ibaresinin eklenmesi",
+        "6216 sayılı Anayasa Mahkemesinin Kuruluşu ve Yargılama Usulleri Hakkında Kanunun kabulü"
+      ],
+      "dogruIndex": 0,
+      "aciklama": "Anayasa değişikliği 7/5/2010 tarihli 5982 sayılı Kanunla, 6216 sayılı Kanun ise 30/03/2011 tarihinde kabul edilmiştir. Kanun, Anayasa değişikliğinin uygulama düzenlemesidir.",
+      "kaynaklar": [
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "2709",
+          "kanunAdi": "Türkiye Cumhuriyeti Anayasası",
+          "madde": "148",
+          "bolum": "madde",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/anayasa/",
+          "alintilar": [
+            "7/5/2010 tarihli ve 5982 sayılı Kanunun 18 inci maddesiyle, bu maddenin birinci fıkrasının birinci cümlesinin sonuna “ve bireysel başvuruları karara bağlar” ibaresi eklenmiştir"
+          ],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "82e5f819e8ddbcb7"
+        },
+        {
+          "kaynak": "anayasa.gov.tr",
+          "kanunNo": "6216",
+          "kanunAdi": "Anayasa Mahkemesinin Kuruluşu ve Yargılama Usulleri Hakkında Kanun",
+          "madde": null,
+          "bolum": "kunye",
+          "url": "https://www.anayasa.gov.tr/tr/mevzuat/kanun/",
+          "alintilar": ["Kabul Tarihi : 30/03/2011"],
+          "dogrulamaTarihi": "2026-11-07",
+          "maddeOzeti": "d89d3dd34c23ae12"
+        }
+      ],
+      "hmgsAlani": "anayasa-yargisi",
+      "zorluk": 3,
+      "kaynakKayitIdleri": ["mevzuat:2709:m148", "mevzuat:6216"],
+      "hazirlayan": "yz_taslagi",
+      "editorler": [],
+      "surum": 1,
+      "guncelleme": "2026-11-07"
+    }
+  ]
+}
