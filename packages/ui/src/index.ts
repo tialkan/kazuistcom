@@ -16,8 +16,6 @@ export const tokenNames = [
   '--kz-color-authority-high',
   '--kz-color-authority-precedent',
   '--kz-color-authority-other',
-  '--kz-color-kampus',
-  '--kz-color-kampus-contrast',
   '--kz-serh-width',
   '--kz-serh-rule',
   '--kz-serh-gap',

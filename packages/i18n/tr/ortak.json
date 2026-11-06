@@ -6,7 +6,6 @@
     "ara": "Ara",
     "yazma": "Yazma",
     "pratik": "Pratik",
-    "kampus": "Kampüs",
     "hesap": "Hesabım",
     "ana": "Ana gezinme",
     "moduller": "Modüller",
@@ -19,10 +18,10 @@
       "rehberler": "Rehberler",
       "yazma": "Yazma zamanı",
       "pratik": "Eğlenerek öğrenme",
-      "kampus": "Turkuaz Kampüs",
       "kaydettiklerim": "Kaydettiklerim"
     },
-    "yakinda": "yakında"
+    "yakinda": "yakında",
+    "tespit": "Yazım kuralları ve iz denetleyicisi"
   },
   "hedefim": {
     "etiket": "Hedefim",
@@ -106,9 +105,9 @@
       "pratik": "Kartlı oyunlarla ve HMGS destelerinde konuları tekrar edin.",
       "rehberler": "Makale ve tez rehberi, Zotero ve EndNote anlatımı, teslim öncesi kontrol listesi."
     },
-    "kampusBaslik": "Turkuaz Kampüs",
-    "kampusMetin": "Araştırmacıların çalışmalarını, özetlerini ve posterlerini paylaştığı akış. Okumak ve takip etmek ücretsiz.",
-    "kampusBag": "Kampüs'e git",
+    "tespitBaslik": "Yazım kuralları ve iz denetleyicisi",
+    "tespitMetin": "Yapay zekânın bilinen kötü yazı alışkanlıklarını metninizden ayıklayın: kural setini asistanınıza tek istemle verin, metninizi tarayıcıda denetleyin. Ücretsiz ve girişsizdir; metniniz cihazınızdan çıkmaz.",
+    "tespitBag": "Kuralları ve denetleyiciyi açın",
     "enNotu": "Casuist research and the Eurostars partner call:"
   },
   "fiyatlar": {
