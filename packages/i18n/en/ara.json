@@ -1,0 +1,160 @@
+{
+  "meta": {
+    "baslik": "Search",
+    "aciklama": "Search legislation, court decisions and board decisions; see the citation, authority class and official source of every result."
+  },
+  "baslik": "Search legal sources",
+  "giris": "Type a question, a concept, an article reference (KVKK m.11, TBK 49) or a docket and decision number.",
+  "form": {
+    "etiket": "Question or reference to search",
+    "ipucu": "For example: deletion of personal data, KVKK m.11, 4. HD 2021/26076 E., 2024/10643 K.",
+    "dugme": "Search",
+    "filtreler": "Date, court and authority filters",
+    "siralama": "Sort by",
+    "uygula": "Apply filters",
+    "temizle": "Clear filters",
+    "tarihBaslangic": "From date",
+    "tarihBitis": "To date",
+    "mahkeme": "Court, chamber or authority",
+    "mahkemeIpucu": "For example: Yargıtay, Hukuk Genel Kurulu, Kişisel Verileri Koruma Kurulu",
+    "otorite": "Authority class",
+    "tumOtoriteler": "All authority classes"
+  },
+  "tur": {
+    "baslik": "Source type",
+    "tumu": "All",
+    "mevzuat": "Legislation",
+    "karar": "Court decision",
+    "kurul_karari": "Authority decision",
+    "makale": "Article",
+    "kitap": "Book",
+    "tez": "Thesis",
+    "ab_hukuku": "EU law"
+  },
+  "sirala": {
+    "ilgililik": "Relevance",
+    "onem": "Importance",
+    "tarih_yeni": "Newest",
+    "tarih_eski": "Oldest"
+  },
+  "otorite": {
+    "baglayici_norm": "Binding norm",
+    "baglayici_karar": "Binding decision",
+    "yuksek_emsal": "High precedent",
+    "emsal": "Precedent",
+    "emsal_sinirli": "Limited precedent",
+    "idari_karar": "Administrative decision",
+    "doktrin": "Doctrine",
+    "karsilastirmali": "Comparative"
+  },
+  "etiket": {
+    "yeni": "New",
+    "yerlesik": "Established",
+    "eski": "Old",
+    "oncu": "Leading",
+    "anonimlestirildi": "Anonymised",
+    "ilgililik_yuksek": "Relevance: high",
+    "ilgililik_orta": "Relevance: medium",
+    "ilgililik_arka_plan": "Relevance: background",
+    "guncellik_uyarisi": "Currency warning",
+    "canli_kaynak": "Live source",
+    "veri_gunu": "Data day is old"
+  },
+  "durum": {
+    "yururlukte": "In force",
+    "degisti": "Amended",
+    "yururlukten_kalkti": "Repealed",
+    "bozuldu": "Reversed",
+    "onandi": "Upheld",
+    "kesinlesti": "Final",
+    "bilinmiyor": "Status unknown"
+  },
+  "sonuc": {
+    "baslik": "Results",
+    "sayi": "{toplam} results",
+    "sayfa": "Page {sayfa} of {sayfalar}",
+    "sayfalama": "Result pages",
+    "onceki": "Previous page",
+    "sonraki": "Next page",
+    "kaynagaGit": "Go to source",
+    "kaynagaGitEtiket": "{baslik} opens at its official source in a new tab",
+    "kaydet": "Save",
+    "kaydedildi": "Saved",
+    "kaydediliyor": "Saving",
+    "kaydetGiris": "Sign in to save",
+    "kaydetHata": "Could not save. Please try again.",
+    "zatenKayitli": "This source is already saved.",
+    "eskiUyari": "This source is older than 10 years; check whether it still applies.",
+    "veriGunu": "Data day: {tarih}",
+    "tanima": "Recognised references",
+    "otoriteEtiket": "Authority class",
+    "durumEtiket": "Status",
+    "ulke": "Jurisdiction: {ulke}",
+    "neden": {
+      "baslik": "Why relevant",
+      "kimlik": "The number or article you searched for matches this record exactly.",
+      "norm": "The {atif} in your question appears in this record.",
+      "terim": "Terms of your question appear in the title or the passage.",
+      "anlam": "It contains a passage close to your question."
+    }
+  },
+  "bos": {
+    "baslik": "Type what you want to search for",
+    "aciklama": "You can search by concept, article reference or docket and decision number.",
+    "ornekler": "Sample searches",
+    "ornek": {
+      "1": "kişisel verilerin silinmesi",
+      "2": "KVKK m.11",
+      "3": "kişilik hakkının zedelenmesi manevi tazminat",
+      "4": "unutulma hakkı"
+    },
+    "sonucYok": "No source matches this search",
+    "sonucYokAciklama": "Try a broader phrase, remove filters or search the official sites below."
+  },
+  "hata": {
+    "baslik": "The search could not be completed",
+    "kullanilamaz": "Search is not available right now. Please try again in a few minutes.",
+    "gecersiz": "The search phrase or one of the filters is not valid. Keep the search under 500 characters and pick dates from the calendar."
+  },
+  "canli": {
+    "baslik": "Live source",
+    "aciklama": "These results were fetched just now from an official search interface and are not in the core index."
+  },
+  "fikstur": {
+    "baslik": "Sample corpus",
+    "metin": "In this environment search runs on a sample corpus: the full Personal Data Protection Law, Turkish Code of Obligations Art. 49-75, five articles of the Constitution, seven Court of Cassation decisions, one Personal Data Protection Board decision summary and GDPR Art. 1-2. The texts were taken from official sources on 7 November 2026."
+  },
+  "taranan": {
+    "baslik": "Show searched sources",
+    "aciklama": "Search runs only on records compiled from the official sources below. Decisions are cleared of personal data before indexing.",
+    "mevzuat": "Mevzuat Bilgi Sistemi: articles of laws",
+    "yargitay": "Yargıtay Karar Arama: decisions",
+    "kvkk": "Personal Data Protection Board: decision summaries",
+    "eurlex": "EUR-Lex: selected EU regulations"
+  },
+  "etiketler": {
+    "baslik": "What do the labels mean?",
+    "yeni": "Published or decided in the last 3 years.",
+    "yerlesik": "Published or decided 3 to 10 years ago.",
+    "eski": "Older than 10 years; check whether it still applies.",
+    "oncu": "General assembly, unification or grand chamber decision, or a much cited source.",
+    "anonimlestirildi": "Personal data were masked before display.",
+    "ilgililik": "Closeness recomputed for this search: high, medium or background.",
+    "guncellik_uyarisi": "The legislation was later amended or repealed, or the decision was reversed.",
+    "canli_kaynak": "Fetched live from an official search interface; not in the core index.",
+    "veri_gunu": "The source has not been fetched again for more than 7 days.",
+    "otorite": "The authority class is shown with a shape and text: binding norm, binding decision, high precedent, precedent, limited precedent, administrative decision, doctrine, comparative."
+  },
+  "resmi": {
+    "baslik": "Search this question on official sites",
+    "aciklama": "Google Scholar and DergiPark open with your question; the other links go to the search page of the institution.",
+    "scholar": "Google Scholar",
+    "dergipark": "DergiPark",
+    "yoktez": "YÖK National Thesis Centre",
+    "uyap": "UYAP Emsal Karar Arama",
+    "aym": "Constitutional Court Decisions Database",
+    "yargitay": "Court of Cassation Decision Search",
+    "danistay": "Council of State Decision Search",
+    "yeniSekme": "opens in a new tab"
+  }
+}

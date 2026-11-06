@@ -1,0 +1,371 @@
+{
+  "tarih": "2026-11-07",
+  "set": "rag-50-2026-11-07",
+  "derlem": "fikstur-2026-11-07",
+  "soruSayisi": {
+    "toplam": 50,
+    "cevapli": 36,
+    "cevapsiz": 11,
+    "tuzak": 4
+  },
+  "esikler": [
+    {
+      "olcut": "Uydurma kaynak (dizinde olmayan kimlik)",
+      "esik": "0",
+      "deger": "doğrulayıcı 0/36 saldırgan satırı geçirdi",
+      "durum": "olculmedi",
+      "not": "Doğrulayıcı kuralı (a) dizinde olmayan kimliği hiçbir zaman göstermez; gerçek modelle uçtan uca ölçüm yapılmadı."
+    },
+    {
+      "olcut": "Desteksiz cümle oranı (insan değerlendirmesi)",
+      "esik": "%1 altı (200 soru)",
+      "deger": "yok",
+      "durum": "olculmedi",
+      "not": "İnsan değerlendirmesi ve gerçek model çıktısı gerekir."
+    },
+    {
+      "olcut": "Cevapsız sorularda doğru çekimserlik",
+      "esik": "%90 ve üstü",
+      "deger": "yok",
+      "durum": "olculmedi",
+      "not": "Model çıktısı gerekir; getirmenin cevapsız sorulardaki en üst ilgililiği aşağıda bilgi olarak verildi."
+    },
+    {
+      "olcut": "Beklenen kaynaklardan en az biri ilk 10'da",
+      "esik": "%85 ve üstü",
+      "deger": "%100.0 (36/36)",
+      "durum": "gecti",
+      "not": "Yalnız 75 kayıtlık fikstür derleminde ve karakter üçlüsü vektörüyle; gerçek corpus ve embedding modeliyle yeniden ölçülmeli."
+    },
+    {
+      "olcut": "Arama p95",
+      "esik": "1,5 sn ve altı",
+      "deger": "4.0 ms (p50 2.7 ms)",
+      "durum": "olculmedi",
+      "not": "Bellek içi fikstür süresidir; PostgreSQL, embedding servisi ve 200 eşzamanlı istekle (k6) ölçülmedi."
+    },
+    {
+      "olcut": "İlk doğrulanmış cümle p95",
+      "esik": "3 sn ve altı",
+      "deger": "yok",
+      "durum": "olculmedi",
+      "not": "Gerçek sağlayıcıyla akış ölçümü yapılmadı."
+    },
+    {
+      "olcut": "Kişi adı sızıntısı",
+      "esik": "0",
+      "deger": "doğrulayıcı 0/36 saldırgan satırı geçirdi",
+      "durum": "olculmedi",
+      "not": "Kural tabanlı ad denetimi saldırgan satırları durdurdu; NER bağlanmadı ve gerçek modelle ölçülmedi."
+    }
+  ],
+  "getirme": [
+    {
+      "id": "c01",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c02",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 2
+    },
+    {
+      "id": "c03",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c04",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c05",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c06",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c07",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c08",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 2
+    },
+    {
+      "id": "c09",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c10",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c11",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c12",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c13",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c14",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 3
+    },
+    {
+      "id": "c15",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c16",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c17",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c18",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c19",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c20",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c21",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c22",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c23",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c24",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c25",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c26",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c27",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c28",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c29",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c30",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c31",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c32",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c33",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c34",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c35",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "c36",
+      "tur": "cevapli",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "t01",
+      "tur": "tuzak",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "t02",
+      "tur": "tuzak",
+      "isabet": true,
+      "sira": 1
+    },
+    {
+      "id": "t04",
+      "tur": "tuzak",
+      "isabet": true,
+      "sira": 1
+    }
+  ],
+  "cevapsizUst": [
+    {
+      "id": "u01",
+      "ustIlgililik": 0.4,
+      "ustEtiket": "ilgililik_orta"
+    },
+    {
+      "id": "u02",
+      "ustIlgililik": 0.306,
+      "ustEtiket": "ilgililik_orta"
+    },
+    {
+      "id": "u03",
+      "ustIlgililik": 0.115,
+      "ustEtiket": "ilgililik_arka_plan"
+    },
+    {
+      "id": "u04",
+      "ustIlgililik": 0.287,
+      "ustEtiket": "ilgililik_arka_plan"
+    },
+    {
+      "id": "u05",
+      "ustIlgililik": 0.192,
+      "ustEtiket": "ilgililik_arka_plan"
+    },
+    {
+      "id": "u06",
+      "ustIlgililik": 0.46,
+      "ustEtiket": "ilgililik_orta"
+    },
+    {
+      "id": "u07",
+      "ustIlgililik": 0.345,
+      "ustEtiket": "ilgililik_orta"
+    },
+    {
+      "id": "u08",
+      "ustIlgililik": 0.286,
+      "ustEtiket": "ilgililik_arka_plan"
+    },
+    {
+      "id": "u09",
+      "ustIlgililik": 0.262,
+      "ustEtiket": "ilgililik_arka_plan"
+    },
+    {
+      "id": "u10",
+      "ustIlgililik": 0.345,
+      "ustEtiket": "ilgililik_orta"
+    },
+    {
+      "id": "t03",
+      "ustIlgililik": 0.569,
+      "ustEtiket": "ilgililik_orta"
+    }
+  ],
+  "dogrulayici": {
+    "saldiri": {
+      "uydurmaKimlik": 0,
+      "sahteAlinti": 0,
+      "dayanaksizSayi": 0,
+      "kisiAdi": 0,
+      "toplam": 144
+    },
+    "birebirKabul": 36,
+    "birebirToplam": 36
+  },
+  "aramaSureleriMs": {
+    "p50": 2.6716670000000136,
+    "p95": 4.035957999999994,
+    "en": 7.5899579999999816
+  }
+}

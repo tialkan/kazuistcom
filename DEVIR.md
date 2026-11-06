@@ -1,3 +1,35 @@
+## 7 Kasım 2026, casuist: /ara, kaynaklı özet ve /kaydettiklerim (codex/dalga2-casuist)
+
+Dalga 2 casuist ilk teslimi; PR açık, birleştirilmedi. `packages/contracts` ve `packages/db` değişmedi.
+- Çekirdek `packages/casuist`: Ek D.2 normalizasyonu; norm çözücü (kanun numaraları mevzuat.gov.tr resmî metniyle
+  doğrulandı, `src/laws.ts`); 6.5 kalıplarıyla karar çözücü; kimlik, tam metin ve vektör kollarını RRF (k=60) ile
+  birleştiren arama; ilgililik (sıra kanıtla ölçeklenir) ve önem puanı; 7.3 etiketleri; Ek F otorite sınıfı;
+  `MemoryBackend` (fikstür) ve `sqlBackend` (records, chunks, `turkish` tsvector, halfvec HNSW, citation_edges);
+  pasaj seçimi (künye satırı pasajın ilk satırıdır, sayılar onunla doğrulanır); Ek D.2 satır doğrulayıcısı
+  (`./validator` girişi tarayıcıda çalışır, test Node yerleşiği kullanmadığını zorlar); SSE olay akışı ve çekimserlik;
+  RIS ve BibTeX. Canlı federasyon `LiveSource` arayüzü 1,2 sn bütçeyle hazır, bağdaştırıcı yok.
+- Fikstür: 75 kayıt, resmî kaynaklardan 7 Kasım'da alındı (KVKK tamamı, TBK m.49-75, Anayasa 5 madde, 7 Yargıtay
+  kararı, 1 KVKK Kurul özeti, GDPR m.1-2). Kaynak, özetler ve üretim komutu `packages/casuist/fixtures/KAYNAK.md`.
+  Üretimde fikstür kapalıdır; veritabanı yoksa arama 503 döner.
+- Uçlar: `GET /v1/search`, `/v1/records/:id`, `/v1/norms/resolve` (IP hız sınırlı, yalnız `masked_text`, gizli kayıt
+  yok); `POST /v1/answers` (SSE; yz-gecidi üzerinden yalnız maskeli metin; günlük 2 ücretsiz, edu.tr ile 5; sonra 2
+  kredi; doğrulanmış cümle yoksa hak ve kredi geri; BYOK aktarma `yz_aktarim` onayı ister); `prepare` ve `verify`
+  (tek kullanımlık nonce, imzalı istem, sunucuda yeniden doğrulama); `/v1/library` GET/POST/DELETE ve export
+  (ris, bibtex; İSNAD/OSCOLA/Bluebook CSL kararına kadar 400 ve açıklama).
+- Arayüz: `/ara` (form, filtreler, türe göre sayılı sekmeler, sonuç kartı, kenar şerhli özet, dayanağı göster,
+  sabit uyarılar, etiket sözlüğü, resmî siteler) ve `/kaydettiklerim` (liste, çıkarma, kaynakçayı kopyala, indir).
+  `acikModuller` içine `/ara` ve `/kaydettiklerim` eklendi.
+- Ölçüm: `node eval/rag/olc.ts --yaz`; 50 soru (36 cevaplı, 10 cevapsız, 4 tuzak). Fikstürde ilk 10'da beklenen kaynak
+  36/36, doğrulayıcı 144 saldırgan satırın hiçbirini göstermedi, birebir alıntılı 36/36 satırı kabul etti. Gerçek
+  corpus ve model gerektiren 7.6 eşikleri (çekimserlik, desteksiz cümle, p95'ler, ad sızıntısı) ölçülmedi, geçti
+  sayılmadı. Rapor `eval/rag/raporlar/dalga-2-fikstur.md`.
+- Doğrulama: casuist 104, web 227 geçti/1 skip (PGlite üstünde gerçek göçlerle SQL arka ucu, özet ve kütüphane
+  uçları, taklit sağlayıcı), tüm çalışma alanı testleri, typecheck, lint, check:text, üretim derlemesi. Yerel
+  PostgreSQL 18 + pgvector'de göçler ve fikstür yüklemesi, üretim sunucusunda arama ve 375/768/1440 px axe 0, yatay
+  taşma 0 (özet ekranı taklit SSE ile; görüntüler yerel çalışma klasöründe).
+- Açık: kilit dosyası güncellemesi (orkestra), sözleşme önerileri ve komşu ajan işleri
+  `docs/istekler/casuist-dalga2.md` ve `casuist-kaydettiklerim.md`; embedding servisi ve eval/embed, embed.chunks
+  tüketicisi ve uzlaştırma işi, BYOK istemci arayüzü, zaman çizelgesi (FR-13), CSL biçimleri, gerçek corpus ölçümü.
 ## 7 Kasım 2026, pratik: FSRS, dört oyun, HMGS destesi ve deneme, onay akışı (codex/dalga2-pratik)
 
 Yeni bağımlılık yok; contracts ve db değişmedi (istekler `docs/istekler/pratik-*.md`). Menüde `/pratik` açıldı
