@@ -52,7 +52,7 @@ Değişmez kurallar:
 3. Başlatılmış iş tamamlanmış sayılmaz. DNS, TLS, sağlık ucu ve dışarıdan erişim ayrıca doğrulanır (sy.2/10). Veri alınamayan ölçüm başarılı sayılmaz (webtools ilkesi).
 4. Metin kuralları: uzun çizgi (em dash) yok, yasak kelimeler yok, emoji süsü yok. Unvan, kurum, sicil ve rakam tahmin edilmez, birincil kaynaktan doğrulanır (webtasarim.md bölüm 3, WebMasterRobot dersleri).
 5. Framework ve servis belgesi her kurulumda güncel resmî kaynaktan okunur. Hafızadaki API'ye güvenilmez (wt.50).
-6. Kişisel veri Türkiye dışına çıkmaz. Dış YZ sağlayıcısına yalnız anonim veya maskeli metin gider (K-03, K-11).
+6. Kişisel veri, ADR-0030 koşulları (KVKK m.9 aktarım dayanağı ve bildirim) tamamlanmadan Türkiye dışında işlenmez. Dış YZ sağlayıcısına yalnız anonim veya maskeli metin gider (K-03, K-11).
 
 Atıf kısaltmaları: "wt.N" webtasarim.md'nin N numaralı maddesi, "sy.N" siteyarat.md'nin N numaralı bölümü, "as.N" appstore.md'nin N numaralı bölümüdür. Kanun ve yönetmelik maddeleri adıyla birlikte yazılır.
 
@@ -60,7 +60,7 @@ Atıf kısaltmaları: "wt.N" webtasarim.md'nin N numaralı maddesi, "sy.N" sitey
 
 ## 1. Yönetici özeti ve ana kararlar
 
-Kazuist 1.0; Türk hukuk kaynaklarında arama, her cümlesini kaynağa bağlayan kaynaklı özet, atıf ağı, tez ve makale şablonu, yazma koçu Kalemcik, HMGS hazırlığı dahil pratik çalışmalar ve Turkuaz Kampüs'ü tek hesapta sunan web platformudur. Bütün ürün özellikleri ücretsizdir. YZ işlemleri günlük ücretsiz hak, ücretsiz BYOK veya isteğe bağlı platform kredisiyle çalışır. Tek gelir platform kredisi satışıdır (27 Ekim 2026, ADR-0029).
+Kazuist 1.0; Türk hukuk kaynaklarında arama, her cümlesini kaynağa bağlayan kaynaklı özet, atıf ağı, tez ve makale şablonu, yazma koçu Kalemcik, HMGS hazırlığı dahil pratik çalışmalar ve /tespit yazım kuralları denetleyicisini tek hesapta sunan web platformudur (Turkuaz Kampüs 6 Kasım 2026'da kapsamdan çıktı, ADR-0031). Bütün ürün özellikleri ücretsizdir. YZ işlemleri günlük ücretsiz hak, ücretsiz BYOK veya isteğe bağlı platform kredisiyle çalışır. Tek gelir platform kredisi satışıdır (27 Ekim 2026, ADR-0029).
 
 Hedef takvim (ayrıntı bölüm 18):
 
@@ -80,7 +80,7 @@ Ana kararlar:
 |---|---|---|
 | K-01 | Konumlandırma: Kazuist, Casuist kaynak bağlama çekirdeği üzerine kurulu araştırma ve yazma platformudur. SRS'teki "Kısa cevap" arayüzde "Kaynaklı özet" adını alır: her cümle kaynağa bağlanır, birebir dayanak alıntısı doğrulanır, dayanak yetersizse sistem susar. | kazuist.com bugün "Kazuist hukuki soruyu cevaplamıyor, cevabı denetlenebilir kılar" diyor ve Eurostars ortak çağrısı bu taahhüt üzerine kurulu. Ürün dili bu metinle çelişmemeli. Aynı çekirdek Eurostars WP4'ün (retrieval, grounding, provenance) arka plan IP'sidir. |
 | K-02 | URL: Türkçe ürün kökte. Mevcut 22 adresin hiçbiri kırılmaz: 16'sı aynen kalır, 5 Türkçe hukuki sayfa tek 301 ile ürünün hukuki sayfalarına gider, "/" ürün ana sayfası olur ve eski İngilizce ana sayfa "/en" adresine taşınır (Ek H). | Eurostars çağrısı 4 Mart 2027'ye kadar açık; ortaklara gönderilen bağlantılar kırılmamalı. |
-| K-03 | Barındırma: siteyarat.md akışı (GitHub, Coolify, Cloudflare DNS) korunur. Sağlayıcı Hetzner yerine Türkiye'de kurulu bir şirketin Türkiye'deki veri merkezidir. | SRS 10.3 verinin Türkiye'de tutulmasını istiyor. Yurt dışı sağlayıcıda KVKK m.9 için Kurul'un standart sözleşmesinin değiştirilmeden imzalanması ve 5 iş günü içinde bildirimi gerekir; yabancı sağlayıcıdan bu imzayı almak belirsiz. |
+| K-03 | Barındırma: siteyarat.md akışı (GitHub, Coolify, Cloudflare DNS) korunur. Sağlayıcı Hetzner Cloud, AB konumu (ADR-0030, 6 Kasım 2026). Üretimde kişisel veri, KVKK m.9 aktarım dayanağı ve bildirimi tamamlanmadan işlenmez. | SRS 10.3 verinin Türkiye'de tutulmasını istiyor. Yurt dışı sağlayıcıda KVKK m.9 için Kurul'un standart sözleşmesinin değiştirilmeden imzalanması ve 5 iş günü içinde bildirimi gerekir; yabancı sağlayıcıdan bu imzayı almak belirsiz. |
 | K-04 | Cloudflare: alan adı zaten Cloudflare ad sunucularında. Kişisel veri taşıyan adresler başlangıçta "DNS only"; TLS sunucuda (Coolify Traefik ve Let's Encrypt). Proxy, Cloudflare ile KVKK aktarım mekanizması kurulursa ADR ile açılır. | Proxy, IP ve istek içeriğini yurt dışındaki bir işleyene aktarır. |
 | K-05 | Yığın: TypeScript monorepo (Next.js web ve /api/v1), Python işçi (toplama, anonimleştirme, NLP), PostgreSQL ve pgvector, Valkey, Türkiye'de S3 uyumlu depo. | İki dil, tek veri tabanı, az hareketli parça; ajanların paralel çalışmasına uygun sınırlar. |
 | K-06 | Arama: PostgreSQL içinde hibrit getirme (Türkçe tam metin, vektör, norm ve karar kimliği çözücü, RRF). OpenSearch yalnız ölçüm gerektirirse. | Tek veri tabanı, tek yedek; ölçmeden ağır bileşen eklenmez. |
@@ -91,7 +91,7 @@ Ana kararlar:
 | K-11 | Anonimleştirme Türkiye'deki sunucuda yapılır; ham karar metni yurt dışına çıkmaz. Kural, NER topluluğu ve editör kuyruğu; isim politikası Ek E. | KVKK m.4 ve m.9; SRS 10.2. |
 | K-12 | Veri edinimi: çekirdek dizin (lisans dayanağı açık kaynaklar ve seçili kurullar) ve canlı resmî kaynak federasyonu (talep üzerine getir, anonimleştir, önbellekle). Protokol başvuruları paralel yürür. | FSEK ek m.8 riski toplu çekmede yoğunlaşır; kullanıcı yine geniş kapsam görür. |
 | K-13 | iOS: yerel SwiftUI uygulaması, aynı API; web 1.0 kararlı olunca TestFlight, ardından App Store. | Apple 4.2 (paketlenmiş web sitesi reddi) ve sRepetition deneyimi. |
-| K-14 | Turkuaz Kampüs: kazuist.com/kampus altında, ortak hesap; ayrı veri şeması, ayrı API öneki, özellik bayrağı. | İlk yıl tek alan adı soğuk başlangıcı azaltır; modül sınırı ayrı ürün hattı olarak ayrılmayı mümkün kılar. |
+| K-14 | Kaldırıldı (ADR-0031, 6 Kasım 2026): Turkuaz Kampüs Kazuist kapsamında değildir. Yerine /tespit sayfası 1.0 kapsamındadır. | İlk yıl tek alan adı soğuk başlangıcı azaltır; modül sınırı ayrı ürün hattı olarak ayrılmayı mümkün kılar. |
 | K-15 | Tasarım: açık tema, özgün kimlik, imza öğesi "kenar şerhi"; YZ ile üretilmiş görsel ve emoji yok. | webtasarim.md ve açık tema tercihi. |
 | K-16 | Dil: kaynak dil Türkçe; i18n anahtarları ilk günden; ürünün İngilizcesi 2.0. Casuist İngilizce sayfaları sürer. | wt.3 ve wt.84-96. |
 | K-17 | 1.0'a eklenenler: HMGS modu, FSRS aralıklı tekrar, kaynakça dışa aktarma (CSL), kısaltmalar cetveli, KVKK-GDPR madde eşleniği ilk seti, kural kaynağını gösterme, otorite sınıfı etiketi. | Düşük maliyet, yüksek dönüşüm; ekipte FSRS deneyimi var. |
@@ -400,7 +400,7 @@ Yeniden kullanılacak kendi varlıklarımız (kopyalanmaz, uyarlanır): `/Users/
 | Depo | Ham arşiv ve yüklemeler | Türkiye'de S3 uyumlu |
 | Yedek | Veri tabanı ve depo yedekleri | Türkiye'de ikinci sağlayıcı |
 
-Sağlayıcı ölçütleri: Türkiye'de kurulu şirket ve Türkiye'de veri merkezi; KVM sanal sunucu; özel ağ; anlık görüntü; DDoS koruması; IPv4; Türkçe sözleşme ve veri işleme eki; ISO 27001; Coolify'ın desteklediği güncel Ubuntu LTS.
+Sağlayıcı: Hetzner Cloud, AB konumu (ADR-0030). Eski ölçütler (Türkiye'de kurulu şirket ve Türkiye'de veri merkezi) ADR-0030 ile kalktı; kalan ölçütler: KVM sanal sunucu; özel ağ; anlık görüntü; DDoS koruması; IPv4; Türkçe sözleşme ve veri işleme eki; ISO 27001; Coolify'ın desteklediği güncel Ubuntu LTS.
 
 Aktarım envanteri:
 
@@ -748,7 +748,9 @@ SRS FR-32..37. İçerik "Hukuk Atlası: Makale ve Tez Yazım Rehberi" Word belge
 5. Görseller: konu piktogramları (tek çizer seti, yaklaşık 40 konu); her görselde alternatif metin. FR-57'deki görüntü üretme modeli kullanılmaz.
 6. Akademisyen: özel deste oluşturma (YZ taslağı kart başına 1 kredi); derse atama ve öğrenci ilerleme raporu 1.1.
 
-### 10.7 Turkuaz Kampüs
+### 10.7 Turkuaz Kampüs (kapsam dışı, ADR-0031)
+
+Bu bölüm 6 Kasım 2026'dan itibaren uygulanmaz; yalnız kayıt için durur.
 
 1. SRS FR-63..71; `kampus` veri şeması ve `/v1/kampus/*` öneki; özellik bayrağı.
 2. Paylaşım: başlık, özet, dosya; dosya özel depoda; herkese açık yayım yok.
@@ -846,7 +848,7 @@ webtasarim.md'nin tamamı bağlayıcıdır. Kazuist'e özgü kararlar (parantez 
 | /rehberler/... | Makale rehberi, tez rehberi, Zotero ve EndNote, kontrol listesi |
 | /yazma, /yazma/sablon, /yazma/dergiler/[slug], /kalemcik | Yazma zamanı |
 | /pratik, /pratik/hmgs | Oyunlar ve HMGS |
-| /kampus/... | Turkuaz Kampüs |
+| /tespit | Yazım kuralları istemi ve tarayıcı içi iz denetleyicisi (ADR-0031) |
 | /kaydettiklerim | Kaydedilenler |
 | /fiyatlar | Planlar, paketler, işlem başına kredi |
 | /hesap/... | Hesap, cüzdan, faturalar, KVKK başvurusu |
@@ -1055,7 +1057,7 @@ Yollar mimar tarafından `docs/sahiplik.md`'de kesinleştirilir. Ortak dosyalar 
 | 0 | Temel ve sözleşmeler | mimar (sıralı), sonra bagimsiz-denetci | `pnpm install`, `typecheck`, `test` geçer; `docker compose up` çalışır; migration uygulanır; OpenAPI lint temiz; ADR-0001..0020 yazılı; denetçi kritik bulgu yok; Tarık ADR'leri toplu onayladı; main'de `contracts-v1` etiketi | 3 gün |
 | 1 | Çekirdek | altyapi, kimlik, yz-gecidi, veri-toplama, anonimlestirme, odeme, on-yuz, hukuk-uyum | Staging canlı; giriş çalışır; defter özellik testleri geçer; iyzico sandbox mutlu yollar; YZ geçidi taklit sağlayıcılarla ve bir gerçek sağlayıcıyla; mevzuat, RG, KVKK, Rekabet, OpenAlex bağlayıcıları staging'de; anonimleştirme 50 belgede ölçüm raporu; kabuk ve korunan Casuist sayfaları; hukuki taslaklar onaya hazır | 2 hafta |
 | 1E | Erken geçiş | altyapi, seo, kalite-guvenlik | Ek H testi, WebSEORobot, WebSECRobot, WebKVKKrobot, WebLINKrobot geçti; yayında görünen hukuki metinler ve fiyat sayfası Tarık onaylı; Tarık onayıyla DNS geçişi | 2 gün |
-| 2 | Ürün modülleri | casuist, atif-agi, yazma, pratik, kampus, icerik, seo, odeme, veri-toplama, ios (başlar) | Tüm 1.0 modülleri staging'de; 50 soruluk sette RAG eşikleri; HGK atıf alt kümesi; 3 kılavuzda şablon; 4 oyun ve HMGS en az 300 onaylı soruyla; Kampüs MVP; ödeme uçtan uca sandbox; iOS iskeleti giriş ve aramayla | 3 hafta |
+| 2 | Ürün modülleri | casuist, atif-agi, yazma, pratik, icerik, seo, odeme, veri-toplama, ios (başlar) | Tüm 1.0 modülleri staging'de; 50 soruluk sette RAG eşikleri; HGK atıf alt kümesi; 3 kılavuzda şablon; 4 oyun ve HMGS en az 300 onaylı soruyla; Kampüs MVP; ödeme uçtan uca sandbox; iOS iskeleti giriş ve aramayla | 3 hafta |
 | 3 | Sertleştirme | kalite-guvenlik, bagimsiz-denetci, ilgili sahip ajanlar | Corpus doldurma ve embedding; 200 kararlık anonimleştirme ve 200 soruluk RAG eşikleri; p95 hedefleri; ZAP yüksek bulgu yok; hukuki metinler onaylı; iyzico canlı onayı; geri yükleme testi | 1 hafta |
 | 4 | Kapalı beta | sahip ajanlar (hata düzeltme), icerik | ASBÜ'de 30-50 kullanıcı, en az 2 hafta; kritik hata 0; geri bildirim işlendi; destek runbook'u; fiyatlar onaylı; 600 onaylı HMGS sorusu | 2 hafta |
 | 5 | Genel yayın, web 1.0 | altyapi, seo, kalite-guvenlik | 15.3'ün tamamı; izleme; Search Console ve Bing gönderimleri; teslim raporu | 1 hafta |

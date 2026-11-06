@@ -1,3 +1,9 @@
+## 6 Kasım 2026, orkestra: Hetzner barındırma, Kampüs kapsam dışı, /tespit
+
+Kullanıcı kararlarıyla ADR-0030 (Hetzner Cloud, AB konumu; staging hemen, üretimde kişisel veri KVKK m.9 aktarım dayanağı ve bildirim tamamlanmadan işlenmez) ve ADR-0031 (Turkuaz Kampüs kapsam dışı, /tespit 1.0 kapsamında) yazıldı; plan.md K-03, K-14, 0/6, 1, 5.5, 10.7, URL tablosu ve Dalga 2 satırı güncellendi.
+/tespit PR #57 dört yeşil CI işiyle squash birleşti (00a7da2). Hetzner'da yalnız kulular-uretim-01 (CX23, Helsinki) var; Kazuist'e uygun değil, dokunulmadı.
+Açık: kullanıcı staging sunucusunu açıp ~/Desktop/kazuist-staging.txt yazacak; hukuk-uyum aktarım envanteri ve metinler; mimar kampus sözleşme/şema temizliği; docs/istekler/yazma-tespit.md dört istek.
+
 ## 6 Kasım 2026, tespit: /tespit sayfası (yazım kuralları ve iz denetleyici)
 
 Dal codex/tespit. Yeni bağımlılık yok; sözleşme (contracts, db) değişmedi.
