@@ -217,3 +217,7 @@
   font-weight: 600;
   margin-bottom: var(--kz-space-1);
 }
+
+.bolum h3 {
+  margin-top: var(--kz-space-6);
+}

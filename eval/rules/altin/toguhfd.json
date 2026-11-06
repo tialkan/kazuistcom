@@ -1,0 +1,41 @@
+{
+  "kilavuz": "toguhfd",
+  "dergi": "Tokat Gaziosmanpaşa Üniversitesi Hukuk Fakültesi Dergisi",
+  "tur": "makale",
+  "etiketleyen": "yazma ajanı, 2026-11-07; editör doğrulaması bekliyor",
+  "alanlar": {
+    "font": {
+      "deger": "Times New Roman",
+      "alinti": "Çalışma metni, Times New Roman yazı tipinde 1,15 satır aralığı ve 12 punto, dipnotları ise, tek satır aralığı ve 10 punto olarak hazırlanmalıdır."
+    },
+    "size": {
+      "deger": 12,
+      "alinti": "Çalışma metni, Times New Roman yazı tipinde 1,15 satır aralığı ve 12 punto, dipnotları ise, tek satır aralığı ve 10 punto olarak hazırlanmalıdır."
+    },
+    "line": {
+      "deger": 1.15,
+      "alinti": "Çalışma metni, Times New Roman yazı tipinde 1,15 satır aralığı ve 12 punto, dipnotları ise, tek satır aralığı ve 10 punto olarak hazırlanmalıdır."
+    },
+    "footSize": {
+      "deger": 10,
+      "alinti": "dipnotları ise, tek satır aralığı ve 10 punto olarak hazırlanmalıdır"
+    },
+    "indent": {
+      "deger": 1.25,
+      "alinti": "Paragrafın ilk satırı 1,25 cm içeriden başlamalıdır."
+    },
+    "citation": {
+      "anahtar": "oscola",
+      "alinti": "Dergiye gönderilen çalışmalarda OSCOLA (The Oxford University Standard for Citation of Legal Authorities) 4. Edisyon atıf sistemi esas alınmalıdır."
+    },
+    "wordLimit": {
+      "deger": { "min": 5000, "max": 20000 },
+      "alinti": "en az 5.000 en fazla 20.000 kelimeden oluşması gerekir"
+    },
+    "absLimit": {
+      "deger": { "min": 150, "max": 300 },
+      "alinti": "en az 150 en fazla 300 kelimelik Türkçe öz ve İngilizce abstract bölümlerine yer verilmeli"
+    }
+  },
+  "bos": ["mTop", "mBottom", "mLeft", "mRight", "pageNum"]
+}

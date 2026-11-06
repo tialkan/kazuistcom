@@ -26,7 +26,8 @@ Güncel orkestra kaydı, 2 Kasım 2026: CI hesap kısıtı kalktı; #43, #50, #5
 | 1 | odeme | ADR0029 yeni abonelik satışını kapatma ve D9 maliyet azaltma | sürüyor | Yeni servis409 ve yalnız paket satış görünümü; tarihsel yenileme/fesih/iade regresyonları korunur; D9 tam yükleme açık |
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | tespit (codex/tespit) | /tespit: istem kopyalama, kural seti gösterimi, tarayıcı içi iz denetleyici | PR açık | 159 madde veriyle eşleşir; typecheck, lint, check:text, testler, build ve 375/768/1440 axe 0 yeşil; bağlantı, sitemap ve e2e istekleri docs/istekler/yazma-tespit.md |
-| 2 | casuist, atif-agi, yazma, pratik, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri (Kampüs ADR-0031 ile çıktı) | bekliyor | |
+| 2 | yazma (codex/dalga2-yazma) | Yazma zamanı: .docx şablonu, kılavuz denetimi, dergi profilleri, Kalemcik, kısaltmalar cetveli | PR açık | typecheck, lint, check:text, testler, build ve 375/768/1440 axe 0 yeşil; 15.3/3: hatasız .docx geçti, çekirdek %95 geçmedi (canlı model ve 10 kılavuz yok); Word ve Google Docs elle kayıt, YZ bütçe girişi ve orkestra kayıtları açık (docs/istekler/yazma-*.md) |
+| 2 | casuist, atif-agi, pratik, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri (Kampüs ADR-0031 ile çıktı) | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |
 | 4 | sahip ajanlar, icerik | Kapalı beta | bekliyor | |
 | 5 | altyapi, seo, kalite-guvenlik | Genel yayın | bekliyor | |

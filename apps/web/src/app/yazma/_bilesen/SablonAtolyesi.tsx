@@ -65,12 +65,10 @@ export function SablonAtolyesi({
   baslangicTuru = 'tez',
   baslangicKaydi,
   baslangicAdi,
-  profilKurallari = false,
 }: {
   baslangicTuru?: SablonTuru;
   baslangicKaydi?: KuralKaydi;
   baslangicAdi?: string;
-  profilKurallari?: boolean;
 }) {
   const [tur, setTur] = useState<SablonTuru>(baslangicKaydi?.tur ?? baslangicTuru);
   const [kayit, setKayit] = useState<KuralKaydi>(() => baslangicKaydi ?? ornekKayit(baslangicTuru));
@@ -237,19 +235,13 @@ export function SablonAtolyesi({
         <legend>{t.tur.etiket}</legend>
         {(['tez', 'makale'] as const).map((s) => (
           <label key={s} className={styles.secenek}>
-            <input
-              type="radio"
-              name="sablon-turu"
-              checked={tur === s}
-              onChange={() => turDegisti(s)}
-              disabled={profilKurallari}
-            />
+            <input type="radio" name="sablon-turu" checked={tur === s} onChange={() => turDegisti(s)} />
             <span>{t.tur[s]}</span>
           </label>
         ))}
       </fieldset>
 
-      {profilKurallari ? null : (
+      {
         <section className={styles.adim} aria-labelledby="adim1-baslik">
           <h2 id="adim1-baslik">{t.adim1.baslik}</h2>
           <fieldset className={styles.secenekler}>
@@ -344,7 +336,7 @@ export function SablonAtolyesi({
             </div>
           ) : null}
         </section>
-      )}
+      }
 
       <section className={styles.adim} aria-labelledby="adim2-baslik">
         <h2 id="adim2-baslik">{t.adim2.baslik}</h2>
@@ -369,7 +361,7 @@ export function SablonAtolyesi({
         ) : null}
       </section>
 
-      {profilKurallari ? null : <Denetim kayit={kayit} />}
+      <Denetim kayit={kayit} />
     </div>
   );
 }

@@ -284,9 +284,15 @@ def _section_words(docx: Docx, start: List[str], stop: List[str]) -> Optional[in
     return total
 
 
-def _limit_status(n: int, limit: Tuple[Optional[int], Optional[int]]) -> bool:
+def _limit_state(n: int, limit: Tuple[Optional[int], Optional[int]]) -> str:
+    """uyumsuz above the maximum; elle below the minimum (a text still being written is expected to be short);
+    uygun otherwise."""
     lo, hi = limit
-    return (lo is None or n >= lo) and (hi is None or n <= hi)
+    if hi is not None and n > hi:
+        return "uyumsuz"
+    if lo is not None and n < lo:
+        return "elle"
+    return "uygun"
 
 
 def _check_limits(docx: Docx, rules: Rules) -> List[Finding]:
@@ -297,8 +303,8 @@ def _check_limits(docx: Docx, rules: Rules) -> List[Finding]:
         if total is None:
             total = sum(count_words(p.text) for p in docx.paragraphs if not p.in_toc)
             scope = "whole_document"
-        out.append(Finding("wordLimit", "uygun" if _limit_status(total, rules.word_limit) else "uyumsuz",
-                           list(rules.word_limit), total, detail=scope))
+        state = _limit_state(total, rules.word_limit)
+        out.append(Finding("wordLimit", state, list(rules.word_limit), total, detail="below_min" if state == "elle" else scope))
     if rules.abs_limit:
         counts = [c for c in (
             _section_words(docx, ["oz", "ozet"], ["abstract", "anahtar kelimeler", "keywords"]),
@@ -307,8 +313,9 @@ def _check_limits(docx: Docx, rules: Rules) -> List[Finding]:
         if not counts:
             out.append(Finding("absLimit", "yok", list(rules.abs_limit), detail="no_abstract"))
         else:
-            ok = all(_limit_status(c, rules.abs_limit) for c in counts)
-            out.append(Finding("absLimit", "uygun" if ok else "uyumsuz", list(rules.abs_limit), counts))
+            states = [_limit_state(c, rules.abs_limit) for c in counts]
+            state = "uyumsuz" if "uyumsuz" in states else "elle" if "elle" in states else "uygun"
+            out.append(Finding("absLimit", state, list(rules.abs_limit), counts, detail="below_min" if state == "elle" else None))
     return out
 
 

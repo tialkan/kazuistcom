@@ -154,8 +154,16 @@ class TestDeviationsAreCaught:
         assert r2["status"] == "uyumsuz" and r2["found"]["outOfOrder"] is True
 
     def test_word_limit_counts_between_introduction_and_references(self) -> None:
-        r = run(makale(), kind="makale", rules={"wordLimit": {"min": 5000, "max": 15000}})["wordLimit"]
-        assert r["status"] == "uyumsuz" and r["found"] < 5000 and r["detail"] == "intro_to_references"
+        r = run(makale(), kind="makale", rules={"wordLimit": {"min": None, "max": 5}})["wordLimit"]
+        assert r["status"] == "uyumsuz" and r["found"] > 5 and r["detail"] == "intro_to_references"
+
+    def test_text_below_the_minimum_is_for_the_user_to_judge_not_a_fault(self) -> None:
+        # A template or a text still being written is short; only exceeding the maximum is a deviation.
+        r = run(makale(), kind="makale", rules={"wordLimit": {"min": 5000, "max": 15000}, "absLimit": {"min": 150, "max": 200}})
+        assert r["wordLimit"]["status"] == "elle" and r["wordLimit"]["detail"] == "below_min"
+        assert r["absLimit"]["status"] == "elle"
+        r2 = run(makale(), kind="makale", rules={"absLimit": {"min": None, "max": 5}})
+        assert r2["absLimit"]["status"] == "uyumsuz"
 
     def test_paper_size(self) -> None:
         r = run(tez(), rules={"paper": "Letter"})["paper"]

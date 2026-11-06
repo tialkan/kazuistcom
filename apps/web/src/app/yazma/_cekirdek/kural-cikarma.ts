@@ -26,9 +26,12 @@ export interface KuralModeli {
 }
 
 export class KuralCikarmaHatasi extends Error {
-  constructor(readonly kod: 'sema' | 'model' | 'bos_metin') {
+  readonly kod: 'sema' | 'model' | 'bos_metin';
+  // No parameter property: Node's type stripping (used by eval/rules) does not support it.
+  constructor(kod: 'sema' | 'model' | 'bos_metin') {
     super(kod);
     this.name = 'KuralCikarmaHatasi';
+    this.kod = kod;
   }
 }
 

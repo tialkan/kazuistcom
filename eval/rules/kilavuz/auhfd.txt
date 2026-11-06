@@ -1,0 +1,162 @@
+# Kaynak: https://dergipark.org.tr/tr/pub/auhfd/writing-rules
+# Alındığı tarih: 2026-11-07 (tek istek, KazuistBot kimliğiyle; sayfa metni olduğu gibi, gezinme çubukları çıkarıldı)
+# Dergi: Ankara Üniversitesi Hukuk Fakültesi Dergisi
+
+Yazım Kuralları
+ANKARA ÜNİVERSİTESİ HUKUK FAKÜLTESİ DERGİSİ (AÜHFD)
+YAZIM KURALLARI VE YAYIN İLKELERİ
+TEMEL KURALLAR
+1. Dergipark Zorunluluğu
+AÜHFD, 27.10.2020 tarihinde Dergipark platformuna girmiş olup söz konusu tarihten itibaren çalışmalar Dergipark platformu üzerinden alınmaktadır. Dolayısıyla Dergimizde yayımlanması istenilen çalışmalar, ancak Dergipark platformu üzerinden gönderildiğinde değerlendirme süreci başlatılmaktadır. Bunun dışında, örneğin Derginin veya Dergi görevlilerinin elektronik posta adreslerine gönderilen çalışmalar dikkate alınmamaktadır.
+2. ORCID ve ROR ID Numarası Zorunluluğu
+AÜHFD’de değerlendirilmek üzere gönderilen bütün çalışmalarda eser sahiplerinin ORCID numarası alması ve ORCID numarasını Dergipark sistemine yüklemiş olmaları gerekmektedir. Ek olarak eser sahiplerinin, bünyesinde yer aldıkları kurumun varsa ROR ID bilgilerini çalışma metni içerisinde belirtmeleri gerekmektedir.
+ORCID numarası https://orcid.org/signin adresinden alınabilmektedir. ROR ID bilgilerine https://ror.org adresinden erişilebilmektedir.
+ORCID ve varsa ROR ID erişimi sağlamayan araştırmacıların çalışmaları değerlendirmeye alınmamaktadır.
+3. Benzerlik Oranı ve İntihal Denetimi
+Dergimize gönderilen tüm çalışmalar için, benzerlik tespit programlarının (iThenticate, Turnitin vb.) birinden rapor alınması gerekmektedir. Yazarların başvuru sırasında ilgili programdan alınmış ayrıntılı benzerlik raporunu dosyaya eklemeleri zorunludur.
+Benzerlik oranı hesaplanırken dipnotlar, kaynakça ve doğrudan alıntılar telif değerlendirmesine dâhil edilmez; ayrıca, metinde yer alan ve 8 kelimeye kadar olan birebir eşleşmeler de değerlendirme dışında bırakılır. İntihal tespit programının ayarlarının bu esaslara uygun şekilde yapılandırılması gerekmektedir. Toplam benzerlik oranı %15’i geçmeyen ve tek bir kaynaktan yapılan alıntı oranı %2’yi aşmayan çalışmalar değerlendirmeye alınır.
+Yazarlar tarafından sunulan benzerlik raporları, Dergi kurulları tarafından ayrıntılı olarak incelenecektir. Dergi kurulları, gerekli görülen durumlarda, çalışmanın kendi belirleyeceği bir programda yeniden tarama hakkını saklı tutar.
+4. Telif Hakkı Devir Formu
+Yazarlar, çalışmalarını sisteme yüklerken Telif Hakkı Devir Formu’nu eksiksiz doldurup imzalamalı ve bu formu çalışma dosyasıyla birlikte sisteme yüklemelidir. Telif Hakkı Devir Formu bulunmayan başvurular değerlendirmeye alınmaz.
+Telif Hakkı Devir Formu’na erişmek için tıklayınız: 📄 Ankara Üniversitesi Hukuk Fakültesi Dergisi-Telif Hakkı Devir Formu TR-İNG.pdf
+5. Üretken Yapay Zekâ (ÜYZ) Kullanım Formu
+AÜHFD’de, teknolojik gelişmeler göz önünde bulundurularak, sınırlı ölçüde destekleyici bir araç olarak kullanımı kabul edilmektedir. Bu konuda Dergimizin ÜYZ Araçlarının Kullanım Politikalarına erişmek için tıklayınız: 📄 TÜRKÇE ÜYZ İLKE.pdf
+Yazarların, çalışmalarını Dergimizde yayımlanmak üzere Dergipark sistemine yüklerken, aynı zamanda gerekli yerleri doldurulmuş ve imzalanmış ÜYZ Kullanım Beyanı Formu’nu da sisteme eklemeleri gerekmektedir.
+Formun gönderilmemiş olması hâlinde çalışmada editöryal süreç başlatılmayacaktır, süreci devam eden çalışmalarda ise karar aşamasına geçilmeyecektir.
+ÜYZ Kullanım Beyanı Formu’na erişmek için tıklayınız: 📄 AÜHFD ÜYZ Kullanım Beyanı Formu.pdf
+6. Araştırma ve Kurum İzni
+Yazarın bağlı olduğu kurum, çalışmanın yürütülmesi veya yayımlanması için izin şartı koşuyorsa bu izin yazar tarafından önceden alınmalıdır.
+Çalışma Dergipark sistemine yüklendiğinde, gerekli tüm izinlerin yazar tarafından eksiksiz alındığı kabul edilir. İlgili izinlerin alınmış olması hususundaki sorumluluk yazara aittir.
+7. Etik Kurul İzni
+Dergimizde, etik kurul izni gerektiren tüm çalışmalarda ilgili kuruldan alınmış onay şarttır. Anket, deney, gözlem, klinik ve hayvan çalışmaları ile kişisel veri içeren araştırmalar etik kurul iznine tâbidir. Bu izin, metinde açıkça belirtilmelidir. Etik kurul onayı bulunmayan çalışmalar Dergimizde değerlendirmeye alınmamaktadır.
+Etik kurul izni hakkındaki kurallar hakkında bkz. Etik İlkeler ve Yayın Politikası.
+8. Kelime Sınırı
+Dergiye gönderilen çalışmaların metin kısmının 5.000 kelimeden az olmaması ve 15.000 kelimeyi geçmemesi gerekmektedir. Öz, abstract, dipnotlar ve kaynakça metin için öngörülen kelime sınırına dâhil değildir. Kelime sınırının altında kalan veya kelime sınırını aşan çalışmalar hakem sürecine alınmadan iade edilecektir.
+Çalışmada özetlerin en az 150 kelime olması ve 200 kelimeyi geçmemesi gerekmektedir. Türkçe çalışmalarda İngilizce özet (abstract) yer almalıdır. Yabancı dilde hazırlanan çalışmalarda ise Türkçe özet bulunmalıdır.
+Çalışmada 5 adet anahtar kelimenin belirlenmesi ve bu anahtar kelimelerin Türkçe çalışmalarda İngilizce, yabancı dilde hazırlanan çalışmalarda ise Türkçe karşılıklarına yer verilmesi zorunludur.
+9. Çalışmaların Asgari Yayımlanma Süresi
+Çalışmaların yayımlanabilmesi için, Dergipark platformuna yüklendikleri tarih ile yayımlanma tarihleri arasında en az 30 günlük bir sürenin bulunması gerekmektedir. Bu nedenle, çalışmanın yayımlanmasının planlandığı sayıdan en az 45 gün önce sisteme yüklenmesi tavsiye edilir.
+İlgili süreler, çalışmanın yayımlanacağına dair bir garanti niteliği taşımamakla birlikte, yayımlanma olasılığının değerlendirilmesi için ön koşul olarak belirlenmiştir.
+10. Ünvan Değişikliği Bildirimi
+Yazarlar, çalışmanın değerlendirme süreci içerisinde meydana gelen ünvan değişikliklerini Dergiye bildirmelidirler.
+YAZIM KURALLARI
+1. Dergiye gönderilen tüm çalışmalar özgün olmalı, başka bir yerde yayımlanmamış ve değerlendirme sürecinde olmamalıdır.
+2. Çalışma Microsoft Word programıyla hazırlanmalıdır. Çalışmanın esas metni, Türkçe özet, İngilizce özet (abstract) ve kaynakça “Times New Roman” yazı tipi ve 12 punto kullanılarak, iki yana yaslı olacak şekilde ve 1,5 satır aralığı ile aşağıdaki belirtilen usullere uygun olarak hazırlanmalıdır. Dipnotlar ve (varsa) metin içi özellikli gösterimler ise 10 punto kullanılarak düzenlenmelidir.
+3. Türkçe çalışmaların Türk Dil Kurumu’nun kabul ettiği güncel yazım kurallarına ve Derginin yazım kurallarına uygun hazırlanması zorunludur. Bunlara uyulmaması hâlinde Editörlük, çalışmanın ilgili kurallara uygun şekilde yeniden düzenlenerek gönderilmesini talep edebilir yahut çalışmayı kesin olarak reddedebilir.
+Değerlendirme ve yayın sürecinin uzamasının önemli nedenlerinden biri, yazarların Derginin yazım kurallarına uymadan çalışmalarını göndermeleri ve bu nedenle yaşanan karşılıklı yazışmalardır. Yazarların, çalışmalarında Derginin yazım kurallarına dikkat ve özen göstermeleri yayın sürecinin hızlanması bakımından büyük önem taşımaktadır.
+4. Çalışma Konu Başlığı: Çalışmanın yazım dilindeki konu başlığının 14 punto tüm harfler büyük, kalın ve ortalanmış şekilde yazılması gerekmektedir. Türkçe yazılmış makalelerde İngilizce başlığın, yabancı dillerde yazılmış makalelerde ise Türkçe başlığın 12 punto, yalnızca ilk harfleri büyük (başlıkta küçük harfle başlaması gereken kelimeler hariç), italik ve ortalanmış şekilde esas başlığın altında yer alması gerekmektedir.
+Türkçe özet başlığı “ÖZ”, İngilizce özet başlığı ise “ABSTRACT” şeklinde yazılmalıdır; her bir özetin hemen altında yer almak üzere anahtar kelimelerin yer aldığı başlıklar ise “Anahtar Kelimeler:” ve “Keywords:” şeklinde yazılmalıdır.
+5. Yazar Adı, Soyadı ve Bilgileri: Konu başlığının sağ altında yazarın adı ve soyadı yer almalıdır. Yazar adı baş harfi büyük, soyadı tamamı büyük harflerle, 12 punto, kalın ve sağa yaslı yazılmalıdır. Yazarın soyadının bitimine yazarın ünvanını, çalıştığı kurumu, alanını, çalıştığı şehri, ülkeyi, e-mail adresini, ORCID ve ROR ID bilgilerini içeren dipnotu karşılayacak bir yıldız dipnot işareti (*) konulmalıdır. Zikredilen bilgiler, belirtilen sıraya uygun olacak şekilde birbirlerinden virgülle ayrılmalıdır. Metinde yer alan ORCID, e-mail ve varsa ROR ID adresleri URL bağlantısı verilerek sunulmalıdır.
+(Örnek: * Doç. Dr., Ankara Üniversitesi Hukuk Fakültesi Medeni Hukuk Anabilim Dalı, Ankara, Türkiye, E-mail: ornek@law.ankara.edu.tr, ORCID: https://orcid.org/0000-0000-0000-0000, ROR ID: https://ror.org/00000.)
+6. Etik Bildirimler: Çalışma metninin ilk sayfasında yer alan etik bildirimler (örneğin finansman, teşekkür, tezden türetilme bilgisi vb.) İngilizce olarak da ayrıca belirtilmelidir. Birden fazla yazarlı çalışmalarda yazarların katkı oranı ve çıkar çatışması beyanlarına ilk sayfada yer verilmesi gerekmektedir.
+7. Metin: Makalenin metni ve metin içerisindeki alt başlıklar 12 punto, 1,5 satır aralığı ile sola dayalı biçimde hazırlanmalı ve aşağıdaki şekilde düzenlenmelidir.
+Birinci Seviye Stili: I, II, III... (I. SİYAH, KALIN VE TÜMÜ BÜYÜK HARFLER)
+İkinci Seviye Stili: A, B, C… (A. Siyah, Kalın ve Sadece İlk Harfler Büyük)
+Üçüncü Seviye Stili: 1, 2, 3… (1. Siyah, Kalın ve Sadece İlk Harfler Büyük)
+Dördüncü Seviye Stili: a, b, c… (a. Siyah, Kalın ve Sadece İlk Harfler Büyük)
+Beşinci Seviye Stili: i, ii, iii... (i. İtalik, İnce ve Sadece İlk Harfler Büyük)
+Örnek:
+I. TEMEL HAK VE ÖZGÜRLÜKLERİN KAPSAMI
+A. Temel Hak ve Özgürlüklerin Özneleri
+1. Kişiler
+a. Kişi Toplulukları
+i. Tüzel Kişiler Yönünden
+8. Dipnotlar ve Kaynakça: Dipnotlarda ve kaynakçada “The Chicago Manual of Style, 18th Edition (2024), Notes and Bibliography” sistemi esas alınır. İlgili atıf usulüne uygun olmayan eserler yazara iade edilir. Makalenin dipnotlarının sayfanın altında gösterilmesi, 10 punto ve tek satır aralığı ile hazırlanması gerekmektedir. Cümle sonunda kullanılan dipnotların cümle sonu noktalama işaretinden önce boşluk bırakılmaksızın verilmesi gerekmektedir. Herhangi bir tereddüt yaşanması hâlinde atıf usulünün resmî sitesine erişmek için tıklayınız.
+Aşağıda bu atıf sistemine uyularak yapılan atıf ve kaynakça örnekleri gösterilmiştir.
+8.1. Kitaplara Yapılan Atıflar
+Tek Yazarlı
+Dipnotta:
+Zadie Smith, Swing Time (Penguin Press, 2016), 315.
+Tekrar Atıfta:
+Smith, Swing Time, 320.
+Kaynakçada:
+Smith, Zadie. Swing Time. Penguin Press, 2016.
+İki ve Daha Çok Yazarlı
+Dipnotta:
+Brian Grazer ve Charles Fishman, A Curious Mind: The Secret to a Bigger Life (Simon & Schuster, 2015), 12.
+Tekrar Atıfta:
+Grazer ve Fishman, Curious Mind, 37.
+Kaynakçada:
+Grazer, Brian ve Charles Fishman. A Curious Mind: The Secret to a Bigger Life. Simon & Schuster, 2015.
+Editörlü (Derleme) Kitapta Esere Atıf
+Dipnotta:
+Henry David Thoreau, “Walking,” içinde The Making of the American Essay, ed. John D’Agata (Graywolf Press, 2016), 177–78.
+Tekrar Atıfta:
+Thoreau, “Walking,” 182.
+Kaynakçada:
+Thoreau, Henry David. “Walking.” İçinde The Making of the American Essay, Ed. John D’Agata, 167–95. Graywolf Press, 2016.
+Editörlü (Derleme) Kitabın Tamamına Yapılan Atıf
+Dipnotta:
+John D’Agata, ed., The Making of the American Essay (Graywolf Press, 2016), 177–78.
+Tekrar Atıfta:
+D’Agata, American Essay, 182.
+Kaynakçada:
+D’Agata, John, Ed. The Making of the American Essay. Graywolf Press, 2016.
+Çeviri Esere Yapılan Atıf
+Dipnotta:
+Jhumpa Lahiri, In Other Words, çev. Ann Goldstein (Alfred A. Knopf, 2016), 146.
+Robert Dahl, Demokrasi Üzerine, çev. Betül Kadıoğlu (Phoenix Yayınevi, 2021), 58.
+Tekrar Atıfta:
+Lahiri, In Other Words, 184.
+Dahl, Demokrasi Üzerine, 58.
+Kaynakçada:
+Lahiri, Jhumpa. In Other Words. Çeviren Ann Goldstein. Alfred A. Knopf, 2016.
+Dahl, Robert. Demokrasi Üzerine. Çeviren Betül Kadıoğlu. Phoenix Yayınevi, 2021.
+8.2. Dergi ve Süreli Yayınlara Yapılan Atıflar
+Tek Yazarlı
+Dipnotta:
+Hyeyoung Kwon, “Inclusion Work: Children of Immigrants Claiming Membership in Everyday Life,” American Journal of Sociology 127, 6 (2022): 1842–43, https://doi.org/10.1086/720277.
+Tekrar Atıfta:
+Kwon, “Inclusion Work,” 1851.
+Kaynakçada:
+Kwon, Hyeyoung. “Inclusion Work: Children of Immigrants Claiming Membership in Everyday Life.” American Journal of Sociology 127, 6 (2022): 1818–59. https://doi.org/10.1086/720277.
+İki veya Daha Çok Yazarlı
+Dipnotta:
+Shao-Hsun Keng, Chun-Hung Lin ve Peter F. Orazem, “Expanding College Access in Taiwan, 1978–2014: Effects on Graduate Quality and Income Inequality,” Journal of Human Capital 11, no. 1 (Bahar 2017): 9–10. https://doi.org/10.1086/690235.
+Tekrar Atıfta:
+Keng, Lin ve Orazem, “Expanding College Access,” 23.
+Kaynakçada:
+Keng, Shao-Hsun, Chun-Hung Lin ve Peter F. Orazem. “Expanding College Access in Taiwan, 1978–2014: Effects on Graduate Quality and Income Inequality.” Journal of Human Capital 11, 1 (Bahar 2017): 1–34. https://doi.org/10.1086/690235.
+UYARI
+Türkçe makalelere yapılacak atıflarda, “sayı”, “cilt” gibi ifadelerin “S.” veya “C.” şeklindeki geleneksel kısaltmalarına yer verilmemelidir; yalnızca ilgili sayı ve cilt bilgilerini karşılayan numaralar yazılmalıdır.
+Dipnotta:
+Faruk Erem, “Tekerrür Hakkındaki Kanun Hükümlerinin Tetkiki,” Ankara Üniversitesi Hukuk Fakültesi Dergisi 2, 2 (1945): 193.
+Kaynakçada:
+Erem, Faruk. “Tekerrür Hakkındaki Kanun Hükümlerinin Tetkiki.” Ankara Üniversitesi Hukuk Fakültesi Dergisi 2, 2 (1945): 191–222.
+8.3. Resmi Gazeteye Yapılan Atıflar
+Dipnotta:
+Resmî Gazete, 30 Aralık 2020, sayı 31350.
+Kaynakçada:
+Resmî Gazete. 30 Aralık 2020. Sayı 31350.
+8.4. Yargı Kararlarına Yapılan Atıflar
+Ulusal ve yabancı yargı kararlarına atıf yapılırken aşağıdaki örnekler dikkate alınmalıdır.
+Dipnotta:
+Anayasa Mahkemesi, E. 2016/141, K. 2019/65, 10 Nisan 2019, Resmî Gazete, 25 Nisan 2019, sayı 30755, § 34.
+Yargıtay 4. Hukuk Dairesi, E. 2015/1234, K. 2016/5678, 12 Mayıs 2016.
+Danıştay 10. Dairesi, E. 2018/4567, K. 2020/1234, 15 Ocak 2020, § 22.
+Ankara Bölge Adliye Mahkemesi 7. Hukuk Dairesi, E. 2019/2345, K. 2020/678, 14 Ocak 2020, § 15.
+Brown v. Board of Education, 347 U.S. 483 (1954).
+Acar ve Diğerleri / Türkiye, Başvuru No. 36088/97, 6 Mayıs 2008, § 35 veya Acar and Others v. Turkey, no. 36088/97, judgment of 6 May 2008, § 35.
+Kaynakçada:
+Anayasa Mahkemesi. E. 2016/141, K. 2019/65, 10 Nisan 2019. Resmî Gazete, 25 Nisan 2019, sayı 30755. (Norm denetimi kararları için)
+............ Başvurusu, B. No: 2020/32949, 21/1/2021, § … (Bireysel başvuru kararları için)
+Yargıtay 4. Hukuk Dairesi. E. 2015/1234, K. 2016/5678, 12 Mayıs 2016.
+Danıştay 10. Dairesi. E. 2018/4567, K. 2020/1234, 15 Ocak 2020.
+Ankara Bölge Adliye Mahkemesi 7. Hukuk Dairesi. E. 2019/2345, K. 2020/678, 14 Ocak 2020.
+United States Supreme Court. Brown v. Board of Education, 347 U.S. 483 (1954).
+Avrupa İnsan Hakları Mahkemesi. Acar ve Diğerleri / Türkiye. Başvuru No. 36088/97. 6 Mayıs 2008 tarihli karar. veya European Court of Human Rights. Acar and Others v. Turkey. No. 36088/97. Judgment of 6 May 2008.
+Tekrar Atıfta:
+AYM, E. 2016/141, K. 2019/65, § 34. (Norm denetimi kararları için)
+............ Başvurusu, § … (Bireysel başvuru kararları için)
+Yargıtay 4. HD, E. 2015/1234, K. 2016/5678.
+Danıştay 10. D., E. 2018/4567, K. 2020/1234, § 22.
+Ankara BAM 7. HD, E. 2019/2345, K. 2020/678, § 15.
+Brown v. Board, 347 U.S. at 490.
+Acar ve Diğerleri / Türkiye, § 40 veya Acar and Others v. Turkey, § 40.
+8.5. Elektronik Kaynaklara Yapılan Atıflar
+Philip B. Kurland ve Ralph Lerner, ed., The Founders’ Constitution (University of Chicago Press, 1987), 22, http://press-pubs.uchicago.edu/founders/.
+9. Kaynakça: Çalışmanın sonunda ayrı bir sayfadan başlayan ve çalışmada kullanılan kaynakların sıralandığı bir Kaynakça bölümünün yer alması zorunludur. KAYNAKÇA başlığı koyu renkli, 12 punto ve tamamı büyük harfle yazılmalı ve her iki tarafa yaslanmış olmalıdır. Kaynakça, yazarların alfabetik soyadlarına göre sıralanmalıdır. Kaynakçadaki eserler de 12 punto ve her iki tarafa yaslanmış biçimde düzenlenmelidir.
+10. Yabancı Kelimeler ve Kısaltmalar: Metin içerisinde kullanılacak yabancı kelimelerin italik olarak yazılması zorunludur. Çalışmada kısaltmalar cetveline yer verilmesi zorunlu değildir. Ancak metin içinde kısaltma kullanılması hâlinde, ilgili ifade ilk geçtiği yerde açık biçimde yazılmalı ve hemen ardından parantez içinde kısaltması belirtilmelidir. Metnin devamında ise yalnızca bu kısaltma kullanılmalıdır.
+Son Güncelleme Zamanı:
+7 Ekim 2026
+Keşfet

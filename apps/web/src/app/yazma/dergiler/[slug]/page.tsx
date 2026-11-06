@@ -64,9 +64,9 @@ export default async function DergiProfili({ params }: { params: Promise<{ slug:
       </header>
       <section className={styles.bolum} aria-labelledby="dergi-kurallari">
         <h2 id="dergi-kurallari">{t.tablo}</h2>
-        <div className="kz-tablo" role="region" aria-label={t.tablo} tabIndex={0}>
+        <div className="kz-tablo" role="region" aria-label={t.tabloAdi} tabIndex={0}>
           <table>
-            <caption>{t.tablo}</caption>
+            <caption>{t.tabloAdi}</caption>
             <thead>
               <tr>
                 <th scope="col">{tr.sablon.denetim.alan}</th>
@@ -107,6 +107,9 @@ export default async function DergiProfili({ params }: { params: Promise<{ slug:
       </section>
       <section className={styles.bolum} aria-labelledby="dergi-sablon">
         <h2 id="dergi-sablon">{tr.sablon.adim3.baslik}</h2>
+        <p>
+          <a href={`/yazma/sablon?dergi=${slug}`}>{t.duzenle}</a>
+        </p>
         <SablonIndirme kayit={kurallar.kayit} ad={dergi.name} />
         <p>
           <a href="/yazma">{t.geri}</a>

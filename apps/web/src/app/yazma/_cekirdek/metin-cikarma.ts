@@ -29,12 +29,12 @@ export type YuklemeHatasiKodu =
   | 'cok_sayfa';
 
 export class YuklemeHatasi extends Error {
-  constructor(
-    readonly kod: YuklemeHatasiKodu,
-    cause?: unknown,
-  ) {
+  readonly kod: YuklemeHatasiKodu;
+  // No parameter property: Node's type stripping (used by eval/rules) does not support it.
+  constructor(kod: YuklemeHatasiKodu, cause?: unknown) {
     super(kod, cause === undefined ? undefined : { cause });
     this.name = 'YuklemeHatasi';
+    this.kod = kod;
   }
 }
 

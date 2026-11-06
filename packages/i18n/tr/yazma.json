@@ -48,8 +48,10 @@
     "issn": "ISSN",
     "surum": "Kural sürümü {surum}, onay tarihi {tarih}",
     "kaynakBaglantisi": "Derginin kurallar sayfası",
+    "tabloAdi": "Dergi kuralları tablosu",
     "tablo": "Dergi kuralları",
     "onaysiz": "Bu dergi için onaylı kural sürümü yok.",
+    "duzenle": "Kuralları kontrol et ve düzenle",
     "sablonIndir": "Bu kurallarla makale şablonunu indir",
     "bulunamadi": "Dergi bulunamadı.",
     "geri": "Yazma zamanına dön"
@@ -84,6 +86,7 @@
       "girisBaglantisi": "Giriş yap",
       "yzYok": "Kural çıkarma hizmeti şu an kapalı. Örnek değerlerle başlayıp kuralları elle girebilirsiniz.",
       "ozet": "Çıkarılan alan: {kilavuz}, örnek değerde kalan: {ornek}. Model: {model}.",
+      "profilYuklendi": "{ad} dergisinin onaylı kuralları (sürüm {surum}) yüklendi. İsterseniz değerleri değiştirin.",
       "yedekModel": "İlk model cevabı şemaya uymadığı için ikinci modelle yeniden çıkarıldı.",
       "dusenler": "Kılavuzda birebir bulunamadığı için örnek değerde bırakılan alanlar: {liste}."
     },
@@ -186,6 +189,7 @@
         "start_not_one": "Bölümlerin sayfa numarası 1'den başlamıyor.",
         "intro_to_references": "Kelime sayısı Giriş ile Kaynakça arasından hesaplandı.",
         "whole_document": "Giriş ve Kaynakça başlığı bulunamadı; kelime sayısı bütün belgeden hesaplandı.",
+        "below_min": "Alt sınırın altında. Yazmaya devam ediyorsanız bu beklenir; teslim öncesi yeniden denetleyin.",
         "no_abstract": "Öz veya Abstract başlığı bulunamadı.",
         "other_size": "Kâğıt boyutu farklı."
       },

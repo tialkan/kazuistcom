@@ -1,0 +1,122 @@
+# Kaynak: https://dergipark.org.tr/tr/pub/toguhfd/writing-rules
+# Alındığı tarih: 2026-11-07 (tek istek, KazuistBot kimliğiyle; sayfa metni olduğu gibi, gezinme çubukları çıkarıldı)
+# Dergi: Tokat Gaziosmanpaşa Üniversitesi Hukuk Fakültesi Dergisi
+
+Yazım Kuralları
+Lütfen yazım kurallarını sırasıyla, atlamadan dikkatlice okuyunuz.
+1. Derginin yazı dili Türkçe, İngilizce ve Almancadır. Dergiye Türkçe gönderilen eserlerde İngilizce öz (abstract) olmalıdır. İngilizce veya Almanca gönderilen eserlerde ise Türkçe öz olmalıdır.
+2. Dergide yayımlanması istenen çalışmaların DergiPark sistemi üzerinden Microsoft Word yazılımı formatında veya zengin metin biçiminde (*.rtf) ve işbu başlıkta sıralanan yayın ilkeleri ve yazım kurallarına uygun şekilde gönderilmesi gerekmektedir.
+Eser sahipleri çalışmalarını makale şablonunu (📝 Makale Şablonu.docx) indirerek buna uygun şekilde yazmalıdır.
+Eser sahipleri çalışmalarını gönderirken ana metinde kişisel bilgilerine yer vermemelidir. Eser sahipleri mutlaka ad, soyad, (varsa) unvan-kurum, e-posta, Orcid numarasını içeren 📝 Başlık Sayfası.docx dosyasını ayrı bir dosya olarak yüklemelidir. ORCID numarası, https://orcid.org/register adresinden temin edilebilir.
+Eser sahiplerinin ana metin dosyası dışında ayrı olarak 📝 Etik Kurul Onay Belgesi.docx ve 📝 Telif Hakkı Devir Sözleşmesi.docx belgelerini göndermesi gerekir.
+3. Dergiye gönderilen çalışmalarda OSCOLA (The Oxford University Standard for Citation of Legal Authorities) 4. Edisyon atıf sistemi esas alınmalıdır. Söz konusu atıf kurallarına ilişkin kısa bilgilendirmeye https://dergipark.org.tr/tr/pub/toguhfd/writing-rules bağlantısından ulaşılabilir. Kısa bilgilendirme notlarında ayrıntısı bulunamayan hâller için https://www.law.ox.ac.uk/sites/files/oxlaw/oscola_4th_edn_hart_2012.pdf bağlantısında yer alan OSCOLA 4. Edisyon atıf kuralları kitapçığından faydalanılmalıdır.
+4. Dipnot numaraları her türlü noktalama işaretinden sonra boşluk bırakılmadan verilmelidir. Örneğin; Hukuk, …………. kurallar bütünüdür.1
+5. Araştırma makalelerinde en az 150 en fazla 300 kelimelik Türkçe öz ve İngilizce abstract bölümlerine yer verilmeli ve aynı dillerde 5 anahtar kelime (keywords) de çalışmaya eklenmelidir.
+6. Metin içinde yalnızca “yabancı kavramlar”, “mevzuat” ve “mahkeme kararı alıntıları” italik yazılmalıdır. Bunların dışında (yazar/kitap alıntısı, vurgu amaçlı italik gibi) metin içinde italik kullanım yapılmamalıdır.
+7. Türkçe eserlere yapılan atıflarda hiçbir yabancı kelimeye yer verilmemelidir. Örneğin, Türkçe iki yazarlı veya editörlü eserlerde “and” yerine “ve” tercih edilmelidir. Benzer şekilde baskı kısaltması yapılırken “edn” yerine “bs”; “6th” yerine “6. bs” kullanılmalıdır.
+8. Kısaltmalarda OSCOLA atıf sistemi kuralları gereği nokta kullanılmaz. Örnek olarak, kısaltmalar, bakınız (bkz), Erişim Tarihi (ET), Başvuru Numarası (B No), Esas (E), Karar (K) şeklinde yapılmalı, kısaltma sonunda (.) işareti konulmamalıdır. Örnek kısaltmalar: AYM, Sözdar Oral, B No 2018/21028, T 13.9.2022, § 12; AYM, E 2021/107, K 2022/109, T 28.09.2022, § 12; Y 11 HD, E 2021/14074, K 2022/12707, T 2.7.2014, ET: 12.05.2026.
+Aynı dipnotta birden fazla alıntı olması halinde alıntılar noktalı virgül ile birbirinden ayrılır. Aynı dipnotta birden fazla alıntı olması halinde kronolojik olarak en eskiden en yeniye olacak şekilde sıralanır.
+9. Dergiye yayımlanması talebiyle gönderilen araştırma makalesinin -dipnotlar dâhil olmak üzere- en az 5.000 en fazla 20.000 kelimeden oluşması gerekir. Belirtilen sınırlar dışında kalan çalışmaların yayımı hususu editörlerin takdirindedir. Araştırma makaleleri dışındaki çalışmalar belirtilen kelime sınırlarına tâbi değildir.
+10. Çalışma metni, Times New Roman yazı tipinde 1,15 satır aralığı ve 12 punto, dipnotları ise, tek satır aralığı ve 10 punto olarak hazırlanmalıdır. Dipnotları sayfa altında gösterilir.
+11. Paragrafın ilk satırı 1,25 cm içeriden başlamalıdır.
+12. Metin içerisindeki başlıklar aşağıdaki şekilde düzenlenmelidir:
+I. KALIN VE TÜMÜ BÜYÜK HARF
+A. Kalın ve Sadece İlk Harfler Büyük
+1. Kalın ve Sadece İlk Harfler Büyük
+a. İnce ve Sadece İlk Harfler Büyük
+(1) İnce ve Sadece İlk Harfler Büyük
+13. “GİRİŞ” ve “SONUÇ” başlıkları numaralandırılmamalıdır.
+14. Çalışmanın sonunda, çalışmada kullanılan kaynakların, yazarların soyadlarına göre sıralandığı bir kaynakça bulunmalıdır. Soyadları aynı olan farklı yazarlara ait kaynakların sıralanması ilk adların baş harflerine göre alfabetik olarak yapılır. Aynı yazarın farklı eserleri ise eski tarihliden başlayarak sıralanır.
+15. “KAYNAKÇA” başlığı metnin bitiminden bir sonraki sayfada yer almalıdır.
+OSCOLA ATIF SİSTEMİ HAKKINDA KISA BİLGİLENDİRME
+Dergimiz OSCOLA 4. Edisyonu kullanmaktadır.
+Kitaplar
+Dipnot olarak
+Yazar ismi, soyismi, eser ismi ve parantez içinde baskı yayınevi ve yayın yılı belirtilerek sayfa sayısı ile atıf bitirilir.
+[Tek yazarlı Türkçe eser]
+Münci Kapani, Kamu Hürriyetleri (7. bs Yetkin Yayınları 1993) 98.
+[Tek yazarlı yabancı dilde eser]
+Marlies Galenkamp, Individualism Versus Collectivism: The Concept of Collective Rights (Erasmus Univ 1998) 101.
+Aynı esere daha sonra yapılan atıflarda, sadece yazarın soyadı kullanılır, ardından parantez içerisinde ilgili esere ilk atfın kaçıncı dipnot olduğu yazılarak parantez kapatılır ve mükerrer atfın kaçıncı sayfaya yapıldığı belirtilerek atıf bitirilir.
+Kapani (n 1) 57.
+Birden çok yazarlı kitaplarda üç yazar da dahil olmak üzere üç yazara kadar bütün yazarların tam isimleri kullanılır. Üçten fazla yazarlı çalışmalarda ise ilk yazarın tam ismi yazıldıktan sonra ve diğerleri anlamında vd. kısaltması kullanılır.
+[İki yazarlı eser]
+Julian V Roberts and Mike Hough, Public Opinion and the Jury: An International Literature Review (Ministry of Justice Research Series 1/09, 2009) 42.
+[Üç yazarlı yabancı dilde eser]
+Sally J Kenny, William M Reisinger and John C Reitz, Constitutional Dialogues in Comparative Perspective (Palgrave Macmillan 1999).
+[Dört ve daha fazla yazarlı Türkçe eser]
+Mualla Öncel ve diğerleri, Vergi Hukuku (30. bs Turhan Kitabevi 2021) 35.
+[Dört ve daha fazla yazarlı yabancı dilde eser]
+Julian Assange and others, Cypherpunks: Freedom and the Future of the Internet (OR Books 2012).
+Kaynakçada
+Yazar soyismi ardından yazar isminin baş harfi, eser ismi, parantez içinde baskı, yayınevi, yayın yılı yazılarak tamamlanır. Kaynakçada eserin sonunda nokta işareti konulmaz. Yukarıdaki örnekler kaynakçada sırasıyla şöyle yazılır:
+[Tek yazarlı Türkçe eser]
+Kapani M, Kamu Hürriyetleri (7. bs Yetkin Yayınları 1993)
+[Tek yazarlı yabancı dilde eser]
+Galenkamp M, Individualism Versus Collectivism: The Concept of Collective Rights (Erasmus Univ 1998)
+[İki yazarlı eser]
+Roberts JV and Hough M, Public Opinion and the Jury: An International Literature Review (Ministry of Justice Research Series 1/09, 2009)
+[Üç yazarlı yabancı dilde eser]
+Kenny SJ, Reisinger WM and Reitz JC, Constitutional Dialogues in Comparative Perspective (Palgrave Macmillan 1999)
+[Dört ve daha fazla yazarlı Türkçe eser]
+Öncel M ve diğerleri, Vergi Hukuku (30. bs Turhan Kitabevi 2021)
+[Dört ve daha fazla yazarlı yabancı dilde eser]
+Assange J and others, Cypherpunks: Freedom and the Future of the Internet (OR Books 2012)
+Editörlü Kitaplarda Kitap Bölümleri
+Önce yazarın tam adı yazılır, ardından tek tırnak içerisinde bölümün adı yazılarak içinde kelimesi ile eser belirtilir. İngilizce eserlerde ise içinde yerine “in” kelimesi kullanılır. Ardından editörün ismi yazılır ve parantez içinde editör “ed”; İngilizce eserlerde ise “eds” şeklinde kısaltılır. Daha sonra kitabın adı ve kitapla ilgili atıf bilgileri aynı kitaba atıf yapılıyormuş gibi yazılır.
+Dipnot olarak
+[Tek yazarlı, tek editörlü esere atıf]
+Lech Garlicki, ‘Democracy and International Influences’ in Nolte Georg (ed), European and US Constitutionalism (Cambridge University Press 2005).
+[Tek yazarlı, iki editörlü yabancı esere atıf]
+Francis Rose, ‘The Evolution of the Species’ in Andrew Burrows and Alan Rodger (eds), Mapping the Law: Essays in Memory of Peter Birks (OUP 2006).
+[Tek yazarlı, iki editörlü, çeviri esere atıf]
+Jeremy Bentham, ‘Panoptikon ya da Gözün İktidarı’ içinde Barış Çoban and Zeynep Özarslan (edr), Barış Çoban (çev), Panoptikon: Gözün İktidarı (2. Baskı, Su Yayınları 2016).
+Kaynakçada
+[Tek yazarlı, tek editörlü esere atıf]
+Garlicki L, ‘Democracy and International Influences’ in Nolte Georg (ed), European and US Constitutionalism (Cambridge University Press 2005)
+[Tek yazarlı, iki editörlü yabancı esere atıf]
+Rose F, ‘The Evolution of the Species’ in Andrew Burrows and Alan Rodger (eds), Mapping the Law: Essays in Memory of Peter Birks (OUP 2006)
+[Tek yazarlı, iki editörlü, çeviri esere atıf]
+Bentham J, ‘Panoptikon ya da Gözün İktidarı’ içinde Barış Çoban and Zeynep Özarslan (edr), Barış Çoban (çev), Panoptikon: Gözün İktidarı (2. Baskı, Su Yayınları 2016)
+Çeviri Kitaplar
+Dipnot olarak
+David Ricardo, Siyasal İktisadın ve Vergilendirmenin İlkeleri (Barış Zeren çev, 1. bs Türkiye İş Bankası Kültür Yayınları 2008) 127.
+Norbert Elias, Uygarlık Süreci, Cilt 2 (Ender Ateşman çev, 4. Baskı, İletişim Yayınları 2009).
+Kaynakçada
+Ricardo D, Siyasal İktisadın ve Vergilendirmenin İlkeleri (Barış Zeren çev, 1. bs Türkiye İş Bankası Kültür Yayınları 2008)
+Elias N, Uygarlık Süreci, vol 2 (Ender Ateşman çev, 4. Baskı, İletişim Yayınları 2009)
+Makaleler
+Dipnot olarak
+Önce yazarın tam adı yazılır, ardından tek tırnak içerisinde makalenin adı yazılır. Parantez içerisinde yayın yılı yazıldıktan sonra cilt numarası yazılır cilt numarasından sonra varsa sayı numarası köşeli parantez içerisine yazılır, dergi ismi ve makalenin dergideki ilk sayfasının numarası yazılır.
+Rifat Erten, ‘Türk Vatandaşlığının Yeniden Kazanılması’ (2021) 70 [4] Ankara Üniversitesi Hukuk Fakültesi Dergisi 899.
+İlgili makalede belirli bir sayfaya atıf yapılacağı durumlarda ilk sayfa numarasının ardından bir virgül konulur ve belirli sayfa numarası eklenir.
+Rifat Erten, ‘Türk Vatandaşlığının Yeniden Kazanılması’ (2021) 70 [4] Ankara Üniversitesi Hukuk Fakültesi Dergisi 899, 904.
+Aynı esere yapılan mükerrer atıflarda makalenin dergideki ilk sayfası yazılmaz, doğrudan atıf yapılan sayfa yazılır.
+Erten (n 1) 905.
+Kaynakçada
+Erten R, ‘Türk Vatandaşlığının Yeniden Kazanılması’ (2021) 70 [4] Ankara Üniversitesi Hukuk Fakültesi Dergisi 899.
+AB Düzenlemeleri ile Kurul ve Komisyon Kararları
+Doğrudan AB resmi dillerinden birisinden atıf yapıldığında atfın da orijinal kaynağın kullanıldığı dil ile yapılması gerekmektedir. Resmi çevirinin kullanıldığı durumlarda atıf Türkçe yapılmalıdır.
+Consolidated Version of the Treaty on European Union [2008] OJ C115/13.
+Council Regulation (EC) 139/2004 on the control of concentrations between undertakings (EC Merger Regulation) [2004] OJ L24/1, art 5 Case C–176/03.
+Commission v Council [2005] ECR I–7879, paras 47–48.
+Avrupa İnsan Hakları Mahkemesi Kararları
+Doğrudan mahkemenin resmi dillerinden birisinden atıf yapıldığında atfın da orijinal kaynağın kullanıldığı dil ile yapılması gerekmektedir. Resmi çevirinin kullanıldığı durumlarda atıf Türkçe yapılmalıdır.
+ECHR, Balogh v Hungary, App No 47940/99, 20.07.2004, § 15.
+Türk Mevzuatına ve Türk Mahkeme Kararları
+Türkiye Cumhuriyeti mevzuatına atıflar; kanunun kabul tarihi ve numarası ile adının yazılmasının ardından parantez içinde Resmî Gazete Tarihi/Resmî Gazete Sayısı gösterilerek yapılır.
+22.12.2016 tarih ve 6769 sayılı Sınai Mülkiyet Kanunu (RG 10.1.2017/29944)
+Türk yargı kararlarına atıflar ise sırasıyla mahkemenin adı (varsa daire adı eklenir), esas numarası, karar numarası ve tarih yazılarak yapılır. Tarih yazılırken sayılar arasına nokta işareti (.) kullanılmalıdır.
+AYM, Sözdar Oral, B No 2018/21028, T 13.9.2022, § 12
+AYM, E 2021/107, K 2022/109, T 28.09.2022, § 12
+Y 11 HD, E 2021/14074, K 2022/12707, T 2.7.2014, Erişim Tarihi: 12.05.2026.
+D 9 D, E 2021/14074, K 2022/12707, T 2.7.2014
+Ankara BİM 3 D, E 2021/14074, K 2022/12707, T 2.7.2014
+Kısaltmalar
+Türkçe eserlere yapılan atıflarda hiçbir yabancı kelimeye yer verilmemelidir. Örneğin; iki yazarlı veya editörlü eserlerde “and” yerine “ve” tercih edilmelidir. Benzer şekilde baskı kısaltması yapılırken “edn” yerine “bs”; “6th” yerine “6. bs” kullanılmalıdır.
+Türkçe ve İngilizce dışındaki dillerde yapılan çalışmalarda kullanılacak kısaltmalar ilgili dile uygun şekilde yapılmalıdır. Örn; “ve” yerine “und”; baskı yerine “aufl” kullanılmalıdır.
+Kısa bilgilendirme notlarında ayrıntısı bulunamayan haller için https://www.law.ox.ac.uk/sites/files/oxlaw/oscola_4th_edn_hart_2012.pdf linkte yer alan OSCOLA 4. Edisyon atıf kuralları kitapçığından faydalanılmalıdır.
+Makale şablonu için lütfen 📝 Makale Şablonu.docx tıklayınız.
+Son Güncelleme Zamanı:
+9 Ekim 2026
+Keşfet

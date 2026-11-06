@@ -48,8 +48,10 @@
     "issn": "ISSN",
     "surum": "Rule version {surum}, approved on {tarih}",
     "kaynakBaglantisi": "The journal's rules page",
+    "tabloAdi": "Journal rules table",
     "tablo": "Journal rules",
     "onaysiz": "This journal has no approved rule version.",
+    "duzenle": "Check and edit the rules",
     "sablonIndir": "Download the article template with these rules",
     "bulunamadi": "Journal not found.",
     "geri": "Back to Writing"
@@ -84,6 +86,7 @@
       "girisBaglantisi": "Sign in",
       "yzYok": "Rule extraction is closed right now. You can start with example values and enter the rules by hand.",
       "ozet": "Fields extracted: {kilavuz}, left as example values: {ornek}. Model: {model}.",
+      "profilYuklendi": "The approved rules of {ad} (version {surum}) are loaded. Change any value you need.",
       "yedekModel": "The first model's answer did not match the schema, so the rules were extracted again with the second model.",
       "dusenler": "Fields left as example values because their quote was not found verbatim in the guide: {liste}."
     },
@@ -186,6 +189,7 @@
         "start_not_one": "The page numbers of the sections do not start at 1.",
         "intro_to_references": "The word count was taken between the introduction and the bibliography.",
         "whole_document": "No introduction or bibliography heading was found; the word count covers the whole document.",
+        "below_min": "Below the minimum. This is expected while you are still writing; check again before you submit.",
         "no_abstract": "No abstract heading was found.",
         "other_size": "The paper size is different."
       },
