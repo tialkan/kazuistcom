@@ -8,7 +8,6 @@ export function HalkaGrafik({
   etiket,
   degerMetni,
   boyut = 120,
-  tur = 'vurgu',
 }: {
   deger: number;
   azami: number;
@@ -17,14 +16,13 @@ export function HalkaGrafik({
   /** Formatted value, e.g. "1.200 / 2.000 kelime". */
   degerMetni: string;
   boyut?: number;
-  tur?: 'vurgu' | 'kampus';
 }) {
   const oran = azami > 0 ? Math.min(1, Math.max(0, deger / azami)) : 0;
   const r = 44;
   const cevre = 2 * Math.PI * r;
   const yuzde = Math.round(oran * 100);
   return (
-    <figure className={`kz-halka kz-halka--${tur}`} style={{ width: boyut }}>
+    <figure className="kz-halka" style={{ width: boyut }}>
       <svg
         viewBox="0 0 100 100"
         width={boyut}

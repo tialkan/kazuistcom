@@ -14,8 +14,7 @@ export type EtiketTuru =
   | 'baglayici'
   | 'yuksek-emsal'
   | 'emsal'
-  | 'diger-otorite'
-  | 'kampus';
+  | 'diger-otorite';
 
 /** Every label carries colour, shape and text; the shape alone distinguishes all kinds (plan 7.3). */
 export const etiketSekli: Record<EtiketTuru, SekilAdi> = {
@@ -32,7 +31,6 @@ export const etiketSekli: Record<EtiketTuru, SekilAdi> = {
   'yuksek-emsal': 'bos-baklava',
   emsal: 'bos-daire',
   'diger-otorite': 'cizgili-daire',
-  kampus: 'daire',
 };
 
 export function Etiket({ tur, children }: { tur: EtiketTuru; children: string }) {

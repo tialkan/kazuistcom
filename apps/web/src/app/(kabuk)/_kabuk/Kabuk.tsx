@@ -7,7 +7,7 @@ import { ModulGezinmesi } from './ModulGezinmesi.tsx';
 import { hukukiBelgeler, moduller } from './rotalar.ts';
 import './kabuk.css';
 
-/** Product shell: skip link, top bar, Hedefim slot, seven module tabs, footer with company particulars. */
+/** Product shell: skip link, top bar, Hedefim slot, module tabs, footer with company particulars. */
 export function Kabuk({ children }: { children: ReactNode }) {
   const t = ortak('tr');
   return (
@@ -54,6 +54,9 @@ export function Kabuk({ children }: { children: ReactNode }) {
                   <ModulBagi href={m.href}>{t.gezinme.sekme[m.anahtar]}</ModulBagi>
                 </li>
               ))}
+              <li>
+                <Link href="/tespit">{t.gezinme.tespit}</Link>
+              </li>
               <li>
                 <Link href="/fiyatlar">{t.gezinme.fiyatlar}</Link>
               </li>
