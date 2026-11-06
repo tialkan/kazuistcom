@@ -1,0 +1,118 @@
+{
+  "surum": "2026-11-07",
+  "durum": "taslak",
+  "tonlar": {
+    "iyi": {
+      "renk": "yesil",
+      "yuz": "gulen",
+      "mesajlar": [
+        {
+          "sen": "{calisma} iyi gidiyor. Bugün {gunluk} kelimeyle yoluna devam edersin.",
+          "siz": "{calisma} iyi gidiyor. Bugün {gunluk} kelimeyle yolunuza devam edebilirsiniz."
+        },
+        {
+          "sen": "Ritmini bulmuşsun. Kalan {kalan} kelimeyi günde {gunluk} kelimeye bölmek yeterli.",
+          "siz": "Ritminizi bulmuşsunuz. Kalan {kalan} kelimeyi günde {gunluk} kelimeye bölmek yeterli."
+        }
+      ]
+    },
+    "son7": {
+      "renk": "turuncu",
+      "yuz": "dusunceli",
+      "mesajlar": [
+        {
+          "sen": "Teslime {gun} gün kaldı. Günde {gunluk} kelime seni hedefe götürür.",
+          "siz": "Teslime {gun} gün kaldı. Günde {gunluk} kelime sizi hedefe götürür."
+        },
+        {
+          "sen": "Son hafta başladı. Küçük ama düzenli adımlar yeter: bugün {gunluk} kelime.",
+          "siz": "Son hafta başladı. Küçük ama düzenli adımlar yeter: bugün {gunluk} kelime."
+        }
+      ]
+    },
+    "yazilmadi": {
+      "renk": "pembe",
+      "yuz": "uzgun",
+      "mesajlar": [
+        {
+          "sen": "{sessiz} gündür sayfa boş. İstersen yalnızca 25 dakika ayır; {calisma} seni bekliyor.",
+          "siz": "{sessiz} gündür yeni kayıt yok. İsterseniz yalnızca 25 dakika ayırın; {calisma} sizi bekliyor."
+        },
+        {
+          "sen": "Ara vermek normal. Bugün tek bir paragrafla başlayabiliriz.",
+          "siz": "Ara vermek normal. Bugün tek bir paragrafla başlayabilirsiniz."
+        }
+      ]
+    },
+    "hedef": {
+      "renk": "kutlama",
+      "yuz": "kutlama",
+      "mesajlar": [
+        {
+          "sen": "Hedefe ulaştın. Şimdi kontrol listesine ve etik ile benzerlik kontrolüne göz atma zamanı.",
+          "siz": "Hedefe ulaştınız. Şimdi kontrol listesine ve etik ile benzerlik kontrolüne göz atma zamanı."
+        }
+      ]
+    }
+  },
+  "teslim": {
+    "0": {
+      "baslik": { "sen": "Teslim günü", "siz": "Teslim günü" },
+      "metin": [
+        {
+          "sen": "{calisma} bugün teslim. Kalan {kalan} kelime var; son bir okuma için zaman ayır.",
+          "siz": "{calisma} bugün teslim. Kalan {kalan} kelime var; son bir okuma için zaman ayırın."
+        }
+      ]
+    },
+    "1": {
+      "baslik": { "sen": "Teslime 1 gün var", "siz": "Teslime 1 gün var" },
+      "metin": [
+        {
+          "sen": "{calisma} yarın teslim. Kalan {kalan} kelime, günlük hedef {gunluk}.",
+          "siz": "{calisma} yarın teslim. Kalan {kalan} kelime, günlük hedef {gunluk}."
+        }
+      ]
+    },
+    "3": {
+      "baslik": { "sen": "Teslime 3 gün var", "siz": "Teslime 3 gün var" },
+      "metin": [
+        {
+          "sen": "{calisma} için 3 gün kaldı. Kalan {kalan} kelime, günlük hedef {gunluk}.",
+          "siz": "{calisma} için 3 gün kaldı. Kalan {kalan} kelime, günlük hedef {gunluk}."
+        }
+      ]
+    },
+    "7": {
+      "baslik": { "sen": "Teslime 1 hafta var", "siz": "Teslime 1 hafta var" },
+      "metin": [
+        {
+          "sen": "{calisma} için 7 gün kaldı. Kalan {kalan} kelime, günlük hedef {gunluk}.",
+          "siz": "{calisma} için 7 gün kaldı. Kalan {kalan} kelime, günlük hedef {gunluk}."
+        }
+      ]
+    },
+    "14": {
+      "baslik": { "sen": "Teslime 2 hafta var", "siz": "Teslime 2 hafta var" },
+      "metin": [
+        {
+          "sen": "{calisma} için 14 gün kaldı. Kalan {kalan} kelime, günlük hedef {gunluk}.",
+          "siz": "{calisma} için 14 gün kaldı. Kalan {kalan} kelime, günlük hedef {gunluk}."
+        }
+      ]
+    }
+  },
+  "sessizlik": {
+    "baslik": { "sen": "Kalemcik seni özledi", "siz": "Kalemcik sizi özledi" },
+    "metin": [
+      {
+        "sen": "Psst, {sessiz} gündür beni hiç yazmadın. {calisma} seni özledi. Sadece 25 dakika?",
+        "siz": "{sessiz} gündür yeni kayıt yok. {calisma} sizi bekliyor. Yalnızca 25 dakika ayırabilir misiniz?"
+      },
+      {
+        "sen": "Merhaba, ben Kalemcik. {sessiz} gündür sessizlik var. Bugün yalnızca bir paragraf yeter.",
+        "siz": "Merhaba, ben Kalemcik. {sessiz} gündür sessizlik var. Bugün yalnızca bir paragraf yeter."
+      }
+    ]
+  }
+}
