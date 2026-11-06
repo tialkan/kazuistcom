@@ -34,7 +34,7 @@ export interface IsSonucu {
   institutionName: string | null;
 }
 
-export type HataKodu = YuklemeHatasiKodu | 'sema' | 'model' | 'bos_metin';
+export type HataKodu = YuklemeHatasiKodu | 'sema' | 'model' | 'bos_metin' | 'yz_yok';
 
 /** Creates the job row in the running state; the web process finishes it. Returns the id. */
 export async function isOlustur(
@@ -76,7 +76,7 @@ export async function isOlustur(
   return { id: var_.id, yeni: false };
 }
 
-async function isiBitir(
+export async function isiBitir(
   db: Db,
   id: string,
   durum: 'done' | 'failed',

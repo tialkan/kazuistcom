@@ -188,6 +188,39 @@ async function pdfMetni(bayt: Uint8Array): Promise<MetinSayfasi[]> {
   }
 }
 
+const TOPLAM_ACILMIS_SINIRI = 600 * 1024 * 1024;
+
+/**
+ * Structural check of a DOCX before any work is queued: entry count, declared expanded sizes and entry names
+ * (zip slip). Nothing is inflated; the central directory is read only. Throws YuklemeHatasi.
+ */
+export function docxYapisiniDogrula(bayt: Uint8Array): void {
+  let girdi = 0;
+  let toplam = 0;
+  let belge = false;
+  try {
+    unzipSync(bayt, {
+      filter: (f) => {
+        girdi += 1;
+        if (girdi > ZIP_GIRDI_SINIRI) throw new YuklemeHatasi('zip_bomba');
+        toplam += f.originalSize;
+        if (toplam > TOPLAM_ACILMIS_SINIRI) throw new YuklemeHatasi('zip_bomba');
+        if (f.name === 'word/document.xml') {
+          belge = true;
+          if (f.originalSize > DOCUMENT_XML_SINIRI) throw new YuklemeHatasi('zip_bomba');
+        }
+        if (f.name.includes('..') || f.name.startsWith('/') || f.name.includes('\\'))
+          throw new YuklemeHatasi('bozuk');
+        return false;
+      },
+    });
+  } catch (e) {
+    if (e instanceof YuklemeHatasi) throw e;
+    throw new YuklemeHatasi('bozuk');
+  }
+  if (!belge) throw new YuklemeHatasi('bozuk');
+}
+
 /** Extract the text of an uploaded file. Throws YuklemeHatasi; its code never carries file content. */
 export async function metinCikar(bayt: Uint8Array, dosyaAdi: string): Promise<CikarilanMetin> {
   if (bayt.length === 0) throw new YuklemeHatasi('bos');

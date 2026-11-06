@@ -3,7 +3,7 @@ import { after } from 'next/server';
 import { z } from 'zod';
 import type { ErrorCode } from '@kazuist/contracts';
 import { withAuth, withPublic } from '@/server/auth/guard.ts';
-import { apiError, json, readJson } from '@/server/auth/http.ts';
+import { apiError, json, rateLimited, readJson } from '@/server/auth/http.ts';
 import type { RateRule } from '@/server/auth/rate-limit.ts';
 import { adaylariBul, onerilerleDoldur, sirala, type KisaltmaModeli } from '../_cekirdek/kisaltmalar.ts';
 import { type KuralModeli } from '../_cekirdek/kural-cikarma.ts';
@@ -12,13 +12,14 @@ import { docxKelimeSayimi } from '../_cekirdek/kelime-say.ts';
 import {
   AZAMI_BAYT,
   YuklemeHatasi,
+  docxYapisiniDogrula,
   icerikTuru,
   uzantidanTur,
   type YuklemeHatasiKodu,
 } from '../_cekirdek/metin-cikarma.ts';
 import { pythonDenetimIstemcisi, type DenetimIstemcisi } from './denetim.ts';
 import { dergiAra, dergiyiBul, onayliKurallar } from './dergiler.ts';
-import { cikarmayiCalistir, isOlustur, isiGetir, kayitGetir, kayitSil } from './kurallar.ts';
+import { cikarmayiCalistir, isOlustur, isiBitir, isiGetir, kayitGetir, kayitSil } from './kurallar.ts';
 import {
   HitapGirdisi,
   IlerlemeGirdisi,
@@ -170,11 +171,13 @@ export const ilerlemePost = (b = varsayilan) =>
     return json({ ok: true }, 201);
   });
 
-/** Counts words in an uploaded DOCX; the project is checked for ownership first, the file is never stored. */
+/**
+ * Counts words in an uploaded DOCX (contract: the file is not stored). The count touches no project data, so the
+ * id in the path only has to be a UUID; it is not looked up (no project information can leak through it).
+ */
 export const docxSayimiPost = (_b = varsayilan) =>
-  withAuth({ rate: hizlar.denetim }, async (req, p, ctx, params) => {
-    const id = kimlikli(params);
-    if (!id || !(await projeyiGetir(ctx.db, p.userId, id, new Date()))) return apiError('not_found');
+  withAuth({ rate: hizlar.denetim }, async (req, _p, _ctx, params) => {
+    if (!kimlikli(params)) return apiError('not_found');
     try {
       const { bayt, ad } = await dosyaAl(req);
       if (uzantidanTur(ad) !== 'docx' || icerikTuru(bayt) !== 'docx')
@@ -225,9 +228,8 @@ export const dergiKurallariGet = (_b = varsayilan) =>
 const Tur = z.enum(['tez', 'makale']);
 
 export const kuralYuklePost = (b = varsayilan) =>
-  withAuth({ rate: hizlar.kuralYukle }, async (req, p, ctx) => {
-    const model = b.kuralModeli();
-    if (!model) return apiError('unavailable', tr.hata.yzYok);
+  withAuth({ rate: hizlar.genel }, async (req, p, ctx) => {
+    // The file is validated first, whatever the state of the AI service: a bad file is always a 4xx.
     let dosya: Awaited<ReturnType<typeof dosyaAl>>;
     try {
       dosya = await dosyaAl(req);
@@ -239,23 +241,38 @@ export const kuralYuklePost = (b = varsayilan) =>
     const kurumHam = dosya.form.get('institutionName');
     const kurum = typeof kurumHam === 'string' && kurumHam.trim() ? kurumHam.trim().slice(0, 200) : null;
     if (!tur.success) return apiError('bad_request');
-    // Refuse the clearly wrong files now; the real read happens in the job.
-    const ad = uzantidanTur(dosya.ad);
-    if (!ad) return yuklemeHatasi(new YuklemeHatasi('tur_desteklenmiyor'));
-    if (icerikTuru(dosya.bayt) !== ad) return yuklemeHatasi(new YuklemeHatasi('tur_uyusmuyor'));
+    try {
+      const ad = uzantidanTur(dosya.ad);
+      if (!ad) throw new YuklemeHatasi('tur_desteklenmiyor');
+      if (icerikTuru(dosya.bayt) !== ad) throw new YuklemeHatasi('tur_uyusmuyor');
+      if (ad === 'docx') docxYapisiniDogrula(dosya.bayt);
+    } catch (e) {
+      if (e instanceof YuklemeHatasi) return yuklemeHatasi(e);
+      throw e;
+    }
+    // The paid path is limited per user; refused files above never count against it.
+    const karar = await ctx.limiter.check(hizlar.kuralYukle, p.userId);
+    if (!karar.ok) return rateLimited(karar.retryAfterSec);
     const is = await isOlustur(ctx.db, p.userId, tur.data, req.headers.get('idempotency-key') ?? undefined);
-    if (is.yeni)
-      b.sonra(() =>
-        cikarmayiCalistir(ctx.db, {
-          jobId: is.id,
-          userId: p.userId,
-          kind: tur.data as SablonTuru,
-          bayt: dosya.bayt,
-          dosyaAdi: dosya.ad,
-          kurum,
-          model,
-        }),
-      );
+    if (!is.yeni) return json({ jobId: is.id }, 202);
+    const model = b.kuralModeli();
+    if (!model) {
+      // Fail closed: nothing is sent anywhere and nothing is invented. The job says why it did not run, the
+      // file is dropped (it is never stored), and the user is told to start with example values.
+      await isiBitir(ctx.db, is.id, 'failed', null, 'yz_yok');
+      return json({ jobId: is.id }, 202);
+    }
+    b.sonra(() =>
+      cikarmayiCalistir(ctx.db, {
+        jobId: is.id,
+        userId: p.userId,
+        kind: tur.data as SablonTuru,
+        bayt: dosya.bayt,
+        dosyaAdi: dosya.ad,
+        kurum,
+        model,
+      }),
+    );
     return json({ jobId: is.id }, 202);
   });
 

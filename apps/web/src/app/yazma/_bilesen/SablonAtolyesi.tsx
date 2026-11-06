@@ -44,6 +44,7 @@ interface KuralYaniti {
 const uyariMetni = (kod: string) =>
   kod === 'taranmis_olabilir' ? tr.hata.taranmisOlabilir : tr.hata.metinAz;
 const hataKodlari: Record<string, string> = {
+  yz_yok: tr.hata.yzYok,
   sema: tr.hata.sema,
   model: tr.hata.model,
   bos_metin: tr.hata.metinAz,

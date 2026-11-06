@@ -263,7 +263,7 @@ describe('word count from a DOCX (FR-48)', () => {
       .where(eq(schema.writingProjects.id, p.id));
     expect(kayitli[0]?.w).toBe(0); // counting alone changes nothing
   });
-  it('refuses a renamed file, a non DOCX and another user project', async () => {
+  it('refuses a renamed file and a non DOCX; counts without touching project data', async () => {
     const p = await projeAc();
     const yol = `/v1/writing-projects/${p.id}/docx-count`;
     const pdf = new TextEncoder().encode('%PDF-1.4 sahte');
@@ -291,7 +291,18 @@ describe('word count from a DOCX (FR-48)', () => {
           rc(p.id),
         )
       ).status,
-    ).toBe(404);
+    ).toBe(200); // the count reads no project data: another user's project id is no error and reveals nothing
+    const yok = '00000000-0000-4000-8000-000000000000';
+    const sayim = (id: string) =>
+      docxSayimiPost(bag())(
+        istek(`/v1/writing-projects/${id}/docx-count`, a, {
+          method: 'POST',
+          body: cokluParca('file', docx, 'a.docx'),
+        }),
+        rc(id),
+      );
+    expect((await sayim(yok)).status).toBe(200);
+    expect((await sayim('degil')).status).toBe(404);
   });
   it('refuses a body whose declared length is over the cap before reading it', async () => {
     const p = await projeAc();
@@ -469,10 +480,42 @@ describe('guide upload and rule extraction (plan 10.5/2)', () => {
     );
   const txt = (m: string) => ({ bayt: new TextEncoder().encode(m), ad: 'kilavuz.txt' });
 
-  it('answers 503 when the model service is closed, and 401 without an account', async () => {
-    expect((await yukle(a, null, txt(KILAVUZ_METNI))).status).toBe(503);
+  it('with the model service closed a valid file gets a job that fails closed, and no account is 401', async () => {
+    const r = await yukle(a, null, txt(KILAVUZ_METNI));
+    expect(r.status).toBe(202);
+    const { jobId } = await gov(r);
+    expect(await gov(await isGet()(istek(`/v1/jobs/${jobId}`, a), rc(jobId)))).toMatchObject({
+      status: 'failed',
+      error: 'yz_yok',
+      result: null,
+    });
     expect((await yukle(null, sahte(IYI_CEVAP), txt(KILAVUZ_METNI))).status).toBe(401);
   });
+  it(
+    'refuses hostile files with a 4xx whether or not the model service is open',
+    { timeout: 60_000 },
+    async () => {
+      const { bombaDocx, cokGirdiliDocx, zipSlipDocx, xxeDocx } =
+        await import('../../../../../tests/security/http/zip.ts');
+      for (const model of [null, sahte(IYI_CEVAP)]) {
+        for (const [ad, bayt] of [
+          ['bomba.docx', bombaDocx()],
+          ['cok.docx', cokGirdiliDocx()],
+          ['slip.docx', zipSlipDocx()],
+        ] as const) {
+          const r = await yukle(a, model, { bayt: new Uint8Array(bayt), ad });
+          expect([400, 413], ad).toContain(r.status);
+        }
+        const buyuk = await yukle(a, model, {
+          bayt: new Uint8Array(21 * 1024 * 1024).fill(0x41),
+          ad: 'buyuk.docx',
+        });
+        expect(buyuk.status).toBe(413);
+        const xxe = await yukle(a, model, { bayt: new Uint8Array(xxeDocx()), ad: 'xxe.docx' });
+        expect(xxe.status).toBeLessThan(500);
+      }
+    },
+  );
   it('runs the job, stores rules with their quotes, and the owner can read, poll and delete them', async () => {
     const m = sahte(IYI_CEVAP);
     const r = await yukle(a, m, txt(KILAVUZ_METNI), { institutionName: 'Örnek Üniversitesi', kind: 'tez' });
