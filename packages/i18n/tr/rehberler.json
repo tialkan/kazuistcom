@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "baslik": "Rehberler: makale, tez, Zotero, EndNote ve kontrol listesi",
+    "aciklama": "Hukuk makalesi ve tezi için adım adım yazım rehberleri, Zotero ve EndNote kurulumu, teslim öncesi kontrol listesi ve akademik dürüstlük kutusu. Her bilgi resmî ya da yayımlanmış bir kaynağa bağlıdır.",
+    "makaleBaslik": "Makale yazım rehberi: on iki adım",
+    "makaleAciklama": "Hukuk makalesini konudan gönderime kadar on iki adımda yazın; her adımda açıklama, ipucu ve tamamlandı işareti.",
+    "tezBaslik": "Tez yazım rehberi: monografi modeli ve on iki adım",
+    "tezAciklama": "Hukuk tezi için monografi düzeni ve her adımın dayanağıyla on iki adım; sonda kaynak listesi.",
+    "zoteroBaslik": "Zotero ve EndNote rehberi",
+    "zoteroAciklama": "Zotero ve EndNote karşılaştırması, Zotero için sekiz ve EndNote için altı kurulum adımı, seçim önerileri.",
+    "kontrolBaslik": "Teslim öncesi kontrol listesi: on dört madde",
+    "kontrolAciklama": "Makale göndermeden ve tez teslim etmeden önce işaretleyeceğiniz on dört madde.",
+    "etikBaslik": "Akademik dürüstlük: YÖK yönergesindeki altı ihlal",
+    "etikAciklama": "İntihal, sahtecilik, çarpıtma, tekrar yayım, dilimleme ve haksız yazarlık: yönergedeki tanımlar ve hukuktan örnekler."
+  },
+  "baslik": "Rehberler",
+  "giris": "Makalenizi ya da tezinizi adım adım yazın, kaynakçanızı bir yöneticiye bırakın ve teslimden önce kontrol listesinden geçin.",
+  "gorunumlerBaslik": "Dört görünüm",
+  "gorunumler": {
+    "makale": {
+      "ad": "Makale rehberi",
+      "kisa": "Konudan gönderime on iki adım."
+    },
+    "tez": {
+      "ad": "Tez rehberi",
+      "kisa": "Monografi modeli ve her biri bir dayanağa bağlı on iki adım."
+    },
+    "zotero": {
+      "ad": "Zotero ve EndNote",
+      "kisa": "Karşılaştırma tablosu, Zotero için sekiz, EndNote için altı adım."
+    },
+    "kontrol": {
+      "ad": "Kontrol listesi",
+      "kisa": "Teslim öncesi on dört madde."
+    },
+    "etik": {
+      "ad": "Akademik dürüstlük",
+      "kisa": "YÖK yönergesindeki altı ihlal, tanım ve örnekle."
+    }
+  },
+  "gezinme": {
+    "aria": "Rehber görünümleri",
+    "tumu": "Tüm rehberler"
+  },
+  "ilerleme": {
+    "baslik": "İlerlemeniz",
+    "durumAdim": "{yapilan} / {toplam} adım tamamlandı",
+    "durumMadde": "{yapilan} / {toplam} madde işaretlendi",
+    "cubuk": "Rehber ilerlemesi",
+    "temizle": "İşaretleri temizle",
+    "temizlendi": "İşaretler temizlendi.",
+    "kaydedilemedi": "İşaretleriniz bu tarayıcıda saklanamadı; sayfayı kapatınca kaybolurlar.",
+    "ozetYok": "İşaret yok"
+  },
+  "adim": {
+    "no": "{no}. adım",
+    "tamamlandi": "Tamamlandı",
+    "ipucu": "İpucu",
+    "dayanak": "Dayanak",
+    "listeAdi": "Adımlar",
+    "ara": {
+      "mevzuat": "Mevzuatı arayın",
+      "karar": "Kararları arayın",
+      "makale": "Makaleleri arayın"
+    }
+  },
+  "kontrol": {
+    "listeAdi": "Kontrol maddeleri",
+    "etiket": {
+      "makale-ve-tez": "Makale ve tez",
+      "yalniz-tez": "Yalnızca tez"
+    },
+    "kural": "Yazım kuralı {no}",
+    "kuralBaglanti": "Kuralı /tespit sayfasında aç"
+  },
+  "etik": {
+    "kutuBaslik": "Akademik dürüstlük",
+    "kutuMetin": "Yükseköğretim Kurumları Bilimsel Araştırma ve Yayın Etiği Yönergesi altı ihlal türü sayar: intihal, sahtecilik, çarpıtma, tekrar yayım, dilimleme ve haksız yazarlık.",
+    "ac": "Tanımları ve hukuktan örnekleri göster",
+    "tanim": "Yönergedeki tanım",
+    "ornek": "Hukuktan örnek (kurgusal)",
+    "korunma": "Nasıl kaçınılır",
+    "sayfa": "Etik sayfasını aç",
+    "kaynak": "Kaynak",
+    "okuma": "Okuma tarihi {tarih}",
+    "ihlalListesi": "Altı ihlal türü"
+  },
+  "tez": {
+    "modelBaslik": "Monografi modeli",
+    "adimlarBaslik": "On iki adım",
+    "kaynakBaslik": "Kaynak listesi",
+    "kaynakAciklama": "Her dayanağın nasıl doğrulandığı aşağıda yazılıdır. Birincil, kaynağın kendisinin okunduğu; ikincil, kaynağın başka bir yayın ya da kayıt üzerinden doğrulandığı anlamına gelir.",
+    "dogrulama": {
+      "birincil": "Birincil: kaynağın kendisi okundu",
+      "ikincil": "İkincil: başka bir kayıttan doğrulandı"
+    },
+    "rozet": {
+      "birincil": "Doğrulama: birincil",
+      "ikincil": "Doğrulama: ikincil"
+    }
+  },
+  "makale": {
+    "adimlarBaslik": "On iki adım"
+  },
+  "zotero": {
+    "arayuz": "Arayüz adları",
+    "karsilastirma": {
+      "ozellik": "Özellik",
+      "zotero": "Zotero",
+      "endnote": "EndNote"
+    },
+    "oneriBaslik": "Hangisini seçmeli",
+    "kaynakBaslik": "Okunan resmî belgeler"
+  },
+  "ortak": {
+    "guncelleme": "Son güncelleme {tarih}",
+    "kaynaklar": "Kaynaklar",
+    "okumaTarihi": "okuma {tarih}",
+    "cihazNotu": "İşaretleriniz yalnız bu cihazın tarayıcısında saklanır; sunucuya gönderilmez.",
+    "tespitNotu": "Metninizin dilini denetlemek için Kazuist yazım kurallarına ve iz denetleyicisine bakın.",
+    "tespitBaglanti": "Yazım kuralları ve iz denetleyicisi",
+    "yonetmelikNotu": "Enstitü kılavuzunuz ve danışmanınızın yönergeleri bu rehberden önce gelir."
+  }
+}

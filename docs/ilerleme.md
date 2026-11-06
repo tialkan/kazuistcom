@@ -27,6 +27,7 @@ Güncel orkestra kaydı, 2 Kasım 2026: CI hesap kısıtı kalktı; #43, #50, #5
 | 1E | altyapi, seo, kalite-guvenlik | Erken geçiş | bekliyor | |
 | 2 | tespit (codex/tespit) | /tespit: istem kopyalama, kural seti gösterimi, tarayıcı içi iz denetleyici | PR açık | 159 madde veriyle eşleşir; typecheck, lint, check:text, testler, build ve 375/768/1440 axe 0 yeşil; bağlantı, sitemap ve e2e istekleri docs/istekler/yazma-tespit.md |
 | 2 | pratik (codex/dalga2-pratik) | FSRS motoru, dört oyun, HMGS destesi ve deneme, onay akışı | PR açık | FSRS-6 ts-fsrs 6.0.0 referansıyla eşleşir; 59 kaynaklı kart 7 destede ama editör onaylı kart 0; 13 HMGS alanında deste yok; veri tabanı eşlemesi ve sözleşme istekleri docs/istekler/pratik-*.md |
+| 2 | icerik (codex/dalga2-rehberler) | Rehberler: makale, tez, Zotero ve EndNote, kontrol listesi, etik kutusu | PR açık | 12+12+8+6 adım, 14 madde, altı ihlal; typecheck, lint, check:text, testler, build, 375/768/1440 axe 0 yeşil; i18n eşlik testi `en` kalkana dek kırık (orkestra kararı); FR-34 sunucu saklama, /ara parametresi ve seo istekleri docs/istekler/icerik-rehberler.md; kitap dayanakları ikincil, Word rehber belgesi depoda yok |
 | 2 | casuist, atif-agi, yazma, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri (Kampüs ADR-0031 ile çıktı) | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |
 | 4 | sahip ajanlar, icerik | Kapalı beta | bekliyor | |

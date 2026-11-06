@@ -1,0 +1,64 @@
+{
+  "slug": "etik",
+  "guncelleme": "2026-11-07",
+  "baslik": "Akademik dürüstlük",
+  "ozet": "Yükseköğretim Kurumları Bilimsel Araştırma ve Yayın Etiği Yönergesi, bilimsel araştırma ve yayın etiğine aykırı eylemler arasında altı ihlal türü sayar. Tanımlar yönergeden birebir alındı; örnekler hukuk çalışmalarından kurgulandır.",
+  "kaynak": {
+    "ad": "Yükseköğretim Kurumları Bilimsel Araştırma ve Yayın Etiği Yönergesi, m. 4, f. 1 (YÖK Genel Kurulunun 28/8/2025 tarihli kararıyla değişik metin)",
+    "url": "https://www.yok.gov.tr/documents/documents/68fb63b8b2511.pdf",
+    "okuma": "2026-11-07"
+  },
+  "ornekNotu": "Örnekler anlatım içindir. Gerçek bir eseri, kararı, kişiyi ya da olayı göstermez.",
+  "ihlaller": [
+    {
+      "id": "intihal",
+      "ad": "İntihal",
+      "fikra": "m. 4/1 (a)",
+      "tanim": "Başkalarının özgün fikirlerini, metodlarını, verilerini veya eserlerini bilimsel kurallara uygun biçimde atıf yapmadan kısmen veya tamamen kendi eseri gibi göstermek.",
+      "ornek": "Bir doktrin makalesindeki kıyas yorumunu, tırnak ve atıf kullanmadan kendi cümlelerinizle sıralayıp tezin üçüncü bölümüne koymak. Kaynağı kaynakçada göstermek, metindeki aktarımı atıfsız bırakmayı aklamaz.",
+      "korunma": "Başkasının fikrini aktarırken atıf yapın; birebir alıntıyı tırnak içine alın."
+    },
+    {
+      "id": "sahtecilik",
+      "ad": "Sahtecilik",
+      "fikra": "m. 4/1 (b)",
+      "tanim": "Bilimsel araştırmalarda gerçekte var olmayan veya tahrif edilmiş verileri kullanmak.",
+      "ornek": "İçtihat taramasına dayanan bir makalede, gerçekte var olmayan bir Yargıtay kararını numarasıyla bulgu tablosuna eklemek. Bir yapay zekâ aracının ürettiği karar numarasını kontrol etmeden tabloya almak da bu sonuca götürür.",
+      "korunma": "Her karar numarasını karar metninden alın ve kararın var olduğunu birincil kaynakta görün."
+    },
+    {
+      "id": "carpitma",
+      "ad": "Çarpıtma",
+      "fikra": "m. 4/1 (c)",
+      "tanim": "Araştırma kayıtları veya elde edilen verileri tahrif etmek, araştırmada kullanılmayan cihaz veya materyalleri kullanılmış gibi göstermek, destek alınan kişi ve kuruluşların çıkarları doğrultusunda araştırma sonuçlarını tahrif etmek veya şekillendirmek.",
+      "ornek": "Bir karar analizinde, iddianıza aykırı çıkan kararları tabloya almayıp yalnız lehe kararlarla \"yerleşik içtihat vardır\" demek.",
+      "korunma": "Taradığınız kararların hepsini ve dışarıda bıraktıklarınızı gerekçesiyle yazın. İddianıza aykırı kararı da gösterin."
+    },
+    {
+      "id": "tekrar-yayim",
+      "ad": "Tekrar yayım",
+      "fikra": "m. 4/1 (ç)",
+      "tanim": "Mükerrer yayınlarını akademik atama ve yükselmelerde ayrı yayınlar olarak sunmak.",
+      "ornek": "Aynı makalenin bir bildiri kitabında ve bir dergide yayımlanmış hâllerini akademik atama dosyasında iki ayrı yayın olarak göstermek.",
+      "korunma": "Daha önce yayımlanmış bir çalışmanın genişletilmiş hâlini gönderirken bunu açıkça yazın ve atama dosyasında tek yayın olarak bildirin."
+    },
+    {
+      "id": "dilimleme",
+      "ad": "Dilimleme",
+      "fikra": "m. 4/1 (d)",
+      "tanim": "Bir araştırmanın sonuçlarını, araştırmanın bütünlüğünü bozacak şekilde ve uygun olmayan biçimde parçalara ayırıp birden fazla sayıda yayımlayarak bu yayınları akademik atama ve yükselmelerde ayrı yayınlar olarak sunmak.",
+      "ornek": "Tek bir karşılaştırmalı hukuk araştırmasının bulgularını, araştırmanın bütünlüğünü bozacak biçimde üç makaleye bölüp üçünü akademik atama dosyasında ayrı yayın olarak sunmak.",
+      "korunma": "Araştırmanın bütünlüğü bozulmuyorsa ve her makale tek başına bir soruya cevap veriyorsa bölmek dilimleme sayılmayabilir; kararı danışmanınızla ve derginin kuralıyla verin."
+    },
+    {
+      "id": "haksiz-yazarlik",
+      "ad": "Haksız yazarlık",
+      "fikra": "m. 4/1 (e)",
+      "tanim": "Aktif katkısı olmayan kişileri yazarlar arasına dâhil etmek veya olan kişileri dâhil etmemek, yazar sıralamasını gerekçesiz ve uygun olmayan bir biçimde değiştirmek, aktif katkısı olanların isimlerini sonraki baskılarda eserden çıkartmak, aktif katkısı olmadığı halde nüfuzunu kullanarak ismini yazarlar arasına dâhil ettirmek.",
+      "ornek": "Karar taramasını ve ilk taslağı yazan araştırma görevlisinin adını makaleden çıkarmak ya da çalışmayı hiç okumamış bir kişiyi yazar olarak eklemek.",
+      "korunma": "Yazarlığı baştan konuşun ve katkıları yazılı tutun. Sıralamayı katkıya göre belirleyin."
+    }
+  ],
+  "ekNot": "Yönerge m. 4/2 başka etik ihlal türlerini de sayar. Örneğin destek veren kişi ve kuruluşların katkısını belirtmemek, sunulmamış ya da savunularak kabul edilmemiş tez ve çalışmaları sahibinin izni olmadan kaynak olarak kullanmak ya da dayanaksız ve kasıtlı olarak etik ihlal isnadında bulunmak bunlar arasındadır. Yönerge m. 5, özgün üslup ve ifadenin aynen kullanılmaması şartıyla anonim bilgilerin, bilim alanlarının temel bilgilerinin ve matematik teoremleri ile ispatların kullanımının etik ihlal sayılmayacağını söyler.",
+  "yaptirimNotu": "Bu sayfa hukuki görüş değildir. Bir ihlal iddiasının nasıl inceleneceği ve sonucu yönergenin ve kurumunuzun ilgili kurulunun işidir."
+}

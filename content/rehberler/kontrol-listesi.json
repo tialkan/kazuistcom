@@ -1,0 +1,86 @@
+{
+  "slug": "kontrol-listesi",
+  "guncelleme": "2026-11-07",
+  "baslik": "Teslim öncesi kontrol listesi",
+  "ozet": "Makaleyi göndermeden ya da tezi teslim etmeden önce on dört maddeyi işaretleyin. İşaretleriniz bu tarayıcıda saklanır.",
+  "maddeler": [
+    {
+      "id": "k01",
+      "etiket": "makale-ve-tez",
+      "metin": "Araştırma sorusu ve ana iddia tek cümleyle yazılı, başlık ve özet bu iddiayla uyumlu."
+    },
+    {
+      "id": "k02",
+      "etiket": "makale-ve-tez",
+      "metin": "Özet gövdeyle satır satır karşılaştırıldı; özet gövdeden daha kesin bir sonuç söylemiyor.",
+      "kural": "3.7"
+    },
+    {
+      "id": "k03",
+      "etiket": "makale-ve-tez",
+      "metin": "Anahtar kelimeler ve özetin dili dergi ya da enstitü kuralına uygun."
+    },
+    {
+      "id": "k04",
+      "etiket": "makale-ve-tez",
+      "metin": "Her atıf, bağlı olduğu cümlenin iddiasını gerçekten destekliyor.",
+      "kural": "8.1"
+    },
+    {
+      "id": "k05",
+      "etiket": "makale-ve-tez",
+      "metin": "Kaynakçadaki her eser metinde, metindeki her atıf kaynakçada geçiyor.",
+      "kural": "8.12"
+    },
+    {
+      "id": "k06",
+      "etiket": "makale-ve-tez",
+      "metin": "Birebir alıntılar ilk elden metinden alındı; mevzuat alıntıları yürürlükteki metinle karşılaştırıldı.",
+      "kural": "8.3"
+    },
+    {
+      "id": "k07",
+      "etiket": "makale-ve-tez",
+      "metin": "Görmediğim eserler \"aktaran\" kalıbıyla gösterildi; doğrudan okumuş gibi atıf yapılmadı.",
+      "kural": "8.2"
+    },
+    {
+      "id": "k08",
+      "etiket": "makale-ve-tez",
+      "metin": "Karar atıflarında daire, tarih, esas ve karar numarası var ve numaralar karar metninden kontrol edildi.",
+      "kural": "6.28"
+    },
+    {
+      "id": "k09",
+      "etiket": "makale-ve-tez",
+      "metin": "Yürürlükteki hukuk ile olması gereken hukuk ayrı cümlelerde yazıldı.",
+      "kural": "3.11"
+    },
+    {
+      "id": "k10",
+      "etiket": "makale-ve-tez",
+      "metin": "Yapay zekâ yazı alışkanlıkları tarandı; kurum ya da dergi yapay zekâ kullanımının beyanını istiyorsa beyan eklendi.",
+      "baglanti": { "href": "/tespit", "etiket": "Yazım kuralları ve iz denetleyicisi" }
+    },
+    {
+      "id": "k11",
+      "etiket": "makale-ve-tez",
+      "metin": "Benzerlik raporu alındı ve işaretlenen yerlerin her biri kaynağıyla birlikte okundu."
+    },
+    {
+      "id": "k12",
+      "etiket": "yalniz-tez",
+      "metin": "Yazı tipi, punto, satır aralığı, kenar boşlukları ve sayfa numaraları enstitü kılavuzuna uygun."
+    },
+    {
+      "id": "k13",
+      "etiket": "yalniz-tez",
+      "metin": "Enstitünün istediği ön kısım sayfaları tamam (örneğin etik beyan, özet ve abstract, içindekiler, gerekiyorsa kısaltmalar cetveli)."
+    },
+    {
+      "id": "k14",
+      "etiket": "yalniz-tez",
+      "metin": "Danışman son taslağı gördü; teslim tarihi, basılı ve elektronik nüsha koşulları ve ciltleme isteği enstitüden teyit edildi."
+    }
+  ]
+}

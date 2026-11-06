@@ -1,0 +1,285 @@
+/* /rehberler: paper and ink, one accent. Values come from the design tokens only. Mobile first, 375 px up. */
+
+.bolum {
+  max-width: 62rem;
+  margin-block: var(--kz-space-8);
+  padding-top: var(--kz-space-4);
+  border-top: 2px solid var(--kz-color-text);
+}
+.bolum > h2 {
+  font-size: var(--kz-text-xl);
+}
+
+.ipucu {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+.baglanti {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--kz-color-text);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.uyariSatiri {
+  padding-left: var(--kz-space-3);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-warning);
+}
+.rozet {
+  display: inline-block;
+  padding: 0 var(--kz-space-2);
+  border: 1.5px solid var(--kz-color-text);
+  font-size: var(--kz-text-xs);
+  font-weight: 700;
+}
+
+/* Navigation between the views */
+.gezinme {
+  max-width: 62rem;
+  margin-bottom: var(--kz-space-6);
+}
+.gezinme ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-1) var(--kz-space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gezinme a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--kz-color-text);
+}
+.gezinme a[aria-current='page'] {
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.3em;
+}
+
+/* Index list of views */
+.gorunumListesi {
+  display: grid;
+  gap: var(--kz-space-4);
+  margin: var(--kz-space-4) 0;
+  padding: 0;
+  list-style: none;
+}
+.gorunumListesi li {
+  padding-bottom: var(--kz-space-3);
+  border-bottom: 1px solid var(--kz-color-border);
+}
+.gorunumListesi h3 {
+  font-size: var(--kz-text-lg);
+  margin-bottom: var(--kz-space-1);
+}
+.gorunumListesi h3 a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.gorunumListesi p {
+  margin: 0 0 var(--kz-space-1);
+}
+
+/* Academic integrity box */
+.etikKutusu {
+  max-width: 62rem;
+  margin-block: var(--kz-space-6);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-accent);
+  background: var(--kz-color-surface);
+}
+.etikKutusu h2 {
+  font-size: var(--kz-text-md);
+  margin-bottom: var(--kz-space-1);
+}
+.etikKutusu p {
+  margin: 0 0 var(--kz-space-2);
+}
+.etikKutusu summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+.sabitUyari {
+  font-weight: 600;
+}
+.ihlaller {
+  display: grid;
+  gap: var(--kz-space-4);
+  margin: var(--kz-space-3) 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ihlal;
+}
+.ihlal {
+  padding-top: var(--kz-space-3);
+  border-top: 1px solid var(--kz-color-border);
+}
+.ihlal h3 {
+  font-size: var(--kz-text-md);
+  margin-bottom: var(--kz-space-1);
+}
+
+/* Progress */
+.ilerlemeKutusu {
+  max-width: 62rem;
+  margin-block: var(--kz-space-4);
+}
+.ilerlemeSatiri {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--kz-space-2) var(--kz-space-6);
+  margin: 0;
+}
+.cubuk {
+  display: block;
+  width: 100%;
+  height: 0.75rem;
+  margin-block: var(--kz-space-2);
+  accent-color: var(--kz-color-text);
+}
+
+/* Steps */
+.adimlar {
+  max-width: 48rem;
+  margin: var(--kz-space-4) 0;
+  padding: 0;
+  list-style: none;
+}
+.adim {
+  margin-bottom: var(--kz-space-6);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border: 1px solid var(--kz-color-border);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+}
+.adim[data-tamam='evet'] {
+  border-left-color: var(--kz-color-text);
+}
+.adimBaslik {
+  font-size: var(--kz-text-lg);
+  margin-bottom: var(--kz-space-2);
+}
+.adimNo {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+  margin-right: var(--kz-space-1);
+}
+.ipucuKutusu,
+.dayanak {
+  font-size: var(--kz-text-sm);
+  padding-left: var(--kz-space-3);
+  border-left: 2px solid var(--kz-color-border);
+}
+.adimEylem {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-1) var(--kz-space-6);
+  margin-top: var(--kz-space-2);
+}
+.onay {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kz-space-2);
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.onay input,
+.madde input {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  accent-color: var(--kz-color-text);
+  flex: none;
+}
+
+/* Checklist */
+.maddeListesi {
+  max-width: 48rem;
+  margin: var(--kz-space-4) 0;
+  padding: 0;
+  list-style: none;
+}
+.madde {
+  display: flex;
+  gap: var(--kz-space-3);
+  padding: var(--kz-space-3) 0;
+  border-bottom: 1px solid var(--kz-color-border);
+}
+.madde input {
+  margin-top: 0.15rem;
+}
+.maddeMetni {
+  cursor: pointer;
+}
+.madde[data-tamam='evet'] .maddeMetni {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+.maddeAlti {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 var(--kz-space-4);
+  margin: var(--kz-space-1) 0 0;
+}
+
+/* Thesis model */
+.model {
+  max-width: 48rem;
+  margin: var(--kz-space-3) 0;
+  padding-left: var(--kz-space-6);
+}
+.model li {
+  display: grid;
+  gap: var(--kz-space-1);
+  margin-bottom: var(--kz-space-3);
+}
+.model span {
+  color: var(--kz-color-text-muted);
+}
+
+/* Source lists */
+.kaynaklar {
+  max-width: 62rem;
+  margin: var(--kz-space-3) 0;
+  padding-left: var(--kz-space-4);
+}
+.kaynaklar li {
+  margin-bottom: var(--kz-space-3);
+  overflow-wrap: anywhere;
+}
+.kaynaklar p {
+  margin: 0 0 var(--kz-space-1);
+}
+
+/* Recommendations */
+.oneriler {
+  max-width: 48rem;
+}
+.oneriler dt {
+  font-weight: 700;
+  margin-top: var(--kz-space-3);
+}
+.oneriler dd {
+  margin: var(--kz-space-1) 0 0;
+}
+
+.sabitNotlar {
+  max-width: 62rem;
+  margin-block: var(--kz-space-12) var(--kz-space-8);
+  padding-top: var(--kz-space-4);
+  border-top: 1px solid var(--kz-color-border);
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}

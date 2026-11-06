@@ -1,3 +1,24 @@
+## 7 Kasım 2026, icerik: Rehberler modülü açıldı (codex/dalga2-rehberler)
+
+Yeni bağımlılık yok (MDX yerine JSON, gerekçe docs/istekler/icerik-rehberler.md); contracts ve db değişmedi. `acikModuller`
+kümesine yalnız `'/rehberler'` eklendi. Yalnız Türkçe: `en` dizini yok (orkestra kararı), `packages/i18n/test/parity.test.ts`
+bu yüzden `rehberler.json` için iki test kırar ve `en` kaldırılınca düzelir; test değiştirilmedi.
+- İçerik `content/rehberler/*.json`: makale 12 adım, tez monografi modeli ve 12 adım (her adım bir dayanağa bağlı), Zotero 8 ve
+  EndNote 6 adım, karşılaştırma tablosu, 14 maddelik kontrol listesi, YÖK yönergesi m. 4/1 altı ihlal (birebir tanım, kurgusal
+  hukuk örneği). Şema `apps/web/src/app/rehberler/_alan/sema.ts`; geçersiz dosya derlemeyi durdurur.
+- Sayfalar: `/rehberler`, `/rehberler/{makale,tez,zotero-endnote,kontrol-listesi,etik}`. Her sayfada üstte etik kutusu, altta sabit
+  uyarılar ve /tespit bağlantısı. İlerleme `localStorage` `kazuist.rehber.v1`, makale, tez ve kontrol ayrı saklanır; sunucuda
+  saklama (FR-34) için istek yazıldı. Kapalı modüle (/ara, /yazma) bağlantı çizilmez.
+- Kaynak: "Hukuk Atlası: Makale ve Tez Yazım Rehberi" Word belgesi depoda yok, içerik ondan aktarılmadı; yalnız doğrulanmış
+  kaynaklar kullanıldı. Zotero (zotero.org/support) ve EndNote 2025 (docs.endnote.com) düğme ve menü adları resmî sayfalardan
+  alındı, her kayıt URL ve okuma tarihiyle sayfada listeli. YÖK PDF'i okundu. Kitap dayanaklarının (Volokh, Dunleavy,
+  Silvia, Hutchinson ve Duncan) hiçbiri birincil okunmadı, sayfada "ikincil" yazılı; Edinburgh planlayıcısı birincil.
+  Deakin sayfası CAPTCHA istedi (aşılmadı); EndNote sistem gereksinimi sayfası 404 verdi.
+- Doğrulama: typecheck, lint, check:text, web testleri 354 geçti/1 skip, üretim derlemesi; 375/768/1440 px'te 6 sayfa, klavyeyle
+  işaretleme, yenileme sonrası kalıcılık, etik kutusunun klavyeyle açılması: 93 kontrol, 24 axe taraması, 0 sorun
+  (`apps/web/src/app/rehberler/_kanit/`; axe test tarayıcısında `bypassCSP` ile çalıştı, ekran okuyucuyla elle deneme yapılmadı).
+- Açık: FR-34 sunucu saklama, /ara filtre parametresi, seo (Article, canonical), kitap dayanaklarının asıl metinle
+  doğrulanması, Word rehber belgesinin gelmesi, EndNote'ta İSNAD stili doğrulaması.
 ## 7 Kasım 2026, pratik: FSRS, dört oyun, HMGS destesi ve deneme, onay akışı (codex/dalga2-pratik)
 
 Yeni bağımlılık yok; contracts ve db değişmedi (istekler `docs/istekler/pratik-*.md`). Menüde `/pratik` açıldı
