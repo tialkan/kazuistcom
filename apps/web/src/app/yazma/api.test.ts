@@ -495,8 +495,7 @@ describe('guide upload and rule extraction (plan 10.5/2)', () => {
     'refuses hostile files with a 4xx whether or not the model service is open',
     { timeout: 60_000 },
     async () => {
-      const { bombaDocx, cokGirdiliDocx, zipSlipDocx, xxeDocx } =
-        await import('../../../../../tests/security/http/zip.ts');
+      const { bombaDocx, cokGirdiliDocx, zipSlipDocx, xxeDocx } = await import('./_test/zip.ts');
       for (const model of [null, sahte(IYI_CEVAP)]) {
         for (const [ad, bayt] of [
           ['bomba.docx', bombaDocx()],
