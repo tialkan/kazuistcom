@@ -13,6 +13,7 @@ import {
   SectionType,
   TableOfContents,
   TextRun,
+  type FileChild,
   type ISectionOptions,
 } from 'docx';
 import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
@@ -310,7 +311,7 @@ function notBolumu(d: KuralDegerleri): Paragraph[] {
   ];
 }
 
-function bolumIcerigi(ad: string, d: KuralDegerleri, ilkDegil: boolean, anaMetin: boolean): Paragraph[] {
+function bolumIcerigi(ad: string, d: KuralDegerleri, ilkDegil: boolean, anaMetin: boolean): FileChild[] {
   const k = kayitAnahtari(ad);
   if (k === 'dis kapak') return kapakSayfasi(d, ilkDegil);
   if (k === 'ic kapak') return kapakSayfasi(d, ilkDegil);

@@ -1,0 +1,246 @@
+{
+  "meta": {
+    "baslik": "Yazma zamanı",
+    "aciklama": "Tez ve makale şablonunu kılavuzunuza göre hazırlayın, Word dosyanızı kılavuz kurallarına karşı denetleyin, kısaltmalar cetvelini çıkarın."
+  },
+  "hub": {
+    "baslik": "Yazma zamanı",
+    "giris": "Enstitü kılavuzunuzu veya derginin yazım kurallarını yükleyin; kuralları siz kontrol edin, kılavuza uygun Word şablonunu indirip doğrudan içine yazın.",
+    "kartlar": {
+      "sablon": {
+        "baslik": "Şablon atölyesi",
+        "aciklama": "Tez veya makale şablonunu kuralları görerek hazırlayın. Her kural kılavuzdan mı geldiğini, örnek değer mi olduğunu gösterir.",
+        "dugme": "Şablon hazırla"
+      },
+      "denetim": {
+        "baslik": "Word dosyanızı denetleyin",
+        "aciklama": "Yazdığınız .docx dosyası kenar boşlukları, yazı tipi, satır aralığı ve sayfa numarası bakımından kurallarınıza uyuyor mu, görün.",
+        "dugme": "Denetime git"
+      },
+      "kalemcik": {
+        "baslik": "Kalemcik, yazma koçunuz",
+        "aciklama": "Hedef koyun, ilerlemenizi izleyin, teslim tarihinize göre hatırlatma alın.",
+        "dugme": "Kalemcik'e git"
+      },
+      "tespit": {
+        "baslik": "Yapay zekâ izleri",
+        "aciklama": "Metninizdeki yapay zekâ yazı alışkanlıklarını tarayıcınızda tarayın; metin cihazınızdan çıkmaz.",
+        "dugme": "İz denetleyiciyi aç"
+      }
+    },
+    "dergiler": {
+      "baslik": "Dergi kuralları",
+      "aciklama": "Editör onayından geçmiş dergi yazım kuralları. Listede olmayan dergi için kuralları kendiniz yükleyebilirsiniz.",
+      "arama": "Dergi adı veya ISSN",
+      "ara": "Dergi ara",
+      "bos": "Henüz onaylı dergi profili yok. Derginin yazım kurallarını şablon atölyesinden yükleyebilirsiniz.",
+      "sonucYok": "Aramanızla eşleşen onaylı dergi bulunamadı.",
+      "kurallariVar": "Onaylı kurallar var",
+      "kurallariYok": "Onaylı kural bekleniyor",
+      "profil": "Profili aç"
+    },
+    "kisaltma": {
+      "baslik": "Kısaltmalar cetveli"
+    }
+  },
+  "dergi": {
+    "baslik": "{ad}: yazım kuralları",
+    "issn": "ISSN",
+    "surum": "Kural sürümü {surum}, onay tarihi {tarih}",
+    "kaynakBaglantisi": "Derginin kurallar sayfası",
+    "tablo": "Dergi kuralları",
+    "onaysiz": "Bu dergi için onaylı kural sürümü yok.",
+    "sablonIndir": "Bu kurallarla makale şablonunu indir",
+    "bulunamadi": "Dergi bulunamadı.",
+    "geri": "Yazma zamanına dön"
+  },
+  "sablon": {
+    "meta": {
+      "baslik": "Şablon atölyesi",
+      "aciklama": "Kılavuzdan çıkarılan kuralları kontrol edin ve tez veya makale şablonunu Word olarak indirin."
+    },
+    "baslik": "Şablon atölyesi",
+    "giris": "Önce kuralların kaynağını seçin, sonra her kuralı kontrol edin, en sonda şablonu indirin. Şablon Word, LibreOffice ve Google Dokümanlar'da açılır.",
+    "tur": {
+      "etiket": "Şablon türü",
+      "tez": "Tez (enstitü kılavuzu)",
+      "makale": "Makale (dergi kuralları)"
+    },
+    "adim1": {
+      "baslik": "1. Kuralların kaynağı",
+      "ornek": "Örnek değerlerle başla",
+      "ornekAciklama": "Hazır örnek değerleri yüklüyorum; hiçbiri bir kurumun kuralı değildir, kendi kılavuzunuza göre düzeltin.",
+      "yukle": "Kılavuzumu veya derginin kurallarını yükle",
+      "dosya": "Kılavuz dosyası",
+      "dosyaIpucu": "PDF, DOCX veya TXT; en çok 20 MB.",
+      "kurum": "Kurum veya dergi adı (isteğe bağlı)",
+      "gizlilik": "Dosyanız sunucuda saklanmaz; yalnız belleğinizde okunur. Metin, kişisel veriler maskelendikten sonra yapay zekâ sağlayıcısına gider. Çıkarılan kurallar ve kılavuzdan alıntılar hesabınızda 30 gün tutulur; siz de istediğiniz an silebilirsiniz.",
+      "cikar": "Kuralları çıkar",
+      "cikariliyor": "Kurallar çıkarılıyor, bu bir dakika sürebilir.",
+      "hazir": "Kurallar çıkarıldı. Aşağıdan kontrol edin.",
+      "sil": "Çıkarılan kuralları sil",
+      "silindi": "Çıkarılan kurallar silindi.",
+      "girisGerek": "Kılavuz yüklemek için hesabınızla giriş yapmanız gerekir.",
+      "girisBaglantisi": "Giriş yap",
+      "yzYok": "Kural çıkarma hizmeti şu an kapalı. Örnek değerlerle başlayıp kuralları elle girebilirsiniz.",
+      "ozet": "Çıkarılan alan: {kilavuz}, örnek değerde kalan: {ornek}. Model: {model}.",
+      "yedekModel": "İlk model cevabı şemaya uymadığı için ikinci modelle yeniden çıkarıldı.",
+      "dusenler": "Kılavuzda birebir bulunamadığı için örnek değerde bırakılan alanlar: {liste}."
+    },
+    "adim2": {
+      "baslik": "2. Kuralları kontrol edin",
+      "aciklama": "Her kuralın yanında kaynağı yazar. Bir değeri değiştirirseniz etiketi \"Elle değiştirildi\" olur.",
+      "kaynak": {
+        "kilavuz": "Kılavuzdan",
+        "ornek": "Örnek değer",
+        "duzenlendi": "Elle değiştirildi"
+      },
+      "alintiGoster": "Alıntıyı göster",
+      "alintiGizle": "Alıntıyı gizle",
+      "alintiSayfa": "Sayfa {sayfa}",
+      "alintiSayfaYok": "Sayfa bilinmiyor",
+      "alintiBaslik": "Kılavuzdan alıntı",
+      "evet": "Evet",
+      "hayir": "Hayır",
+      "bolumSirasi": "Bölüm sırası (her satır bir bölüm; \"Giriş\"ten öncekiler ön kısım olur)",
+      "notlar": "Şablona yansıtılamayan kurallar (en çok 5, her satır bir kural)",
+      "enAz": "En az",
+      "enCok": "En çok",
+      "alanlar": {
+        "institution": "Kurum",
+        "paper": "Kâğıt boyutu",
+        "mTop": "Üst boşluk (cm)",
+        "mBottom": "Alt boşluk (cm)",
+        "mLeft": "Sol boşluk (cm)",
+        "mRight": "Sağ boşluk (cm)",
+        "font": "Yazı tipi",
+        "size": "Metin puntosu",
+        "footSize": "Dipnot puntosu",
+        "line": "Satır aralığı",
+        "indent": "Paragraf girintisi (cm)",
+        "spAfter": "Paragraf sonrası boşluk (nk)",
+        "h1Size": "Bölüm başlığı puntosu",
+        "h1Upper": "Bölüm başlıkları büyük harf",
+        "h2Size": "İkinci düzey başlık puntosu",
+        "h3Size": "Üçüncü düzey başlık puntosu",
+        "pageNum": "Sayfa numarası konumu",
+        "frontRoman": "Ön kısım Roma rakamıyla",
+        "citation": "Atıf sistemi",
+        "sections": "Bölüm sırası",
+        "notes": "Ek kurallar",
+        "wordLimit": "Makale kelime sınırı",
+        "absLimit": "Öz kelime sınırı"
+      },
+      "sayfaNo": {
+        "alt-orta": "Alt orta",
+        "alt-sag": "Alt sağ",
+        "ust-sag": "Üst sağ"
+      },
+      "gruplar": {
+        "sayfa": "Sayfa düzeni",
+        "metin": "Metin",
+        "baslik": "Başlıklar",
+        "numara": "Sayfa numarası",
+        "diger": "Atıf ve bölümler"
+      }
+    },
+    "adim3": {
+      "baslik": "3. Şablonu indirin",
+      "indir": "Word şablonunu indir (.docx)",
+      "hazirlaniyor": "Şablon hazırlanıyor.",
+      "indirildi": "Şablon indirildi: {ad}",
+      "hata": "Şablon hazırlanamadı. Değerleri kontrol edip yeniden deneyin.",
+      "hataliAlanlar": "Şu alanlar geçersiz: {liste}.",
+      "ipucu": "Dosyayı Word'de açınca \"alanlar güncellensin mi\" diye sorarsa Evet deyin; içindekiler tablosu başlıklardan dolar. Dipnotlar için Zotero veya EndNote kullanıyorsanız dipnot stili hazırdır.",
+      "tarayici": "Şablon tarayıcınızda üretilir; kurallarınız bu adımda sunucuya gönderilmez."
+    },
+    "denetim": {
+      "baslik": "Hazır Word dosyanızı denetleyin",
+      "aciklama": "Yazdığınız .docx dosyasını yukarıdaki kurallara göre denetleyin. Dosyanız saklanmaz, kaydedilmez ve yapay zekâ sağlayıcısına gönderilmez; yalnız kural karşılaştırması yapılır.",
+      "dosya": "Word dosyası (.docx)",
+      "dosyaIpucu": "En çok 20 MB. Rapor yalnız ölçülen değerleri gösterir, metninizden hiçbir şey göstermez.",
+      "calistir": "Dosyayı denetle",
+      "calisiyor": "Dosya denetleniyor.",
+      "girisGerek": "Denetim için hesabınızla giriş yapmanız gerekir.",
+      "kapali": "Denetim hizmeti şu an kapalı.",
+      "ozet": "Uygun: {uygun}, uyumsuz: {uyumsuz}, ölçülemedi: {yok}, elle kontrol: {elle}.",
+      "tablo": "Denetim sonucu",
+      "alan": "Kural",
+      "beklenen": "Beklenen",
+      "bulunan": "Dosyada bulunan",
+      "durum": "Durum",
+      "durumlar": {
+        "uygun": "Uygun",
+        "uyumsuz": "Uyumsuz",
+        "yok": "Ölçülemedi",
+        "elle": "Elle kontrol edin"
+      },
+      "nedenler": {
+        "no_section": "Dosyada bölüm bilgisi yok.",
+        "no_body_text": "Ölçülecek gövde metni yok.",
+        "no_headings": "Bu düzeyde başlık yok.",
+        "no_footnotes": "Dosyada dipnot yok.",
+        "footnotes_present": "Atıf sistemi dosyadan belirlenemez; kılavuzla elle karşılaştırın.",
+        "needs_two_sections": "Tez şablonunda ön kısım ve ana metin ayrı bölüm olmalıdır; dosyada tek bölüm var.",
+        "start_not_one": "Bölümlerin sayfa numarası 1'den başlamıyor.",
+        "intro_to_references": "Kelime sayısı Giriş ile Kaynakça arasından hesaplandı.",
+        "whole_document": "Giriş ve Kaynakça başlığı bulunamadı; kelime sayısı bütün belgeden hesaplandı.",
+        "no_abstract": "Öz veya Abstract başlığı bulunamadı.",
+        "other_size": "Kâğıt boyutu farklı."
+      },
+      "bolumler": "Eksik bölümler: {liste}",
+      "bolumSirasi": "Bölümlerin sırası kuralla aynı değil.",
+      "uygunPay": "Metnin %{yuzde}'i kurala uyuyor."
+    },
+    "kisaltma": {
+      "baslik": "Kısaltmalar cetveli",
+      "aciklama": "Word dosyanızdaki kısaltmaları bulur, sözlükle eşler, belirsizleri size sorar. Dosya tarayıcınızda okunur; sunucuya yalnız metin gider, saklanmaz.",
+      "dosya": "Word dosyası (.docx) veya metin (.txt)",
+      "bul": "Kısaltmaları bul",
+      "yapayZeka": "Belirsiz kısaltmalar için yapay zekâ önerisi iste (yalnız kısaltmalar gönderilir, metniniz değil)",
+      "bulunuyor": "Kısaltmalar aranıyor.",
+      "sonuc": "{adet} kısaltma bulundu.",
+      "bosSonuc": "Metinde kısaltma bulunamadı.",
+      "tablo": "Bulunan kısaltmalar",
+      "kisa": "Kısaltma",
+      "uzun": "Açılımı",
+      "kaynak": "Kaynak",
+      "kullan": "Cetvele ekle",
+      "sayi": "Kullanım",
+      "kaynaklar": {
+        "sozluk": "Sözlük",
+        "metin": "Metindeki tanım",
+        "oneri": "Öneri: kontrol edin",
+        "belirsiz": "Belirsiz: siz yazın"
+      },
+      "kopyala": "Metni kopyala",
+      "kopyalandi": "Cetvel panoya kopyalandı.",
+      "kopyalanamadi": "Pano kullanılamadı. Metni aşağıdaki alandan seçip kopyalayın.",
+      "docx": "Word tablosu olarak indir (.docx)",
+      "docxIndirildi": "Cetvel indirildi: {ad}",
+      "oneriYok": "Yapay zekâ önerisi şu an kullanılamıyor; cetvel sözlükle hazırlandı.",
+      "girisGerek": "Kısaltmalar cetveli için hesabınızla giriş yapmanız gerekir.",
+      "kopyaAlani": "Kopyalanabilir cetvel metni"
+    }
+  },
+  "hata": {
+    "bos": "Dosya boş.",
+    "cokBuyuk": "Dosya 20 MB sınırını aşıyor.",
+    "turDesteklenmiyor": "Yalnız PDF, DOCX ve TXT dosyaları kabul edilir.",
+    "turUyusmuyor": "Dosyanın içeriği uzantısıyla uyuşmuyor.",
+    "bozuk": "Dosya okunamadı veya bozuk.",
+    "sifreli": "Dosya parolalı; parolasız bir kopya yükleyin.",
+    "zipBomba": "Dosya güvenlik sınırlarını aşıyor.",
+    "zamanAsimi": "Dosya okunurken zaman aşımı oldu.",
+    "cokSayfa": "PDF çok uzun (en çok 600 sayfa).",
+    "taranmisOlabilir": "Dosyadan çok az metin okunabildi; taranmış bir PDF olabilir. Metin içeren bir kopya yükleyin (OCR bu sürümde yok).",
+    "metinAz": "Dosyadan çok az metin okunabildi.",
+    "yzYok": "Yapay zekâ hizmeti şu an kullanılamıyor.",
+    "denetimYok": "Denetim hizmeti şu an kullanılamıyor.",
+    "sema": "Kurallar güvenilir biçimde çıkarılamadı. Örnek değerlerle başlayabilirsiniz.",
+    "model": "Kural çıkarma hizmetine ulaşılamadı. Biraz sonra yeniden deneyin.",
+    "gecersiz": "İstek geçersiz.",
+    "girisGerek": "Bu işlem için giriş yapmanız gerekir.",
+    "genel": "Bir sorun oluştu. Biraz sonra yeniden deneyin."
+  }
+}

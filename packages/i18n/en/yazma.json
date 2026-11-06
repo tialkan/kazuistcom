@@ -1,0 +1,246 @@
+{
+  "meta": {
+    "baslik": "Writing",
+    "aciklama": "Prepare thesis and article templates from your guide, check your Word file against the guide rules, and build the list of abbreviations."
+  },
+  "hub": {
+    "baslik": "Writing",
+    "giris": "Upload your institute guide or the journal's writing rules; check the rules yourself, then download a Word template that follows them and write straight into it.",
+    "kartlar": {
+      "sablon": {
+        "baslik": "Template workshop",
+        "aciklama": "Prepare a thesis or article template and see every rule. Each one shows whether it came from the guide or is an example value.",
+        "dugme": "Prepare a template"
+      },
+      "denetim": {
+        "baslik": "Check your Word file",
+        "aciklama": "See whether your .docx follows your rules for margins, font, line spacing and page numbers.",
+        "dugme": "Go to the check"
+      },
+      "kalemcik": {
+        "baslik": "Kalemcik, your writing coach",
+        "aciklama": "Set a goal, follow your progress and get reminders before your deadline.",
+        "dugme": "Go to Kalemcik"
+      },
+      "tespit": {
+        "baslik": "AI traces",
+        "aciklama": "Scan your text in your browser for AI writing habits; the text never leaves your device.",
+        "dugme": "Open the trace checker"
+      }
+    },
+    "dergiler": {
+      "baslik": "Journal rules",
+      "aciklama": "Writing rules of journals that an editor has approved. For a journal that is not listed, you can upload its rules yourself.",
+      "arama": "Journal name or ISSN",
+      "ara": "Search journals",
+      "bos": "There is no approved journal profile yet. You can upload the journal's writing rules in the template workshop.",
+      "sonucYok": "No approved journal matches your search.",
+      "kurallariVar": "Approved rules available",
+      "kurallariYok": "Waiting for approved rules",
+      "profil": "Open profile"
+    },
+    "kisaltma": {
+      "baslik": "Table of abbreviations"
+    }
+  },
+  "dergi": {
+    "baslik": "{ad}: writing rules",
+    "issn": "ISSN",
+    "surum": "Rule version {surum}, approved on {tarih}",
+    "kaynakBaglantisi": "The journal's rules page",
+    "tablo": "Journal rules",
+    "onaysiz": "This journal has no approved rule version.",
+    "sablonIndir": "Download the article template with these rules",
+    "bulunamadi": "Journal not found.",
+    "geri": "Back to Writing"
+  },
+  "sablon": {
+    "meta": {
+      "baslik": "Template workshop",
+      "aciklama": "Check the rules taken from your guide and download the thesis or article template as Word."
+    },
+    "baslik": "Template workshop",
+    "giris": "First choose where the rules come from, then check every rule, and download the template last. The template opens in Word, LibreOffice and Google Docs.",
+    "tur": {
+      "etiket": "Template type",
+      "tez": "Thesis (institute guide)",
+      "makale": "Article (journal rules)"
+    },
+    "adim1": {
+      "baslik": "1. Where the rules come from",
+      "ornek": "Start with example values",
+      "ornekAciklama": "Loads ready example values. None of them is any institution's rule; correct them against your own guide.",
+      "yukle": "Upload my guide or the journal's rules",
+      "dosya": "Guide file",
+      "dosyaIpucu": "PDF, DOCX or TXT; at most 20 MB.",
+      "kurum": "Institution or journal name (optional)",
+      "gizlilik": "Your file is not stored on the server; it is only read in memory. The text goes to the AI provider after personal data is masked. The extracted rules and quotes from the guide stay in your account for 30 days; you can delete them at any time.",
+      "cikar": "Extract the rules",
+      "cikariliyor": "Extracting the rules, this can take a minute.",
+      "hazir": "The rules are extracted. Check them below.",
+      "sil": "Delete the extracted rules",
+      "silindi": "The extracted rules were deleted.",
+      "girisGerek": "You need to sign in to upload a guide.",
+      "girisBaglantisi": "Sign in",
+      "yzYok": "Rule extraction is closed right now. You can start with example values and enter the rules by hand.",
+      "ozet": "Fields extracted: {kilavuz}, left as example values: {ornek}. Model: {model}.",
+      "yedekModel": "The first model's answer did not match the schema, so the rules were extracted again with the second model.",
+      "dusenler": "Fields left as example values because their quote was not found verbatim in the guide: {liste}."
+    },
+    "adim2": {
+      "baslik": "2. Check the rules",
+      "aciklama": "Each rule shows its source. If you change a value, its label becomes \"Edited by hand\".",
+      "kaynak": {
+        "kilavuz": "From the guide",
+        "ornek": "Example value",
+        "duzenlendi": "Edited by hand"
+      },
+      "alintiGoster": "Show the quote",
+      "alintiGizle": "Hide the quote",
+      "alintiSayfa": "Page {sayfa}",
+      "alintiSayfaYok": "Page unknown",
+      "alintiBaslik": "Quote from the guide",
+      "evet": "Yes",
+      "hayir": "No",
+      "bolumSirasi": "Section order (one section per line; sections before \"Giriş\" form the front matter)",
+      "notlar": "Rules the template cannot hold (at most 5, one per line)",
+      "enAz": "At least",
+      "enCok": "At most",
+      "alanlar": {
+        "institution": "Institution",
+        "paper": "Paper size",
+        "mTop": "Top margin (cm)",
+        "mBottom": "Bottom margin (cm)",
+        "mLeft": "Left margin (cm)",
+        "mRight": "Right margin (cm)",
+        "font": "Font",
+        "size": "Text size",
+        "footSize": "Footnote size",
+        "line": "Line spacing",
+        "indent": "Paragraph indent (cm)",
+        "spAfter": "Space after paragraph (pt)",
+        "h1Size": "Chapter heading size",
+        "h1Upper": "Chapter headings in capitals",
+        "h2Size": "Second level heading size",
+        "h3Size": "Third level heading size",
+        "pageNum": "Page number position",
+        "frontRoman": "Front matter in roman numerals",
+        "citation": "Citation system",
+        "sections": "Section order",
+        "notes": "Extra rules",
+        "wordLimit": "Article word limit",
+        "absLimit": "Abstract word limit"
+      },
+      "sayfaNo": {
+        "alt-orta": "Bottom center",
+        "alt-sag": "Bottom right",
+        "ust-sag": "Top right"
+      },
+      "gruplar": {
+        "sayfa": "Page layout",
+        "metin": "Text",
+        "baslik": "Headings",
+        "numara": "Page numbers",
+        "diger": "Citations and sections"
+      }
+    },
+    "adim3": {
+      "baslik": "3. Download the template",
+      "indir": "Download the Word template (.docx)",
+      "hazirlaniyor": "Preparing the template.",
+      "indirildi": "Template downloaded: {ad}",
+      "hata": "The template could not be prepared. Check the values and try again.",
+      "hataliAlanlar": "These fields are invalid: {liste}.",
+      "ipucu": "When Word asks whether to update fields on opening, say Yes; the table of contents fills from the headings. If you use Zotero or EndNote for footnotes, the footnote style is ready.",
+      "tarayici": "The template is built in your browser; your rules are not sent to the server in this step."
+    },
+    "denetim": {
+      "baslik": "Check your finished Word file",
+      "aciklama": "Check your .docx against the rules above. Your file is not stored, not saved and not sent to an AI provider; only the rules are compared.",
+      "dosya": "Word file (.docx)",
+      "dosyaIpucu": "At most 20 MB. The report shows measured values only and nothing from your text.",
+      "calistir": "Check the file",
+      "calisiyor": "Checking the file.",
+      "girisGerek": "You need to sign in to use the check.",
+      "kapali": "The check is closed right now.",
+      "ozet": "Matching: {uygun}, not matching: {uyumsuz}, not measurable: {yok}, check by hand: {elle}.",
+      "tablo": "Check result",
+      "alan": "Rule",
+      "beklenen": "Expected",
+      "bulunan": "Found in the file",
+      "durum": "Status",
+      "durumlar": {
+        "uygun": "Matches",
+        "uyumsuz": "Does not match",
+        "yok": "Not measurable",
+        "elle": "Check by hand"
+      },
+      "nedenler": {
+        "no_section": "The file has no section information.",
+        "no_body_text": "There is no body text to measure.",
+        "no_headings": "There is no heading at this level.",
+        "no_footnotes": "The file has no footnotes.",
+        "footnotes_present": "The citation system cannot be read from the file; compare it with the guide by hand.",
+        "needs_two_sections": "A thesis template needs the front matter and the main text in separate sections; the file has one section.",
+        "start_not_one": "The page numbers of the sections do not start at 1.",
+        "intro_to_references": "The word count was taken between the introduction and the bibliography.",
+        "whole_document": "No introduction or bibliography heading was found; the word count covers the whole document.",
+        "no_abstract": "No abstract heading was found.",
+        "other_size": "The paper size is different."
+      },
+      "bolumler": "Missing sections: {liste}",
+      "bolumSirasi": "The order of the sections differs from the rule.",
+      "uygunPay": "{yuzde}% of the text follows the rule."
+    },
+    "kisaltma": {
+      "baslik": "Table of abbreviations",
+      "aciklama": "Finds the abbreviations in your Word file, matches them with the dictionary and asks you about the unclear ones. The file is read in your browser; only the text goes to the server, and it is not stored.",
+      "dosya": "Word file (.docx) or text (.txt)",
+      "bul": "Find the abbreviations",
+      "yapayZeka": "Ask for an AI suggestion for unclear abbreviations (only the abbreviations are sent, not your text)",
+      "bulunuyor": "Searching for abbreviations.",
+      "sonuc": "{adet} abbreviations found.",
+      "bosSonuc": "No abbreviation was found in the text.",
+      "tablo": "Abbreviations found",
+      "kisa": "Abbreviation",
+      "uzun": "Meaning",
+      "kaynak": "Source",
+      "kullan": "Add to the table",
+      "sayi": "Uses",
+      "kaynaklar": {
+        "sozluk": "Dictionary",
+        "metin": "Definition in the text",
+        "oneri": "Suggestion: check it",
+        "belirsiz": "Unclear: write it yourself"
+      },
+      "kopyala": "Copy the text",
+      "kopyalandi": "The table was copied to the clipboard.",
+      "kopyalanamadi": "The clipboard is not available. Select the text in the field below and copy it.",
+      "docx": "Download as a Word table (.docx)",
+      "docxIndirildi": "Table downloaded: {ad}",
+      "oneriYok": "The AI suggestion is not available right now; the table was prepared from the dictionary.",
+      "girisGerek": "You need to sign in to use the table of abbreviations.",
+      "kopyaAlani": "Table text to copy"
+    }
+  },
+  "hata": {
+    "bos": "The file is empty.",
+    "cokBuyuk": "The file exceeds the 20 MB limit.",
+    "turDesteklenmiyor": "Only PDF, DOCX and TXT files are accepted.",
+    "turUyusmuyor": "The content of the file does not match its extension.",
+    "bozuk": "The file could not be read or is damaged.",
+    "sifreli": "The file is password protected; upload a copy without a password.",
+    "zipBomba": "The file exceeds the safety limits.",
+    "zamanAsimi": "Reading the file timed out.",
+    "cokSayfa": "The PDF is too long (at most 600 pages).",
+    "taranmisOlabilir": "Very little text could be read from the file; it may be a scanned PDF. Upload a copy that contains text (this version has no OCR).",
+    "metinAz": "Very little text could be read from the file.",
+    "yzYok": "The AI service is not available right now.",
+    "denetimYok": "The check service is not available right now.",
+    "sema": "The rules could not be extracted reliably. You can start with example values.",
+    "model": "The rule extraction service could not be reached. Try again in a moment.",
+    "gecersiz": "The request is not valid.",
+    "girisGerek": "You need to sign in for this action.",
+    "genel": "Something went wrong. Try again in a moment."
+  }
+}
