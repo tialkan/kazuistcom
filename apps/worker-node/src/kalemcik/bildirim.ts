@@ -34,7 +34,13 @@ export function refIdCoz(refId: string): BildirimKaydi | null {
   const [, tur, hitap, ...sayilar] = p as [string, string, string, ...string[]];
   if (!TURLER.includes(tur as BildirimTuru) || (hitap !== 'sen' && hitap !== 'siz')) return null;
   if (!sayilar.every((s) => SAYI.test(s))) return null;
-  const [varyant, kalan, gunluk, gun, sessiz] = sayilar.map(Number) as [number, number, number, number, number];
+  const [varyant, kalan, gunluk, gun, sessiz] = sayilar.map(Number) as [
+    number,
+    number,
+    number,
+    number,
+    number,
+  ];
   return { tur: tur as BildirimTuru, hitap, varyant, kalan, gunluk, gun, sessiz };
 }
 
@@ -51,7 +57,8 @@ const CALISMA = 'çalışmanız';
 export function renderKalemcikNotice(refId: string): KalemcikMesaji | null {
   const k = refIdCoz(refId);
   if (!k) return null;
-  const kaynak = k.tur === 'sessizlik' ? icerik.sessizlik : icerik.teslim[k.tur.slice(6) as '14' | '7' | '3' | '1' | '0'];
+  const kaynak =
+    k.tur === 'sessizlik' ? icerik.sessizlik : icerik.teslim[k.tur.slice(6) as '14' | '7' | '3' | '1' | '0'];
   const govde = kaynak.metin[k.varyant];
   if (!govde) return null;
   const d: Degiskenler = { calisma: CALISMA, kalan: k.kalan, gunluk: k.gunluk, gun: k.gun, sessiz: k.sessiz };

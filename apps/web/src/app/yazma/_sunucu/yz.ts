@@ -29,7 +29,8 @@ async function tamamla(
   const rota = gw.ROUTES[islem];
   const maskeli = await gw.scrub(istem);
   try {
-    if (gw.estimateTokens(sistem + maskeli.text) > rota.maxInputTokens) throw new Error('input exceeds route limit');
+    if (gw.estimateTokens(sistem + maskeli.text) > rota.maxInputTokens)
+      throw new Error('input exceeds route limit');
     const anthropicModel = model === 'haiku' ? gw.MODELS.haiku : gw.MODELS.sonnet;
     const adapter = gw.openRouterAdapter();
     let cikti = '';
@@ -60,7 +61,13 @@ export function kisaltmaModeli(env: Env = process.env): KisaltmaModeli | null {
   if (!yzAcikMi(env)) return null;
   return {
     async oner(kisaltmalar) {
-      const ham = await tamamla(env, 'haiku', kisaltmaSistemTalimati, kisaltmaIstemi(kisaltmalar), 'kural_cikarma');
+      const ham = await tamamla(
+        env,
+        'haiku',
+        kisaltmaSistemTalimati,
+        kisaltmaIstemi(kisaltmalar),
+        'kural_cikarma',
+      );
       return oneriCevabiniAyikla(ham, kisaltmalar);
     },
   };

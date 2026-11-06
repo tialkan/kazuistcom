@@ -13,7 +13,16 @@ import { render } from '../../notify/dispatch.ts';
 import { channelAllows } from '../../notify/prefs.ts';
 import { isQuietHour } from '../../notify/quiet-hours.ts';
 import { refIdCoz, refIdOlustur, renderKalemcikNotice } from '../bildirim.ts';
-import { createKalemcikDailyHandler, enqueueKalemcikDailySql, gunFarki, gunlukCalistir, gunlukHedef, gunSonrasi, istanbulGunu, kalemcikTick } from '../gunluk.ts';
+import {
+  createKalemcikDailyHandler,
+  enqueueKalemcikDailySql,
+  gunFarki,
+  gunlukCalistir,
+  gunlukHedef,
+  gunSonrasi,
+  istanbulGunu,
+  kalemcikTick,
+} from '../gunluk.ts';
 import { doldur, icerik, ilkHarfBuyuk, varyant } from '../icerik.ts';
 
 const yol = (p: string) => fileURLToPath(new URL(p, import.meta.url));
@@ -34,10 +43,23 @@ describe('Kalemcik content (SRS FR-53, FR-54)', () => {
   });
   it('never blames or pressures and never uses an emoji or a long dash', () => {
     const hepsi = JSON.stringify(icerik).toLocaleLowerCase('tr-TR');
-    for (const yasak of ['tembel', 'neden yazmadın', 'neden yazmadınız', 'hâlâ', 'rezalet', 'utanç', 'başarısız', 'mecbur', 'yetişmezsen', 'yetişmezseniz', 'kaybedersin', 'kaybedersiniz'])
+    for (const yasak of [
+      'tembel',
+      'neden yazmadın',
+      'neden yazmadınız',
+      'hâlâ',
+      'rezalet',
+      'utanç',
+      'başarısız',
+      'mecbur',
+      'yetişmezsen',
+      'yetişmezseniz',
+      'kaybedersin',
+      'kaybedersiniz',
+    ])
       expect(hepsi, yasak).not.toContain(yasak);
     expect(hepsi).not.toMatch(/\p{Extended_Pictographic}/u);
-    expect(hepsi).not.toContain('—');
+    expect(hepsi).not.toContain(String.fromCodePoint(0x2014));
   });
   it('speaks informally in sen and formally in siz', () => {
     expect(icerik.sessizlik.baslik.sen).toBe('Kalemcik seni özledi');
@@ -48,7 +70,9 @@ describe('Kalemcik content (SRS FR-53, FR-54)', () => {
     }
   });
   it('fills placeholders with Turkish number grouping and drops unknown ones', () => {
-    expect(doldur('{kalan} kelime, günlük {gunluk}', { kalan: 12000, gunluk: 850 })).toBe('12.000 kelime, günlük 850');
+    expect(doldur('{kalan} kelime, günlük {gunluk}', { kalan: 12000, gunluk: 850 })).toBe(
+      '12.000 kelime, günlük 850',
+    );
     expect(doldur('{gun} gün {calisma}', { gun: 3 })).toBe('3 gün ');
     expect(ilkHarfBuyuk('çalışmanız için')).toBe('Çalışmanız için');
     expect(ilkHarfBuyuk('iyi')).toBe('İyi');
@@ -63,14 +87,30 @@ describe('Kalemcik content (SRS FR-53, FR-54)', () => {
 
 describe('reminder text in notify.send references', () => {
   it('round trips a reference and keeps it short', () => {
-    const k = { tur: 'teslim7' as const, hitap: 'siz' as const, varyant: 0, kalan: 3200, gunluk: 458, gun: 7, sessiz: 0 };
+    const k = {
+      tur: 'teslim7' as const,
+      hitap: 'siz' as const,
+      varyant: 0,
+      kalan: 3200,
+      gunluk: 458,
+      gun: 7,
+      sessiz: 0,
+    };
     const ref = refIdOlustur(k);
     expect(ref).toBe('kalemcik:teslim7:siz:0:3200:458:7:0');
     expect(ref.length).toBeLessThanOrEqual(100);
     expect(refIdCoz(ref)).toEqual(k);
   });
   it('refuses references that are not Kalemcik references or are malformed', () => {
-    for (const r of ['', 'odeme:x', 'kalemcik:teslim9:sen:0:1:1:1:0', 'kalemcik:teslim7:sen:0:1:1:1', 'kalemcik:teslim7:ben:0:1:1:1:0', 'kalemcik:teslim7:sen:a:1:1:1:0', 'kalemcik:teslim7:sen:0:1:1:1:0:9'])
+    for (const r of [
+      '',
+      'odeme:x',
+      'kalemcik:teslim9:sen:0:1:1:1:0',
+      'kalemcik:teslim7:sen:0:1:1:1',
+      'kalemcik:teslim7:ben:0:1:1:1:0',
+      'kalemcik:teslim7:sen:a:1:1:1:0',
+      'kalemcik:teslim7:sen:0:1:1:1:0:9',
+    ])
       expect(refIdCoz(r), r).toBeNull();
     expect(renderKalemcikNotice('kalemcik:teslim7:sen:9:1:1:1:0')).toBeNull(); // no such variant
   });
@@ -88,7 +128,9 @@ describe('reminder text in notify.send references', () => {
     expect(m?.title).toBe('Kalemcik seni özledi');
     expect(m?.body).toContain('3 gündür');
     expect(m?.body).toContain('Çalışmanız seni özledi');
-    expect(renderKalemcikNotice('kalemcik:sessizlik:siz:0:5000:100:50:4')?.title).toBe('Kalemcik sizi özledi');
+    expect(renderKalemcikNotice('kalemcik:sessizlik:siz:0:5000:100:50:4')?.title).toBe(
+      'Kalemcik sizi özledi',
+    );
   });
 });
 
@@ -112,7 +154,10 @@ let u1: string;
 let u2: string;
 const saat = (iso: string) => ({ db: pg, now: () => new Date(iso) });
 
-async function proje(userId: string, o: { target?: number; current?: number; deadline?: string | null; created?: string } = {}) {
+async function proje(
+  userId: string,
+  o: { target?: number; current?: number; deadline?: string | null; created?: string } = {},
+) {
   const r = await pg.query<{ id: string }>(
     `insert into writing_projects (user_id, title, kind, target_words, current_words, deadline, created_at)
      values ($1, 'Gizli Proje Adı', 'makale', $2, $3, $4, $5) returning id`,
@@ -128,17 +173,25 @@ async function hatirlatma(userId: string, projectId: string, kind: string, nextA
   return r.rows[0]?.id as string;
 }
 async function kayit(projectId: string, gun: string, words = 100) {
-  await pg.query(`insert into writing_logs (project_id, words, logged_on) values ($1, $2, $3)`, [projectId, words, gun]);
+  await pg.query(`insert into writing_logs (project_id, words, logged_on) values ($1, $2, $3)`, [
+    projectId,
+    words,
+    gun,
+  ]);
 }
 const bildirimler = async () =>
-  (await pg.query<{ payload: { type: string; userId: string; refId: string }; dedupe_key: string }>(
-    `select payload, dedupe_key from jobs where type = 'notify.send' order by created_at, id`,
-  )).rows;
+  (
+    await pg.query<{ payload: { type: string; userId: string; refId: string }; dedupe_key: string }>(
+      `select payload, dedupe_key from jobs where type = 'notify.send' order by created_at, id`,
+    )
+  ).rows;
 
 beforeAll(async () => {
   pg = await PGlite.create({ extensions: { vector, pg_trgm } });
   await migrate(drizzle(pg), { migrationsFolder });
-  const k = await pg.query<{ id: string }>(`insert into users (email) values ('k1@example.invalid'), ('k2@example.invalid') returning id`);
+  const k = await pg.query<{ id: string }>(
+    `insert into users (email) values ('k1@example.invalid'), ('k2@example.invalid') returning id`,
+  );
   u1 = k.rows[0]?.id as string;
   u2 = k.rows[1]?.id as string;
 }, 60_000);
@@ -164,7 +217,9 @@ describe('kalemcik.daily: deadline reminders (FR-51)', () => {
     expect(j[0]?.payload).toMatchObject({ type: 'teslim_hatirlatmasi', userId: u1 });
     const ref = j[0]?.payload.refId as string;
     expect(refIdCoz(ref)).toMatchObject({ tur: 'teslim7', hitap: 'sen', kalan: 3200, gunluk: 458, gun: 7 });
-    expect(renderKalemcikNotice(ref)?.body).toBe('Çalışmanız için 7 gün kaldı. Kalan 3.200 kelime, günlük hedef 458.');
+    expect(renderKalemcikNotice(ref)?.body).toBe(
+      'Çalışmanız için 7 gün kaldı. Kalan 3.200 kelime, günlük hedef 458.',
+    );
     // A rerun the same day sends nothing: the reminder was closed before its job was queued.
     const tekrar = await gunlukCalistir(saat('2026-11-07T09:00:00Z'));
     expect(tekrar.teslim).toBe(0);
@@ -204,13 +259,18 @@ describe('kalemcik.daily: deadline reminders (FR-51)', () => {
     expect(turler).toEqual(['teslim14', 'teslim7', 'teslim3', 'teslim1', 'teslim0']);
   });
   it('uses the form of address the user chose', async () => {
-    await pg.query(`insert into reminders (user_id, project_id, kind, enabled) values ($1, null, 'hitap_siz', true)`, [u2]);
+    await pg.query(
+      `insert into reminders (user_id, project_id, kind, enabled) values ($1, null, 'hitap_siz', true)`,
+      [u2],
+    );
     const p1 = await proje(u1, { deadline: '2026-11-14' });
     const p2 = await proje(u2, { deadline: '2026-11-14' });
     await hatirlatma(u1, p1, 'teslim_7', '2026-11-07T05:00:00Z');
     await hatirlatma(u2, p2, 'teslim_7', '2026-11-07T05:00:00Z');
     await gunlukCalistir(saat('2026-11-07T06:00:00Z'));
-    const hitaplar = Object.fromEntries((await bildirimler()).map((j) => [j.payload.userId, refIdCoz(j.payload.refId)?.hitap]));
+    const hitaplar = Object.fromEntries(
+      (await bildirimler()).map((j) => [j.payload.userId, refIdCoz(j.payload.refId)?.hitap]),
+    );
     expect(hitaplar).toEqual({ [u1]: 'sen', [u2]: 'siz' });
   });
 });
@@ -232,7 +292,8 @@ describe('kalemcik.daily: three days without writing (FR-53)', () => {
     await hatirlatma(u1, p, 'sessizlik', null);
     await kayit(p, '2026-11-01');
     const sayilar: number[] = [];
-    for (const gun of ['04', '05', '06', '07', '08']) sayilar.push((await gunlukCalistir(saat(`2026-11-${gun}T05:30:00Z`))).sessizlik);
+    for (const gun of ['04', '05', '06', '07', '08'])
+      sayilar.push((await gunlukCalistir(saat(`2026-11-${gun}T05:30:00Z`))).sessizlik);
     // silent for 3 days on the 4th (send), then every 2 days: the 6th (send), the 5th and 7th are skipped, the 8th sends.
     expect(sayilar).toEqual([1, 0, 1, 0, 1]);
   });
@@ -247,7 +308,12 @@ describe('kalemcik.daily: three days without writing (FR-53)', () => {
     expect((await gunlukCalistir(saat('2026-11-15T05:30:00Z'))).sessizlik).toBe(0);
   });
   it('does not nag about a finished project or a deadline that has passed', async () => {
-    const bitti = await proje(u1, { target: 100, current: 100, deadline: '2026-12-31', created: '2026-10-01T00:00:00Z' });
+    const bitti = await proje(u1, {
+      target: 100,
+      current: 100,
+      deadline: '2026-12-31',
+      created: '2026-10-01T00:00:00Z',
+    });
     const gecti = await proje(u1, { deadline: '2026-11-01', created: '2026-10-01T00:00:00Z' });
     await hatirlatma(u1, bitti, 'sessizlik', null);
     await hatirlatma(u1, gecti, 'sessizlik', null);
@@ -257,7 +323,9 @@ describe('kalemcik.daily: three days without writing (FR-53)', () => {
     // The job only queues; notify applies 22.00-08.00 and the user's switches (notify/dispatch.ts).
     expect(isQuietHour(new Date('2026-11-07T20:00:00Z'))).toBe(true); // 23.00 Istanbul
     expect(isQuietHour(new Date('2026-11-07T05:00:00Z'))).toBe(false); // 08.00 Istanbul
-    expect(channelAllows({ email: { kalemcik: false }, web_push: {}, apns: {} }, 'email', 'kalemcik')).toBe(false);
+    expect(channelAllows({ email: { kalemcik: false }, web_push: {}, apns: {} }, 'email', 'kalemcik')).toBe(
+      false,
+    );
     expect(channelAllows({ email: {}, web_push: {}, apns: {} }, 'email', 'kalemcik')).toBe(true);
     expect(channelAllows({ email: {}, web_push: {}, apns: {} }, 'email', 'teslim_hatirlatmasi')).toBe(true);
   });
@@ -281,7 +349,10 @@ describe('kalemcik.daily: what it never does', () => {
     await hatirlatma(u1, p, 'teslim_7', '2026-11-07T05:00:00Z');
     const q = await proje(u2, { deadline: '2026-12-31', created: '2026-10-01T00:00:00Z' });
     await hatirlatma(u2, q, 'sessizlik', null);
-    await Promise.all([gunlukCalistir(saat('2026-11-07T05:10:00Z')), gunlukCalistir(saat('2026-11-07T05:10:00Z'))]);
+    await Promise.all([
+      gunlukCalistir(saat('2026-11-07T05:10:00Z')),
+      gunlukCalistir(saat('2026-11-07T05:10:00Z')),
+    ]);
     expect(await bildirimler()).toHaveLength(2);
   });
   it('ignores disabled reminders and reminders of other kinds', async () => {
@@ -296,14 +367,24 @@ describe('kalemcik.daily: what it never does', () => {
 describe('kalemcik.daily: retention of extracted rule sets', () => {
   it('deletes unapproved rule sets after 30 days with their quotes, and keeps approved and recent ones', async () => {
     const ekle = async (gun: string, approved: boolean) =>
-      (await pg.query<{ id: string }>(`insert into template_rules (user_id, rules, approved, created_at) values ($1, '{}', $2, $3) returning id`, [u1, approved, gun])).rows[0]?.id as string;
+      (
+        await pg.query<{ id: string }>(
+          `insert into template_rules (user_id, rules, approved, created_at) values ($1, '{}', $2, $3) returning id`,
+          [u1, approved, gun],
+        )
+      ).rows[0]?.id as string;
     const eski = await ekle('2026-09-01T00:00:00Z', false);
     const yeni = await ekle('2026-10-20T00:00:00Z', false);
     const onayli = await ekle('2026-09-01T00:00:00Z', true);
-    await pg.query(`insert into template_rule_evidence (template_rule_id, rule_key, excerpt, page) values ($1, 'mTop', 'üst 3 cm', 4)`, [eski]);
+    await pg.query(
+      `insert into template_rule_evidence (template_rule_id, rule_key, excerpt, page) values ($1, 'mTop', 'üst 3 cm', 4)`,
+      [eski],
+    );
     const s = await gunlukCalistir(saat('2026-11-07T05:10:00Z'));
     expect(s.silinenKurallar).toBe(1);
-    const kalan = (await pg.query<{ id: string }>(`select id from template_rules`)).rows.map((r) => r.id).sort();
+    const kalan = (await pg.query<{ id: string }>(`select id from template_rules`)).rows
+      .map((r) => r.id)
+      .sort();
     expect(kalan).toEqual([yeni, onayli].sort());
     expect((await pg.query(`select 1 from template_rule_evidence`)).rows).toHaveLength(0);
   });

@@ -90,6 +90,7 @@
     "adim2": {
       "baslik": "2. Check the rules",
       "aciklama": "Each rule shows its source. If you change a value, its label becomes \"Edited by hand\".",
+      "gecersiz": "Enter a valid value.",
       "kaynak": {
         "kilavuz": "From the guide",
         "ornek": "Example value",

@@ -22,7 +22,12 @@ export const RETENTION_GUN = 30;
 const TZ = 'Europe/Istanbul';
 
 export const istanbulGunu = (d: Date): string =>
-  new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+  new Intl.DateTimeFormat('en-CA', {
+    timeZone: TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(d);
 
 /** Whole days from `a` to `b` (both YYYY-MM-DD). */
 export function gunFarki(a: string, b: string): number {
@@ -109,7 +114,12 @@ export async function gunlukCalistir(deps: GunlukBagimliliklar, _payload?: unkno
   const siz = new Set(sizler.map((r) => r.user_id));
   const hitapOf = (userId: string): Hitap => (siz.has(userId) ? 'siz' : 'sen');
 
-  const kuyrukla = async (tip: 'teslim_hatirlatmasi' | 'kalemcik', userId: string, refId: string, anahtar: string) => {
+  const kuyrukla = async (
+    tip: 'teslim_hatirlatmasi' | 'kalemcik',
+    userId: string,
+    refId: string,
+    anahtar: string,
+  ) => {
     const yuk = NotifyPayload.parse({ type: tip, userId, refId });
     await deps.db.query(KUYRUK_SQL, [JSON.stringify(yuk), anahtar]);
   };

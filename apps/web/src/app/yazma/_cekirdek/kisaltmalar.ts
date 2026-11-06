@@ -40,7 +40,19 @@ export interface KisaltmaAdayi {
 
 const BUYUK = 'A-ZÇĞİÖŞÜ';
 const KUCUK = 'a-zçğıöşü';
-const DURAK = new Set(['ve', 'ile', 'veya', 'de', 'da', 'hakkında', 'ilişkin', 'dair', 'için', 'ya', 'ya da']);
+const DURAK = new Set([
+  've',
+  'ile',
+  'veya',
+  'de',
+  'da',
+  'hakkında',
+  'ilişkin',
+  'dair',
+  'için',
+  'ya',
+  'ya da',
+]);
 const ROMA = /^[IVXLCDM]+$/;
 
 const kucukTr = (s: string) => s.replace(/İ/g, 'i').replace(/I/g, 'ı').toLocaleLowerCase('tr-TR');
@@ -80,7 +92,10 @@ function noktaliDizi(): { girdi: SozlukGirdisi; re: RegExp }[] {
     .filter((g) => g.kisa.endsWith('.'))
     .map((g) => ({
       girdi: g,
-      re: new RegExp(`(?<![\\p{L}\\d.])${kacis(g.kisa)}${g.baglam === 'sayi' ? '(?=\\s*\\d)' : '(?![\\p{L}])'}`, 'gu'),
+      re: new RegExp(
+        `(?<![\\p{L}\\d.])${kacis(g.kisa)}${g.baglam === 'sayi' ? '(?=\\s*\\d)' : '(?![\\p{L}])'}`,
+        'gu',
+      ),
     }));
 }
 
@@ -187,8 +202,13 @@ export async function cetvelDocx(
   const tablo = new Table({
     width: { size: '100%', type: WidthType.PERCENTAGE },
     rows: [
-      new TableRow({ tableHeader: true, children: [hucre('Kısaltma', true, 25), hucre('Açılımı', true, 75)] }),
-      ...sirali.map((r) => new TableRow({ children: [hucre(r.kisa, false, 25), hucre(r.uzun.trim(), false, 75)] })),
+      new TableRow({
+        tableHeader: true,
+        children: [hucre('Kısaltma', true, 25), hucre('Açılımı', true, 75)],
+      }),
+      ...sirali.map(
+        (r) => new TableRow({ children: [hucre(r.kisa, false, 25), hucre(r.uzun.trim(), false, 75)] }),
+      ),
     ],
   });
   const doc = new Document({
@@ -201,7 +221,14 @@ export async function cetvelDocx(
           new Paragraph({
             alignment: AlignmentType.CENTER,
             spacing: { after: 240 },
-            children: [new TextRun({ text: (s.baslik ?? 'Kısaltmalar').toLocaleUpperCase('tr-TR'), bold: true, font, size: boyut })],
+            children: [
+              new TextRun({
+                text: (s.baslik ?? 'Kısaltmalar').toLocaleUpperCase('tr-TR'),
+                bold: true,
+                font,
+                size: boyut,
+              }),
+            ],
           }),
           tablo,
         ],
@@ -222,7 +249,10 @@ export interface KisaltmaModeli {
  * Fill the "belirsiz" rows from a model. The suggestion is validated (a short plain string per requested
  * abbreviation) and labelled "oneri": the user confirms it before it reaches the table.
  */
-export async function onerilerleDoldur(adaylar: KisaltmaAdayi[], model: KisaltmaModeli): Promise<KisaltmaAdayi[]> {
+export async function onerilerleDoldur(
+  adaylar: KisaltmaAdayi[],
+  model: KisaltmaModeli,
+): Promise<KisaltmaAdayi[]> {
   const eksik = adaylar.filter((a) => a.kaynak === 'belirsiz').map((a) => a.kisa);
   if (!eksik.length) return adaylar;
   const oneriler = await model.oner(eksik.slice(0, 60));

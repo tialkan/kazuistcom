@@ -90,9 +90,12 @@ export function docxXmlMetni(xml: string): MetinSayfasi[] {
       isaret = true;
     }
     let satir = '';
-    const parcalar = p.match(/<w:t(?: [^>]*)?>[^<]*<\/w:t>|<w:tab\s*\/>|<w:br[^>]*\/>|<w:lastRenderedPageBreak\s*\/>/g) ?? [];
+    const parcalar =
+      p.match(/<w:t(?: [^>]*)?>[^<]*<\/w:t>|<w:tab\s*\/>|<w:br[^>]*\/>|<w:lastRenderedPageBreak\s*\/>/g) ??
+      [];
     for (const par of parcalar) {
-      if (/^<w:t[ >]/.test(par)) satir += varlikCoz(par.replace(/^<w:t(?: [^>]*)?>/, '').replace(/<\/w:t>$/, ''));
+      if (/^<w:t[ >]/.test(par))
+        satir += varlikCoz(par.replace(/^<w:t(?: [^>]*)?>/, '').replace(/<\/w:t>$/, ''));
       else if (par.startsWith('<w:tab')) satir += ' ';
       else if (par.startsWith('<w:lastRenderedPageBreak')) {
         sayfalar[sayfalar.length - 1] += `${satir}`;
@@ -143,7 +146,7 @@ function duzMetin(bayt: Uint8Array): MetinSayfasi[] {
   } catch {
     metin = new TextDecoder('windows-1254').decode(bayt);
   }
-  metin = metin.replace(/^﻿/, '');
+  metin = metin.replace(/^\uFEFF/, '');
   if (!metin.includes('\f')) return [{ sayfa: null, metin }];
   return metin.split('\f').map((m, i) => ({ sayfa: i + 1, metin: m }));
 }
@@ -155,7 +158,9 @@ async function pdfMetni(bayt: Uint8Array): Promise<MetinSayfasi[]> {
     const belge = await getDocumentProxy(bayt.slice());
     const kapat = async () => {
       // The document proxy has no destroy(); its loading task owns the worker and the memory.
-      await (belge as unknown as { loadingTask?: { destroy?: () => Promise<void> } }).loadingTask?.destroy?.();
+      await (
+        belge as unknown as { loadingTask?: { destroy?: () => Promise<void> } }
+      ).loadingTask?.destroy?.();
     };
     if (belge.numPages > AZAMI_PDF_SAYFA) {
       await kapat();

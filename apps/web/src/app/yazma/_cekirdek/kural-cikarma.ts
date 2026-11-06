@@ -128,8 +128,17 @@ interface Normal {
   harita: Int32Array;
 }
 
-const TIRNAK: Record<string, string> = { '‘': "'", '’': "'", '“': '"', '”': '"', '″': '"' };
-const TIRE = new Set(['‐', '‑', '‒', '–', '—', '−']);
+const kod = (...kodlar: number[]) => kodlar.map((k) => String.fromCodePoint(k));
+// Code points, not literals: these are invisible or look alike in an editor (and check:text forbids U+2014).
+const TIRNAK: Record<string, string> = Object.fromEntries([
+  [String.fromCodePoint(0x2018), "'"],
+  [String.fromCodePoint(0x2019), "'"],
+  [String.fromCodePoint(0x201c), '"'],
+  [String.fromCodePoint(0x201d), '"'],
+  [String.fromCodePoint(0x2033), '"'],
+]);
+const TIRE = new Set(kod(0x2010, 0x2011, 0x2012, 0x2013, 0x2014, 0x2212));
+const GORUNMEZ = new Set(kod(0x00ad, 0x200b, 0xfeff));
 
 /**
  * Lower case (Turkish), single spaces, no soft hyphens, line-end hyphenation joined, curly quotes and dashes
@@ -142,7 +151,7 @@ export function normallestir(metin: string): Normal {
   const kaynak = metin.normalize('NFKC');
   for (let i = 0; i < kaynak.length; i++) {
     let ch = kaynak[i] as string;
-    if (ch === '­' || ch === '​' || ch === '﻿') continue;
+    if (GORUNMEZ.has(ch)) continue;
     if (ch === '-' || TIRE.has(ch)) {
       // hyphen at a line end: "ke-\nnar" is "kenar"
       let j = i + 1;
@@ -183,7 +192,12 @@ export interface Bulgu {
 }
 
 /** Where `alinti` occurs in the guide: the stated page first, then every other page. */
-export function alintiyiBul(sayfalar: MetinSayfasi[], normaller: Normal[], alinti: string, sayfa: number | null): Bulgu | null {
+export function alintiyiBul(
+  sayfalar: MetinSayfasi[],
+  normaller: Normal[],
+  alinti: string,
+  sayfa: number | null,
+): Bulgu | null {
   const aranan = normallestir(alinti).norm;
   if (aranan.length < 4) return null;
   const sira = sayfalar.map((_, i) => i);
@@ -219,7 +233,14 @@ const SATIR_ARALIGI_SOZ: Record<string, RegExp> = {
 function sayiBicimleri(v: number): string[] {
   const duz = String(v);
   const virgul = duz.replace('.', ',');
-  const bicimler = new Set([duz, virgul, v.toFixed(1), v.toFixed(1).replace('.', ','), v.toFixed(2), v.toFixed(2).replace('.', ',')]);
+  const bicimler = new Set([
+    duz,
+    virgul,
+    v.toFixed(1),
+    v.toFixed(1).replace('.', ','),
+    v.toFixed(2),
+    v.toFixed(2).replace('.', ','),
+  ]);
   return [...bicimler];
 }
 
@@ -246,14 +267,18 @@ export function degerAlintidaVarMi(anahtar: KuralAnahtari, deger: unknown, alint
 
 // ---- Prompt budget ---------------------------------------------------------------------------------------
 
-const ILGILI = /kenar|boşluk|\bcm\b|\bmm\b|punto|yazı tipi|font|times|arial|satır aralığ|sayfa numar|dipnot|başlık|kaynakça|atıf|anahtar kelime|\böz\b|abstract|kelime|a4/gi;
+const ILGILI =
+  /kenar|boşluk|\bcm\b|\bmm\b|punto|yazı tipi|font|times|arial|satır aralığ|sayfa numar|dipnot|başlık|kaynakça|atıf|anahtar kelime|\böz\b|abstract|kelime|a4/gi;
 const AZAMI_ISTEM_KARAKTER = 80_000 * 3 - 4_000; // route kural_cikarma, about 3 characters per token
 
 /** Keep the pages that talk about layout when the guide is longer than the route allows. */
 export function sayfaSec(sayfalar: MetinSayfasi[], butce = AZAMI_ISTEM_KARAKTER): MetinSayfasi[] {
   const toplam = sayfalar.reduce((n, s) => n + s.metin.length + 16, 0);
   if (toplam <= butce) return sayfalar;
-  const puanli = sayfalar.map((s, i) => ({ i, puan: (s.metin.match(ILGILI) ?? []).length / Math.max(1, s.metin.length / 1000) }));
+  const puanli = sayfalar.map((s, i) => ({
+    i,
+    puan: (s.metin.match(ILGILI) ?? []).length / Math.max(1, s.metin.length / 1000),
+  }));
   puanli.sort((a, b) => b.puan - a.puan || a.i - b.i);
   const secili = new Set<number>();
   let kullanilan = 0;

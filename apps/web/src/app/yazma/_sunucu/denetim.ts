@@ -11,7 +11,11 @@ export interface DenetimYaniti {
   govde: unknown;
 }
 
-export type DenetimIstemcisi = (bayt: Uint8Array, tur: SablonTuru, kurallar: KuralDegerleri) => Promise<DenetimYaniti>;
+export type DenetimIstemcisi = (
+  bayt: Uint8Array,
+  tur: SablonTuru,
+  kurallar: KuralDegerleri,
+) => Promise<DenetimYaniti>;
 
 type Env = Record<string, string | undefined>;
 const ZAMAN_ASIMI_MS = 60_000;
@@ -25,24 +29,28 @@ export function denetimKurallari(d: KuralDegerleri): Record<string, unknown> {
 }
 
 /** Null when WORKER_PY_URL or KAZUIST_INTERNAL_TOKEN is missing: the endpoint then answers 503 (fail closed). */
-export function pythonDenetimIstemcisi(env: Env = process.env, fetchFn: typeof fetch = fetch): DenetimIstemcisi | null {
+export function pythonDenetimIstemcisi(
+  env: Env = process.env,
+  fetchFn: typeof fetch = fetch,
+): DenetimIstemcisi | null {
   const taban = env.WORKER_PY_URL;
   const token = env.KAZUIST_INTERNAL_TOKEN;
   if (!taban || !token) return null;
   return async (bayt, tur, kurallar) => {
-    const baslik = Buffer.from(JSON.stringify({ kind: tur, rules: denetimKurallari(kurallar) })).toString('base64');
+    const baslik = Buffer.from(JSON.stringify({ kind: tur, rules: denetimKurallari(kurallar) })).toString(
+      'base64',
+    );
     const yanit = await fetchFn(`${taban.replace(/\/$/, '')}/internal/docxcheck`, {
       method: 'POST',
-      headers: { 'content-type': 'application/octet-stream', 'x-internal-token': token, 'x-kazuist-rules': baslik },
+      headers: {
+        'content-type': 'application/octet-stream',
+        'x-internal-token': token,
+        'x-kazuist-rules': baslik,
+      },
       body: bayt as BodyInit,
       signal: AbortSignal.timeout(ZAMAN_ASIMI_MS),
     });
-    let govde: unknown = null;
-    try {
-      govde = await yanit.json();
-    } catch {
-      govde = null;
-    }
+    const govde: unknown = await yanit.json().catch(() => null);
     return { durum: yanit.status, govde };
   };
 }

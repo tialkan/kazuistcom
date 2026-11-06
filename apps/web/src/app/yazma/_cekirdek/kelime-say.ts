@@ -17,7 +17,8 @@ export interface KelimeSayimi {
 export function docxKelimeSayimi(bayt: Uint8Array): KelimeSayimi {
   if (bayt.length === 0) throw new YuklemeHatasi('bos');
   if (bayt.length > AZAMI_BAYT) throw new YuklemeHatasi('cok_buyuk');
-  if (!(bayt[0] === 0x50 && bayt[1] === 0x4b && bayt[2] === 0x03 && bayt[3] === 0x04)) throw new YuklemeHatasi('tur_uyusmuyor');
+  if (!(bayt[0] === 0x50 && bayt[1] === 0x4b && bayt[2] === 0x03 && bayt[3] === 0x04))
+    throw new YuklemeHatasi('tur_uyusmuyor');
   let girdi = 0;
   let dosyalar: Record<string, Uint8Array>;
   try {
@@ -45,7 +46,11 @@ export function docxKelimeSayimi(bayt: Uint8Array): KelimeSayimi {
   if (dipnot) {
     if (dipnot.length > SINIR) throw new YuklemeHatasi('zip_bomba');
     // Separator footnotes carry no text, so every <w:t> in the part belongs to a real footnote.
-    dipnotKelime = kelimeSay(docxXmlMetni(strFromU8(dipnot)).map((s) => s.metin).join('\n'));
+    dipnotKelime = kelimeSay(
+      docxXmlMetni(strFromU8(dipnot))
+        .map((s) => s.metin)
+        .join('\n'),
+    );
   }
   return { words: kelimeSay(govde), footnoteWords: dipnotKelime };
 }

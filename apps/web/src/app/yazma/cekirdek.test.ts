@@ -53,12 +53,15 @@ import { kopyalar } from './_veri/uret.ts';
 const yol = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 const stilGovdesi = (stil: string, id: string) =>
   stil.match(new RegExp(`<w:style [^>]*w:styleId="${id}"[\\s\\S]*?</w:style>`))?.[0] ?? '';
-const parcalar = (zip: Uint8Array) => Object.fromEntries(Object.entries(unzipSync(zip)).map(([k, v]) => [k, strFromU8(v)]));
+const parcalar = (zip: Uint8Array) =>
+  Object.fromEntries(Object.entries(unzipSync(zip)).map(([k, v]) => [k, strFromU8(v)]));
 
 describe('ASCII file names (plan 10.5/4)', () => {
   it('turns Turkish letters into ASCII and joins words with hyphens', () => {
     expect(asciiSlug('Ankara Sosyal Bilimler Üniversitesi')).toBe('ankara-sosyal-bilimler-universitesi');
-    expect(asciiSlug('İSTANBUL ÜNİVERSİTESİ Hukuk Fakültesi Dergisi')).toBe('istanbul-universitesi-hukuk-fakultesi-dergisi');
+    expect(asciiSlug('İSTANBUL ÜNİVERSİTESİ Hukuk Fakültesi Dergisi')).toBe(
+      'istanbul-universitesi-hukuk-fakultesi-dergisi',
+    );
     expect(asciiSlug('Çağ Öğrenci Işığı, Şişli!')).toBe('cag-ogrenci-isigi-sisli');
     expect(asciiSlug('   ')).toBe('');
   });
@@ -87,9 +90,24 @@ describe('rule schema (SRS 6.2)', () => {
     expect(varsayilanBolumler[0]).toBe('Dış Kapak');
     expect(varsayilanBolumler[16]).toBe('Özgeçmiş');
     expect(varsayilanDegerler).toMatchObject({
-      paper: 'A4', mTop: 3, mBottom: 2.5, mLeft: 3.5, mRight: 2.5, font: 'Times New Roman', size: 12, footSize: 10,
-      line: 1.5, indent: 1.25, spAfter: 6, h1Size: 14, h1Upper: true, h2Size: 12, h3Size: 12, pageNum: 'alt-orta',
-      frontRoman: true, citation: 'İSNAD 2. Edisyon (dipnotlu)',
+      paper: 'A4',
+      mTop: 3,
+      mBottom: 2.5,
+      mLeft: 3.5,
+      mRight: 2.5,
+      font: 'Times New Roman',
+      size: 12,
+      footSize: 10,
+      line: 1.5,
+      indent: 1.25,
+      spAfter: 6,
+      h1Size: 14,
+      h1Upper: true,
+      h2Size: 12,
+      h3Size: 12,
+      pageNum: 'alt-orta',
+      frontRoman: true,
+      citation: 'İSNAD 2. Edisyon (dipnotlu)',
     });
   });
   it('validates the defaults and rejects out of range values field by field', () => {
@@ -134,7 +152,10 @@ describe('rule schema (SRS 6.2)', () => {
 });
 
 describe('DOCX thesis template (SRS 6.3)', async () => {
-  const d = { ...varsayilanDegerler, institution: 'Ankara Sosyal Bilimler Üniversitesi Sosyal Bilimler Enstitüsü' };
+  const d = {
+    ...varsayilanDegerler,
+    institution: 'Ankara Sosyal Bilimler Üniversitesi Sosyal Bilimler Enstitüsü',
+  };
   const zip = await sablonUret(d, 'tez');
   const p = parcalar(zip);
   const belge = p['word/document.xml'] as string;
@@ -142,7 +163,13 @@ describe('DOCX thesis template (SRS 6.3)', async () => {
 
   it('is a zip with the parts Word needs', () => {
     expect(zip[0]).toBe(0x50);
-    for (const n of ['[Content_Types].xml', 'word/document.xml', 'word/styles.xml', 'word/footnotes.xml', 'word/settings.xml'])
+    for (const n of [
+      '[Content_Types].xml',
+      'word/document.xml',
+      'word/styles.xml',
+      'word/footnotes.xml',
+      'word/settings.xml',
+    ])
       expect(p[n], n).toBeDefined();
   });
   it('has exactly two sections: front matter in lower roman from 1, main text in decimal from 1', () => {
@@ -164,14 +191,20 @@ describe('DOCX thesis template (SRS 6.3)', async () => {
     }
   });
   it('puts a PAGE field in the footer, centered', () => {
-    const footers = Object.entries(p).filter(([k]) => /^word\/footer\d+\.xml$/.test(k)).map(([, v]) => v);
+    const footers = Object.entries(p)
+      .filter(([k]) => /^word\/footer\d+\.xml$/.test(k))
+      .map(([, v]) => v);
     const withField = footers.filter((f) => f.includes('PAGE'));
     expect(withField.length).toBeGreaterThanOrEqual(2);
     expect(withField.every((f) => f.includes('<w:jc w:val="center"/>'))).toBe(true);
   });
   it('defines Normal, Heading 1-3 with outline levels, and a Footnote Text style', () => {
     expect(stil).toMatch(/w:styleId="Normal"[^>]*w:default="1"/);
-    for (const [id, lvl] of [['Heading1', 0], ['Heading2', 1], ['Heading3', 2]] as const) {
+    for (const [id, lvl] of [
+      ['Heading1', 0],
+      ['Heading2', 1],
+      ['Heading3', 2],
+    ] as const) {
       const m = stil.match(new RegExp(`<w:style [^>]*w:styleId="${id}"[\\s\\S]*?</w:style>`));
       expect(m, id).not.toBeNull();
       expect(m?.[0]).toContain(`<w:outlineLvl w:val="${lvl}"/>`);
@@ -203,10 +236,24 @@ describe('DOCX thesis template (SRS 6.3)', async () => {
     expect(p['word/settings.xml']).toContain('<w:updateFields/>');
   });
   it('writes the front matter in order and the main text after Giriş, each chapter on its own page', () => {
-    const basliklar = [...belge.matchAll(/<w:pStyle w:val="Heading1"\/>[\s\S]*?<w:t[^>]*>([^<]*)<\/w:t>/g)].map((m) => m[1]);
+    const basliklar = [
+      ...belge.matchAll(/<w:pStyle w:val="Heading1"\/>[\s\S]*?<w:t[^>]*>([^<]*)<\/w:t>/g),
+    ].map((m) => m[1]);
     expect(basliklar).toEqual([
-      'KABUL VE ONAY', 'ETİK BEYAN', 'ÖZET', 'ABSTRACT', 'ÖNSÖZ', 'KISALTMALAR', 'TABLOLAR LİSTESİ', 'ŞEKİLLER LİSTESİ',
-      'GİRİŞ', 'BİRİNCİ BÖLÜM', 'İKİNCİ BÖLÜM', 'SONUÇ', 'KAYNAKÇA', 'ÖZGEÇMİŞ',
+      'KABUL VE ONAY',
+      'ETİK BEYAN',
+      'ÖZET',
+      'ABSTRACT',
+      'ÖNSÖZ',
+      'KISALTMALAR',
+      'TABLOLAR LİSTESİ',
+      'ŞEKİLLER LİSTESİ',
+      'GİRİŞ',
+      'BİRİNCİ BÖLÜM',
+      'İKİNCİ BÖLÜM',
+      'SONUÇ',
+      'KAYNAKÇA',
+      'ÖZGEÇMİŞ',
     ]);
     expect(stilGovdesi(stil, 'Heading1')).toContain('<w:pageBreakBefore/>');
   });
@@ -244,7 +291,16 @@ describe('DOCX thesis template (SRS 6.3)', async () => {
   it('follows other rules: Arial 11, top right numbers, decimal front matter, no capitals', async () => {
     const z = parcalar(
       await sablonUret(
-        { ...d, font: 'Arial', size: 11, pageNum: 'ust-sag', frontRoman: false, h1Upper: false, line: 1.15, mLeft: 3 },
+        {
+          ...d,
+          font: 'Arial',
+          size: 11,
+          pageNum: 'ust-sag',
+          frontRoman: false,
+          h1Upper: false,
+          line: 1.15,
+          mLeft: 3,
+        },
         'tez',
       ),
     );
@@ -253,18 +309,26 @@ describe('DOCX thesis template (SRS 6.3)', async () => {
     expect(doc).not.toContain('w:fmt="lowerRoman"');
     expect(doc).toContain('Giriş');
     expect(doc).toContain('w:left="1701"'); // 3 cm
-    expect(Object.keys(z).some((k) => /^word\/header\d+\.xml$/.test(k) && (z[k] as string).includes('PAGE'))).toBe(true);
+    expect(
+      Object.keys(z).some((k) => /^word\/header\d+\.xml$/.test(k) && (z[k] as string).includes('PAGE')),
+    ).toBe(true);
     expect(z['word/styles.xml']).toContain('Arial');
     expect(z['word/styles.xml']).toContain('w:line="276"'); // 1.15
   });
   it('notes rules the template cannot hold at the end of the main text', async () => {
-    const z = parcalar(await sablonUret({ ...d, notes: ['Benzerlik oranı yüzde 15 altında olmalıdır.'] }, 'tez'));
+    const z = parcalar(
+      await sablonUret({ ...d, notes: ['Benzerlik oranı yüzde 15 altında olmalıdır.'] }, 'tez'),
+    );
     expect(z['word/document.xml']).toContain('Benzerlik oranı yüzde 15 altında olmalıdır.');
   });
 });
 
 describe('DOCX article template (SRS 6.5)', async () => {
-  const d = { ...ornekKayit('makale').degerler, wordLimit: { min: 5000, max: 15000 }, absLimit: { min: 150, max: 200 } };
+  const d = {
+    ...ornekKayit('makale').degerler,
+    wordLimit: { min: 5000, max: 15000 },
+    absLimit: { min: 150, max: 200 },
+  };
   const p = parcalar(await sablonUret(d, 'makale'));
   const belge = p['word/document.xml'] as string;
   it('is one section with decimal page numbers from 1 and no title page', () => {
@@ -286,7 +350,14 @@ describe('DOCX article template (SRS 6.5)', async () => {
     expect(belge).toContain('150 - 200 kelime');
   });
   it('has Giriş, main headings with level 2 and 3 samples, Sonuç and Kaynakça', () => {
-    for (const t of ['Giriş', '[Ana başlık]', '[İkinci düzey başlık]', '[Üçüncü düzey başlık]', 'Sonuç', 'Kaynakça'])
+    for (const t of [
+      'Giriş',
+      '[Ana başlık]',
+      '[İkinci düzey başlık]',
+      '[Üçüncü düzey başlık]',
+      'Sonuç',
+      'Kaynakça',
+    ])
       expect(belge).toContain(t);
   });
   it('does not start new pages for headings and has no table of contents', () => {
@@ -301,12 +372,16 @@ function pdfOlustur(sayfalar: string[]): Uint8Array {
   const nesneler: string[] = [];
   const sayfaNo = (i: number) => 4 + i * 2;
   nesneler.push('<</Type/Catalog/Pages 2 0 R>>');
-  nesneler.push(`<</Type/Pages/Kids[${sayfalar.map((_, i) => `${sayfaNo(i)} 0 R`).join(' ')}]/Count ${sayfalar.length}>>`);
+  nesneler.push(
+    `<</Type/Pages/Kids[${sayfalar.map((_, i) => `${sayfaNo(i)} 0 R`).join(' ')}]/Count ${sayfalar.length}>>`,
+  );
   nesneler.push('<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>');
   sayfalar.forEach((metin, i) => {
     const satirlar = metin.match(/.{1,70}/g) ?? [''];
     const akis = `BT /F1 12 Tf 14 TL 72 800 Td ${satirlar.map((l) => `(${l.replace(/[()\\]/g, '\\$&')}) Tj T*`).join(' ')} ET`;
-    nesneler.push(`<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Contents ${sayfaNo(i) + 1} 0 R/Resources<</Font<</F1 3 0 R>>>>>>`);
+    nesneler.push(
+      `<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Contents ${sayfaNo(i) + 1} 0 R/Resources<</Font<</F1 3 0 R>>>>>>`,
+    );
     nesneler.push(`<</Length ${akis.length}>>\nstream\n${akis}\nendstream`);
   });
   let cikti = '%PDF-1.4\n';
@@ -329,7 +404,9 @@ describe('upload and text extraction (plan 10.5/1)', () => {
     const utf8 = await metinCikar(strToU8(UZUN), 'kilavuz.txt');
     expect(utf8.tur).toBe('txt');
     expect(utf8.sayfalar[0]?.metin).toContain('kenar boşluğu');
-    const cp1254 = Uint8Array.from([...'kenar bo'].map((c) => c.charCodeAt(0)).concat([0xfe, 0x6c, 0x75, 0xf0, 0x75]));
+    const cp1254 = Uint8Array.from(
+      [...'kenar bo'].map((c) => c.charCodeAt(0)).concat([0xfe, 0x6c, 0x75, 0xf0, 0x75]),
+    );
     const m = await metinCikar(cp1254, 'a.txt');
     expect(m.sayfalar[0]?.metin).toContain('boşluğu');
   });
@@ -338,7 +415,10 @@ describe('upload and text extraction (plan 10.5/1)', () => {
     expect(m.sayfalar.map((s) => s.sayfa)).toEqual([1, 2]);
   });
   it('reads a PDF page by page', async () => {
-    const m = await metinCikar(pdfOlustur(['Sol kenar bosluk 3,5 cm ' + 'x'.repeat(120), 'Ikinci sayfa metni ' + 'y'.repeat(120)]), 'k.pdf');
+    const m = await metinCikar(
+      pdfOlustur(['Sol kenar bosluk 3,5 cm ' + 'x'.repeat(120), 'Ikinci sayfa metni ' + 'y'.repeat(120)]),
+      'k.pdf',
+    );
     expect(m.tur).toBe('pdf');
     expect(m.sayfalar).toHaveLength(2);
     expect(m.sayfalar[0]?.sayfa).toBe(1);
@@ -374,12 +454,18 @@ describe('upload and text extraction (plan 10.5/1)', () => {
     await expect(metinCikar(new Uint8Array(0), 'a.txt')).rejects.toMatchObject({ kod: 'bos' });
     await expect(metinCikar(strToU8('x'), 'a.exe')).rejects.toMatchObject({ kod: 'tur_desteklenmiyor' });
     await expect(metinCikar(strToU8('x'), 'adsiz')).rejects.toMatchObject({ kod: 'tur_desteklenmiyor' });
-    await expect(metinCikar(new Uint8Array(AZAMI_BAYT + 1).fill(65), 'a.txt')).rejects.toMatchObject({ kod: 'cok_buyuk' });
+    await expect(metinCikar(new Uint8Array(AZAMI_BAYT + 1).fill(65), 'a.txt')).rejects.toMatchObject({
+      kod: 'cok_buyuk',
+    });
   });
   it('decides the type from the content, so a renamed file is refused', async () => {
     await expect(metinCikar(pdfOlustur(['x']), 'a.docx')).rejects.toMatchObject({ kod: 'tur_uyusmuyor' });
-    await expect(metinCikar(strToU8('düz metin '.repeat(50)), 'a.pdf')).rejects.toMatchObject({ kod: 'tur_uyusmuyor' });
-    await expect(metinCikar(Uint8Array.from([0x4d, 0x5a, 0, 0, 0, 1]), 'a.txt')).rejects.toMatchObject({ kod: 'tur_uyusmuyor' });
+    await expect(metinCikar(strToU8('düz metin '.repeat(50)), 'a.pdf')).rejects.toMatchObject({
+      kod: 'tur_uyusmuyor',
+    });
+    await expect(metinCikar(Uint8Array.from([0x4d, 0x5a, 0, 0, 0, 1]), 'a.txt')).rejects.toMatchObject({
+      kod: 'tur_uyusmuyor',
+    });
     expect(icerikTuru(pdfOlustur(['x']))).toBe('pdf');
     expect(uzantidanTur('Rapor.DOCX')).toBe('docx');
   });
@@ -391,7 +477,9 @@ describe('upload and text extraction (plan 10.5/1)', () => {
     await expect(metinCikar(zipSync(cok), 'c.docx')).rejects.toMatchObject({ kod: 'zip_bomba' });
   });
   it('refuses a zip that is not a DOCX and a broken PDF', async () => {
-    await expect(metinCikar(zipSync({ 'a.txt': strToU8('x') }), 'a.docx')).rejects.toMatchObject({ kod: 'bozuk' });
+    await expect(metinCikar(zipSync({ 'a.txt': strToU8('x') }), 'a.docx')).rejects.toMatchObject({
+      kod: 'bozuk',
+    });
     await expect(metinCikar(strToU8('%PDF-1.7\nkirik dosya'), 'a.pdf')).rejects.toBeInstanceOf(YuklemeHatasi);
   });
 });
@@ -399,8 +487,16 @@ describe('upload and text extraction (plan 10.5/1)', () => {
 // ---- Rule extraction -----------------------------------------------------------------------------------
 
 const KILAVUZ = [
-  { sayfa: 11, metin: 'Yazım kuralları. Metin Times New Roman yazı tipinde ve 12 punto ile yazılır.\nSatır aralığı bir buçuk (1,5) olmalıdır.' },
-  { sayfa: 12, metin: 'Kenar boşlukları: üst 3 cm, alt 2,5 cm, sol 3,5 cm ve sağ 2,5 cm olarak bırakılır.\nSayfa numaraları alt orta konumda yer alır. Dipnotlar 10 punto ile ya-\nzılır.' },
+  {
+    sayfa: 11,
+    metin:
+      'Yazım kuralları. Metin Times New Roman yazı tipinde ve 12 punto ile yazılır.\nSatır aralığı bir buçuk (1,5) olmalıdır.',
+  },
+  {
+    sayfa: 12,
+    metin:
+      'Kenar boşlukları: üst 3 cm, alt 2,5 cm, sol 3,5 cm ve sağ 2,5 cm olarak bırakılır.\nSayfa numaraları alt orta konumda yer alır. Dipnotlar 10 punto ile ya-\nzılır.',
+  },
   { sayfa: 13, metin: 'Atıf sistemi: İSNAD 2. Edisyon dipnotlu sistemdir.' },
 ];
 
@@ -408,7 +504,11 @@ const cevap = (alanlar: Record<string, { deger: unknown; sayfa?: number | null; 
   JSON.stringify({ alanlar });
 
 const IYI = cevap({
-  font: { deger: 'Times New Roman', sayfa: 11, alinti: 'Metin Times New Roman yazı tipinde ve 12 punto ile yazılır.' },
+  font: {
+    deger: 'Times New Roman',
+    sayfa: 11,
+    alinti: 'Metin Times New Roman yazı tipinde ve 12 punto ile yazılır.',
+  },
   size: { deger: 12, sayfa: 11, alinti: 'Metin Times New Roman yazı tipinde ve 12 punto ile yazılır.' },
   line: { deger: 1.5, sayfa: 11, alinti: 'Satır aralığı bir buçuk (1,5) olmalıdır.' },
   mTop: { deger: 3, sayfa: 12, alinti: 'üst 3 cm, alt 2,5 cm' },
@@ -417,11 +517,17 @@ const IYI = cevap({
   mRight: { deger: 2.5, sayfa: 12, alinti: 'sağ 2,5 cm olarak' },
   pageNum: { deger: 'alt-orta', sayfa: 12, alinti: 'Sayfa numaraları alt orta konumda yer alır.' },
   footSize: { deger: 10, sayfa: 12, alinti: 'Dipnotlar 10 punto ile yazılır.' },
-  citation: { deger: 'İSNAD 2. Edisyon (dipnotlu)', sayfa: 13, alinti: 'İSNAD 2. Edisyon dipnotlu sistemdir.' },
+  citation: {
+    deger: 'İSNAD 2. Edisyon (dipnotlu)',
+    sayfa: 13,
+    alinti: 'İSNAD 2. Edisyon dipnotlu sistemdir.',
+  },
   indent: { deger: null, sayfa: null, alinti: null },
 });
 
-function sahteModel(cevaplar: Partial<Record<'haiku' | 'sonnet', string | Error>>): KuralModeli & { cagrilar: string[]; istemler: string[] } {
+function sahteModel(
+  cevaplar: Partial<Record<'haiku' | 'sonnet', string | Error>>,
+): KuralModeli & { cagrilar: string[]; istemler: string[] } {
   const cagrilar: string[] = [];
   const istemler: string[] = [];
   return {
@@ -453,7 +559,9 @@ describe('verbatim search (FR-92)', () => {
   it('corrects a wrong page and survives a hyphenated line break', () => {
     const n = KILAVUZ.map((s) => normallestir(s.metin));
     expect(alintiyiBul(KILAVUZ, n, 'Dipnotlar 10 punto ile yazılır.', 99)?.sayfa).toBe(12);
-    expect(alintiyiBul(KILAVUZ, n, 'Dipnotlar 10 punto ile yazılır.', 11)?.alinti).toBe('Dipnotlar 10 punto ile yazılır.');
+    expect(alintiyiBul(KILAVUZ, n, 'Dipnotlar 10 punto ile yazılır.', 11)?.alinti).toBe(
+      'Dipnotlar 10 punto ile yazılır.',
+    );
   });
   it('does not find invented or too short excerpts', () => {
     const n = KILAVUZ.map((s) => normallestir(s.metin));
@@ -483,7 +591,18 @@ describe('rule extraction pipeline (plan 10.5/2)', () => {
     expect(r.model).toBe('haiku');
     expect(r.sonnetYedegi).toBe(false);
     expect(r.dusenler).toEqual([]);
-    for (const k of ['font', 'size', 'line', 'mTop', 'mBottom', 'mLeft', 'mRight', 'pageNum', 'footSize', 'citation'] as const)
+    for (const k of [
+      'font',
+      'size',
+      'line',
+      'mTop',
+      'mBottom',
+      'mLeft',
+      'mRight',
+      'pageNum',
+      'footSize',
+      'citation',
+    ] as const)
       expect(r.kayit.kaynaklar[k], k).toBe('kilavuz');
     expect(r.kayit.kaynaklar.indent).toBe('ornek');
     expect(r.kayit.degerler.mLeft).toBe(3.5);
@@ -491,7 +610,12 @@ describe('rule extraction pipeline (plan 10.5/2)', () => {
     expect(r.kayit.kanitlar.footSize?.alinti).toContain('Dipnotlar 10 punto');
   });
   it('falls back to Sonnet only when Haiku fails the schema', async () => {
-    for (const bozuk of ['Üzgünüm, yardımcı olamam.', '{"alanlar": {"mTop": {"deger": 99, "sayfa": 1, "alinti": "x"}}}', '{"alanlar": {"uydurma": {"deger": 1}}}', '{"alanlar": 5}']) {
+    for (const bozuk of [
+      'Üzgünüm, yardımcı olamam.',
+      '{"alanlar": {"mTop": {"deger": 99, "sayfa": 1, "alinti": "x"}}}',
+      '{"alanlar": {"uydurma": {"deger": 1}}}',
+      '{"alanlar": 5}',
+    ]) {
       const m = sahteModel({ haiku: bozuk, sonnet: IYI });
       const r = await kuralCikar(KILAVUZ, 'tez', m);
       expect(m.cagrilar, bozuk).toEqual(['haiku', 'sonnet']);
@@ -500,9 +624,15 @@ describe('rule extraction pipeline (plan 10.5/2)', () => {
     }
   });
   it('fails with a schema error when both models fail it, and with a model error when the provider fails', async () => {
-    await expect(kuralCikar(KILAVUZ, 'tez', sahteModel({ haiku: 'x', sonnet: 'y' }))).rejects.toMatchObject({ kod: 'sema' });
-    await expect(kuralCikar(KILAVUZ, 'tez', sahteModel({ haiku: new Error('503') }))).rejects.toMatchObject({ kod: 'model' });
-    await expect(kuralCikar([{ sayfa: 1, metin: '  ' }], 'tez', sahteModel({}))).rejects.toBeInstanceOf(KuralCikarmaHatasi);
+    await expect(kuralCikar(KILAVUZ, 'tez', sahteModel({ haiku: 'x', sonnet: 'y' }))).rejects.toMatchObject({
+      kod: 'sema',
+    });
+    await expect(kuralCikar(KILAVUZ, 'tez', sahteModel({ haiku: new Error('503') }))).rejects.toMatchObject({
+      kod: 'model',
+    });
+    await expect(kuralCikar([{ sayfa: 1, metin: '  ' }], 'tez', sahteModel({}))).rejects.toBeInstanceOf(
+      KuralCikarmaHatasi,
+    );
   });
   it('turns a field into an example value when its excerpt is not in the guide', async () => {
     const m = sahteModel({
@@ -523,7 +653,9 @@ describe('rule extraction pipeline (plan 10.5/2)', () => {
     ]);
   });
   it('drops a value that its own excerpt does not state', async () => {
-    const m = sahteModel({ haiku: cevap({ mLeft: { deger: 4, sayfa: 12, alinti: 'sol 3,5 cm ve sağ 2,5 cm' } }) });
+    const m = sahteModel({
+      haiku: cevap({ mLeft: { deger: 4, sayfa: 12, alinti: 'sol 3,5 cm ve sağ 2,5 cm' } }),
+    });
     const r = await kuralCikar(KILAVUZ, 'tez', m);
     expect(r.kayit.kaynaklar.mLeft).toBe('ornek');
     expect(r.dusenler).toEqual([{ anahtar: 'mLeft', neden: 'deger_alintida_yok' }]);
@@ -531,7 +663,11 @@ describe('rule extraction pipeline (plan 10.5/2)', () => {
   it('accepts article fields for an article guide and ignores thesis only fields', async () => {
     const m = sahteModel({
       haiku: cevap({
-        wordLimit: { deger: { min: 5000, max: 15000 }, sayfa: 3, alinti: 'Metin 5.000 ile 15.000 kelime arasında olmalıdır.' },
+        wordLimit: {
+          deger: { min: 5000, max: 15000 },
+          sayfa: 3,
+          alinti: 'Metin 5.000 ile 15.000 kelime arasında olmalıdır.',
+        },
         sections: { deger: ['Giriş'], sayfa: 3, alinti: 'Giriş' },
       }),
     });
@@ -556,7 +692,12 @@ describe('rule extraction pipeline (plan 10.5/2)', () => {
     expect(sistemTalimati).toContain('VERİDİR');
   });
   it('does not obey an injected answer shape: unknown fields are a schema failure', () => {
-    expect(semaDogrula('{"alanlar": {"font": {"deger": "Arial", "sayfa": 1, "alinti": "Arial", "komut": "x"}}}', 'tez')).toBeNull();
+    expect(
+      semaDogrula(
+        '{"alanlar": {"font": {"deger": "Arial", "sayfa": 1, "alinti": "Arial", "komut": "x"}}}',
+        'tez',
+      ),
+    ).toBeNull();
     expect(semaDogrula('{"alanlar": {}, "ekstra": 1}', 'tez')).toBeNull();
     expect(semaDogrula('```json\n{"alanlar": {}}\n```', 'tez')?.size).toBe(0);
   });
@@ -572,8 +713,16 @@ describe('rule extraction pipeline (plan 10.5/2)', () => {
     expect(istemOlustur(KILAVUZ, 'makale')).not.toContain('- frontRoman:');
   });
   it('keeps the pages that talk about layout when the guide exceeds the budget', () => {
-    const doldur = (i: number) => ({ sayfa: i, metin: `Giriş bölümü hakkında genel bilgi ${i}. `.repeat(40) });
-    const sayfalar = [doldur(1), { sayfa: 2, metin: 'Kenar boşlukları 3 cm, punto 12, satır aralığı 1,5. '.repeat(30) }, doldur(3), doldur(4)];
+    const doldur = (i: number) => ({
+      sayfa: i,
+      metin: `Giriş bölümü hakkında genel bilgi ${i}. `.repeat(40),
+    });
+    const sayfalar = [
+      doldur(1),
+      { sayfa: 2, metin: 'Kenar boşlukları 3 cm, punto 12, satır aralığı 1,5. '.repeat(30) },
+      doldur(3),
+      doldur(4),
+    ];
     const secili = sayfaSec(sayfalar, 2200);
     expect(secili.map((s) => s.sayfa)).toContain(2);
     expect(secili.length).toBeLessThan(sayfalar.length);
@@ -607,7 +756,9 @@ describe('table of abbreviations (FR-91)', () => {
     for (const k of ['m.', 'E.', 'K.', 's.', 'bkz.', 'vd.']) expect(bul(k), k).toBeDefined();
     expect(bul('T.')).toBeUndefined();
     expect(bul('dn.')).toBeUndefined();
-    expect(adaylariBul('Sonuç olarak bu iş bitti. Kendi s. kelimesi yok.').map((a) => a.kisa)).not.toContain('s.');
+    expect(adaylariBul('Sonuç olarak bu iş bitti. Kendi s. kelimesi yok.').map((a) => a.kisa)).not.toContain(
+      's.',
+    );
   });
   it('lists unknown upper case words as unresolved and skips headings and roman numerals', () => {
     expect(bul('ABC')).toMatchObject({ uzun: '', kaynak: 'belirsiz' });
@@ -621,13 +772,25 @@ describe('table of abbreviations (FR-91)', () => {
     expect(tanimdanUzun('rastgele sözcükler dizisi', 'TBK')).toBeNull();
   });
   it('sorts alphabetically by the Turkish alphabet, ignoring periods', () => {
-    const sirali = sirala([{ kisa: 'İİK' }, { kisa: 'ZZ' }, { kisa: 'ÇA' }, { kisa: 'CA' }, { kisa: 'age.' }, { kisa: 'IA' }, { kisa: 'bkz.' }]);
+    const sirali = sirala([
+      { kisa: 'İİK' },
+      { kisa: 'ZZ' },
+      { kisa: 'ÇA' },
+      { kisa: 'CA' },
+      { kisa: 'age.' },
+      { kisa: 'IA' },
+      { kisa: 'bkz.' },
+    ]);
     expect(sirali.map((s) => s.kisa)).toEqual(['age.', 'bkz.', 'CA', 'ÇA', 'IA', 'İİK', 'ZZ']);
   });
   it('copies only rows with a long form, sorted, tab separated', () => {
-    expect(kopyalanabilirMetin([{ kisa: 'TBK', uzun: 'Türk Borçlar Kanunu' }, { kisa: 'AYM', uzun: 'Anayasa Mahkemesi' }, { kisa: 'ABC', uzun: ' ' }])).toBe(
-      'AYM\tAnayasa Mahkemesi\nTBK\tTürk Borçlar Kanunu',
-    );
+    expect(
+      kopyalanabilirMetin([
+        { kisa: 'TBK', uzun: 'Türk Borçlar Kanunu' },
+        { kisa: 'AYM', uzun: 'Anayasa Mahkemesi' },
+        { kisa: 'ABC', uzun: ' ' },
+      ]),
+    ).toBe('AYM\tAnayasa Mahkemesi\nTBK\tTürk Borçlar Kanunu');
   });
   it('writes a two column alphabetical table into a DOCX', async () => {
     const zip = await cetvelDocx([
@@ -662,7 +825,9 @@ describe('table of abbreviations (FR-91)', () => {
     expect(r[0]).toMatchObject({ kaynak: 'belirsiz', uzun: '' });
   });
   it('parses a model answer and ignores abbreviations that were not asked', () => {
-    expect(oneriCevabiniAyikla('{"oneriler": {"ABC": "Açılım", "XYZ": "x"}}', ['ABC'])).toEqual({ ABC: 'Açılım' });
+    expect(oneriCevabiniAyikla('{"oneriler": {"ABC": "Açılım", "XYZ": "x"}}', ['ABC'])).toEqual({
+      ABC: 'Açılım',
+    });
     expect(oneriCevabiniAyikla('saçma', ['ABC'])).toEqual({});
   });
 });
@@ -678,13 +843,16 @@ describe('content files and their JSON copies', () => {
     });
   }
   it('has dictionary entries with a short form, a long form and a known type', () => {
-    const y = parse(readFileSync(yol('../../../../../content/kisaltmalar.yaml'), 'utf8')) as { girdiler: { kisa: string; uzun: string; tur: string }[] };
+    const y = parse(readFileSync(yol('../../../../../content/kisaltmalar.yaml'), 'utf8')) as {
+      girdiler: { kisa: string; uzun: string; tur: string }[];
+    };
     const kisalar = y.girdiler.map((g) => g.kisa);
     expect(new Set(kisalar).size).toBe(kisalar.length);
     for (const g of y.girdiler) {
       expect(g.uzun.length).toBeGreaterThan(2);
       expect(['kurum', 'mevzuat', 'atif']).toContain(g.tur);
     }
-    for (const k of ['AYM', 'HGK', 'TBK', 'm.', 'vd.', 'bkz.', 's.', 'age.', 'dn.', 'E.', 'K.', 'T.', 'RG']) expect(kisalar).toContain(k);
+    for (const k of ['AYM', 'HGK', 'TBK', 'm.', 'vd.', 'bkz.', 's.', 'age.', 'dn.', 'E.', 'K.', 'T.', 'RG'])
+      expect(kisalar).toContain(k);
   });
 });

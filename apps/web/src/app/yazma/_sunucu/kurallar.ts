@@ -1,8 +1,18 @@
 import { and, eq, sql } from 'drizzle-orm';
 import { schema, type Db } from '@/server/auth/db.ts';
-import { kuralCikar, KuralCikarmaHatasi, type KuralModeli, type KuralCikarmaSonucu } from '../_cekirdek/kural-cikarma.ts';
+import {
+  kuralCikar,
+  KuralCikarmaHatasi,
+  type KuralModeli,
+  type KuralCikarmaSonucu,
+} from '../_cekirdek/kural-cikarma.ts';
 import { kuralAnahtarlari, type KuralKaydi, type SablonTuru } from '../_cekirdek/kural-semasi.ts';
-import { metinCikar, YuklemeHatasi, type MetinUyarisi, type YuklemeHatasiKodu } from '../_cekirdek/metin-cikarma.ts';
+import {
+  metinCikar,
+  YuklemeHatasi,
+  type MetinUyarisi,
+  type YuklemeHatasiKodu,
+} from '../_cekirdek/metin-cikarma.ts';
 import { paketeCevir, paketiCoz } from './dergiler.ts';
 
 /**
@@ -27,7 +37,12 @@ export interface IsSonucu {
 export type HataKodu = YuklemeHatasiKodu | 'sema' | 'model' | 'bos_metin';
 
 /** Creates the job row in the running state; the web process finishes it. Returns the id. */
-export async function isOlustur(db: Db, userId: string, kind: SablonTuru, tekrarAnahtari?: string): Promise<{ id: string; yeni: boolean }> {
+export async function isOlustur(
+  db: Db,
+  userId: string,
+  kind: SablonTuru,
+  tekrarAnahtari?: string,
+): Promise<{ id: string; yeni: boolean }> {
   const dedupe = tekrarAnahtari ? `rules.extract:${userId}:${tekrarAnahtari.slice(0, 100)}` : null;
   if (dedupe) {
     // The same Idempotency-Key answers with the same job even after it finished (the unique index only
@@ -61,7 +76,13 @@ export async function isOlustur(db: Db, userId: string, kind: SablonTuru, tekrar
   return { id: var_.id, yeni: false };
 }
 
-async function isiBitir(db: Db, id: string, durum: 'done' | 'failed', sonuc: IsSonucu | null, hata?: HataKodu) {
+async function isiBitir(
+  db: Db,
+  id: string,
+  durum: 'done' | 'failed',
+  sonuc: IsSonucu | null,
+  hata?: HataKodu,
+) {
   await db
     .update(schema.jobs)
     .set({ status: durum, result: sonuc, error: hata ?? null, lockedBy: null, lockedAt: null })
@@ -69,7 +90,12 @@ async function isiBitir(db: Db, id: string, durum: 'done' | 'failed', sonuc: IsS
 }
 
 /** Persist the extracted rules and their quotes; unapproved and owned by the user. */
-export async function kuralKaydet(db: Db, userId: string, sonuc: KuralCikarmaSonucu, kurum: string | null): Promise<string> {
+export async function kuralKaydet(
+  db: Db,
+  userId: string,
+  sonuc: KuralCikarmaSonucu,
+  kurum: string | null,
+): Promise<string> {
   const paket = { ...paketeCevir(sonuc.kayit), tur: sonuc.kayit.tur, institutionName: kurum };
   const [r] = await db
     .insert(schema.templateRules)
@@ -78,7 +104,9 @@ export async function kuralKaydet(db: Db, userId: string, sonuc: KuralCikarmaSon
   if (!r) throw new Error('insert failed');
   const kanitlar = kuralAnahtarlari.flatMap((k) => {
     const kanit = sonuc.kayit.kanitlar[k];
-    return kanit && sonuc.kayit.kaynaklar[k] === 'kilavuz' ? [{ templateRuleId: r.id, ruleKey: k, excerpt: kanit.alinti, page: kanit.sayfa }] : [];
+    return kanit && sonuc.kayit.kaynaklar[k] === 'kilavuz'
+      ? [{ templateRuleId: r.id, ruleKey: k, excerpt: kanit.alinti, page: kanit.sayfa }]
+      : [];
   });
   if (kanitlar.length) await db.insert(schema.templateRuleEvidence).values(kanitlar);
   return r.id;
@@ -104,7 +132,12 @@ export async function cikarmayiCalistir(db: Db, g: CikarmaGirdisi): Promise<void
     if (metin.uyarilar.length) {
       // Almost no text: nothing to extract and nothing worth a paid model call.
       await isiBitir(db, g.jobId, 'done', {
-        templateRuleId: null, model: null, sonnetYedegi: false, dusenler: [], uyarilar: metin.uyarilar, institutionName: g.kurum,
+        templateRuleId: null,
+        model: null,
+        sonnetYedegi: false,
+        dusenler: [],
+        uyarilar: metin.uyarilar,
+        institutionName: g.kurum,
       });
       return;
     }
@@ -121,7 +154,14 @@ export async function cikarmayiCalistir(db: Db, g: CikarmaGirdisi): Promise<void
   } catch (e) {
     const kod: HataKodu =
       e instanceof YuklemeHatasi ? e.kod : e instanceof KuralCikarmaHatasi ? e.kod : 'model';
-    console.error(JSON.stringify({ at: 'rules.extract', level: 'warn', error: e instanceof Error ? e.name : 'Unknown', kod }));
+    console.error(
+      JSON.stringify({
+        at: 'rules.extract',
+        level: 'warn',
+        error: e instanceof Error ? e.name : 'Unknown',
+        kod,
+      }),
+    );
     await isiBitir(db, g.jobId, 'failed', null, kod);
   }
 }
@@ -137,13 +177,29 @@ export interface IsDurumu {
 /** Job status for its owner only (payload.userId); anyone else gets null, like a missing job. */
 export async function isiGetir(db: Db, userId: string, id: string): Promise<IsDurumu | null> {
   const [r] = await db
-    .select({ id: schema.jobs.id, type: schema.jobs.type, status: schema.jobs.status, result: schema.jobs.result, error: schema.jobs.error })
+    .select({
+      id: schema.jobs.id,
+      type: schema.jobs.type,
+      status: schema.jobs.status,
+      result: schema.jobs.result,
+      error: schema.jobs.error,
+    })
     .from(schema.jobs)
     .where(and(eq(schema.jobs.id, id), sql`${schema.jobs.payload} ->> 'userId' = ${userId}`));
   return r ?? null;
 }
 
-export async function kayitGetir(db: Db, userId: string, id: string): Promise<{ id: string; model: string | null; createdAt: Date; kayit: KuralKaydi; institutionName: string | null } | null> {
+export async function kayitGetir(
+  db: Db,
+  userId: string,
+  id: string,
+): Promise<{
+  id: string;
+  model: string | null;
+  createdAt: Date;
+  kayit: KuralKaydi;
+  institutionName: string | null;
+} | null> {
   const [r] = await db
     .select()
     .from(schema.templateRules)
@@ -152,13 +208,25 @@ export async function kayitGetir(db: Db, userId: string, id: string): Promise<{ 
   const raw = r.rules as { institutionName?: string | null };
   const kayit = paketiCoz(r.rules);
   if (!kayit) return null;
-  return { id: r.id, model: r.model, createdAt: r.createdAt, kayit, institutionName: raw.institutionName ?? null };
+  return {
+    id: r.id,
+    model: r.model,
+    createdAt: r.createdAt,
+    kayit,
+    institutionName: raw.institutionName ?? null,
+  };
 }
 
 export async function kayitSil(db: Db, userId: string, id: string): Promise<boolean> {
   const silinen = await db
     .delete(schema.templateRules)
-    .where(and(eq(schema.templateRules.id, id), eq(schema.templateRules.userId, userId), eq(schema.templateRules.approved, false)))
+    .where(
+      and(
+        eq(schema.templateRules.id, id),
+        eq(schema.templateRules.userId, userId),
+        eq(schema.templateRules.approved, false),
+      ),
+    )
     .returning({ id: schema.templateRules.id });
   return silinen.length > 0;
 }

@@ -47,12 +47,7 @@ export interface UretimSecenekleri {
 
 const ust = (s: string) => s.toLocaleUpperCase('tr-TR');
 const kayitAnahtari = (s: string) =>
-  s
-    .toLocaleLowerCase('tr-TR')
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/ı/g, 'i')
-    .trim();
+  s.toLocaleLowerCase('tr-TR').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ı/g, 'i').trim();
 
 const sayiMetni = (n: number) => new Intl.NumberFormat('tr-TR').format(n);
 
@@ -411,7 +406,12 @@ function makaleBelgesi(d: KuralDegerleri, secenek: UretimSecenekleri): Document 
   );
 }
 
-function belge(d: KuralDegerleri, tur: SablonTuru, sections: ISectionOptions[], s: UretimSecenekleri): Document {
+function belge(
+  d: KuralDegerleri,
+  tur: SablonTuru,
+  sections: ISectionOptions[],
+  s: UretimSecenekleri,
+): Document {
   return new Document({
     creator: 'Kazuist',
     title: s.baslik ?? (tur === 'tez' ? 'Tez şablonu' : 'Makale şablonu'),
@@ -473,4 +473,3 @@ export function icindekilerStilleriniDuzelt(zip: Uint8Array): Uint8Array {
   dosyalar['word/styles.xml'] = strToU8(yeni);
   return zipSync(dosyalar, { level: 6 });
 }
-

@@ -10,7 +10,11 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { sablonUret } from '../../apps/web/src/app/yazma/_cekirdek/docx-uret.ts';
-import { ornekKayit, type KuralDegerleri, type SablonTuru } from '../../apps/web/src/app/yazma/_cekirdek/kural-semasi.ts';
+import {
+  ornekKayit,
+  type KuralDegerleri,
+  type SablonTuru,
+} from '../../apps/web/src/app/yazma/_cekirdek/kural-semasi.ts';
 
 const hedef = fileURLToPath(new URL('../../services/worker-py/docxcheck/tests/fixtures/', import.meta.url));
 mkdirSync(hedef, { recursive: true });

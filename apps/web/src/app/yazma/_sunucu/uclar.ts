@@ -9,7 +9,13 @@ import { adaylariBul, onerilerleDoldur, sirala, type KisaltmaModeli } from '../_
 import { type KuralModeli } from '../_cekirdek/kural-cikarma.ts';
 import { degerleriDogrula, kuralListesi, type SablonTuru } from '../_cekirdek/kural-semasi.ts';
 import { docxKelimeSayimi } from '../_cekirdek/kelime-say.ts';
-import { AZAMI_BAYT, YuklemeHatasi, icerikTuru, uzantidanTur, type YuklemeHatasiKodu } from '../_cekirdek/metin-cikarma.ts';
+import {
+  AZAMI_BAYT,
+  YuklemeHatasi,
+  icerikTuru,
+  uzantidanTur,
+  type YuklemeHatasiKodu,
+} from '../_cekirdek/metin-cikarma.ts';
 import { pythonDenetimIstemcisi, type DenetimIstemcisi } from './denetim.ts';
 import { dergiAra, dergiyiBul, onayliKurallar } from './dergiler.ts';
 import { cikarmayiCalistir, isOlustur, isiGetir, kayitGetir, kayitSil } from './kurallar.ts';
@@ -97,7 +103,9 @@ export async function formVerisi(req: Request, azami = AZAMI_BAYT + 64 * 1024): 
     parcalar.push(value);
   }
   try {
-    return await new Response(new Blob(parcalar as BlobPart[]), { headers: { 'content-type': tip } }).formData();
+    return await new Response(new Blob(parcalar as BlobPart[]), {
+      headers: { 'content-type': tip },
+    }).formData();
   } catch {
     throw new YuklemeHatasi('bozuk');
   }
@@ -169,7 +177,8 @@ export const docxSayimiPost = (_b = varsayilan) =>
     if (!id || !(await projeyiGetir(ctx.db, p.userId, id, new Date()))) return apiError('not_found');
     try {
       const { bayt, ad } = await dosyaAl(req);
-      if (uzantidanTur(ad) !== 'docx' || icerikTuru(bayt) !== 'docx') throw new YuklemeHatasi('tur_uyusmuyor');
+      if (uzantidanTur(ad) !== 'docx' || icerikTuru(bayt) !== 'docx')
+        throw new YuklemeHatasi('tur_uyusmuyor');
       return json(docxKelimeSayimi(bayt));
     } catch (e) {
       if (e instanceof YuklemeHatasi) return yuklemeHatasi(e);
@@ -197,7 +206,9 @@ export const dergilerGet = (_b = varsayilan) =>
     const q = AramaSorgusu.safeParse(Object.fromEntries(new URL(req.url).searchParams));
     if (!q.success) return apiError('bad_request');
     const liste = await dergiAra(ctx.db, q.data.q);
-    return json(liste.map((d) => ({ id: d.id, name: d.name, issn: d.issn, hasApprovedRules: d.hasApprovedRules })));
+    return json(
+      liste.map((d) => ({ id: d.id, name: d.name, issn: d.issn, hasApprovedRules: d.hasApprovedRules })),
+    );
   });
 
 export const dergiKurallariGet = (_b = varsayilan) =>
@@ -336,7 +347,9 @@ export const denetimPost = (b = varsayilan) =>
     try {
       yanit = await istemci(dosya.bayt, kurallar.tur, d.degerler);
     } catch (e) {
-      console.error(JSON.stringify({ at: 'docxcheck', level: 'warn', error: e instanceof Error ? e.name : 'Unknown' }));
+      console.error(
+        JSON.stringify({ at: 'docxcheck', level: 'warn', error: e instanceof Error ? e.name : 'Unknown' }),
+      );
       return apiError('unavailable', tr.hata.denetimYok);
     }
     if (yanit.durum === 200) return json(yanit.govde);

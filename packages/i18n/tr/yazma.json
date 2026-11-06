@@ -90,6 +90,7 @@
     "adim2": {
       "baslik": "2. Kuralları kontrol edin",
       "aciklama": "Her kuralın yanında kaynağı yazar. Bir değeri değiştirirseniz etiketi \"Elle değiştirildi\" olur.",
+      "gecersiz": "Geçerli bir değer girin.",
       "kaynak": {
         "kilavuz": "Kılavuzdan",
         "ornek": "Örnek değer",

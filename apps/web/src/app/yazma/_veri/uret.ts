@@ -16,7 +16,10 @@ const yol = (p: string) => fileURLToPath(new URL(p, import.meta.url));
 export const kopyalar = [
   { kaynak: '../../../../../../content/kisaltmalar.yaml', hedef: './kisaltmalar.json' },
   { kaynak: '../../../../../../content/kalemcik.yaml', hedef: '../../kalemcik/_veri/kalemcik.json' },
-  { kaynak: '../../../../../../content/kalemcik.yaml', hedef: '../../../../../worker-node/src/kalemcik/_veri/kalemcik.json' },
+  {
+    kaynak: '../../../../../../content/kalemcik.yaml',
+    hedef: '../../../../../worker-node/src/kalemcik/_veri/kalemcik.json',
+  },
 ] as const;
 
 if (import.meta.url === `file://${process.argv[1]}`) {

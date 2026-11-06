@@ -46,7 +46,12 @@ export const KuralPaketi = z.object({
 });
 
 export function paketeCevir(k: KuralKaydi) {
-  return { tur: k.tur, degerler: k.degerler as unknown as Record<string, unknown>, kaynaklar: k.kaynaklar, kanitlar: k.kanitlar };
+  return {
+    tur: k.tur,
+    degerler: k.degerler as unknown as Record<string, unknown>,
+    kaynaklar: k.kaynaklar,
+    kanitlar: k.kanitlar,
+  };
 }
 
 export function paketiCoz(raw: unknown): KuralKaydi | null {
@@ -69,7 +74,10 @@ export function paketiCoz(raw: unknown): KuralKaydi | null {
 async function onayliSurumler(db: Db, versiyonlar: { id: string; approvedAt: Date | null }[]) {
   const kararlar = versiyonlar.length
     ? await db
-        .select({ subjectId: schema.reviewQueueItems.subjectId, decidedAt: schema.reviewQueueItems.decidedAt })
+        .select({
+          subjectId: schema.reviewQueueItems.subjectId,
+          decidedAt: schema.reviewQueueItems.decidedAt,
+        })
         .from(schema.reviewQueueItems)
         .where(
           and(
@@ -99,14 +107,22 @@ export async function dergiAra(db: Db, q: string | undefined): Promise<DergiOzet
     .from(schema.journals)
     .where(
       desen
-        ? or(ilike(schema.journals.name, desen), ilike(schema.journals.issn, desen), ilike(schema.journals.eissn, desen))
+        ? or(
+            ilike(schema.journals.name, desen),
+            ilike(schema.journals.issn, desen),
+            ilike(schema.journals.eissn, desen),
+          )
         : undefined,
     )
     .orderBy(asc(schema.journals.name))
     .limit(ALT_SINIR);
   if (!satirlar.length) return [];
   const surumler = await db
-    .select({ id: schema.journalRuleVersions.id, journalId: schema.journalRuleVersions.journalId, approvedAt: schema.journalRuleVersions.approvedAt })
+    .select({
+      id: schema.journalRuleVersions.id,
+      journalId: schema.journalRuleVersions.journalId,
+      approvedAt: schema.journalRuleVersions.approvedAt,
+    })
     .from(schema.journalRuleVersions)
     .where(
       inArray(
@@ -147,7 +163,13 @@ export async function onayliKurallar(db: Db, journalId: string): Promise<OnayliK
     if (!onayli.has(s.id)) continue;
     const kayit = paketiCoz(s.rules);
     if (!kayit) continue;
-    return { id: s.id, version: s.version, approvedAt: onayli.get(s.id)?.toISOString() ?? null, sourceUrl: s.sourceUrl, kayit };
+    return {
+      id: s.id,
+      version: s.version,
+      approvedAt: onayli.get(s.id)?.toISOString() ?? null,
+      sourceUrl: s.sourceUrl,
+      kayit,
+    };
   }
   return null;
 }
@@ -175,7 +197,13 @@ export async function dergiTaslagiOlustur(db: Db, g: TaslakGirdisi) {
   if (!dergi) {
     [dergi] = await db
       .insert(schema.journals)
-      .values({ name: g.name, issn: g.issn ?? null, eissn: g.eissn ?? null, publisher: g.publisher ?? null, url: g.url ?? null })
+      .values({
+        name: g.name,
+        issn: g.issn ?? null,
+        eissn: g.eissn ?? null,
+        publisher: g.publisher ?? null,
+        url: g.url ?? null,
+      })
       .returning();
   }
   if (!dergi) throw new Error('journal insert failed');
@@ -198,7 +226,14 @@ export async function dergiTaslagiOlustur(db: Db, g: TaslakGirdisi) {
       queue: DERGI_KUYRUGU,
       subjectType: 'journal_rule_version',
       subjectId: surum.id,
-      payload: { journalId: dergi.id, journal: g.name, version, sourceUrl: g.sourceUrl, model: g.model, rules: paket },
+      payload: {
+        journalId: dergi.id,
+        journal: g.name,
+        version,
+        sourceUrl: g.sourceUrl,
+        model: g.model,
+        rules: paket,
+      },
       priority: 0,
     })
     .returning({ id: schema.reviewQueueItems.id });

@@ -1,7 +1,14 @@
 import { eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { schema } from '@/server/auth/db.ts';
-import { createHarness, BASE, freshIp, params, signUp, type Harness } from '@/server/auth/__tests__/harness.ts';
+import {
+  createHarness,
+  BASE,
+  freshIp,
+  params,
+  signUp,
+  type Harness,
+} from '@/server/auth/__tests__/harness.ts';
 import { sablonUret } from './_cekirdek/docx-uret.ts';
 import { ornekKayit, varsayilanDegerler } from './_cekirdek/kural-semasi.ts';
 import type { KuralModeli } from './_cekirdek/kural-cikarma.ts';
@@ -40,7 +47,10 @@ beforeAll(async () => {
   h = await createHarness();
   a = (await signUp('yazar-a@example.invalid')).token;
   b = (await signUp('yazar-b@example.invalid')).token;
-  const [u] = await h.db.select({ id: schema.users.id }).from(schema.users).where(eq(schema.users.email, 'yazar-a@example.invalid'));
+  const [u] = await h.db
+    .select({ id: schema.users.id })
+    .from(schema.users)
+    .where(eq(schema.users.email, 'yazar-a@example.invalid'));
   aId = u?.id as string;
 }, 60_000);
 afterAll(async () => {
@@ -67,12 +77,12 @@ const istek = (yol: string, token: string | null, init: RequestInit & { json?: u
   const headers = new Headers(init.headers);
   if (token) headers.set('authorization', `Bearer ${token}`);
   headers.set('x-forwarded-for', freshIp());
-  let body = init.body;
-  if (init.json !== undefined) {
+  const { json, ...rest } = init;
+  let body = rest.body;
+  if (json !== undefined) {
     headers.set('content-type', 'application/json');
-    body = JSON.stringify(init.json);
+    body = JSON.stringify(json);
   }
-  const { json: _j, ...rest } = init;
   return new Request(`${BASE}/api${yol}`, { ...rest, headers, body });
 };
 const gov = async (r: Response) => JSON.parse(await r.text());
@@ -89,23 +99,46 @@ async function projeAc(token = a, g: Record<string, unknown> = proje) {
 describe('writing projects (FR-45)', () => {
   it('needs an account', async () => {
     expect((await projelerGet(bag())(istek('/v1/writing-projects', null))).status).toBe(401);
-    expect((await projelerPost(bag())(istek('/v1/writing-projects', null, { method: 'POST', json: proje }))).status).toBe(401);
+    expect(
+      (await projelerPost(bag())(istek('/v1/writing-projects', null, { method: 'POST', json: proje })))
+        .status,
+    ).toBe(401);
   });
   it('creates, lists, reads, updates and deletes a project', async () => {
     const p = await projeAc();
     const liste = await gov(await projelerGet(bag())(istek('/v1/writing-projects', a)));
     expect(liste.map((x: { id: string }) => x.id)).toContain(p.id);
     const tek = await gov(await projeGet(bag())(istek(`/v1/writing-projects/${p.id}`, a), rc(p.id)));
-    expect(tek).toMatchObject({ title: 'Makale', kind: 'makale', targetWords: 6000, deadline: '2026-12-07', currentWords: 0 });
+    expect(tek).toMatchObject({
+      title: 'Makale',
+      kind: 'makale',
+      targetWords: 6000,
+      deadline: '2026-12-07',
+      currentWords: 0,
+    });
     expect(tek.recentLogs).toEqual([]);
-    const g = await projePatch(bag())(istek(`/v1/writing-projects/${p.id}`, a, { method: 'PATCH', json: { targetWords: 8000 } }), rc(p.id));
+    expect(tek.createdOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    const g = await projePatch(bag())(
+      istek(`/v1/writing-projects/${p.id}`, a, { method: 'PATCH', json: { targetWords: 8000 } }),
+      rc(p.id),
+    );
     expect((await gov(g)).targetWords).toBe(8000);
-    const s = await projeDelete(bag())(istek(`/v1/writing-projects/${p.id}`, a, { method: 'DELETE' }), rc(p.id));
+    const s = await projeDelete(bag())(
+      istek(`/v1/writing-projects/${p.id}`, a, { method: 'DELETE' }),
+      rc(p.id),
+    );
     expect(s.status).toBe(204);
     expect((await projeGet(bag())(istek(`/v1/writing-projects/${p.id}`, a), rc(p.id))).status).toBe(404);
   });
   it('rejects invalid input', async () => {
-    for (const bad of [{}, { ...proje, kind: 'roman' }, { ...proje, targetWords: -1 }, { ...proje, deadline: '07.12.2026' }, { ...proje, ekstra: 1 }, { ...proje, title: ' ' }]) {
+    for (const bad of [
+      {},
+      { ...proje, kind: 'roman' },
+      { ...proje, targetWords: -1 },
+      { ...proje, deadline: '07.12.2026' },
+      { ...proje, ekstra: 1 },
+      { ...proje, title: ' ' },
+    ]) {
       const r = await projelerPost(bag())(istek('/v1/writing-projects', a, { method: 'POST', json: bad }));
       expect(r.status, JSON.stringify(bad)).toBe(400);
     }
@@ -113,9 +146,26 @@ describe('writing projects (FR-45)', () => {
   it('never shows or changes another user project (IDOR)', async () => {
     const p = await projeAc();
     expect((await projeGet(bag())(istek(`/v1/writing-projects/${p.id}`, b), rc(p.id))).status).toBe(404);
-    expect((await projePatch(bag())(istek(`/v1/writing-projects/${p.id}`, b, { method: 'PATCH', json: { title: 'x' } }), rc(p.id))).status).toBe(404);
-    expect((await projeDelete(bag())(istek(`/v1/writing-projects/${p.id}`, b, { method: 'DELETE' }), rc(p.id))).status).toBe(404);
-    expect((await ilerlemePost(bag())(istek(`/v1/writing-projects/${p.id}/progress`, b, { method: 'POST', json: { words: 10 } }), rc(p.id))).status).toBe(404);
+    expect(
+      (
+        await projePatch(bag())(
+          istek(`/v1/writing-projects/${p.id}`, b, { method: 'PATCH', json: { title: 'x' } }),
+          rc(p.id),
+        )
+      ).status,
+    ).toBe(404);
+    expect(
+      (await projeDelete(bag())(istek(`/v1/writing-projects/${p.id}`, b, { method: 'DELETE' }), rc(p.id)))
+        .status,
+    ).toBe(404);
+    expect(
+      (
+        await ilerlemePost(bag())(
+          istek(`/v1/writing-projects/${p.id}/progress`, b, { method: 'POST', json: { words: 10 } }),
+          rc(p.id),
+        )
+      ).status,
+    ).toBe(404);
     const listeB = await gov(await projelerGet(bag())(istek('/v1/writing-projects', b)));
     expect(listeB.map((x: { id: string }) => x.id)).not.toContain(p.id);
     expect((await projeGet(bag())(istek('/v1/writing-projects/degil', a), rc('degil'))).status).toBe(404);
@@ -123,15 +173,27 @@ describe('writing projects (FR-45)', () => {
   it('creates the deadline reminders at 08:00 Istanbul and a silence reminder; a new deadline replaces them', async () => {
     const p = await projeAc(a, { ...proje, title: 'Hatırlatmalı', deadline: '2026-11-20' });
     const satirlar = async () =>
-      (await h.db.select().from(schema.reminders).where(eq(schema.reminders.projectId, p.id))).sort((x, y) => x.kind.localeCompare(y.kind));
+      (await h.db.select().from(schema.reminders).where(eq(schema.reminders.projectId, p.id))).sort((x, y) =>
+        x.kind.localeCompare(y.kind),
+      );
     const ilk = await satirlar();
     // 2026-11-07 is 13 days before the deadline: the 14 day reminder is already past and is not created.
     expect(ilk.map((r) => r.kind)).toEqual(['sessizlik', 'teslim_0', 'teslim_1', 'teslim_3', 'teslim_7']);
     expect(ilk.find((r) => r.kind === 'teslim_7')?.nextAt?.toISOString()).toBe('2026-11-13T05:00:00.000Z');
     expect(ilk.find((r) => r.kind === 'teslim_0')?.nextAt?.toISOString()).toBe('2026-11-20T05:00:00.000Z');
-    await projePatch(bag())(istek(`/v1/writing-projects/${p.id}`, a, { method: 'PATCH', json: { deadline: '2026-12-31' } }), rc(p.id));
+    await projePatch(bag())(
+      istek(`/v1/writing-projects/${p.id}`, a, { method: 'PATCH', json: { deadline: '2026-12-31' } }),
+      rc(p.id),
+    );
     const yeni = await satirlar();
-    expect(yeni.map((r) => r.kind)).toEqual(['sessizlik', 'teslim_0', 'teslim_1', 'teslim_14', 'teslim_3', 'teslim_7']);
+    expect(yeni.map((r) => r.kind)).toEqual([
+      'sessizlik',
+      'teslim_0',
+      'teslim_1',
+      'teslim_14',
+      'teslim_3',
+      'teslim_7',
+    ]);
     expect(yeni.filter((r) => r.kind === 'sessizlik')).toHaveLength(1);
     await projeDelete(bag())(istek(`/v1/writing-projects/${p.id}`, a, { method: 'DELETE' }), rc(p.id));
     expect(await satirlar()).toEqual([]);
@@ -142,9 +204,18 @@ describe('daily progress (FR-48..50)', () => {
   it('adds words to the total and to the Istanbul day, and lists the last days', async () => {
     const p = await projeAc();
     const gece = bag({ now: () => new Date('2026-11-07T22:30:00Z') }); // 01:30 on the 8th in Istanbul
-    const r = await ilerlemePost(gece)(istek(`/v1/writing-projects/${p.id}/progress`, a, { method: 'POST', json: { words: 400 } }), rc(p.id));
+    const r = await ilerlemePost(gece)(
+      istek(`/v1/writing-projects/${p.id}/progress`, a, { method: 'POST', json: { words: 400 } }),
+      rc(p.id),
+    );
     expect(r.status).toBe(201);
-    await ilerlemePost(gece)(istek(`/v1/writing-projects/${p.id}/progress`, a, { method: 'POST', json: { words: 100, note: 'akşam' } }), rc(p.id));
+    await ilerlemePost(gece)(
+      istek(`/v1/writing-projects/${p.id}/progress`, a, {
+        method: 'POST',
+        json: { words: 100, note: 'akşam' },
+      }),
+      rc(p.id),
+    );
     const tek = await gov(await projeGet(gece)(istek(`/v1/writing-projects/${p.id}`, a), rc(p.id)));
     expect(tek.currentWords).toBe(500);
     expect(tek.recentLogs).toEqual([{ loggedOn: '2026-11-08', words: 500 }]);
@@ -152,7 +223,14 @@ describe('daily progress (FR-48..50)', () => {
   it('rejects negative, huge and unknown fields', async () => {
     const p = await projeAc();
     for (const bad of [{ words: -1 }, { words: 100001 }, { words: 5, x: 1 }, {}]) {
-      expect((await ilerlemePost(bag())(istek(`/v1/writing-projects/${p.id}/progress`, a, { method: 'POST', json: bad }), rc(p.id))).status).toBe(400);
+      expect(
+        (
+          await ilerlemePost(bag())(
+            istek(`/v1/writing-projects/${p.id}/progress`, a, { method: 'POST', json: bad }),
+            rc(p.id),
+          )
+        ).status,
+      ).toBe(400);
     }
   });
 });
@@ -169,31 +247,61 @@ describe('word count from a DOCX (FR-48)', () => {
     const p = await projeAc();
     const docx = await sablonUret(varsayilanDegerler, 'tez');
     const r = await docxSayimiPost(bag())(
-      istek(`/v1/writing-projects/${p.id}/docx-count`, a, { method: 'POST', body: cokluParca('file', docx, 'tez.docx') }),
+      istek(`/v1/writing-projects/${p.id}/docx-count`, a, {
+        method: 'POST',
+        body: cokluParca('file', docx, 'tez.docx'),
+      }),
       rc(p.id),
     );
     expect(r.status).toBe(200);
     const s = await gov(r);
     expect(s.words).toBeGreaterThan(100);
     expect(s.footnoteWords).toBeGreaterThan(3);
-    const kayitli = await h.db.select({ w: schema.writingProjects.currentWords }).from(schema.writingProjects).where(eq(schema.writingProjects.id, p.id));
+    const kayitli = await h.db
+      .select({ w: schema.writingProjects.currentWords })
+      .from(schema.writingProjects)
+      .where(eq(schema.writingProjects.id, p.id));
     expect(kayitli[0]?.w).toBe(0); // counting alone changes nothing
   });
   it('refuses a renamed file, a non DOCX and another user project', async () => {
     const p = await projeAc();
     const yol = `/v1/writing-projects/${p.id}/docx-count`;
     const pdf = new TextEncoder().encode('%PDF-1.4 sahte');
-    expect((await docxSayimiPost(bag())(istek(yol, a, { method: 'POST', body: cokluParca('file', pdf, 'a.docx') }), rc(p.id))).status).toBe(400);
+    expect(
+      (
+        await docxSayimiPost(bag())(
+          istek(yol, a, { method: 'POST', body: cokluParca('file', pdf, 'a.docx') }),
+          rc(p.id),
+        )
+      ).status,
+    ).toBe(400);
     const docx = await sablonUret(varsayilanDegerler, 'tez');
-    expect((await docxSayimiPost(bag())(istek(yol, a, { method: 'POST', body: cokluParca('file', docx, 'a.txt') }), rc(p.id))).status).toBe(400);
-    expect((await docxSayimiPost(bag())(istek(yol, b, { method: 'POST', body: cokluParca('file', docx, 'a.docx') }), rc(p.id))).status).toBe(404);
+    expect(
+      (
+        await docxSayimiPost(bag())(
+          istek(yol, a, { method: 'POST', body: cokluParca('file', docx, 'a.txt') }),
+          rc(p.id),
+        )
+      ).status,
+    ).toBe(400);
+    expect(
+      (
+        await docxSayimiPost(bag())(
+          istek(yol, b, { method: 'POST', body: cokluParca('file', docx, 'a.docx') }),
+          rc(p.id),
+        )
+      ).status,
+    ).toBe(404);
   });
   it('refuses a body whose declared length is over the cap before reading it', async () => {
     const p = await projeAc();
     const r = await docxSayimiPost(bag())(
       istek(`/v1/writing-projects/${p.id}/docx-count`, a, {
         method: 'POST',
-        headers: { 'content-length': String(25 * 1024 * 1024), 'content-type': 'multipart/form-data; boundary=x' },
+        headers: {
+          'content-length': String(25 * 1024 * 1024),
+          'content-type': 'multipart/form-data; boundary=x',
+        },
         body: 'x',
       }),
       rc(p.id),
@@ -205,13 +313,23 @@ describe('word count from a DOCX (FR-48)', () => {
 describe('Kalemcik form of address', () => {
   it('is sen until the user picks siz', async () => {
     expect((await gov(await ayarlarGet(bag())(istek('/v1/writing-projects/ayarlar', b)))).hitap).toBe('sen');
-    const r = await ayarlarPut(bag())(istek('/v1/writing-projects/ayarlar', b, { method: 'PUT', json: { hitap: 'siz' } }));
+    const r = await ayarlarPut(bag())(
+      istek('/v1/writing-projects/ayarlar', b, { method: 'PUT', json: { hitap: 'siz' } }),
+    );
     expect(r.status).toBe(200);
     expect((await gov(await ayarlarGet(bag())(istek('/v1/writing-projects/ayarlar', b)))).hitap).toBe('siz');
     expect((await gov(await ayarlarGet(bag())(istek('/v1/writing-projects/ayarlar', a)))).hitap).toBe('sen');
-    await ayarlarPut(bag())(istek('/v1/writing-projects/ayarlar', b, { method: 'PUT', json: { hitap: 'sen' } }));
+    await ayarlarPut(bag())(
+      istek('/v1/writing-projects/ayarlar', b, { method: 'PUT', json: { hitap: 'sen' } }),
+    );
     expect((await gov(await ayarlarGet(bag())(istek('/v1/writing-projects/ayarlar', b)))).hitap).toBe('sen');
-    expect((await ayarlarPut(bag())(istek('/v1/writing-projects/ayarlar', b, { method: 'PUT', json: { hitap: 'sen', x: 1 } }))).status).toBe(400);
+    expect(
+      (
+        await ayarlarPut(bag())(
+          istek('/v1/writing-projects/ayarlar', b, { method: 'PUT', json: { hitap: 'sen', x: 1 } }),
+        )
+      ).status,
+    ).toBe(400);
   });
 });
 
@@ -224,17 +342,30 @@ describe('journal profiles (FR-39..42): only an editor approved version is publi
     return k;
   })();
   const taslak = (ad: string, issn: string) =>
-    dergiTaslagiOlustur(h.db, { name: ad, issn, sourceUrl: 'https://dergipark.org.tr/tr/pub/ornek/writing-rules', kayit, model: 'haiku' });
+    dergiTaslagiOlustur(h.db, {
+      name: ad,
+      issn,
+      sourceUrl: 'https://dergipark.org.tr/tr/pub/ornek/writing-rules',
+      kayit,
+      model: 'haiku',
+    });
 
   it('shows nothing before approval, in search and in rules', async () => {
     const t = await taslak('Örnek Hukuk Dergisi', '1111-1111');
     const ara = await gov(await dergilerGet(bag())(istek('/v1/journals?q=%C3%96rnek', null)));
-    expect(ara).toEqual([{ id: t.journalId, name: 'Örnek Hukuk Dergisi', issn: '1111-1111', hasApprovedRules: false }]);
-    expect((await dergiKurallariGet(bag())(istek(`/v1/journals/${t.journalId}/rules`, null))).status).toBe(404);
+    expect(ara).toEqual([
+      { id: t.journalId, name: 'Örnek Hukuk Dergisi', issn: '1111-1111', hasApprovedRules: false },
+    ]);
+    expect((await dergiKurallariGet(bag())(istek(`/v1/journals/${t.journalId}/rules`, null))).status).toBe(
+      404,
+    );
   });
   it('puts the draft in the editor queue with its rules and evidence', async () => {
     const t = await taslak('Kuyruk Dergisi', '2222-2222');
-    const [q] = await h.db.select().from(schema.reviewQueueItems).where(eq(schema.reviewQueueItems.subjectId, t.versionId));
+    const [q] = await h.db
+      .select()
+      .from(schema.reviewQueueItems)
+      .where(eq(schema.reviewQueueItems.subjectId, t.versionId));
     expect(q).toMatchObject({ queue: 'journal-rules', subjectType: 'journal_rule_version', decision: null });
     const payload = q?.payload as { rules: { kanitlar: { mLeft: { alinti: string } } }; model: string };
     expect(payload.model).toBe('haiku');
@@ -242,7 +373,10 @@ describe('journal profiles (FR-39..42): only an editor approved version is publi
   });
   it('shows the rules once an editor decides onay, with the verbatim evidence', async () => {
     const t = await taslak('Onaylı Dergi', '3333-3333');
-    const [editor] = await h.db.select({ id: schema.users.id }).from(schema.users).where(eq(schema.users.id, aId));
+    const [editor] = await h.db
+      .select({ id: schema.users.id })
+      .from(schema.users)
+      .where(eq(schema.users.id, aId));
     await h.db
       .update(schema.reviewQueueItems)
       .set({ decision: 'onay', decidedBy: editor?.id, decidedAt: new Date('2026-11-07T09:00:00Z') })
@@ -260,8 +394,14 @@ describe('journal profiles (FR-39..42): only an editor approved version is publi
     const t1 = await taslak('Sürümlü Dergi', '4444-4444');
     const t2 = await taslak('Sürümlü Dergi', '4444-4444');
     expect(t2).toMatchObject({ journalId: t1.journalId, version: 2 });
-    await h.db.update(schema.reviewQueueItems).set({ decision: 'onay', decidedAt: new Date() }).where(eq(schema.reviewQueueItems.subjectId, t1.versionId));
-    await h.db.update(schema.reviewQueueItems).set({ decision: 'ret', decidedAt: new Date() }).where(eq(schema.reviewQueueItems.subjectId, t2.versionId));
+    await h.db
+      .update(schema.reviewQueueItems)
+      .set({ decision: 'onay', decidedAt: new Date() })
+      .where(eq(schema.reviewQueueItems.subjectId, t1.versionId));
+    await h.db
+      .update(schema.reviewQueueItems)
+      .set({ decision: 'ret', decidedAt: new Date() })
+      .where(eq(schema.reviewQueueItems.subjectId, t2.versionId));
     const r = await gov(await dergiKurallariGet(bag())(istek(`/v1/journals/${t1.journalId}/rules`, null)));
     expect(r.version).toBe(1);
   });
@@ -282,7 +422,11 @@ const KILAVUZ_METNI = [
 
 const IYI_CEVAP = JSON.stringify({
   alanlar: {
-    font: { deger: 'Times New Roman', sayfa: null, alinti: 'Metin Times New Roman yazı tipinde ve 12 punto ile yazılır.' },
+    font: {
+      deger: 'Times New Roman',
+      sayfa: null,
+      alinti: 'Metin Times New Roman yazı tipinde ve 12 punto ile yazılır.',
+    },
     mLeft: { deger: 3.5, sayfa: null, alinti: 'sol 3,5 cm ve sağ 2,5 cm' },
     line: { deger: 2, sayfa: null, alinti: 'Satır aralığı bir buçuk (1,5) olmalıdır.' },
   },
@@ -309,9 +453,19 @@ describe('guide upload and rule extraction (plan 10.5/2)', () => {
   afterAll(() => {
     hizlar.kuralYukle.limit = sinir;
   });
-  const yukle = (token: string | null, model: KuralModeli | null, dosya: { bayt: Uint8Array; ad: string }, ek: Record<string, string> = {}, ust: Record<string, string> = {}) =>
+  const yukle = (
+    token: string | null,
+    model: KuralModeli | null,
+    dosya: { bayt: Uint8Array; ad: string },
+    ek: Record<string, string> = {},
+    ust: Record<string, string> = {},
+  ) =>
     kuralYuklePost(bag({ kuralModeli: () => model }))(
-      istek('/v1/templates/rules', token, { method: 'POST', headers: ust, body: cokluParca('file', dosya.bayt, dosya.ad, ek) }),
+      istek('/v1/templates/rules', token, {
+        method: 'POST',
+        headers: ust,
+        body: cokluParca('file', dosya.bayt, dosya.ad, ek),
+      }),
     );
   const txt = (m: string) => ({ bayt: new TextEncoder().encode(m), ad: 'kilavuz.txt' });
 
@@ -336,13 +490,25 @@ describe('guide upload and rule extraction (plan 10.5/2)', () => {
     expect(k.degerler.mLeft).toBe(3.5);
     expect(k.kaynaklar).toMatchObject({ mLeft: 'kilavuz', font: 'kilavuz', line: 'ornek', mTop: 'ornek' });
     expect(k.kanitlar.mLeft).toEqual({ sayfa: null, alinti: 'sol 3,5 cm ve sağ 2,5 cm' });
-    const kanit = await h.db.select().from(schema.templateRuleEvidence).where(eq(schema.templateRuleEvidence.templateRuleId, kuralId));
+    const kanit = await h.db
+      .select()
+      .from(schema.templateRuleEvidence)
+      .where(eq(schema.templateRuleEvidence.templateRuleId, kuralId));
     expect(kanit.map((x) => x.ruleKey).sort()).toEqual(['font', 'mLeft']);
-    const [satir] = await h.db.select().from(schema.templateRules).where(eq(schema.templateRules.id, kuralId));
+    const [satir] = await h.db
+      .select()
+      .from(schema.templateRules)
+      .where(eq(schema.templateRules.id, kuralId));
     expect(satir).toMatchObject({ userId: aId, approved: false, model: 'haiku', sourceObjectKey: null });
-    expect((await kuralDelete()(istek(`/v1/templates/rules/${kuralId}`, a, { method: 'DELETE' }), rc(kuralId))).status).toBe(204);
+    expect(
+      (await kuralDelete()(istek(`/v1/templates/rules/${kuralId}`, a, { method: 'DELETE' }), rc(kuralId)))
+        .status,
+    ).toBe(204);
     expect((await kuralGet()(istek(`/v1/templates/rules/${kuralId}`, a), rc(kuralId))).status).toBe(404);
-    const sonra = await h.db.select().from(schema.templateRuleEvidence).where(eq(schema.templateRuleEvidence.templateRuleId, kuralId));
+    const sonra = await h.db
+      .select()
+      .from(schema.templateRuleEvidence)
+      .where(eq(schema.templateRuleEvidence.templateRuleId, kuralId));
     expect(sonra).toEqual([]);
   });
   it('keeps the file out of the job row and out of storage', async () => {
@@ -359,7 +525,10 @@ describe('guide upload and rule extraction (plan 10.5/2)', () => {
     const kuralId = is.result.templateRuleId as string;
     expect((await isGet()(istek(`/v1/jobs/${jobId}`, b), rc(jobId))).status).toBe(404);
     expect((await kuralGet()(istek(`/v1/templates/rules/${kuralId}`, b), rc(kuralId))).status).toBe(404);
-    expect((await kuralDelete()(istek(`/v1/templates/rules/${kuralId}`, b, { method: 'DELETE' }), rc(kuralId))).status).toBe(404);
+    expect(
+      (await kuralDelete()(istek(`/v1/templates/rules/${kuralId}`, b, { method: 'DELETE' }), rc(kuralId)))
+        .status,
+    ).toBe(404);
   });
   it('falls back to Sonnet only when Haiku fails the schema', async () => {
     const m = sahte('bu bir json değil', IYI_CEVAP);
@@ -372,7 +541,11 @@ describe('guide upload and rule extraction (plan 10.5/2)', () => {
   it('closes the job as failed with a stable code when both answers fail the schema', async () => {
     const { jobId } = await gov(await yukle(a, sahte('x', 'y'), txt(KILAVUZ_METNI)));
     await bitir();
-    expect(await gov(await isGet()(istek(`/v1/jobs/${jobId}`, a), rc(jobId)))).toMatchObject({ status: 'failed', error: 'sema', result: null });
+    expect(await gov(await isGet()(istek(`/v1/jobs/${jobId}`, a), rc(jobId)))).toMatchObject({
+      status: 'failed',
+      error: 'sema',
+      result: null,
+    });
   });
   it('does not spend a model call on a file with almost no text and reports the scan warning', async () => {
     const m = sahte(IYI_CEVAP);
@@ -384,8 +557,13 @@ describe('guide upload and rule extraction (plan 10.5/2)', () => {
   });
   it('refuses wrong file types, renamed files and bad kinds before any job exists', async () => {
     const onceki = (await h.db.select().from(schema.jobs)).length;
-    expect((await yukle(a, sahte(IYI_CEVAP), { bayt: new Uint8Array([1, 2, 3]), ad: 'a.exe' })).status).toBe(400);
-    expect((await yukle(a, sahte(IYI_CEVAP), { bayt: new TextEncoder().encode('%PDF-1.4 x'), ad: 'a.txt' })).status).toBe(400);
+    expect((await yukle(a, sahte(IYI_CEVAP), { bayt: new Uint8Array([1, 2, 3]), ad: 'a.exe' })).status).toBe(
+      400,
+    );
+    expect(
+      (await yukle(a, sahte(IYI_CEVAP), { bayt: new TextEncoder().encode('%PDF-1.4 x'), ad: 'a.txt' }))
+        .status,
+    ).toBe(400);
     expect((await yukle(a, sahte(IYI_CEVAP), txt(KILAVUZ_METNI), { kind: 'odev' })).status).toBe(400);
     expect((await h.db.select().from(schema.jobs)).length).toBe(onceki);
   });
@@ -405,7 +583,10 @@ describe('upload rate limit', () => {
     const c = (await signUp('yazar-c@example.invalid')).token;
     const yolla = () =>
       kuralYuklePost(bag({ kuralModeli: () => sahte(IYI_CEVAP) }))(
-        istek('/v1/templates/rules', c, { method: 'POST', body: cokluParca('file', new TextEncoder().encode(KILAVUZ_METNI), 'k.txt') }),
+        istek('/v1/templates/rules', c, {
+          method: 'POST',
+          body: cokluParca('file', new TextEncoder().encode(KILAVUZ_METNI), 'k.txt'),
+        }),
       );
     const kodlar: number[] = [];
     for (let i = 0; i < 6; i++) kodlar.push((await yolla()).status);
@@ -430,15 +611,25 @@ describe('table of abbreviations endpoint (FR-91)', () => {
     expect(r.status).toBe(200);
     const liste = (await gov(r)) as { short: string; long: string; source: string }[];
     expect(liste.map((x) => x.short)).toEqual(['ABC', 'AYM', 'm.', 'TBK']);
-    expect(liste.find((x) => x.short === 'TBK')).toMatchObject({ long: 'Türk Borçlar Kanunu', source: 'metin' });
+    expect(liste.find((x) => x.short === 'TBK')).toMatchObject({
+      long: 'Türk Borçlar Kanunu',
+      source: 'metin',
+    });
     expect(liste.find((x) => x.short === 'ABC')).toMatchObject({ long: '', source: 'belirsiz' });
     expect(r.headers.get('x-yazma-oneri')).toBeNull();
   });
   it('sends only the abbreviations to the model, never the text, and says when suggestions are closed', async () => {
     const gorulen: string[][] = [];
-    const r = await gonder(a, { text: METIN, useAi: true }, { kisaltmaModeli: () => ({ oner: async (k) => (gorulen.push(k), { ABC: 'Örnek Cetvel' }) }) });
+    const r = await gonder(
+      a,
+      { text: METIN, useAi: true },
+      { kisaltmaModeli: () => ({ oner: async (k) => (gorulen.push(k), { ABC: 'Örnek Cetvel' }) }) },
+    );
     expect(gorulen).toEqual([['ABC']]);
-    expect((await gov(r)).find((x: { short: string }) => x.short === 'ABC')).toMatchObject({ long: 'Örnek Cetvel', source: 'oneri' });
+    expect((await gov(r)).find((x: { short: string }) => x.short === 'ABC')).toMatchObject({
+      long: 'Örnek Cetvel',
+      source: 'oneri',
+    });
     const kapali = await gonder(a, { text: METIN, useAi: true });
     expect(kapali.status).toBe(200);
     expect(kapali.headers.get('x-yazma-oneri')).toBe('kapali');
@@ -447,7 +638,13 @@ describe('table of abbreviations endpoint (FR-91)', () => {
 
 describe('DOCX check endpoint', () => {
   const kurallar = JSON.stringify({ tur: 'tez', degerler: varsayilanDegerler });
-  const gonder = async (token: string | null, o: Partial<Bagimliliklar>, bayt?: Uint8Array, ad = 'tez.docx', rules = kurallar) =>
+  const gonder = async (
+    token: string | null,
+    o: Partial<Bagimliliklar>,
+    bayt?: Uint8Array,
+    ad = 'tez.docx',
+    rules = kurallar,
+  ) =>
     denetimPost(bag(o))(
       istek('/v1/templates/check', token, {
         method: 'POST',
@@ -465,7 +662,12 @@ describe('DOCX check endpoint', () => {
     const docx = await sablonUret(varsayilanDegerler, 'tez');
     const r = await gonder(
       a,
-      { denetim: () => async (bayt, tur, k) => (gorulen.push({ bayt: bayt.length, tur, kurallar: denetimKurallari(k) }), { durum: 200, govde: rapor }) },
+      {
+        denetim: () => async (bayt, tur, k) => (
+          gorulen.push({ bayt: bayt.length, tur, kurallar: denetimKurallari(k) }),
+          { durum: 200, govde: rapor }
+        ),
+      },
       docx,
     );
     expect(r.status).toBe(200);
@@ -481,11 +683,18 @@ describe('DOCX check endpoint', () => {
     expect((await gonder(a, ok, new TextEncoder().encode('%PDF-1.4'), 'a.docx')).status).toBe(400);
     expect((await gonder(a, ok, undefined, 'a.pdf')).status).toBe(400);
     expect((await gonder(a, ok, undefined, 'tez.docx', 'bozuk')).status).toBe(400);
-    expect((await gonder(a, ok, undefined, 'tez.docx', JSON.stringify({ tur: 'tez', degerler: { mTop: 99 } }))).status).toBe(400);
+    expect(
+      (await gonder(a, ok, undefined, 'tez.docx', JSON.stringify({ tur: 'tez', degerler: { mTop: 99 } })))
+        .status,
+    ).toBe(400);
     expect((await gonder(a, { denetim: () => async () => ({ durum: 413, govde: null }) })).status).toBe(413);
     expect((await gonder(a, { denetim: () => async () => ({ durum: 422, govde: null }) })).status).toBe(400);
     expect((await gonder(a, { denetim: () => async () => ({ durum: 500, govde: null }) })).status).toBe(503);
-    const dusen = await gonder(a, { denetim: () => async () => { throw new Error('ECONNREFUSED http://10.0.0.5:8000'); } });
+    const dusen = await gonder(a, {
+      denetim: () => async () => {
+        throw new Error('ECONNREFUSED http://10.0.0.5:8000');
+      },
+    });
     expect(dusen.status).toBe(503);
     expect(await dusen.text()).not.toContain('10.0.0.5');
   });

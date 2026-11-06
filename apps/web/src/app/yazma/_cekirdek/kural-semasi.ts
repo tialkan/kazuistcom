@@ -198,8 +198,7 @@ export function alanDegistir<K extends KuralAnahtari>(
 }
 
 export type DogrulamaSonucu =
-  | { ok: true; degerler: KuralDegerleri }
-  | { ok: false; hatalar: Partial<Record<KuralAnahtari, string>> };
+  { ok: true; degerler: KuralDegerleri } | { ok: false; hatalar: Partial<Record<KuralAnahtari, string>> };
 
 /** Validate a whole value set; used before building a template and when loading stored rules. */
 export function degerleriDogrula(girdi: unknown): DogrulamaSonucu {

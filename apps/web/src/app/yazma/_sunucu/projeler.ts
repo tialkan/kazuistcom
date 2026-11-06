@@ -32,7 +32,12 @@ const TZ = 'Europe/Istanbul';
 
 /** YYYY-MM-DD of `d` in Istanbul. */
 export function istanbulGunu(d: Date): string {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: TZ,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(d);
 }
 
 /** 08:00 Istanbul (05:00 UTC) of the day `gun` days before `teslim` (YYYY-MM-DD). */
@@ -78,7 +83,7 @@ export async function projeyiGetir(
   userId: string,
   id: string,
   simdi: Date,
-): Promise<(Proje & { recentLogs: GunKaydi[] }) | null> {
+): Promise<(Proje & { recentLogs: GunKaydi[]; createdOn: string }) | null> {
   const [r] = await db
     .select()
     .from(schema.writingProjects)
@@ -92,31 +97,57 @@ export async function projeyiGetir(
     .orderBy(schema.writingLogs.loggedOn);
   const gunluk = new Map<string, number>();
   for (const k of kayitlar) gunluk.set(k.loggedOn, (gunluk.get(k.loggedOn) ?? 0) + k.words);
-  return { ...satir(r), recentLogs: [...gunluk].map(([loggedOn, words]) => ({ loggedOn, words })) };
+  return {
+    ...satir(r),
+    createdOn: istanbulGunu(r.createdAt),
+    recentLogs: [...gunluk].map(([loggedOn, words]) => ({ loggedOn, words })),
+  };
 }
 
 /** Replace the deadline reminders of a project; reminders that are already in the past are not created. */
-async function hatirlatmalariKur(db: Db, userId: string, projectId: string, deadline: string | null, simdi: Date) {
+async function hatirlatmalariKur(
+  db: Db,
+  userId: string,
+  projectId: string,
+  deadline: string | null,
+  simdi: Date,
+) {
   const oncekiler = await db
     .select({ id: schema.reminders.id, kind: schema.reminders.kind })
     .from(schema.reminders)
     .where(eq(schema.reminders.projectId, projectId));
-  for (const o of oncekiler) if (o.kind.startsWith('teslim_')) await db.delete(schema.reminders).where(eq(schema.reminders.id, o.id));
+  for (const o of oncekiler)
+    if (o.kind.startsWith('teslim_')) await db.delete(schema.reminders).where(eq(schema.reminders.id, o.id));
   if (deadline) {
     for (const gun of TESLIM_GUNLERI) {
       const at = hatirlatmaZamani(deadline, gun);
       if (at.getTime() <= simdi.getTime()) continue;
-      await db.insert(schema.reminders).values({ userId, projectId, kind: teslimTuru(gun), nextAt: at, enabled: true });
+      await db
+        .insert(schema.reminders)
+        .values({ userId, projectId, kind: teslimTuru(gun), nextAt: at, enabled: true });
     }
   }
   if (!oncekiler.some((o) => o.kind === SESSIZLIK))
-    await db.insert(schema.reminders).values({ userId, projectId, kind: SESSIZLIK, nextAt: null, enabled: true });
+    await db
+      .insert(schema.reminders)
+      .values({ userId, projectId, kind: SESSIZLIK, nextAt: null, enabled: true });
 }
 
-export async function projeOlustur(db: Db, userId: string, g: z.infer<typeof ProjeGirdisi>, simdi: Date): Promise<Proje> {
+export async function projeOlustur(
+  db: Db,
+  userId: string,
+  g: z.infer<typeof ProjeGirdisi>,
+  simdi: Date,
+): Promise<Proje> {
   const [r] = await db
     .insert(schema.writingProjects)
-    .values({ userId, title: g.title, kind: g.kind, targetWords: g.targetWords, deadline: g.deadline ?? null })
+    .values({
+      userId,
+      title: g.title,
+      kind: g.kind,
+      targetWords: g.targetWords,
+      deadline: g.deadline ?? null,
+    })
     .returning();
   if (!r) throw new Error('insert failed');
   await hatirlatmalariKur(db, userId, r.id, r.deadline, simdi);
@@ -200,6 +231,13 @@ export async function hitapYaz(db: Db, userId: string, hitap: 'sen' | 'siz'): Pr
     .select({ id: schema.reminders.id })
     .from(schema.reminders)
     .where(and(eq(schema.reminders.userId, userId), eq(schema.reminders.kind, HITAP_SIZ)));
-  if (r) await db.update(schema.reminders).set({ enabled: hitap === 'siz' }).where(eq(schema.reminders.id, r.id));
-  else await db.insert(schema.reminders).values({ userId, projectId: null, kind: HITAP_SIZ, enabled: hitap === 'siz' });
+  if (r)
+    await db
+      .update(schema.reminders)
+      .set({ enabled: hitap === 'siz' })
+      .where(eq(schema.reminders.id, r.id));
+  else
+    await db
+      .insert(schema.reminders)
+      .values({ userId, projectId: null, kind: HITAP_SIZ, enabled: hitap === 'siz' });
 }
