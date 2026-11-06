@@ -6,6 +6,10 @@
   "baslik": "Remove AI traces from your text",
   "giris": "This page has two things: a writing rule set you can give to an AI assistant, and a trace checker that scans your text in your browser. Both are free and need no sign-in.",
   "amac": "The aim is not to fool a detector. It is to remove the known bad writing habits of AI from the text and to keep the grounds of every claim. If your institution or journal asks you to disclose AI use, you disclose it.",
+  "yazma": {
+    "metin": "For a thesis or article template, a check of your Word file and a writing coach, go to the Writing page.",
+    "baglanti": "Writing"
+  },
   "surumSatiri": "Version {surum}, {donem}. {bolum} sections, {madde} items.",
   "istem": {
     "baslik": "Copy the prompt with one click",

@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "baslik": "Kalemcik",
+    "aciklama": "Kalemcik is your writing coach: set a goal, follow what you write and get reminders before your deadline."
+  },
+  "baslik": "Kalemcik, your writing coach",
+  "giris": "Define your work, enter the words you wrote or have the words in your Word file counted. Kalemcik shows your progress and reminds you as the deadline approaches.",
+  "girisGerek": {
+    "metin": "Your projects are kept in your account. Sign in to use Kalemcik.",
+    "baglanti": "Sign in"
+  },
+  "projeler": {
+    "baslik": "Your projects",
+    "bos": "You have not defined a project yet. Add the first one with the form below.",
+    "sec": "Select the project {ad}",
+    "sil": "Delete the project",
+    "silOnay": "Are you sure you want to delete this project and its writing records?",
+    "silindi": "The project was deleted."
+  },
+  "form": {
+    "baslik": "New project",
+    "ad": "Name of the project",
+    "adIpucu": "For example \"Article\" or \"Thesis chapter 1\".",
+    "tur": "Type",
+    "turler": {
+      "makale": "Article submission",
+      "tez": "Thesis chapter delivery",
+      "odev": "Assignment"
+    },
+    "hedefKelime": "Target words",
+    "hedefSayfa": "Target pages",
+    "sayfaIpucu": "One page counts as about {katsayi} words (300 for Times New Roman 12 pt with 1.5 line spacing). Enter either words or pages; the other is calculated.",
+    "teslim": "Deadline",
+    "ekle": "Add the project",
+    "eklendi": "The project was added.",
+    "hata": "The project could not be added. Check the name, the target and the date."
+  },
+  "halka": {
+    "etiket": "Completion",
+    "deger": "{yazilan} / {hedef} words, {sayfa} / {hedefSayfa} pages"
+  },
+  "ozet": {
+    "yazilan": "Written",
+    "kalan": "Remaining",
+    "kalanGun": "Days to the deadline",
+    "gunluk": "Daily goal",
+    "kelime": "{n} words",
+    "gun": "{n} days",
+    "teslimGecti": "The deadline has passed",
+    "teslimYok": "No deadline"
+  },
+  "takvim": {
+    "baslik": "Last 7 days",
+    "yazildi": "{gun}: written, {kelime} words",
+    "yazilmadi": "{gun}: no record"
+  },
+  "kayit": {
+    "baslik": "How many words did you write today?",
+    "kelime": "Words written today",
+    "ekle": "Save",
+    "eklendi": "The record was added.",
+    "hata": "The record could not be added.",
+    "docx": {
+      "baslik": "Or count from your Word file",
+      "aciklama": "Your file is not stored; only the words are counted. Footnote words are shown separately and do not count toward the total.",
+      "dosya": "Word file (.docx)",
+      "say": "Count the words",
+      "sonuc": "The file has {kelime} words ({dipnot} in footnotes). Your recorded total is {kayitli}.",
+      "uygula": "Add the difference as today's record",
+      "fark": "Difference: {fark} words.",
+      "farkYok": "There are no more words than your recorded total, so there is nothing to add.",
+      "hata": "The file could not be counted. Make sure it is a .docx and under 20 MB."
+    }
+  },
+  "kalemcik": {
+    "ad": "Kalemcik",
+    "yuz": {
+      "gulen": "Kalemcik is smiling",
+      "dusunceli": "Kalemcik is thoughtful",
+      "uzgun": "Kalemcik is sad",
+      "kutlama": "Kalemcik is celebrating"
+    },
+    "ton": {
+      "iyi": "Going well",
+      "son7": "Last week",
+      "yazilmadi": "Not written",
+      "hedef": "Goal reached"
+    },
+    "onizleme": {
+      "baslik": "What does a reminder look like?",
+      "uc": "What if I had not written for three days?",
+      "kapat": "Close the preview"
+    }
+  },
+  "hedef": {
+    "baslik": "You reached your goal",
+    "aciklama": "Before you submit, look at the checklist and the ethics and similarity check.",
+    "kontrol": "Checklist and ethics box",
+    "tespit": "Scan for AI traces"
+  },
+  "ayarlar": {
+    "baslik": "How Kalemcik addresses you, and notifications",
+    "hitap": "How should Kalemcik address you?",
+    "sen": "Informal (default, Kalemcik's voice)",
+    "siz": "Formal",
+    "kaydedildi": "Your preference was saved.",
+    "kanallar": "Reminders arrive by e-mail and Web Push, and as app notifications in the iOS app. They are not sent between 22:00 and 08:00 (Istanbul time); they wait until morning.",
+    "tercihler": "You can turn notifications off channel by channel or stop them completely.",
+    "tercihBaglantisi": "Open notification preferences"
+  },
+  "hata": {
+    "genel": "Something went wrong. Try again in a moment.",
+    "girisGerek": "You need to sign in for this action."
+  }
+}

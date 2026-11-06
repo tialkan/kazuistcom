@@ -1,0 +1,29 @@
+{
+  "kilavuz": "tauhfd",
+  "dergi": "Türk-Alman Üniversitesi Hukuk Fakültesi Dergisi",
+  "tur": "makale",
+  "etiketleyen": "yazma ajanı, 2026-11-07; editör doğrulaması bekliyor",
+  "alanlar": {
+    "font": {
+      "deger": "Palatino Linotype",
+      "alinti": "Metin, 11 punto boyutunda, Palatino Linotype yazı karakteri kullanılarak, dik ve normal harflerle 1 satır aralığında yazılır."
+    },
+    "size": {
+      "deger": 11,
+      "alinti": "Metin, 11 punto boyutunda, Palatino Linotype yazı karakteri kullanılarak, dik ve normal harflerle 1 satır aralığında yazılır."
+    },
+    "line": {
+      "deger": 1,
+      "alinti": "Metin, 11 punto boyutunda, Palatino Linotype yazı karakteri kullanılarak, dik ve normal harflerle 1 satır aralığında yazılır."
+    },
+    "footSize": {
+      "deger": 10,
+      "alinti": "Dipnotlar ise, 10 punto boyutunda, Palatino Linotype yazı karakterinde"
+    },
+    "absLimit": {
+      "deger": { "min": null, "max": 500 },
+      "alinti": "1 satır aralığıyla yazılmalı ve 500 kelimeyi geçmemelidir"
+    }
+  },
+  "bos": ["mTop", "mBottom", "mLeft", "mRight", "pageNum", "indent"]
+}

@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "baslik": "Kalemcik",
+    "aciklama": "Kalemcik yazma koçunuzdur: hedef koyun, yazdıklarınızı izleyin, teslim tarihine göre hatırlatma alın."
+  },
+  "baslik": "Kalemcik, yazma koçunuz",
+  "giris": "Çalışmanızı tanımlayın, yazdığınız kelimeleri girin ya da Word dosyanızdaki kelimeleri saydırın. Kalemcik ilerlemenizi gösterir ve teslim tarihine göre hatırlatır.",
+  "girisGerek": {
+    "metin": "Çalışmalarınız hesabınızda saklanır. Kalemcik'i kullanmak için giriş yapın.",
+    "baglanti": "Giriş yap"
+  },
+  "projeler": {
+    "baslik": "Çalışmalarınız",
+    "bos": "Henüz bir çalışma tanımlamadınız. Aşağıdaki formla ilkini ekleyin.",
+    "sec": "{ad} çalışmasını seç",
+    "sil": "Çalışmayı sil",
+    "silOnay": "Bu çalışmayı ve yazma kayıtlarını silmek istediğinize emin misiniz?",
+    "silindi": "Çalışma silindi."
+  },
+  "form": {
+    "baslik": "Yeni çalışma",
+    "ad": "Çalışmanın adı",
+    "adIpucu": "Örneğin \"Makale\" veya \"Tez 1. bölüm\".",
+    "tur": "Türü",
+    "turler": {
+      "makale": "Makale gönderimi",
+      "tez": "Tez bölümü teslimi",
+      "odev": "Ödev"
+    },
+    "hedefKelime": "Hedef kelime",
+    "hedefSayfa": "Hedef sayfa",
+    "sayfaIpucu": "Bir sayfa yaklaşık {katsayi} kelime sayılır (Times New Roman 12 punto, 1,5 satır aralığı için 300). Kelime veya sayfadan birini girin, diğeri hesaplanır.",
+    "teslim": "Teslim tarihi",
+    "ekle": "Çalışmayı ekle",
+    "eklendi": "Çalışma eklendi.",
+    "hata": "Çalışma eklenemedi. Adı, hedefi ve tarihi kontrol edin."
+  },
+  "halka": {
+    "etiket": "Tamamlanma",
+    "deger": "{yazilan} / {hedef} kelime, {sayfa} / {hedefSayfa} sayfa"
+  },
+  "ozet": {
+    "yazilan": "Yazılan",
+    "kalan": "Kalan",
+    "kalanGun": "Teslime kalan gün",
+    "gunluk": "Günlük hedef",
+    "kelime": "{n} kelime",
+    "gun": "{n} gün",
+    "teslimGecti": "Teslim tarihi geçti",
+    "teslimYok": "Teslim tarihi yok"
+  },
+  "takvim": {
+    "baslik": "Son 7 gün",
+    "yazildi": "{gun}: yazıldı, {kelime} kelime",
+    "yazilmadi": "{gun}: kayıt yok"
+  },
+  "kayit": {
+    "baslik": "Bugün kaç kelime yazdınız?",
+    "kelime": "Bugün yazdığınız kelime",
+    "ekle": "Kaydet",
+    "eklendi": "Kayıt eklendi.",
+    "hata": "Kayıt eklenemedi.",
+    "docx": {
+      "baslik": "Ya da Word dosyanızdan sayın",
+      "aciklama": "Dosyanız saklanmaz; yalnız kelimeler sayılır. Dipnot kelimeleri ayrıca gösterilir ve toplama katılmaz.",
+      "dosya": "Word dosyası (.docx)",
+      "say": "Kelimeleri say",
+      "sonuc": "Dosyada {kelime} kelime var (dipnotlarda {dipnot}). Kayıtlı toplamınız {kayitli}.",
+      "uygula": "Farkı bugünün kaydı olarak ekle",
+      "fark": "Fark: {fark} kelime.",
+      "farkYok": "Kayıtlı toplamdan fazla kelime yok, eklenecek bir şey yok.",
+      "hata": "Dosya sayılamadı. .docx olduğundan ve 20 MB'ı aşmadığından emin olun."
+    }
+  },
+  "kalemcik": {
+    "ad": "Kalemcik",
+    "yuz": {
+      "gulen": "Kalemcik gülümsüyor",
+      "dusunceli": "Kalemcik düşünceli",
+      "uzgun": "Kalemcik üzgün",
+      "kutlama": "Kalemcik kutluyor"
+    },
+    "ton": {
+      "iyi": "İyi gidiyor",
+      "son7": "Son hafta",
+      "yazilmadi": "Yazılmadı",
+      "hedef": "Hedefe ulaşıldı"
+    },
+    "onizleme": {
+      "baslik": "Hatırlatma nasıl görünür?",
+      "uc": "Üç gün yazmasaydım ne olurdu?",
+      "kapat": "Önizlemeyi kapat"
+    }
+  },
+  "hedef": {
+    "baslik": "Hedefe ulaştınız",
+    "aciklama": "Teslimden önce kontrol listesine ve etik ile benzerlik kontrolüne göz atın.",
+    "kontrol": "Kontrol listesi ve etik kutusu",
+    "tespit": "Yapay zekâ izlerini tara"
+  },
+  "ayarlar": {
+    "baslik": "Kalemcik'in hitabı ve bildirimler",
+    "hitap": "Kalemcik size nasıl hitap etsin?",
+    "sen": "Sen (varsayılan, Kalemcik'in sesi)",
+    "siz": "Siz",
+    "kaydedildi": "Hitap tercihiniz kaydedildi.",
+    "kanallar": "Hatırlatmalar e-posta ve Web Push ile gelir; iOS uygulamasında uygulama bildirimi olarak gelir. Gece 22.00 ile sabah 08.00 arasında (İstanbul saati) gönderilmez, sabaha ertelenir.",
+    "tercihler": "Bildirimleri kanal kanal kapatabilir ya da tamamen durdurabilirsiniz.",
+    "tercihBaglantisi": "Bildirim tercihlerini aç"
+  },
+  "hata": {
+    "genel": "Bir sorun oluştu. Biraz sonra yeniden deneyin.",
+    "girisGerek": "Bu işlem için giriş yapmanız gerekir."
+  }
+}

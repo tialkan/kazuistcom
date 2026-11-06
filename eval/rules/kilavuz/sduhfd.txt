@@ -1,0 +1,109 @@
+# Kaynak: https://dergipark.org.tr/tr/pub/sduhfd/writing-rules
+# Alındığı tarih: 2026-11-07 (tek istek, KazuistBot kimliğiyle; sayfa metni olduğu gibi, gezinme çubukları çıkarıldı)
+# Dergi: Süleyman Demirel Üniversitesi Hukuk Fakültesi Dergisi
+# Not: depo kuralı gereği kaynaktaki uzun çizgi karakteri (U+2014) orta çizgiyle (U+2013) değiştirildi; başka değişiklik yok.
+
+Yazım Kuralları
+1. Dergiye yayımlanmak üzere gönderilen bilimsel çalışmalar, kamu hukuku ve özel hukuk alanlarına ilişkin olmalı veya hukuk öğretisiyle bağlantılı bir çalışma olmalıdır. Yayımlanmak üzere gönderilen çalışmalar daha önce başka bir yerde yayımlanmamış olmalı veya yayımlanmak üzere gönderilmemiş olmalıdır.
+2. Makalenin ana başlığı sayfanın ortasında sadece kelimelerin ilk harfleri büyük ve bold olacak bir şekilde yazılmalıdır. Türkçe ve İngilizce başlıklarda bağlaçlar küçük harfle yazılmalıdır. Diğer tüm başlıklar, aşağıda gösterildiği sırayla, kelimelerin yalnızca ilk harfleri büyük ve bold olarak sayfanın ortasına yazılmalıdır.
+1. Seviye: Numaralandırma stili: I, II, III… Kalın, Yalnızca ilk harfler büyük
+2. Seviye: Numaralandırma stili: A, B, C… Kalın, Yalnızca ilk harfler büyük
+3. Seviye: Numaralandırma stili: 1, 2, 3... Kalın, Yalnızca ilk harfler büyük
+4. Seviye: Numaralandırma stili: a, b, c… Kalın, Yalnızca ilk harfler büyük
+5. Seviye: Numaralandırma stili: i, ii, iii... Kalın, Yalnızca ilk harfler büyük
+6. Seviye: Numaralandırma stili: aa, bb, cc... Kalın, Yalnızca ilk harfler büyük
+3. Dergiye gönderilecek makalelerde, ilk sayfada makale başlığının altında yazarın akademik unvanı, ad ve soyadına yer verilmeli, soyadın yanında (*) simgesiyle oluşturulacak dipnotta sırasıyla görevli olunan üniversite, fakülte ve bölümü, şehir/ülke ile yazarın kurumsal e-posta adresi ve ORCID numarasına yer verilmelidir.
+4. Makalenin başında, konuyu kısa ve öz biçimde ifade eden ve en fazla 250 kelimeden oluşan (anahtar kelimeler dahil) Türkçe “Öz” ile İngilizce “Abstract” bulunmalıdır. Öz içinde, yararlanılan kaynaklara, şekil ve çizelge numaralarına değinilmemeli, dipnot kullanılmamalıdır. Makalelerde giriş ve sonuç bölümüne yer verilmelidir. En az 3, en çok 5 sözcük ve/veya sözcük grubundan oluşan anahtar kelimelere (keywords) yer verilmelidir. Türkçe “Öz” ile İngilizce “Abstract” arasına makalenin İngilizce başlığı yazılmalıdır.
+5. Ana metni Türkçe ve Almanca yazılmış makalelerde, makaleye yabancı yazarlar tarafından atıf yapılmasını sağlayacak ölçüde, makalede yer verilen bilgi ve görüşlerin derlendiği, en az 800 en fazla 1000 kelimeden oluşacak İngilizce yazılmış “Extended summary” yer almalıdır. Yayıma gönderilecek makale metinlerinde, kaynakça ve dipnotlar hariç 20.000 kelime sınırı bulunmaktadır. Kelime sınırını aşan çalışmalar yazara iade edilir.
+6. Makale metni, A4 sayfa boyutunda Times New Roman yazı tipinde, 1,5 satır aralığı ve 12 punto, dipnotları ise, tek satır aralığı ve 10 punto olarak hazırlanmalıdır. Sayfa kenarlarında üst 3 cm., alt 3 cm., sol 3 cm., sağ 3 cm. boşluk bırakılmalı ve sayfalar numaralandırılmalıdır. Metin içerisinde TAB tuşu aracılığıyla içeri doğru girintili paragraflara yer verilmeli, paragraflar arasında paragraf boşluğu oluşturulmalıdır.
+7. Atıflar OSCOLA atıf sistemi esas alınarak yapılmalıdır. Aksi takdirde makale hakem ataması yapılmaksızın yazara düzeltmeleri yapması için geri gönderilir. OSCOLA için bkz. https://www.law.ox.ac.uk/sites/default/files/migrated/oscola_4th_edn_hart_2012.pdf
+8. Hakem ataması yapılmadan önce yayımlanması için gönderilen metin, yardımcı editörler tarafından iThenticate programı aracılığıyla intihal ve benzerlik oranı taramasından geçirilmektedir. Kaynakça ve atıflar hariç %20’den fazla benzerlik oranı saptanan veya etik ihlali tespit edilen çalışmalar hakem atanmaksızın doğrudan reddedilmektedir.
+9. Microsoft Word belgeleri saklanır iken dosya bilgileri içine kişisel bilgiler de yazılır. Bu nedenle ya bu kişisel bilgiler belge özelliklerinden bulunup silinmeli ya da aşağıdaki sıra ile belge kişisel bilgi içermeyecek biçimde yeniden kaydedilmelidir. ( File > Save As > Tools (or Options with a Mac) > Security > Remove personal information from file properties on save > Save) (Dosya > Farklı Kaydet > Araçlar > Güvenlik > Kişisel bilgileri silerek kaydet > Kaydet) Ayrıca bu işlemi https://bit.ly/3SEHhIL linkindeki adımları takip ederek de kolaylıkla yapabilirsiniz.
+10. Yararlanılan kaynaklara ilişkin metin içindeki atıflar, her bir sayfa sonunda dipnot olarak gösterilmelidir. Atıfların nasıl yapılacağına ilişkin Atıf ve Kaynakça sistemimiz aynen takip edilmelidir.
+ATIF, DİPNOT VE KAYNAKÇA YAZIMINDA İZLENMESİ GEREKEN KURALLAR
+Genel Hususlar
+1. Metin içerisinde içindekiler bölümü yer almamalı, kısaltmalar cetveli kullanılmamalıdır. Kısaltılacak isim veya başlık metinde ilk defa kullanıldığında kısaltılmadan yazılarak, yanında parantez içinde kısaltması belirtilmelidir. Atıf yapılırken vol, ed, in gibi ibarelerin kısaltmalarında nokta kullanılmamalıdır.
+2. Bir dipnotta birden fazla esere atıf yapılıyorsa her bir eseri noktalı virgül ile ayırınız.
+3. Atıflarda supra, infra, ante, id, loc cit, op cit, contra kısaltmaları kullanılmayacaktır. Aşağıda gösterileceği üzere devam eden atıflarda ibid kısaltması kullanılabilir.
+OSCOLA Referans Stili Örnekleri
+Kitaplar
+Dipnotlarda öncelikle yazarın adı/soyadı atıfta bulunulan eserde yer aldığı şekilde yazılmalıdır. Dipnotlarda önce yazarın adı ve soyadı verilmeli, yazarın adı ve soyadını virgül takip etmeli, ardından kitap ismi italik olarak verilmelidir. Yayın yerinin belirtilmesine gerek yoktur. İlk baskısı olan eserler haricinde, atıf yapılan eserin kaçıncı baskı olduğu belirtilmelidir. Sayfa sayısını belirtmek için s. ss. p. pp. gibi ibarelerin konulmaması gerekir. Sayfa yerine paragrafa atıf yapılmak isteniyor ise “para” kısaltması yapılır.
+Birbirini takip eden birden fazla sayfaya yapılan atıflarda vd veya ff kısaltması kullanılır.
+İki yazarlı kitaplarda yazarların arasına “ve” bağlacı konulmalıdır. Yabancı kaynaklarda “ve” bağlacı yerine, “and” yazılabilir. Yabancı dilde yazılan metinlerde OSCOLA’nın tüm kuralları geçerlidir.
+Çok yazarlı kitaplarda ise son yazardan önce “ve” bağlacı, diğer yazarların arasına virgül konulmalıdır.
+Ad Soyad, Kitap Adı (Kaçıncı Bası Olduğu, Yayınevi Yılı) Atıf Yapılan Sayfa.
+Ad Soyad, Kitap Adı, Varsa Cilt No (Kaçıncı Bası Olduğu, Yayınevi Yılı) Atıf Yapılan Sayfa.
+Örnek atıflar
+Yüksel Metin, Anayasal Değişim (Beta 2014) 98.
+Kemal Gözler, Anayasa Hukukunun Genel Teorisi, Cilt 1 (2. Baskı, Ekin 2020) 89-100.
+Osman Korkut Kanadoğlu ve Ahmet Mert Duygun, Anayasa Hukukunun Genel Esasları (2. Baskı, On İki Levha 2021) 100 vd
+Julian V Roberts and Mike Hough, Public Opinion and the Jury: An International Literature Review (Ministry of Justice Research Series 1/09, 2009) 42.
+Editörlü Kitaplarda
+Yazar yoksa editör veya çevirmenin kendisine atıf yapılabilir.
+Jeremy Horder (ed), Oxford Essays in Jurisprudence: Fourth Series (OUP 2000)
+Peter Birks and Grant McLeod (trs), The Institutes of Justinian (Duckworth 1987)
+Editörlü kitabın içinde yer alan bölümlere atıf için
+Ad Soyad, ‘Bölüm Adı’ in Editör(ler) Adı (ed / birden çok editör olması halinde eds), Kitap Adı (Yayınevi Yıl) Atıf Yapılan Sayfa.
+Justine Pila, ‘The Value of Authorship in the Digital Environment’ in William H Dutton and Paul W Jeffreys (eds), World Wide Research: Reshaping the Sciences and Humanities in the Century of Information (3rd edn, MIT Press 2010)
+Çeviriler
+Eserin hem yazarı hem de editör veya çevirmeni varsa, editöre ve çevirmene aşağıdaki gibi atıf yapılabilir. “tr/trs” ibarelerinin karşılığı olarak “çev” kullanılabilir.
+HLA Hart, Punishment and Responsibility: Essays in the Philosophy of Law (John Gardner ed, 2nd edn, OUP 2008)
+K Zweigert and H Kötz, An Introduction to Comparative Law (Tony Weir tr, 3rd edn, OUP 1998)
+Makaleler
+Ad Soyad, ‘Makale Adı’ (Yıl) Cilt (Sayı) Dergi Adı İlk Sayfa Numarası, Atıf Yapılan Sayfa
+Yüksel Metin, ‘Temel Hakların Sınırlandırılması ve Ölçülülük: Ölçülülük İlkesi Evrensel Bir Anayasal İlke midir?’ (2017) 7 (1) SDÜHFD 1, 50.
+Sevin Toluner, ‘Kıbrıs’ın Avrupa Birliği’ne Üyelik Başvurusunun Hukuki Geçerliliği ve Sonuçları’ (2002) 22(2) MHB (Prof. Dr. Ergin Nomer’e Armağan) 857, 860.
+Mevzuata Yapılacak Atıf
+Türk mevzuatına atıf, aşağıda gösterildiği şekilde yapılmalıdır:
+Kanun Adı, Kanun Numarası: XXXX, Kabul Tarihi: Gün.Ay.Yıl, RG Gün.Ay.Yıl Formatında Yayınlandığı Resmî Gazete Tarihi/Yayınlandığı Resmî Gazete Sayısı”.
+Türk Medeni Kanunu, Kanun Numarası: 4721, Kabul Tarihi: 22.11.2001, RG 08.12.2001/24607.
+Yabancı devlet mevzuatına ve AB mevzuatına yapılacak atıflarda OSCOLA’nın 2.4, 2.5, 2.6.1 ve 2.8.2 numaralı bölümlerinde gösterildiği şekilde atıf yapılmalıdır.
+Elektronik Kaynaklar
+Makalenin yazım dili Türkçe ise
+Yazar Adı Soyadı, ‘Eser Adı’ (Yıl) Cilt (Sayı) Dergi Adı veya Etkinlik adı <Kaynak linki> Erişim Tarihi.
+Yüksel Metin ve Egemen Esen, ‘İnsan Hakları İnceleme Komisyonu'nun Etkililiğinin Arttırılmasına Dair Öneriler’ (2023) İnsan Haklarının Korunmasında Yasama Organının Rolü Bildiriler Kitabı <https://www.tihek.gov.tr/kategori/pages/insan-haklarinin-korunmasinda-yasama-organinin-rolu-bildiriler-kitabi-rolu-> Erişim Tarihi 27 Aralık 2023.
+Makale yabancı dilde yazılmış ise
+Graham Greenleaf, ‘The Global Development of Free Access to Legal Information’ (2010) 1(1) EJLT < http://ejlt.org//article/view/17 > Date of Access 27 July 2010.
+Aynı Yazarın Birden Fazla Eserine Atıf
+Aynı yazarın birden fazla eserine yapılacak atıflarda eser adları uygun şekilde kısaltılmalıdır:
+3. atıfta Yüksel Metin Anayasal Değişim adlı esere; 9. atıfta Ölçülülük ilkesi adlı çalışmaya tam atıf yapıldıktan sonra, diğer atıflarda (n 3) ve (n 9) ifadeleriyle, esere tam atıf yapılan dipnot numarası kast edilmektedir. (Aşağıda 15 ve 23 dipnot numarası mahiyetinde örnek olarak verilmiştir.)
+15 Metin, Anayasal Değişim (n 3) 90.
+23 Metin, ‘Ölçülülük İlkesi’ (n 9) 50.
+Aynı Esere Birden Fazla Atıf Yapılması
+Aynı esere birden fazla izleyen şekilde atıf yapılması halinde:
+1 Robert Stevens, Torts and Rights (OUP 2007)
+…
+26 Stevens (n 1) 110.
+27 ibid 271-78.
+30 Stevens (n 1) 120.
+NOT: İzleyen atıflarda "ibid" ifadesini kullanmak isteğe bağlıdır. “ibid” ifadesi kullanılmaksızın, Stevens (n 1) 110 atfını takiben bir sonraki atıfta Stevens (n 1) 115 şeklinde atıf yapılabilir. Ancak tercih edilen seçenek açısından çalışmanın bütününde yeknesaklık sağlanmalıdır. OSCOLA 4. Edisyon’un 1.2.3. başlığına bakılabilir.
+Yayımlanmamış Tezlere Atıf
+Yazar Adı Soyadı, ‘Tez Adı’ (Tez Türü, Tezin Tamamlandığı Üniversite Tamamlanma Yılı)
+Yargı Kararları - Davalar
+Mahkeme kararlarına aşağıda yer alan örneklerde gösterildiği şekilde atıf yapılmalıdır. Kısaltmalarda nokta işareti konulmaz.
+Ankara 3 Sulh Mahkemesi, 4558/3543, 11.03.2017.
+Ankara 1 İdare Mahkemesi, 4558/3543, 11.03.2017.
+Ankara 3 BAM, 4558/3543, 11.03.2017.
+Ankara 3 BİM, 4558/3543, 11.03.2017.
+Danıştay 10 D, 2247/5111, 25.11.2011.
+Yargıtay 2 HD, 4558/3543, 11.03.2017.
+Anayasa Mahkemesi, E 2019/1111 K 2021/1111, 01.01.2021.
+Yabancı mahkeme kararlarına OSCOLA’nın 2.1 ilâ 2.3 numaralı bölümlerinde gösterildiği şekilde atıf yapılmalıdır.
+Avrupa İnsan Hakları Mahkemesi kararlarına aşağıda yer alan örneklerde gösterildiği şekilde atıf yapılmalıdır:
+Omojudi v UK (2009) 51 EHRR 10.
+Osman v UK ECHR 1998–VIII 3124.
+Balogh v Hungary App no 47940/99 (ECHR, 20 July 2004).
+Simpson v UK (1989) 64 DR 188.
+Kaynakça
+Kaynakçada öncelikle yazarın soyadına daha sonra adının ilk harfine yer verilir. Yazarın adından sonra kısaltma olarak nokta konulmaz. Atıf yapılan eser kaynakçada yazıldıktan sonra sonuna nokta konulmaz. Kaynakçada eserler soyadlarının alfabetik sırasına göre dizilir. Aynı yazarın tek başına yaptığı birden fazla çalışmaya atıf yapıldıysa, eski tarihli çalışmadan başlayarak kronolojik sırayla sıralanır. En başta yazarın soyadı ile adının ilk harfi yazıldıktan sonra yazarın diğer eserlerinde soyadı ve adı yerine iki defa yatay çift uzun çizgi – – yapılır. Ortak çalışmalar ise ilk yazarın soyadına göre alfabetik sırayla sıralanır. Birden fazla ortak çalışma varsa aynı mantıkla gruplandırılır; ancak bu, yazar veya yazar grubunun tamamen aynı olması durumunda geçerlidir. Farklı yazar grupları varsa her eseri tüm yazar isimleriyle birlikte tam olarak kaynakçada belirtilmelidir. Makalelerde de gruplandırmada aynı kurallar uygulanır, ek olarak sayfa aralığı gösterilir:
+Hart HLA, Law, Liberty and Morality (OUP 1963)
+– – ‘Varieties of Responsibility’ (1967) 83 LQR 346
+– – Punishment and Responsibility (OUP 1968)
+– – and Honoré AM, ‘Causation in the Law’ (1956) 72 LQR 58, 260, 398
+– – and Honoré AM, Causation in the Law (2nd edn, OUP 1985)
+Metin Y, Anayasal Değişim (Beta 2014)
+– –, ‘Temel Hakların Sınırlandırılması ve Ölçülülük: Ölçülülük İlkesi Evrensel Bir Anayasal İlke midir?’ (2017) 7 (1) SDÜHFD 1-74
+Şanlı C, Esen E ve Ataman-Figanmeşe İ, Milletlerarası Özel Hukuk (9. Bası, Beta 2021)
+Son Güncelleme Zamanı:
+9 Mart 2026
+Keşfet
