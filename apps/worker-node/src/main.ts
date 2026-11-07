@@ -2,6 +2,7 @@ import pg from 'pg';
 import { billingDepsFromEnv } from './billing/deps.ts';
 import { noticeTick } from './billing/notices.ts';
 import { buildHandlers, dailyBillingTick, unavailableBilling } from './handlers.ts';
+import { kalemcikTick } from './kalemcik/gunluk.ts';
 import {
   apnsTransport,
   iysUnavailable,
@@ -67,20 +68,26 @@ const billing = realBilling ?? unavailableBilling;
 // account.purge needs the same secret as the web side so the audit hash matches.
 const purge = env.BETTER_AUTH_SECRET ? { db: pool, secret: env.BETTER_AUTH_SECRET } : undefined;
 if (!purge) log('account.purge disabled: BETTER_AUTH_SECRET is not set');
-const handlers = buildHandlers({ notify: notifyDeps(), billing, purge });
+const handlers = buildHandlers({ notify: notifyDeps(), billing, purge, kalemcik: { db: pool } });
 // odeme (audit Y5): due billing notices become notify.send jobs on every runner tick.
 const daily = dailyBillingTick(pool);
 const notices = noticeTick(pool);
+const kalemcik = kalemcikTick(pool);
 const billingTick = async () => {
   await daily();
   await notices();
+};
+// yazma (plan 10.5): one kalemcik.daily job per Istanbul day; independent of billing.
+const tick = async () => {
+  await kalemcik();
+  if (billing !== unavailableBilling) await billingTick();
 };
 const consumer = createConsumer(pool, `worker-node-${process.pid}`, handlers);
 const worker = startWorker({
   db: pool,
   consumer,
   listen: pgListen(pool),
-  tick: billing === unavailableBilling ? undefined : billingTick,
+  tick,
   log,
 });
 log('started', { types: consumer.types });

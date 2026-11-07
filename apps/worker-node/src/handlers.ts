@@ -1,17 +1,20 @@
 import type { JobType } from '@kazuist/contracts';
 import { createPurgeHandler, type PurgeDeps } from './account/purge.ts';
 import { billingHandlers, enqueueDailyBillingSql, type BillingJobsDeps } from './billing/jobs.ts';
+import { createKalemcikDailyHandler, type GunlukBagimliliklar } from './kalemcik/gunluk.ts';
 import { createNotifyHandler, type NotifyDeps } from './notify/index.ts';
 import type { JobHandler, SqlClient } from './queue.ts';
 
 /**
  * Handler registry of worker-node (shared file, orchestrator). Module owners provide the handler factories:
- * notify.send and account.purge (kimlik, src/notify, src/account), billing.monthly_grant and billing.reconcile (odeme, src/billing).
+ * notify.send and account.purge (kimlik, src/notify, src/account), billing.monthly_grant and billing.reconcile (odeme, src/billing),
+ * kalemcik.daily (yazma, src/kalemcik).
  */
 export interface HandlerDeps {
   notify?: NotifyDeps;
   billing?: BillingJobsDeps;
   purge?: PurgeDeps;
+  kalemcik?: GunlukBagimliliklar;
 }
 
 export function buildHandlers(d: HandlerDeps): Partial<Record<JobType, JobHandler>> {
@@ -19,6 +22,7 @@ export function buildHandlers(d: HandlerDeps): Partial<Record<JobType, JobHandle
     ...(d.notify ? { 'notify.send': createNotifyHandler(d.notify) } : {}),
     ...(d.billing ? billingHandlers(d.billing) : {}),
     ...(d.purge ? { 'account.purge': createPurgeHandler(d.purge) } : {}),
+    ...(d.kalemcik ? { 'kalemcik.daily': createKalemcikDailyHandler(d.kalemcik) } : {}),
   };
 }
 

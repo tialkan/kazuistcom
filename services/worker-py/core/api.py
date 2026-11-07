@@ -35,7 +35,11 @@ def create_app(rt: Runtime, env: Optional[Mapping[str, str]] = None) -> FastAPI:
 
     @app.get("/internal/sources", dependencies=[Depends(auth)])
     def sources() -> Dict[str, Any]:
-        return {"sources": rt.registry.status(), "breaker": rt.fetcher.breaker.snapshot(), "alerts": rt.fetcher.alerts}
+        return {
+            "sources": rt.registry.status(),
+            "breaker": rt.fetcher.breaker.snapshot(),
+            "alerts": rt.fetcher.alerts,
+        }
 
     @app.post("/internal/sources/{name}/stop", dependencies=[Depends(auth)])
     def stop(name: str) -> Dict[str, str]:
@@ -50,4 +54,8 @@ def create_app(rt: Runtime, env: Optional[Mapping[str, str]] = None) -> FastAPI:
         rt.fetcher.breaker.reset(name)
         return {"source": name, "state": "reset"}
 
+    # yazma (plan 10.5): .docx check endpoint under the same internal token.
+    from docxcheck.api import make_router
+
+    app.include_router(make_router(env))
     return app
