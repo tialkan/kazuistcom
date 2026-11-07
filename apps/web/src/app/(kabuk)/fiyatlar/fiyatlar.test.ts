@@ -43,10 +43,8 @@ describe('/fiyatlar matches plan.md 4.2-4.4 (approved 2026-10-20)', () => {
     );
   });
   it('the draft note is gone and VAT is stated', () => {
-    for (const dil of ['tr', 'en'] as const) {
-      expect(ortak(dil).fiyatlar).not.toHaveProperty('taslak');
-      expect(ortak(dil).fiyatlar.kdv.length).toBeGreaterThan(0);
-    }
+    expect(ortak().fiyatlar).not.toHaveProperty('taslak');
+    expect(ortak().fiyatlar.kdv.length).toBeGreaterThan(0);
   });
 });
 

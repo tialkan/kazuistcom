@@ -69,7 +69,7 @@ export function SabitNotlar() {
           {tr.ortak.tespitBaglanti}
         </a>
       </p>
-      <p>{ortak('tr').uyari.danismanlik}</p>
+      <p>{ortak().uyari.danismanlik}</p>
     </footer>
   );
 }

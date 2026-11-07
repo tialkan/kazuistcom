@@ -8,7 +8,7 @@ import type { Adim } from '../_alan/sema.ts';
 import styles from '../rehberler.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.zoteroBaslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.zoteroBaslik} | ${ortak().marka}`,
   description: tr.meta.zoteroAciklama,
 };
 

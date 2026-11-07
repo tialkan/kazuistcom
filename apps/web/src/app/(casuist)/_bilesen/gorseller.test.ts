@@ -31,8 +31,8 @@ const tumResimler = readdirSync(icerik).flatMap((f) => {
 
 describe('Casuist images', () => {
   it('every archived image has a local copy', () => {
-    // index and tr: header image; partner and tr_ortak: three marks each; eski: four university logos.
-    expect(tumResimler.length).toBe(12);
+    // tr: header image; tr_ortak: three marks; eski: four university logos (ADR-0032 removed index and partner).
+    expect(tumResimler.length).toBe(8);
     for (const { sayfa, oz } of tumResimler) {
       expect(casuistGorselleri[oz.src ?? ''], `${sayfa} ${oz.src}`).toBeDefined();
     }
@@ -51,14 +51,12 @@ describe('Casuist images', () => {
     }
   });
 
-  it('every image has an alt text, and the header image a translated one', () => {
-    for (const dil of ['tr', 'en'] as const) {
-      const alt = ortak(dil).casuist.gorselAlt;
-      for (const { oz } of tumResimler) {
-        const g = al(oz.src ?? '');
-        const metin = g.altAnahtari ? alt[g.altAnahtari] : oz.alt;
-        expect(metin?.trim().length, oz.src).toBeGreaterThan(0);
-      }
+  it('every image has an alt text, and the header image a Turkish one from i18n', () => {
+    const alt = ortak().casuist.gorselAlt;
+    for (const { oz } of tumResimler) {
+      const g = al(oz.src ?? '');
+      const metin = g.altAnahtari ? alt[g.altAnahtari] : oz.alt;
+      expect(metin?.trim().length, oz.src).toBeGreaterThan(0);
     }
   });
 

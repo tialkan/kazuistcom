@@ -1,0 +1,268 @@
+/* Yazma zamanı: paper and ink, one accent. Values come from the design tokens only. */
+
+.bolum {
+  max-width: 62rem;
+  margin-block: var(--kz-space-12);
+  padding-top: var(--kz-space-6);
+  border-top: 2px solid var(--kz-color-text);
+}
+.bolum > h2 {
+  font-size: var(--kz-text-2xl);
+}
+.okuma {
+  max-width: var(--kz-reading-max);
+}
+.not {
+  max-width: var(--kz-reading-max);
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-sm);
+}
+
+/* Hub cards */
+.kartlar {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: var(--kz-space-6);
+  margin: var(--kz-space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.kart {
+  display: grid;
+  align-content: start;
+  gap: var(--kz-space-3);
+  padding: var(--kz-space-4);
+  border: 1px solid var(--kz-color-border);
+  border-top: 3px solid var(--kz-color-text);
+  background: var(--kz-color-surface);
+}
+.kart h3 {
+  margin: 0;
+  font-size: var(--kz-text-lg);
+}
+.kart p {
+  margin: 0;
+  color: var(--kz-color-text-muted);
+}
+
+/* Journals */
+.dergiForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--kz-space-3);
+  max-width: 40rem;
+}
+.dergiForm > :first-child {
+  flex: 1 1 14rem;
+}
+.dergiListesi {
+  display: grid;
+  gap: var(--kz-space-2);
+  margin: var(--kz-space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  max-width: var(--kz-reading-max);
+}
+.dergiListesi li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--kz-space-2);
+  padding-block: var(--kz-space-2);
+  border-bottom: 1px solid var(--kz-color-border);
+}
+
+/* Steps and groups */
+.adim {
+  margin-block: var(--kz-space-8);
+}
+.adim h2 {
+  font-size: var(--kz-text-xl);
+}
+.secenekler {
+  display: grid;
+  gap: var(--kz-space-3);
+  max-width: var(--kz-reading-max);
+  border: 0;
+  padding: 0;
+  margin: 0 0 var(--kz-space-4);
+}
+.secenekler legend {
+  font-weight: 600;
+  margin-bottom: var(--kz-space-2);
+}
+.secenek {
+  display: flex;
+  align-items: start;
+  gap: var(--kz-space-2);
+  min-height: 2.75rem;
+}
+.secenek input {
+  margin-top: 0.35rem;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+.kutu {
+  max-width: var(--kz-reading-max);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-accent);
+  background: var(--kz-color-surface);
+}
+.kutu p {
+  margin: 0;
+}
+.kutuUyari {
+  border-left-color: var(--kz-color-warning);
+}
+.kutuHata {
+  border-left-color: var(--kz-color-danger);
+}
+.durum {
+  min-height: 1.6em;
+  margin: var(--kz-space-2) 0 0;
+  font-weight: 600;
+}
+.eylemler {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-3);
+  margin-top: var(--kz-space-3);
+}
+.gizli {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Rule form */
+.grup {
+  margin-block: var(--kz-space-6);
+  padding: 0;
+  border: 0;
+}
+.grup > legend {
+  padding: 0;
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-lg);
+  font-weight: 600;
+}
+.alanlar {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: var(--kz-space-4) var(--kz-space-6);
+  margin-top: var(--kz-space-3);
+}
+.alan {
+  display: grid;
+  align-content: start;
+  gap: var(--kz-space-1);
+}
+.alan label {
+  font-weight: 600;
+}
+.alan textarea {
+  min-height: 9rem;
+}
+.alanUst {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--kz-space-2);
+}
+.alanTam {
+  grid-column: 1 / -1;
+  max-width: var(--kz-reading-max);
+}
+.aralik {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--kz-space-3);
+}
+.kaynak {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid currentColor;
+  font-size: var(--kz-text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.kaynakKilavuz {
+  color: var(--kz-color-success);
+}
+.kaynakOrnek {
+  color: var(--kz-color-text-muted);
+}
+.kaynakDuzenlendi {
+  color: var(--kz-color-accent);
+}
+.alinti {
+  margin: var(--kz-space-1) 0 0;
+  padding: var(--kz-space-2) var(--kz-space-3);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-text);
+  background: var(--kz-color-surface);
+  font-size: var(--kz-text-sm);
+}
+.alinti cite {
+  display: block;
+  margin-top: var(--kz-space-1);
+  font-style: normal;
+  font-weight: 600;
+  color: var(--kz-color-text-muted);
+}
+.linkDugme {
+  padding: 0;
+  min-height: 2.75rem;
+  border: 0;
+  background: none;
+  color: var(--kz-color-accent);
+  font: inherit;
+  font-size: var(--kz-text-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.linkDugme:focus-visible {
+  outline: 2px solid var(--kz-color-focus);
+  outline-offset: 2px;
+}
+
+/* Check result and abbreviations table */
+.sonuc h3 {
+  font-size: var(--kz-text-lg);
+}
+.durumUygun {
+  color: var(--kz-color-success);
+  font-weight: 600;
+}
+.durumUyumsuz {
+  color: var(--kz-color-danger);
+  font-weight: 600;
+}
+.durumYok {
+  color: var(--kz-color-text-muted);
+  font-weight: 600;
+}
+.durumElle {
+  color: var(--kz-color-warning);
+  font-weight: 600;
+}
+.tabloDuzen table {
+  inline-size: 100%;
+}
+.tabloDuzen input[type='text'] {
+  inline-size: 100%;
+  min-inline-size: 12rem;
+}
+.kopyaAlani textarea {
+  font-family: var(--kz-font-mono);
+  font-size: var(--kz-text-sm);
+  min-height: 9rem;
+}
+.dergiTablo dt {
+  font-weight: 600;
+}

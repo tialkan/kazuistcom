@@ -7,7 +7,7 @@ import { baglantiAcik, tr } from '../_bilesen/metin.ts';
 import { kontrol } from '../_veri/rehberler.ts';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.kontrolBaslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.kontrolBaslik} | ${ortak().marka}`,
   description: tr.meta.kontrolAciklama,
 };
 

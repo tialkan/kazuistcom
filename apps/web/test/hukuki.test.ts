@@ -49,10 +49,22 @@ describe('publication gate (ADR-0023)', () => {
   });
   it('loads and validates every content/hukuki text', () => {
     const tr = hukukiMetinler('tr');
-    const en = hukukiMetinler('en');
     expect(tr.length).toBeGreaterThan(10);
-    expect(en.length).toBe(5);
-    for (const m of en) expect(m.fm.binding).toBe(false);
+    for (const m of tr) {
+      expect(m.fm.lang).toBe('tr');
+      expect(m.fm.binding).toBe(true);
+      // ADR-0032: no English counterpart, so no hreflang pair.
+      expect(m.fm.alternate).toBeUndefined();
+    }
+  });
+  it('rejects a legal text in another language (ADR-0032)', () => {
+    const d = mkdtempSync(join(tmpdir(), 'hukuki-'));
+    const f = join(d, 'x.md');
+    writeFileSync(
+      f,
+      '---\ntitle: X\nslug: x\nroute: /legal/x\nlang: en\nbinding: false\nversion: 2026-10-19.1\ndate: 2026-10-19\nstatus: taslak\n---\nText.\n',
+    );
+    expect(() => oku(f)).toThrow(/ADR-0032/);
   });
   it('hides drafts in production and bands them elsewhere', () => {
     const m = hukukiMetin('tr', 'uyari');

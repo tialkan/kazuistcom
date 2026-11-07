@@ -1,0 +1,366 @@
+import {
+  AnswerRequest,
+  formatSseEvent,
+  PrepareRequest,
+  VerifyRequest,
+  type AnswerEvent,
+  type ModelLine,
+} from '@kazuist/contracts';
+import {
+  answerEvents,
+  createLineValidator,
+  DEEP_SELECTION,
+  passagesFromPrompt,
+  search,
+  selectPassages,
+  sourceChips,
+  STANDARD_SELECTION,
+  type AnswerTexts,
+  type PromptPassage,
+} from '@kazuist/casuist';
+import {
+  BudgetError,
+  buildSourcedPrompt,
+  GatewayError,
+  NonceGoneError,
+  prepareBundle,
+  ROUTES,
+  scrub,
+  SignatureError,
+  SOURCED_SUMMARY_SYSTEM,
+  verifyBundle,
+  type GatewayEvent,
+} from '@kazuist/ai-gateway';
+import ozet from '@kazuist/i18n/tr/ozet.json' with { type: 'json' };
+import { and, desc, eq, gt, isNotNull } from 'drizzle-orm';
+import { withAuth, type Principal } from '@/server/auth/guard';
+import { apiError, json, noStore, rateLimited, readJson } from '@/server/auth/http';
+import { schema } from '@/server/auth/db';
+import type { AuthContext } from '@/server/auth/context';
+import { clientIp } from '@/server/auth/rate-limit';
+import { getSearchDeps, SearchUnavailable } from './baglam.ts';
+import { getSummaryDeps, istanbulDay, keyedHash, maskQuery, nameRecognizer } from './gecit.ts';
+import { casuistRules, logError } from './hiz.ts';
+
+/** plan 4.2 and 4.4: daily free sourced summaries and credits per summary. */
+export const FREE_PER_DAY = { standart: 2, eduDogrulanmis: 5 } as const;
+export const CREDITS = { standart: 2, derin: 60 } as const;
+
+export const answerTexts: AnswerTexts = {
+  sabitFr19: ozet.sabitUyari,
+  sabitFr20: ozet.danismanlikUyarisi,
+  cekimser: ozet.cekimser,
+  uyari: {
+    veri_gunu: ozet.uyari.veriGunu,
+    guncellik: ozet.uyari.guncellik,
+    destekleyici_kaynak: ozet.uyari.destekleyici,
+  },
+};
+
+/** Edu verification is valid for a year (plan 10.1/3). */
+async function eduVerified(ctx: AuthContext, userId: string, now: Date): Promise<boolean> {
+  const yearAgo = new Date(now.getTime() - 365 * 86_400_000);
+  const rows = await ctx.db
+    .select({ id: schema.eduVerifications.id })
+    .from(schema.eduVerifications)
+    .where(
+      and(
+        eq(schema.eduVerifications.userId, userId),
+        isNotNull(schema.eduVerifications.verifiedAt),
+        gt(schema.eduVerifications.verifiedAt, yearAgo),
+      ),
+    )
+    .limit(1);
+  return rows.length > 0;
+}
+
+/** Latest decision of the user for a consent kind (content/hukuki acik-riza madde 3: yz_aktarim). */
+async function consentGranted(ctx: AuthContext, userId: string, kind: 'yz_aktarim'): Promise<boolean> {
+  const [row] = await ctx.db
+    .select({ granted: schema.consents.granted })
+    .from(schema.consents)
+    .where(and(eq(schema.consents.userId, userId), eq(schema.consents.kind, kind)))
+    .orderBy(desc(schema.consents.createdAt))
+    .limit(1);
+  return row?.granted === true;
+}
+
+const IDEMPOTENCY = /^[\x21-\x7e]{8,100}$/;
+
+function sse(events: AsyncIterable<AnswerEvent>, onClose: () => void): Response {
+  const enc = new TextEncoder();
+  const it = events[Symbol.asyncIterator]();
+  const body = new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      try {
+        const next = await it.next();
+        if (next.done) {
+          controller.close();
+          onClose();
+        } else controller.enqueue(enc.encode(formatSseEvent(next.value)));
+      } catch (e) {
+        // A failure after the stream started ends it without details (wt.65).
+        controller.error(e instanceof Error ? new Error(e.name) : new Error('stream'));
+        onClose();
+      }
+    },
+    async cancel() {
+      await it.return?.(undefined);
+      onClose();
+    },
+  });
+  return new Response(body, {
+    status: 200,
+    headers: {
+      ...noStore,
+      'content-type': 'text/event-stream; charset=utf-8',
+      'x-accel-buffering': 'no',
+      connection: 'keep-alive',
+    },
+  });
+}
+
+async function* noLines(): AsyncGenerator<ModelLine | null> {}
+
+function gatewayErrorResponse(e: unknown): Response | null {
+  if (e instanceof BudgetError) return rateLimited(60);
+  if (e instanceof GatewayError) {
+    if (e.code === 'insufficient_credits') return apiError('insufficient_credits', ozet.hata.krediYetersiz);
+    if (e.code === 'unavailable') return apiError('unavailable', ozet.hata.saglayiciYok);
+    if (e.code === 'forbidden') return apiError('forbidden', ozet.hata.saglayiciIzinYok);
+    if (e.code === 'payload_too_large') return apiError('payload_too_large');
+    if (e.code === 'conflict') return apiError('conflict');
+    return apiError('bad_request');
+  }
+  return null;
+}
+
+/** POST /v1/answers (SSE): retrieval, Ek D prompt through the gateway, line validation, abstention. */
+async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Response> {
+  const key = req.headers.get('idempotency-key') ?? '';
+  if (!IDEMPOTENCY.test(key)) return apiError('bad_request');
+  const parsed = AnswerRequest.safeParse(await readJson(req));
+  if (!parsed.success) return apiError('bad_request');
+  const body = parsed.data;
+  if (body.mode === 'byok_aktarma') {
+    if (!body.byok) return apiError('bad_request');
+    if (!(await consentGranted(ctx, p.userId, 'yz_aktarim')))
+      return apiError('forbidden', ozet.hata.izinGerekli);
+  }
+
+  const deps = getSummaryDeps();
+  const now = deps.now();
+  const requestId = `ozet:${keyedHash(deps.hashSecret, 'istek', `${p.userId}:${key}`)}`;
+  const userHash = keyedHash(deps.hashSecret, 'kullanici', p.userId);
+  const ip = clientIp(req.headers, ctx.config.trustedProxies);
+  const ipHash = keyedHash(deps.hashSecret, 'ip', ip);
+
+  let searchDeps;
+  try {
+    searchDeps = await getSearchDeps();
+  } catch (e) {
+    if (e instanceof SearchUnavailable) return apiError('unavailable');
+    throw e;
+  }
+  const result = await search(
+    { q: body.q, ...(body.filters ?? {}), page: 1, pageSize: 50 },
+    { ...searchDeps, mask: maskQuery },
+  );
+  const passages: PromptPassage[] = await selectPassages(
+    result.items,
+    result.query,
+    searchDeps.backend,
+    body.depth === 'derin' ? DEEP_SELECTION : STANDARD_SELECTION,
+  );
+
+  // No sources: abstain at once; nothing is sent to a provider and nothing is charged (plan 7.4/4, 4.5/3).
+  if (!passages.length) {
+    return sse(
+      answerEvents({ requestId, passages, lines: noLines(), texts: answerTexts, now, settle: () => 0 }),
+      () => undefined,
+    );
+  }
+
+  const platform = body.mode === 'platform';
+  let free = false;
+  let freeKey: string | null = null;
+  if (platform && body.depth === 'standart') {
+    const limit = (await eduVerified(ctx, p.userId, now))
+      ? FREE_PER_DAY.eduDogrulanmis
+      : FREE_PER_DAY.standart;
+    freeKey = `ozet:ucretsiz:${userHash}:${istanbulDay(now)}`;
+    if ((await deps.counters.get(freeKey)) < limit) {
+      free = true;
+      await deps.counters.incrBy(freeKey, 1, 2 * 86_400);
+    }
+  }
+  const credits = platform && !free ? CREDITS[body.depth] : 0;
+  const refundFree = async (): Promise<void> => {
+    if (free && freeKey) await deps.counters.incrBy(freeKey, -1, 2 * 86_400);
+  };
+
+  deps.ledger.setAccepted(requestId, 0);
+  const run = deps.gateway.run({
+    requestId,
+    operation: body.depth === 'derin' ? 'derin_ozet' : 'ozet',
+    mode: platform ? 'platform' : 'byok_aktarma',
+    userId: p.userId,
+    userHash,
+    ipHash,
+    credits,
+    free,
+    question: body.q,
+    passages: passages.map((x) => ({
+      id: x.id,
+      type: x.type,
+      authority: x.authority,
+      status: x.status,
+      date: x.date,
+      dataDay: x.dataDay,
+      text: x.text,
+    })),
+    ...(body.byok
+      ? { byok: { provider: body.byok.provider, model: body.byok.model, apiKey: body.byok.apiKey } }
+      : {}),
+    signal: req.signal,
+  });
+  const it = run[Symbol.asyncIterator]();
+  let first: IteratorResult<GatewayEvent>;
+  try {
+    // Admission, reservation and the first provider byte happen here, so their errors are plain HTTP errors.
+    first = await it.next();
+  } catch (e) {
+    deps.ledger.forget(requestId);
+    await refundFree();
+    const r = gatewayErrorResponse(e);
+    if (r) return r;
+    throw e;
+  }
+
+  let charged = 0;
+  async function* lines(): AsyncGenerator<ModelLine | null> {
+    try {
+      for (let cur = first; !cur.done; cur = await it.next()) {
+        const ev = cur.value;
+        if (ev.t === 'satir') yield ev.line;
+        else if (ev.t === 'gecersiz') yield null;
+        else charged = ev.cost.creditsCharged;
+      }
+    } catch (e) {
+      // Technical errors are free (plan 4.5/3): the gateway released the hold; the free use is returned too.
+      await refundFree();
+      throw e;
+    }
+  }
+  const events = answerEvents({
+    requestId,
+    passages,
+    lines: lines(),
+    texts: answerTexts,
+    now,
+    onProgress: (s) => deps.ledger.setAccepted(requestId, s.accepted),
+    settle: async (s) => {
+      if (s.abstained) await refundFree();
+      return s.abstained ? 0 : Math.min(charged, credits);
+    },
+  });
+  return sse(events, () => deps.ledger.forget(requestId));
+}
+
+export const answersPost = withAuth({ rate: casuistRules.answerUser }, async (req, p, ctx) => {
+  try {
+    return await answer(req, p, ctx);
+  } catch (e) {
+    return apiError('internal', undefined, {}, logError(req, e));
+  }
+});
+
+/** POST /v1/answers/prepare (plan 8.1, BYOK istemci): masked question and passages in a signed bundle. */
+export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (req) => {
+  const parsed = PrepareRequest.safeParse(await readJson(req));
+  if (!parsed.success) return apiError('bad_request');
+  const deps = getSummaryDeps();
+  if (!deps.signingSecret) return apiError('unavailable');
+  const searchDeps = await getSearchDeps();
+  const result = await search(
+    { q: parsed.data.q, page: 1, pageSize: 50 },
+    { ...searchDeps, mask: maskQuery },
+  );
+  const derin = parsed.data.depth === 'derin';
+  const passages = await selectPassages(
+    result.items,
+    result.query,
+    searchDeps.backend,
+    derin ? DEEP_SELECTION : STANDARD_SELECTION,
+  );
+  // Same scrub as the gateway: question and passages together, so labels are consistent.
+  const SEP = '\u0000\u0001';
+  const scrubbed = await scrub([parsed.data.q, ...passages.map((x) => x.text)].join(SEP), nameRecognizer);
+  scrubbed.mapping.clear();
+  const parts = scrubbed.text.split(SEP);
+  const masked = passages.map((x, i) => ({
+    id: x.id,
+    type: x.type,
+    authority: x.authority,
+    status: x.status,
+    date: x.date,
+    dataDay: x.dataDay,
+    text: parts[i + 1] ?? '',
+  }));
+  const prompt = buildSourcedPrompt(parts[0] ?? '', masked);
+  const route = ROUTES[derin ? 'derin_ozet' : 'ozet'];
+  const bundle = await prepareBundle(
+    deps.nonces,
+    deps.signingSecret,
+    {
+      provider: parsed.data.provider,
+      model: parsed.data.model,
+      system: SOURCED_SUMMARY_SYSTEM,
+      prompt,
+      sourceIds: passages.map((x) => x.id),
+    },
+    deps.now(),
+  );
+  // The client validates against exactly what the model sees (the scrubbed passages in the prompt).
+  const forClient = passagesFromPrompt(prompt);
+  return json({
+    nonce: bundle.nonce,
+    expiresAt: bundle.expiresAt,
+    signature: bundle.signature,
+    system: bundle.system,
+    prompt: bundle.prompt,
+    sources: sourceChips(passages),
+    passages: Object.fromEntries(forClient.map((x) => [x.id, x.text])),
+    limits: { maxInputTokens: route.maxInputTokens, maxOutputTokens: route.maxOutputTokens },
+  });
+});
+
+/** POST /v1/answers/verify (plan 8.1): server side re-validation of BYOK client lines; nonce is single use. */
+export const verifyPost = withAuth({ rate: casuistRules.verifyUser }, async (req) => {
+  const parsed = VerifyRequest.safeParse(await readJson(req));
+  if (!parsed.success) return apiError('bad_request');
+  const deps = getSummaryDeps();
+  if (!deps.signingSecret) return apiError('unavailable');
+  let bundle;
+  try {
+    bundle = await verifyBundle(
+      deps.nonces,
+      deps.signingSecret,
+      parsed.data.nonce,
+      parsed.data.signature,
+      deps.now(),
+    );
+  } catch (e) {
+    if (e instanceof NonceGoneError) return apiError('nonce_expired');
+    if (e instanceof SignatureError) return apiError('bad_request');
+    throw e;
+  }
+  const v = createLineValidator(passagesFromPrompt(bundle.prompt), { now: deps.now() });
+  const results = [];
+  for (const [index, line] of parsed.data.lines.entries()) {
+    const verdict = await v.check(line);
+    results.push({ index, ok: verdict.ok, reason: verdict.ok ? null : verdict.reason });
+  }
+  // Saving verified summaries needs a table that the contract does not have yet (docs/istekler); savedId stays null.
+  return json({ results, abstained: v.summary().abstained, savedId: null });
+});

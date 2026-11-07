@@ -7,7 +7,7 @@ import { etkinMi, moduller } from './rotalar.ts';
 /** Module tabs. Client side only to mark the current section with aria-current. */
 export function ModulGezinmesi() {
   const path = usePathname() ?? '/';
-  const t = ortak('tr');
+  const t = ortak();
   return (
     <nav className="kabuk-moduller" aria-label={t.gezinme.moduller}>
       <ul>

@@ -8,7 +8,7 @@ import { gecerliIdler } from './_veri/rehberler.ts';
 import styles from './rehberler.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.baslik} | ${ortak().marka}`,
   description: tr.meta.aciklama,
 };
 

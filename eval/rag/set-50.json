@@ -1,0 +1,276 @@
+{
+  "surum": "rag-50-2026-11-07",
+  "derlem": "fikstur-2026-11-07",
+  "aciklama": "Dalga 2 kaynaklı özet seti (plan 6.7, 7.6). beklenen alanı packages/casuist/fixtures/kayitlar.json içindeki sourceKey değerleridir. Cevaplı sorular derlemde birebir dayanağı olan sorulardır; cevapsız sorular derlemde karşılığı olmayan konulardır; tuzak sorular yürürlükten kalkmış ya da değişmiş bir hükmü varsayar. Etiketleme casuist ajanı tarafından yapıldı; hukukçu editör teyidi bekliyor.",
+  "sorular": [
+    {
+      "id": "c01",
+      "tur": "cevapli",
+      "soru": "Kişisel veriler hangi durumda silinir, yok edilir veya anonim hâle getirilir?",
+      "beklenen": ["mevzuat:6698:m7"]
+    },
+    {
+      "id": "c02",
+      "tur": "cevapli",
+      "soru": "İlgili kişi veri sorumlusuna başvurarak hangi hakları kullanabilir?",
+      "beklenen": ["mevzuat:6698:m11"]
+    },
+    { "id": "c03", "tur": "cevapli", "soru": "KVKK m.11", "beklenen": ["mevzuat:6698:m11"] },
+    {
+      "id": "c04",
+      "tur": "cevapli",
+      "soru": "Açık rıza kanunda nasıl tanımlanır?",
+      "beklenen": ["mevzuat:6698:m3"]
+    },
+    {
+      "id": "c05",
+      "tur": "cevapli",
+      "soru": "Kişisel verilerin işlenmesinde uyulması zorunlu genel ilkeler nelerdir?",
+      "beklenen": ["mevzuat:6698:m4"]
+    },
+    {
+      "id": "c06",
+      "tur": "cevapli",
+      "soru": "Açık rıza aranmadan kişisel veri işlenebilecek şartlar nelerdir?",
+      "beklenen": ["mevzuat:6698:m5"]
+    },
+    {
+      "id": "c07",
+      "tur": "cevapli",
+      "soru": "Özel nitelikli kişisel veriler hangileridir?",
+      "beklenen": ["mevzuat:6698:m6"]
+    },
+    {
+      "id": "c08",
+      "tur": "cevapli",
+      "soru": "Kişisel veriler açık rıza olmadan üçüncü kişilere aktarılabilir mi?",
+      "beklenen": ["mevzuat:6698:m8"]
+    },
+    {
+      "id": "c09",
+      "tur": "cevapli",
+      "soru": "Kişisel verilerin yurt dışına aktarılmasında yeterlilik kararı nedir?",
+      "beklenen": ["mevzuat:6698:m9"]
+    },
+    {
+      "id": "c10",
+      "tur": "cevapli",
+      "soru": "Veri sorumlusunun aydınlatma yükümlülüğü neleri kapsar?",
+      "beklenen": ["mevzuat:6698:m10"]
+    },
+    {
+      "id": "c11",
+      "tur": "cevapli",
+      "soru": "Veri güvenliği için veri sorumlusu hangi tedbirleri almak zorundadır?",
+      "beklenen": ["mevzuat:6698:m12"]
+    },
+    {
+      "id": "c12",
+      "tur": "cevapli",
+      "soru": "Veri sorumlusu ilgili kişinin başvurusunu ne kadar sürede sonuçlandırır?",
+      "beklenen": ["mevzuat:6698:m13"]
+    },
+    {
+      "id": "c13",
+      "tur": "cevapli",
+      "soru": "Başvurusu reddedilen ilgili kişi Kurula ne zaman şikâyette bulunabilir?",
+      "beklenen": ["mevzuat:6698:m14"]
+    },
+    {
+      "id": "c14",
+      "tur": "cevapli",
+      "soru": "Veri Sorumluları Siciline kayıt yükümlülüğü",
+      "beklenen": ["mevzuat:6698:m16"]
+    },
+    {
+      "id": "c15",
+      "tur": "cevapli",
+      "soru": "Aydınlatma yükümlülüğünü yerine getirmeyen veri sorumlusuna hangi idari para cezası verilir?",
+      "beklenen": ["mevzuat:6698:m18"]
+    },
+    {
+      "id": "c16",
+      "tur": "cevapli",
+      "soru": "Kişisel Verileri Koruma Kurulu kaç üyeden oluşur?",
+      "beklenen": ["mevzuat:6698:m21"]
+    },
+    {
+      "id": "c17",
+      "tur": "cevapli",
+      "soru": "Kişisel Verilerin Korunması Kanunu hangi hâllerde uygulanmaz?",
+      "beklenen": ["mevzuat:6698:m28"]
+    },
+    {
+      "id": "c18",
+      "tur": "cevapli",
+      "soru": "Kişisel Verilerin Korunması Kanununun amacı nedir?",
+      "beklenen": ["mevzuat:6698:m1"]
+    },
+    { "id": "c19", "tur": "cevapli", "soru": "TBK 49", "beklenen": ["mevzuat:6098:m49"] },
+    {
+      "id": "c20",
+      "tur": "cevapli",
+      "soru": "Haksız fiilde zararın ve kusurun ispat yükü kimdedir?",
+      "beklenen": ["mevzuat:6098:m50"]
+    },
+    {
+      "id": "c21",
+      "tur": "cevapli",
+      "soru": "Hâkim haksız fiil tazminatını hangi durumlarda indirebilir?",
+      "beklenen": ["mevzuat:6098:m52"]
+    },
+    {
+      "id": "c22",
+      "tur": "cevapli",
+      "soru": "Bedensel zarar kalemleri nelerdir?",
+      "beklenen": ["mevzuat:6098:m54"]
+    },
+    {
+      "id": "c23",
+      "tur": "cevapli",
+      "soru": "Bedensel bütünlüğün zedelenmesinde manevi tazminat",
+      "beklenen": ["mevzuat:6098:m56"]
+    },
+    {
+      "id": "c24",
+      "tur": "cevapli",
+      "soru": "Kişilik hakkının zedelenmesinden doğan manevi tazminat",
+      "beklenen": ["mevzuat:6098:m58"]
+    },
+    {
+      "id": "c25",
+      "tur": "cevapli",
+      "soru": "Adam çalıştıran, çalışanın verdiği zarardan nasıl sorumlu olur?",
+      "beklenen": ["mevzuat:6098:m66"]
+    },
+    {
+      "id": "c26",
+      "tur": "cevapli",
+      "soru": "Haksız fiilden doğan tazminat istemi kaç yılda zamanaşımına uğrar?",
+      "beklenen": ["mevzuat:6098:m72"]
+    },
+    {
+      "id": "c27",
+      "tur": "cevapli",
+      "soru": "Hayvanın verdiği zarardan kim sorumludur?",
+      "beklenen": ["mevzuat:6098:m67"]
+    },
+    {
+      "id": "c28",
+      "tur": "cevapli",
+      "soru": "Anayasa'da özel hayatın gizliliği ve kişisel verilerin korunması hakkı",
+      "beklenen": ["mevzuat:2709:m20"]
+    },
+    {
+      "id": "c29",
+      "tur": "cevapli",
+      "soru": "Temel hak ve hürriyetler hangi şartlarla sınırlanabilir?",
+      "beklenen": ["mevzuat:2709:m13"]
+    },
+    {
+      "id": "c30",
+      "tur": "cevapli",
+      "soru": "Anayasa Mahkemesi kararları kesin midir ve kimleri bağlar?",
+      "beklenen": ["mevzuat:2709:m153"]
+    },
+    {
+      "id": "c31",
+      "tur": "cevapli",
+      "soru": "Temel haklara ilişkin milletlerarası andlaşma ile kanun çatışırsa hangisi esas alınır?",
+      "beklenen": ["mevzuat:2709:m90"]
+    },
+    {
+      "id": "c32",
+      "tur": "cevapli",
+      "soru": "Anayasa Mahkemesine bireysel başvuru şartları",
+      "beklenen": ["mevzuat:2709:m148"]
+    },
+    {
+      "id": "c33",
+      "tur": "cevapli",
+      "soru": "Unutulma hakkı Yargıtay kararı",
+      "beklenen": ["yargitay:1196596300", "yargitay:899210400"]
+    },
+    {
+      "id": "c34",
+      "tur": "cevapli",
+      "soru": "Verileri hukuka aykırı olarak verme veya ele geçirme suçundan beraat kararının bozulması",
+      "beklenen": ["yargitay:746229100"]
+    },
+    {
+      "id": "c35",
+      "tur": "cevapli",
+      "soru": "Banka çalışanının müşteriyle yaptığı telefon görüşmesi kaydına erişim talebinin reddi",
+      "beklenen": ["kvkk:2024-592"]
+    },
+    {
+      "id": "c36",
+      "tur": "cevapli",
+      "soru": "E. 2019/14037 K. 2022/2232",
+      "beklenen": ["yargitay:746229100"]
+    },
+    { "id": "u01", "tur": "cevapsiz", "soru": "İşçinin kıdem tazminatı nasıl hesaplanır?", "beklenen": [] },
+    {
+      "id": "u02",
+      "tur": "cevapsiz",
+      "soru": "Kira artış oranı yasal olarak nasıl belirlenir?",
+      "beklenen": []
+    },
+    {
+      "id": "u03",
+      "tur": "cevapsiz",
+      "soru": "Marka tescilinde ayırt edicilik şartı nedir?",
+      "beklenen": []
+    },
+    { "id": "u04", "tur": "cevapsiz", "soru": "Kamulaştırma bedeli nasıl tespit edilir?", "beklenen": [] },
+    { "id": "u05", "tur": "cevapsiz", "soru": "İcra takibine itiraz süresi kaç gündür?", "beklenen": [] },
+    {
+      "id": "u06",
+      "tur": "cevapsiz",
+      "soru": "Ticari davalarda arabuluculuk dava şartı mıdır?",
+      "beklenen": []
+    },
+    {
+      "id": "u07",
+      "tur": "cevapsiz",
+      "soru": "Vergi ziyaı cezasında uzlaşma nasıl yapılır?",
+      "beklenen": []
+    },
+    { "id": "u08", "tur": "cevapsiz", "soru": "İmar planına karşı dava açma süresi", "beklenen": [] },
+    {
+      "id": "u09",
+      "tur": "cevapsiz",
+      "soru": "Kat mülkiyetinde ortak giderlere katılma yükümlülüğü",
+      "beklenen": []
+    },
+    { "id": "u10", "tur": "cevapsiz", "soru": "Limited şirkette ortaklıktan çıkma şartları", "beklenen": [] },
+    {
+      "id": "t01",
+      "tur": "tuzak",
+      "soru": "KVKK m.6/2'ye göre sağlık ve cinsel hayat verileri hangi şartla işlenir?",
+      "beklenen": ["mevzuat:6698:m6"],
+      "not": "6/2 fıkrası 2/3/2024 tarihli 7499 sayılı Kanunla mülga; güncel düzenleme 6/3. Doğru davranış mülga fıkrayı yürürlükte gibi anlatmamak."
+    },
+    {
+      "id": "t02",
+      "tur": "tuzak",
+      "soru": "KVKK'ya göre yurt dışına aktarım için ilgili kişinin açık rızası hâlen tek yol mudur?",
+      "beklenen": ["mevzuat:6698:m9"],
+      "not": "m.9 2024 değişikliğiyle yeterlilik kararı ve uygun güvenceler eklendi; 'hâlen' ifadesi güncellik denetimini tetikler."
+    },
+    {
+      "id": "t03",
+      "tur": "tuzak",
+      "soru": "818 sayılı Borçlar Kanunu m.49 bugün de yürürlükte mi?",
+      "beklenen": [],
+      "not": "818 sayılı Kanun derlemde yok; yürürlük hakkında kaynaklı özet çıkarılamaz, çekimserlik beklenir."
+    },
+    {
+      "id": "t04",
+      "tur": "tuzak",
+      "soru": "Kişisel Verileri Koruma Kurulunun dört üyesini Bakanlar Kurulu mu seçer?",
+      "beklenen": ["mevzuat:6698:m21"],
+      "not": "703 sayılı KHK ile 'iki üyesi Cumhurbaşkanı, iki üyesi Bakanlar Kurulu' ibaresi 'dört üyesi Cumhurbaşkanı' olarak değişti."
+    }
+  ]
+}

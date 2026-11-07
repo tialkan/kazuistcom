@@ -9,7 +9,7 @@ import { maddeler } from './_veri/ayristir.ts';
 import styles from './tespit.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.baslik} | ${ortak().marka}`,
   description: tr.meta.aciklama,
 };
 
@@ -28,6 +28,9 @@ export default function TespitSayfasi() {
         <h1>{tr.baslik}</h1>
         <p className="sayfa-ust__giris">{tr.giris}</p>
         <p>{tr.amac}</p>
+        <p>
+          {tr.yazma.metin} <a href="/yazma">{tr.yazma.baglanti}</a>
+        </p>
         <p className={styles.surum}>{surum}</p>
       </header>
 

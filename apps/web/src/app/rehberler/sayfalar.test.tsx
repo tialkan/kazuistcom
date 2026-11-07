@@ -2,6 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { ortak } from '@kazuist/i18n';
 import tr from '@kazuist/i18n/tr/rehberler.json';
+import { modulAcik } from '../(kabuk)/_kabuk/rotalar.ts';
 import { adimGorunumu } from './_bilesen/metin.ts';
 import { AdimListesi } from './_bilesen/AdimListesi.tsx';
 import { makale } from './_veri/rehberler.ts';
@@ -30,16 +31,17 @@ describe('every guide page', () => {
       expect(m).toContain(tr.etik.kutuBaslik);
       for (const ad of ['İntihal', 'Sahtecilik', 'Çarpıtma', 'Tekrar yayım', 'Dilimleme', 'Haksız yazarlık'])
         expect(m).toContain(ad);
-      expect(m).toContain(ortak('tr').uyari.intihal);
-      expect(m).toContain(ortak('tr').uyari.danismanlik);
+      expect(m).toContain(ortak().uyari.intihal);
+      expect(m).toContain(ortak().uyari.danismanlik);
       expect(m).toContain('href="/tespit"');
       expect(m).toContain(tr.gezinme.aria);
     });
 
-    it(`${yol}: no link to a closed module (/ara, /yazma) and no long dash`, () => {
+    it(`${yol}: links only to open modules and no long dash`, () => {
       const m = html(<Sayfa />);
-      expect(m).not.toContain('href="/ara"');
-      expect(m).not.toContain('href="/yazma"');
+      for (const href of m.match(/href="\/(ara|yazma|pratik|atif-agi)"/g) ?? []) {
+        expect(modulAcik(href.slice(6, -1))).toBe(true);
+      }
       expect(m).not.toContain(String.fromCharCode(0x2014));
     });
   }
@@ -63,8 +65,8 @@ describe('article guide', () => {
     const adim = makale.adimlar.find((a) => a.kaynakTuru);
     if (!adim) throw new Error('no search step');
     const g = adimGorunumu(adim, 1);
-    // /ara is not in acikModuller yet, so no button is built
-    expect(g.araEtiket).toBeNull();
+    // the button is built exactly when /ara is in acikModuller
+    expect(g.araEtiket === null).toBe(!modulAcik('/ara'));
     const acik = html(<AdimListesi liste="makale" adimlar={[{ ...g, araEtiket: tr.adim.ara.mevzuat }]} />);
     expect(acik).toContain('href="/ara"');
   });

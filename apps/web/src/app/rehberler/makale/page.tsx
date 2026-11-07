@@ -8,7 +8,7 @@ import { makale } from '../_veri/rehberler.ts';
 import styles from '../rehberler.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.makaleBaslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.makaleBaslik} | ${ortak().marka}`,
   description: tr.meta.makaleAciklama,
 };
 

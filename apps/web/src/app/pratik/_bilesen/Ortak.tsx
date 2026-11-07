@@ -18,7 +18,7 @@ export function SabitNotlar() {
     <footer className={styles.sabitNotlar}>
       <p>{tr.kaynakNotu}</p>
       <p>{tr.cihazNotu}</p>
-      <p>{ortak('tr').uyari.danismanlik}</p>
+      <p>{ortak().uyari.danismanlik}</p>
     </footer>
   );
 }

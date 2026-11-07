@@ -1,0 +1,145 @@
+/* /kaydettiklerim: a ruled list like a card index; one accent colour for actions. */
+
+.uyari {
+  max-width: var(--kz-reading-max);
+  margin-block: var(--kz-space-4);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-accent);
+  background: var(--kz-color-surface-muted);
+}
+
+.bolum {
+  margin-block: var(--kz-space-8);
+}
+
+.sayi {
+  font-family: var(--kz-font-body);
+  font-size: var(--kz-text-sm);
+  font-weight: 400;
+  color: var(--kz-color-text-muted);
+}
+
+.liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kayit {
+  max-width: 52rem;
+  padding-block: var(--kz-space-4);
+  border-bottom: 1px solid var(--kz-color-border);
+}
+
+.tur {
+  margin: 0;
+  font-size: var(--kz-text-xs);
+  color: var(--kz-color-text-muted);
+}
+
+.baslik {
+  margin: var(--kz-space-1) 0;
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-lg);
+  line-height: var(--kz-leading-tight);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-2);
+  margin: var(--kz-space-2) 0 0;
+}
+
+.durumMetni {
+  font-size: var(--kz-text-sm);
+  color: var(--kz-color-text-muted);
+}
+
+.kunye {
+  margin: var(--kz-space-1) 0 0;
+  font-size: var(--kz-text-xs);
+  color: var(--kz-color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.not {
+  max-width: var(--kz-reading-max);
+  margin: var(--kz-space-2) 0 0;
+  font-size: var(--kz-text-sm);
+}
+
+.notBaslik {
+  font-weight: 600;
+}
+
+.tarih {
+  margin: var(--kz-space-1) 0 0;
+  font-size: var(--kz-text-xs);
+  color: var(--kz-color-text-muted);
+}
+
+.eylemler {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-2) var(--kz-space-6);
+  margin-top: var(--kz-space-2);
+}
+
+.eylem {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--kz-color-accent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.eylem:disabled {
+  color: var(--kz-color-text-muted);
+  text-decoration: none;
+}
+
+.kaldir {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-2);
+}
+
+.hataMetni {
+  color: var(--kz-color-danger);
+  font-size: var(--kz-text-sm);
+}
+
+.kopyala {
+  max-width: var(--kz-reading-max);
+}
+
+.durum {
+  min-height: 1.6em;
+  font-size: var(--kz-text-sm);
+}
+
+.metin {
+  width: 100%;
+  font-family: var(--kz-font-mono);
+  font-size: var(--kz-text-xs);
+}
+
+.indir {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--kz-space-6);
+  margin-top: var(--kz-space-4);
+  padding: 0;
+  list-style: none;
+}

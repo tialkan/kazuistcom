@@ -6,7 +6,7 @@ import { tr } from '../_bilesen/metin.ts';
 import { etik } from '../_veri/rehberler.ts';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.etikBaslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.etikBaslik} | ${ortak().marka}`,
   description: tr.meta.etikAciklama,
 };
 

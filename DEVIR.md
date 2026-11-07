@@ -19,6 +19,77 @@ bu yüzden `rehberler.json` için iki test kırar ve `en` kaldırılınca düzel
   (`apps/web/src/app/rehberler/_kanit/`; axe test tarayıcısında `bypassCSP` ile çalıştı, ekran okuyucuyla elle deneme yapılmadı).
 - Açık: FR-34 sunucu saklama, /ara filtre parametresi, seo (Article, canonical), kitap dayanaklarının asıl metinle
   doğrulanması, Word rehber belgesinin gelmesi, EndNote'ta İSNAD stili doğrulaması.
+## 7 Kasım 2026, on-yuz: ADR-0032 yalnız Türkçe (codex/yalniz-turkce)
+
+Kullanıcı kararı (ADR-0032, PR #64) uygulandı; PR açık, birleştirilmedi. Yönlendirme eklenmedi.
+- i18n: `packages/i18n/en/**` ve `parity.test.ts` silindi. `src/index.ts` tek dilli: `locales`, `Locale`,
+  `sourceLocale` kalktı, `ortak()` parametresiz (tip `tr/ortak.json`'dan). Yeni `test/anahtarlar.test.ts` yalnız tr
+  dizinini, boş değer, yinelenen anahtar ve tip güvenliğini denetler; `check` betiği ona bakar. `ortak.json`'dan
+  `altBilgi.casuistEn`, `anaSayfa.enNotu`, `casuist.baglayiciSurum`, `casuist.turkceSurum` çıktı. Bütün
+  `ortak('tr')` çağrıları `ortak()` oldu.
+- Rotalar: `(casuist)` altındaki /en, /problem, /how-it-works, /evaluation, /partner, /about ve /legal/[belge]
+  sayfaları ile 11 İngilizce arşiv JSON'u silindi. Türkçe arşiv sayfalarından "English" dil bağı (`langLink`)
+  kaldırıldı; `CasuistSayfa` dil dallanmasız, marka bağı /tr. /eski arşivi `lang: tr`, başlığı Türkçe.
+  next.config.ts'deki Türkçe hukuki 301 aynen duruyor (İngilizceye ait girdi yoktu).
+- Kabuk: alt bilgideki "Casuist (English)" bağı ve ana sayfadaki İngilizce not kalktı; `html lang="tr"` zaten sabitti.
+- Hukuki: `content/hukuki/en/**` silindi; altı Türkçe metindeki `alternate: /legal/...` satırı ve /hukuki
+  sayfalarındaki hreflang `alternates` kalktı. `yukle.ts` yalnız `tr` okur, `lang: tr` dışını reddeder;
+  `HukukiGovde` bağlayıcı sürüm notu ve en-GB tarih dalı olmadan.
+- Testler: Ek H tablosu 23 satır kaldı; 2-11 numaralı satırlar `gone` ve 404 beklenir, /en de 404 ve Location yok.
+  Güvenlik başlık testinde /problem yerine /tr. Lighthouse bütçesi /en yerine /tr (CI adımı adı dahil).
+- SEO: main'de sitemap.ts, robots.ts ve public/llms.txt yok; temizlenecek adres yoktu.
+- Doğrulama (origin/main #63 ve #64 birleştirildikten sonra): typecheck, lint, check:text, build; i18n 20,
+  contracts 122, ui 31, casuist 104, db 43, ledger 168, web 487/1 skip, worker-node 77, ai-gateway 67/2 skip.
+  #63'ün eklediği `packages/i18n/en/{yazma,kalemcik,tespit}.json` silindi, yeni `ortak('tr')` çağrıları
+  `ortak()` oldu. Yerel üretim sunucusunda 11 İngilizce adres 404 (Location yok), /tr ve altı, /yazma, /kalemcik
+  200, beş Türkçe hukuki 301. Ekran ve axe `docs/tasarim/ekran`: 16 sayfa, 375/1440 axe 0, üç genişlikte taşma 0.
+- Açık: sözleşme ve sahiplik temizliği `docs/istekler/on-yuz-yalniz-turkce-sozlesme.md` (mimar). Arşiv HTML'leri
+  `docs/tasarim/casuist-arsiv/*.html` kayıt olarak duruyor, dönüştürücü artık yalnız Türkçe sayfaları üretir.
+  Search Console kaldırma talebi seo ajanında (ADR-0032).
+
+## 7 Kasım 2026, yazma: Dalga 2 yazma modülü (codex/dalga2-yazma)
+
+Yeni sözleşme veya şema değişikliği yok; ihtiyaçlar docs/istekler/yazma-*.md (sozlesme, bildirim-ve-hesap, yz-gecidi, orkestra).
+- Çekirdek `apps/web/src/app/yazma/_cekirdek`: kural şeması (SRS 6.2), tez ve makale .docx üreticisi (docx 9.15; iki bölüm, i/ii ve 1/2 numara, Normal/Başlık 1-3/Dipnot Metni stilleri, içindekiler alanı, kapak, ASCII dosya adı), PDF/DOCX/TXT metin çıkarma (20 MB, tür içerikten, zip bombası sınırı, 200 karakter altı uyarı), kural çıkarma hattı (Haiku, şema düşerse Sonnet, alan başına sayfa ve alıntı, alıntı kılavuzda birebir aranır, değer alıntıda geçmezse "Örnek değer"), kısaltmalar cetveli.
+- API (`api/v1/{writing-projects,journals,templates,jobs,abbreviations}`): çalışmalar ve ilerleme, dergi profilleri (yalnız editörün onayladığı sürüm görünür), kılavuz yükleme işi, .docx denetimi, kısaltma cetveli. Dosyalar saklanmaz, YZ'ye gitmez (denetim) ya da maskelenmiş gider (kılavuz; YZ bağlaması kapalı gelir, `YAZMA_YZ=acik`).
+- Sayfalar: /yazma, /yazma/sablon (?dergi=<slug> onaylı profili ekrana doldurur), /yazma/dergiler/[slug], /kalemcik; /tespit ile karşılıklı bağlantı; `acikModuller`'e '/yazma'.
+- Python `services/worker-py/docxcheck`: stdlib ile .docx denetimi (kenar boşluğu, yazı tipi, punto, satır aralığı, girinti, başlıklar, dipnot, sayfa numarası konumu ve Roma/Arap, bölüm sırası, kelime sınırı), iç HTTP ucu, LibreOffice headless PDF ve sayfa numarası doğrulaması, CLI. 43 test.
+- Kalemcik: `apps/worker-node/src/kalemcik` günlük iş (teslim 14/7/3/1/0 gün, üç gün sessizlik kuralı ve iki günde bir tekrar, hitap sen/siz, 30 gün saklama temizliği); mesajlar `content/kalemcik.yaml`'dan (JSON kopyası, test sapmayı yakalar). Metin `notify.send` refId'sinde adlandırılır; kimliğin `render()` satırı bekleniyor.
+- eval/rules: beş gerçek DergiPark kılavuzu, altın etiketler, ölçüm betiği. Plan 15.3/3: "3 kılavuzda hatasız .docx" geçti; "çekirdek %95" **geçmedi** (canlı model ölçümü yok, 5/10 kılavuz). Word ve Google Docs elle kontrol kaydı bekliyor (eval/rules/el-kontrol-kaydi.md).
+- Doğrulama: web 307 test, worker-node 77, i18n 15, python docxcheck 43; typecheck, lint, prettier, check:text, üretim derlemesi; 375/768/1440 axe 0 ihlal ve taşma 0 (eval/rules/ekran, gerçek PostgreSQL 18, gerçek docxcheck servisi, Brave).
+- Açık: orkestra kayıtları (kalemcik.daily, docxcheck bağlama, pyproject testpaths), YZ bütçe ve kredi girişi (yz-gecidi), 10 enstitü/dergi kılavuzu ve canlı ölçüm, DergiPark protokolü olmadan otomatik çekme yapılmadı, editör kuyruğuna düşen dergi taslakları için yönetim arayüzü kimlik/orkestra'da.
+## 7 Kasım 2026, casuist: /ara, kaynaklı özet ve /kaydettiklerim (codex/dalga2-casuist)
+
+Dalga 2 casuist ilk teslimi; PR açık, birleştirilmedi. `packages/contracts` ve `packages/db` değişmedi.
+- Çekirdek `packages/casuist`: Ek D.2 normalizasyonu; norm çözücü (kanun numaraları mevzuat.gov.tr resmî metniyle
+  doğrulandı, `src/laws.ts`); 6.5 kalıplarıyla karar çözücü; kimlik, tam metin ve vektör kollarını RRF (k=60) ile
+  birleştiren arama; ilgililik (sıra kanıtla ölçeklenir) ve önem puanı; 7.3 etiketleri; Ek F otorite sınıfı;
+  `MemoryBackend` (fikstür) ve `sqlBackend` (records, chunks, `turkish` tsvector, halfvec HNSW, citation_edges);
+  pasaj seçimi (künye satırı pasajın ilk satırıdır, sayılar onunla doğrulanır); Ek D.2 satır doğrulayıcısı
+  (`./validator` girişi tarayıcıda çalışır, test Node yerleşiği kullanmadığını zorlar); SSE olay akışı ve çekimserlik;
+  RIS ve BibTeX. Canlı federasyon `LiveSource` arayüzü 1,2 sn bütçeyle hazır, bağdaştırıcı yok.
+- Fikstür: 75 kayıt, resmî kaynaklardan 7 Kasım'da alındı (KVKK tamamı, TBK m.49-75, Anayasa 5 madde, 7 Yargıtay
+  kararı, 1 KVKK Kurul özeti, GDPR m.1-2). Kaynak, özetler ve üretim komutu `packages/casuist/fixtures/KAYNAK.md`.
+  Üretimde fikstür kapalıdır; veritabanı yoksa arama 503 döner.
+- Uçlar: `GET /v1/search`, `/v1/records/:id`, `/v1/norms/resolve` (IP hız sınırlı, yalnız `masked_text`, gizli kayıt
+  yok); `POST /v1/answers` (SSE; yz-gecidi üzerinden yalnız maskeli metin; günlük 2 ücretsiz, edu.tr ile 5; sonra 2
+  kredi; doğrulanmış cümle yoksa hak ve kredi geri; BYOK aktarma `yz_aktarim` onayı ister); `prepare` ve `verify`
+  (tek kullanımlık nonce, imzalı istem, sunucuda yeniden doğrulama); `/v1/library` GET/POST/DELETE ve export
+  (ris, bibtex; İSNAD/OSCOLA/Bluebook CSL kararına kadar 400 ve açıklama).
+- Arayüz: `/ara` (form, filtreler, türe göre sayılı sekmeler, sonuç kartı, kenar şerhli özet, dayanağı göster,
+  sabit uyarılar, etiket sözlüğü, resmî siteler) ve `/kaydettiklerim` (liste, çıkarma, kaynakçayı kopyala, indir).
+  `acikModuller` içine `/ara` ve `/kaydettiklerim` eklendi.
+- Ölçüm: `node eval/rag/olc.ts --yaz`; 50 soru (36 cevaplı, 10 cevapsız, 4 tuzak). Fikstürde ilk 10'da beklenen kaynak
+  36/36, doğrulayıcı 144 saldırgan satırın hiçbirini göstermedi, birebir alıntılı 36/36 satırı kabul etti. Gerçek
+  corpus ve model gerektiren 7.6 eşikleri (çekimserlik, desteksiz cümle, p95'ler, ad sızıntısı) ölçülmedi, geçti
+  sayılmadı. Rapor `eval/rag/raporlar/dalga-2-fikstur.md`.
+- Doğrulama: casuist 104, web 227 geçti/1 skip (PGlite üstünde gerçek göçlerle SQL arka ucu, özet ve kütüphane
+  uçları, taklit sağlayıcı), tüm çalışma alanı testleri, typecheck, lint, check:text, üretim derlemesi. Yerel
+  PostgreSQL 18 + pgvector'de göçler ve fikstür yüklemesi, üretim sunucusunda arama ve 375/768/1440 px axe 0, yatay
+  taşma 0 (özet ekranı taklit SSE ile; görüntüler yerel çalışma klasöründe).
+- Açık: kilit dosyası güncellemesi (orkestra), sözleşme önerileri ve komşu ajan işleri
+  `docs/istekler/casuist-dalga2.md` ve `casuist-kaydettiklerim.md`; embedding servisi ve eval/embed, embed.chunks
+  tüketicisi ve uzlaştırma işi, BYOK istemci arayüzü, zaman çizelgesi (FR-13), CSL biçimleri, gerçek corpus ölçümü.
 ## 7 Kasım 2026, pratik: FSRS, dört oyun, HMGS destesi ve deneme, onay akışı (codex/dalga2-pratik)
 
 Yeni bağımlılık yok; contracts ve db değişmedi (istekler `docs/istekler/pratik-*.md`). Menüde `/pratik` açıldı

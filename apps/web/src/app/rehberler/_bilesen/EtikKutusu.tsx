@@ -14,7 +14,7 @@ export function EtikKutusu({
   acik?: boolean;
   sayfaBaglantisi?: boolean;
 }) {
-  const uyari = ortak('tr').uyari;
+  const uyari = ortak().uyari;
   return (
     <aside className={styles.etikKutusu} aria-labelledby="etik-kutu-baslik">
       <h2 id="etik-kutu-baslik">{tr.etik.kutuBaslik}</h2>

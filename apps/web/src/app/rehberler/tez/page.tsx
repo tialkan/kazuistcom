@@ -8,7 +8,7 @@ import { kaynakBul, tez } from '../_veri/rehberler.ts';
 import styles from '../rehberler.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.tezBaslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.tezBaslik} | ${ortak().marka}`,
   description: tr.meta.tezAciklama,
 };
 

@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { CASUIST, HUKUKI_EN, HUKUKI_TR } from '../adresler.ts';
+import { CASUIST, HUKUKI_TR, KALDIRILAN_EN } from '../adresler.ts';
 
 /**
  * Script errors and failed same-origin requests collected while a page loads. Next.js Link prefetches
@@ -51,7 +51,8 @@ test.describe('product shell', () => {
     await expect(form).toHaveAttribute('action', '/ara');
     await expect(form.locator('input[type="search"]')).toBeVisible();
     expect(await page.locator('.ana-ornekler a').count()).toBeGreaterThanOrEqual(3);
-    await expect(page.locator('a[href="/en"]').first()).toBeVisible();
+    // ADR-0032: Turkish only, no English link or language switch.
+    await expect(page.locator('a[href="/en"]')).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 
@@ -72,14 +73,14 @@ test.describe('product shell', () => {
   });
 
   test('each page has exactly one main landmark', async ({ page }) => {
-    for (const path of ['/', '/fiyatlar', '/hukuki', '/giris', '/kayit', '/hesap', '/problem']) {
+    for (const path of ['/', '/fiyatlar', '/hukuki', '/giris', '/kayit', '/hesap', '/tr']) {
       await page.goto(path);
       expect(await page.locator('main').count(), `${path} main count`).toBe(1);
     }
   });
 });
 
-test.describe('legal texts (/hukuki, /legal)', () => {
+test.describe('legal texts (/hukuki)', () => {
   test('/hukuki lists every public Turkish text', async ({ page }) => {
     await open(page, '/hukuki');
     // Contract templates are shown in the payment step with the order values, not in the index.
@@ -100,14 +101,6 @@ test.describe('legal texts (/hukuki, /legal)', () => {
       expect(errors).toEqual([]);
     });
   }
-
-  for (const slug of HUKUKI_EN) {
-    test(`/legal/${slug} renders with the binding Turkish note`, async ({ page }) => {
-      const errors = await open(page, `/legal/${slug}`);
-      await expect(page.getByText(/Turkish version is binding/i).first()).toBeVisible();
-      expect(errors).toEqual([]);
-    });
-  }
 });
 
 test.describe('protected Casuist pages', () => {
@@ -115,15 +108,18 @@ test.describe('protected Casuist pages', () => {
     test(`${path} renders with its images`, async ({ page }) => {
       const errors = await open(page, path);
       expect(await imagesLoaded(page), `${path} broken images`).toEqual([]);
-      const lang = path.startsWith('/tr') ? 'tr' : 'en';
-      expect(await page.locator(`[lang="${lang}"]`).count(), `${path} content language`).toBeGreaterThan(0);
+      await expect(page.locator('html'), `${path} content language`).toHaveAttribute('lang', 'tr');
+      expect(await page.locator('[lang="en"], [hreflang]').count(), `${path} English markup`).toBe(0);
       expect(errors).toEqual([]);
     });
   }
 
-  test('/ carries the small English note to /en (Ek H row 1)', async ({ page }) => {
-    await open(page, '/');
-    await expect(page.locator('[lang="en"] a[href="/en"]').first()).toBeVisible();
+  test('no page links to a removed English address (ADR-0032)', async ({ page }) => {
+    for (const path of ['/', ...CASUIST]) {
+      await page.goto(path);
+      for (const gone of KALDIRILAN_EN)
+        expect(await page.locator(`a[href="${gone}"]`).count(), `${path} links to ${gone}`).toBe(0);
+    }
   });
 });
 
@@ -133,7 +129,7 @@ test.describe('internal links (WebLINKrobot, local)', () => {
     request,
   }) => {
     const seen = new Set<string>();
-    for (const path of ['/', '/fiyatlar', '/hukuki', '/en', '/tr', '/problem', '/legal/privacy', '/eski']) {
+    for (const path of ['/', '/fiyatlar', '/hukuki', '/tr', '/tr/sorun', '/hukuki/gizlilik', '/eski']) {
       await page.goto(path);
       const hrefs = await page.$$eval('a[href]', (as) => as.map((a) => (a as HTMLAnchorElement).href));
       for (const h of hrefs) {
