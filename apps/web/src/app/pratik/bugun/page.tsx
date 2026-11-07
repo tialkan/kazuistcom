@@ -6,7 +6,7 @@ import { tr } from '../_bilesen/metin.ts';
 import { OnizlemeBandi, SabitNotlar } from '../_bilesen/Ortak.tsx';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.bugunBaslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.bugunBaslik} | ${ortak().marka}`,
 };
 
 /** Today's spaced repetition over every visible deck. */

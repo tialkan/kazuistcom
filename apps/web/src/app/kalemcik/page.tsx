@@ -4,7 +4,7 @@ import tr from '@kazuist/i18n/tr/kalemcik.json';
 import { Kalemcik } from './_bilesen/Kalemcik.tsx';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.baslik} | ${ortak().marka}`,
   description: tr.meta.aciklama,
 };
 

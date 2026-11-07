@@ -25,19 +25,26 @@ export function kazuistOrtami(env: Record<string, string | undefined> = process.
 
 export type HukukiMetin = { dosya: string; fm: LegalFrontMatter; govde: Blok[]; ham: string };
 
+/**
+ * Directory under content/hukuki. Kazuist is Turkish only (ADR-0032): there is no English version, so the
+ * only value is 'tr'. The parameter stays so existing callers keep their explicit 'tr'.
+ */
+export type HukukiDil = 'tr';
+
 export function oku(dosya: string): HukukiMetin {
   const text = readFileSync(/* turbopackIgnore: true */ dosya, 'utf8');
   const parca = splitFrontMatter(text);
   if (!parca) throw new Error(`${dosya}: missing front matter`);
   const fm = LegalFrontMatter.parse(onBilgi(parca.frontMatter));
+  if (fm.lang !== 'tr') throw new Error(`${dosya}: only Turkish legal texts are published (ADR-0032)`);
   const sorun = legalBuildProblems(dosya, fm, parca.body);
   // Build gate: a text marked yayinda with an open marker must break the build.
   if (sorun.length) throw new Error(sorun.join('\n'));
   return { dosya, fm, govde: ayristir(parca.body), ham: parca.body };
 }
 
-/** All texts of a language, validated. Throws on invalid front matter or a failed build gate. */
-export function hukukiMetinler(lang: 'tr' | 'en'): HukukiMetin[] {
+/** All legal texts, validated. Throws on invalid front matter or a failed build gate. */
+export function hukukiMetinler(lang: HukukiDil = 'tr'): HukukiMetin[] {
   const d = join(/* turbopackIgnore: true */ kok(), lang);
   return readdirSync(/* turbopackIgnore: true */ d)
     .filter((f) => f.endsWith('.md'))
@@ -45,7 +52,7 @@ export function hukukiMetinler(lang: 'tr' | 'en'): HukukiMetin[] {
     .map((f) => oku(join(/* turbopackIgnore: true */ d, f)));
 }
 
-export function hukukiMetin(lang: 'tr' | 'en', slug: string): HukukiMetin | null {
+export function hukukiMetin(lang: HukukiDil, slug: string): HukukiMetin | null {
   const f = join(/* turbopackIgnore: true */ kok(), lang, `${slug}.md`);
   return existsSync(/* turbopackIgnore: true */ f) ? oku(f) : null;
 }
@@ -58,6 +65,6 @@ export function gosterimKipi(m: HukukiMetin, ortam: Ortam = kazuistOrtami()): Le
  * Version written to consents.version when a user accepts the text (istek madde 4).
  * Returns null when the text does not exist.
  */
-export function hukukiMetinSurumu(slug: string, lang: 'tr' | 'en' = 'tr'): string | null {
+export function hukukiMetinSurumu(slug: string, lang: HukukiDil = 'tr'): string | null {
   return hukukiMetin(lang, slug)?.fm.version ?? null;
 }

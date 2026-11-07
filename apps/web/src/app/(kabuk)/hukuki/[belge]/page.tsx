@@ -8,7 +8,7 @@ import { HukukiGovde } from '../../_hukuki/HukukiGovde.tsx';
 import { gosterimKipi, hukukiMetin, hukukiMetinler } from '../../_hukuki/yukle.ts';
 import { hukukiBelgeler } from '../../_kabuk/rotalar.ts';
 
-const t = ortak('tr');
+const t = ortak();
 export const dynamicParams = false;
 /** Footer documents plus every content/hukuki/tr text routed under /hukuki (runs the build gate). */
 export const generateStaticParams = () => {
@@ -50,12 +50,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { belge } = await params;
   const g = gosterim(belge);
-  const m = hukukiMetin('tr', belge);
   const noindex = g.tur === 'hazirlaniyor' || (g.tur === 'metin' && g.taslak);
   return {
     title: `${g.baslik} | ${t.marka}`,
     ...(noindex ? { robots: { index: false, follow: true } } : {}),
-    ...(g.tur === 'metin' && m?.fm.alternate ? { alternates: { languages: { en: m.fm.alternate } } } : {}),
   };
 }
 

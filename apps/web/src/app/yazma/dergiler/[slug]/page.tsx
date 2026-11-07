@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const r = await yukle(slug);
   const ad = r?.dergi.name ?? t.bulunamadi;
-  return { title: `${doldur(t.baslik, { ad })} | ${ortak('tr').marka}` };
+  return { title: `${doldur(t.baslik, { ad })} | ${ortak().marka}` };
 }
 
 export default async function DergiProfili({ params }: { params: Promise<{ slug: string }> }) {

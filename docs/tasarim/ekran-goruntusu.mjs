@@ -20,16 +20,15 @@ const pages = [
   ['hukuki-kosullar', '/hukuki/kosullar'],
   ['hukuki-uyari', '/hukuki/uyari'],
   ['hukuki-iade-ve-kredi', '/hukuki/iade-ve-kredi'],
-  ['casuist-legal-privacy', '/legal/privacy'],
   ['bulunamadi', '/bulunmayan-adres'],
   ['bakim', '/bakim'],
-  ['casuist-en', '/en'],
-  ['casuist-partner', '/partner'],
-  ['casuist-legal-notice', '/legal/notice'],
   ['casuist-tr', '/tr'],
   ['casuist-tr-ortak', '/tr/ortak'],
   ['casuist-tr-hakkinda', '/tr/hakkinda'],
   ['eski', '/eski'],
+  ['tespit', '/tespit'],
+  ['pratik', '/pratik'],
+  ['yazma', '/yazma'],
 ];
 const widths = [375, 768, 1440];
 mkdirSync(out, { recursive: true });

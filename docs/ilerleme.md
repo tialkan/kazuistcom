@@ -30,6 +30,7 @@ Güncel orkestra kaydı, 2 Kasım 2026: CI hesap kısıtı kalktı; #43, #50, #5
 | 2 | yazma (codex/dalga2-yazma) | Yazma zamanı: .docx şablonu, kılavuz denetimi, dergi profilleri, Kalemcik, kısaltmalar cetveli | PR açık | typecheck, lint, check:text, testler, build ve 375/768/1440 axe 0 yeşil; 15.3/3: hatasız .docx geçti, çekirdek %95 geçmedi (canlı model ve 10 kılavuz yok); Word ve Google Docs elle kayıt, YZ bütçe girişi ve orkestra kayıtları açık (docs/istekler/yazma-*.md) |
 | 2 | casuist, atif-agi, pratik, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri (Kampüs ADR-0031 ile çıktı) | bekliyor | |
 | 2 | pratik (codex/dalga2-pratik) | FSRS motoru, dört oyun, HMGS destesi ve deneme, onay akışı | PR açık | FSRS-6 ts-fsrs 6.0.0 referansıyla eşleşir; 59 kaynaklı kart 7 destede ama editör onaylı kart 0; 13 HMGS alanında deste yok; veri tabanı eşlemesi ve sözleşme istekleri docs/istekler/pratik-*.md |
+| 2 | on-yuz (codex/yalniz-turkce) | ADR-0032: İngilizce sözlükler, /en ve eski İngilizce Casuist sayfaları, dil bağları ve hreflang kaldırıldı | PR açık | 11 İngilizce adres yerel üretimde 404, /tr 200, Türkçe 301'ler duruyor; typecheck, lint, check:text, testler, build, e2e 96/96, 375/768/1440 axe 0 yeşil. Sözleşme isteği docs/istekler/on-yuz-yalniz-turkce-sozlesme.md |
 | 2 | atif-agi, icerik, seo, odeme, veri-toplama, ios | Ürün modülleri (Kampüs ADR-0031 ile çıktı) | bekliyor | |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |
 | 4 | sahip ajanlar, icerik | Kapalı beta | bekliyor | |

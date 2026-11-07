@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "url": ["http://localhost:3000/", "http://localhost:3000/fiyatlar", "http://localhost:3000/en"],
+      "url": ["http://localhost:3000/", "http://localhost:3000/fiyatlar", "http://localhost:3000/tr"],
       "numberOfRuns": 3,
       "settings": {
         "formFactor": "mobile",

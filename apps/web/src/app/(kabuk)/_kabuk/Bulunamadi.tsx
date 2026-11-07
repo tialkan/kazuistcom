@@ -4,7 +4,7 @@ import { modulAcik } from './rotalar.ts';
 
 /** 404 body, rendered by app/not-found.tsx inside the shell. */
 export function Bulunamadi() {
-  const t = ortak('tr');
+  const t = ortak();
   return (
     <div className="sayfa">
       <p className="ust-etiket kz-mono">404</p>

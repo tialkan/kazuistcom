@@ -4,7 +4,7 @@ import { Tablo } from '@kazuist/ui';
 import { islemler, paketler, planlar } from './fiyatlar.ts';
 import styles from './fiyatlar.module.css';
 
-const t = ortak('tr');
+const t = ortak();
 const f = t.fiyatlar;
 
 export const metadata: Metadata = { title: `${f.baslik} | ${t.marka}`, description: f.aciklama };

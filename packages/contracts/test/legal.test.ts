@@ -18,7 +18,8 @@ import {
  * The render half (production shows only publishable texts) is legalRenderMode, used by on-yuz.
  */
 const root = fileURLToPath(new URL('../../../content/hukuki', import.meta.url));
-const files = ['tr', 'en'].flatMap((lang) =>
+// Turkish only (ADR-0032): content/hukuki/en was removed.
+const files = ['tr'].flatMap((lang) =>
   readdirSync(join(root, lang))
     .filter((f) => f.endsWith('.md'))
     .map((f) => `${lang}/${f}`),

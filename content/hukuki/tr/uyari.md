@@ -7,7 +7,6 @@ binding: true
 version: 2026-10-23.1
 date: 2026-10-23
 status: taslak
-alternate: /legal/notice
 ---
 
 > TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.

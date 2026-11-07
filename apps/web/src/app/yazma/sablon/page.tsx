@@ -8,7 +8,7 @@ import { dergiyiBul, onayliKurallar } from '../_sunucu/dergiler.ts';
 import styles from '../yazma.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.sablon.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${tr.sablon.meta.baslik} | ${ortak().marka}`,
   description: tr.sablon.meta.aciklama,
 };
 

@@ -6,7 +6,7 @@ import { tr } from '../../_bilesen/metin.ts';
 import { OnizlemeBandi, SabitNotlar } from '../../_bilesen/Ortak.tsx';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.denemeBaslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.denemeBaslik} | ${ortak().marka}`,
 };
 
 export default function DenemeSayfasi() {

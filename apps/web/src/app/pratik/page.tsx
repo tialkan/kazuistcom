@@ -9,7 +9,7 @@ import { OnizlemeBandi, SabitNotlar } from './_bilesen/Ortak.tsx';
 import styles from './pratik.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.baslik} | ${ortak().marka}`,
   description: tr.meta.aciklama,
 };
 
