@@ -1,0 +1,277 @@
+{
+  "surum": "ornek-ag-2026-11-07",
+  "kaynak": "packages/casuist/fixtures/kayitlar.json",
+  "nodes": [
+    {
+      "id": "8b391725-a550-57ac-9f7c-e5c67b898458",
+      "type": "karar",
+      "title": "Yargıtay 12. Ceza Dairesi E. 2019/14037 K. 2022/2232",
+      "court": "Yargıtay",
+      "chamber": "12. Ceza Dairesi",
+      "esasNo": "2019/14037",
+      "kararNo": "2022/2232",
+      "date": "2022-03-23",
+      "authorityClass": "emsal",
+      "status": "bilinmiyor",
+      "labels": [],
+      "sourceUrl": "https://karararama.yargitay.gov.tr/",
+      "fetchedAt": "2026-11-07T09:00:00Z"
+    },
+    {
+      "id": "4a507e3e-bcaf-5ad4-a6a4-1e740005f558",
+      "type": "karar",
+      "title": "Yargıtay 4. Hukuk Dairesi E. 2023/12295 K. 2025/14577",
+      "court": "Yargıtay",
+      "chamber": "4. Hukuk Dairesi",
+      "esasNo": "2023/12295",
+      "kararNo": "2025/14577",
+      "date": "2025-10-23",
+      "authorityClass": "emsal",
+      "status": "bilinmiyor",
+      "labels": [],
+      "sourceUrl": "https://karararama.yargitay.gov.tr/",
+      "fetchedAt": "2026-11-07T09:00:00Z"
+    },
+    {
+      "id": "e8170f3b-6bd9-51a7-adf4-57115df6ebc9",
+      "type": "karar",
+      "title": "Yargıtay 7. Ceza Dairesi E. 2023/30 K. 2023/2890",
+      "court": "Yargıtay",
+      "chamber": "7. Ceza Dairesi",
+      "esasNo": "2023/30",
+      "kararNo": "2023/2890",
+      "date": "2023-03-28",
+      "authorityClass": "emsal",
+      "status": "bilinmiyor",
+      "labels": [],
+      "sourceUrl": "https://karararama.yargitay.gov.tr/",
+      "fetchedAt": "2026-11-07T09:00:00Z"
+    },
+    {
+      "id": "6f1765eb-fa26-5f4a-9628-bc40e6769cba",
+      "type": "karar",
+      "title": "Yargıtay Hukuk Genel Kurulu E. 2018/20 K. 2021/1383",
+      "court": "Yargıtay",
+      "chamber": "Hukuk Genel Kurulu",
+      "esasNo": "2018/20",
+      "kararNo": "2021/1383",
+      "date": "2021-11-09",
+      "authorityClass": "yuksek_emsal",
+      "status": "bilinmiyor",
+      "labels": [],
+      "sourceUrl": "https://karararama.yargitay.gov.tr/",
+      "fetchedAt": "2026-11-07T09:00:00Z"
+    },
+    {
+      "id": "d3be4eab-be3e-5063-b045-b722825ee544",
+      "type": "karar",
+      "title": "Yargıtay Hukuk Genel Kurulu E. 2012/4-179 K. 2012/412",
+      "court": "Yargıtay",
+      "chamber": "Hukuk Genel Kurulu",
+      "esasNo": "2012/4-179",
+      "kararNo": "2012/412",
+      "date": "2012-06-27",
+      "authorityClass": "yuksek_emsal",
+      "status": "bilinmiyor",
+      "labels": [],
+      "sourceUrl": "https://karararama.yargitay.gov.tr/",
+      "fetchedAt": "2026-11-07T09:00:00Z"
+    },
+    {
+      "id": "c563f64d-74d7-5c42-a10b-bd82b696a285",
+      "type": "karar",
+      "title": "Yargıtay Hukuk Genel Kurulu E. 2006/3-533 K. 2006/566",
+      "court": "Yargıtay",
+      "chamber": "Hukuk Genel Kurulu",
+      "esasNo": "2006/3-533",
+      "kararNo": "2006/566",
+      "date": "2006-09-20",
+      "authorityClass": "yuksek_emsal",
+      "status": "bilinmiyor",
+      "labels": [],
+      "sourceUrl": "https://karararama.yargitay.gov.tr/",
+      "fetchedAt": "2026-11-07T09:00:00Z"
+    },
+    {
+      "id": "470b146f-2475-5602-99e9-39ea65e8bfe3",
+      "type": "karar",
+      "title": "Yargıtay 7. Ceza Dairesi E. 2022/4129 K. 2022/15232",
+      "court": "Yargıtay",
+      "chamber": "7. Ceza Dairesi",
+      "esasNo": "2022/4129",
+      "kararNo": "2022/15232",
+      "date": "2022-10-31",
+      "authorityClass": "emsal",
+      "status": "bilinmiyor",
+      "labels": [],
+      "sourceUrl": "https://karararama.yargitay.gov.tr/",
+      "fetchedAt": "2026-11-07T09:00:00Z"
+    }
+  ],
+  "works": [
+    {
+      "id": "30ec45cf25173ffa",
+      "baslik": "Türk Medeni Hukuku Başlangıç Hükümleri - Şahsın Hukuku",
+      "yazarlar": ["Akipek, Jale Güral"],
+      "tur": "kitap",
+      "yayin": null,
+      "basklar": [
+        {
+          "yil": 1961,
+          "baski": null,
+          "yer": "Ankara",
+          "cilt": "I"
+        }
+      ]
+    },
+    {
+      "id": "17996dd88a0c427b",
+      "baslik": "Medeni Hukuka Giriş",
+      "yazarlar": ["İmre, Zahit"],
+      "tur": "kitap",
+      "yayin": null,
+      "basklar": [
+        {
+          "yil": 1980,
+          "baski": "3",
+          "yer": "İstanbul",
+          "cilt": null
+        }
+      ]
+    },
+    {
+      "id": "7f515c43830d5812",
+      "baslik": "Medeni Hukuk",
+      "yazarlar": ["Köprülü, Bülent"],
+      "tur": "kitap",
+      "yayin": null,
+      "basklar": [
+        {
+          "yil": 1984,
+          "baski": "2",
+          "yer": "İstanbul",
+          "cilt": null
+        }
+      ]
+    },
+    {
+      "id": "c4da7c4c548422e0",
+      "baslik": "Açıklamalı–İçtihatlı Borçlar Kanunu Sorumluluk ve Tazminat Hukuku",
+      "yazarlar": ["Uygur, Turgut"],
+      "tur": "kitap",
+      "yayin": null,
+      "basklar": [
+        {
+          "yil": 2003,
+          "baski": null,
+          "yer": "Ankara",
+          "cilt": "ikinci"
+        }
+      ]
+    }
+  ],
+  "workEdges": [
+    {
+      "from": "d3be4eab-be3e-5063-b045-b722825ee544",
+      "work": "30ec45cf25173ffa",
+      "sayfalar": ["108"]
+    },
+    {
+      "from": "d3be4eab-be3e-5063-b045-b722825ee544",
+      "work": "17996dd88a0c427b",
+      "sayfalar": ["445"]
+    },
+    {
+      "from": "d3be4eab-be3e-5063-b045-b722825ee544",
+      "work": "7f515c43830d5812",
+      "sayfalar": ["263"]
+    },
+    {
+      "from": "d3be4eab-be3e-5063-b045-b722825ee544",
+      "work": "c4da7c4c548422e0",
+      "sayfalar": ["2268"]
+    }
+  ],
+  "externalCitations": [
+    {
+      "from": "8b391725-a550-57ac-9f7c-e5c67b898458",
+      "tur": "yargi",
+      "mahkeme": "Yargıtay",
+      "daire": "Ceza Genel Kurulu",
+      "esasNo": "2012/1510",
+      "kararNo": "2014/331",
+      "numara": null,
+      "tarih": "2014-06-17"
+    },
+    {
+      "from": "4a507e3e-bcaf-5ad4-a6a4-1e740005f558",
+      "tur": "yargi",
+      "mahkeme": "Yargıtay",
+      "daire": "Hukuk Genel Kurulu",
+      "esasNo": "2014/4-56",
+      "kararNo": "2015/1679",
+      "numara": null,
+      "tarih": "2015-06-17"
+    },
+    {
+      "from": "e8170f3b-6bd9-51a7-adf4-57115df6ebc9",
+      "tur": "yargi",
+      "mahkeme": "Yargıtay",
+      "daire": "19. Ceza Dairesi",
+      "esasNo": "2016/15510",
+      "kararNo": "2017/5325",
+      "numara": null,
+      "tarih": "2017-06-05"
+    },
+    {
+      "from": "e8170f3b-6bd9-51a7-adf4-57115df6ebc9",
+      "tur": "yargi",
+      "mahkeme": "Yargıtay",
+      "daire": "Hukuk Genel Kurulu",
+      "esasNo": "2014/4-56",
+      "kararNo": "2015/1679",
+      "numara": null,
+      "tarih": "2015-06-17"
+    },
+    {
+      "from": "e8170f3b-6bd9-51a7-adf4-57115df6ebc9",
+      "tur": "aym",
+      "mahkeme": "Anayasa Mahkemesi",
+      "daire": null,
+      "esasNo": null,
+      "kararNo": null,
+      "numara": "2014/18260",
+      "tarih": "2017-10-04"
+    },
+    {
+      "from": "6f1765eb-fa26-5f4a-9628-bc40e6769cba",
+      "tur": "yargi",
+      "mahkeme": "Yargıtay",
+      "daire": "2. Hukuk Dairesi",
+      "esasNo": "2014/15458",
+      "kararNo": "2015/7409",
+      "numara": null,
+      "tarih": "2015-04-14"
+    },
+    {
+      "from": "6f1765eb-fa26-5f4a-9628-bc40e6769cba",
+      "tur": "yargi",
+      "mahkeme": "Yargıtay",
+      "daire": "2. Hukuk Dairesi",
+      "esasNo": "2016/17076",
+      "kararNo": "2017/1451",
+      "numara": null,
+      "tarih": "2017-02-15"
+    },
+    {
+      "from": "d3be4eab-be3e-5063-b045-b722825ee544",
+      "tur": "yargi",
+      "mahkeme": "Yargıtay",
+      "daire": "4. Hukuk Dairesi",
+      "esasNo": "2009/6603",
+      "kararNo": "2010/2563",
+      "numara": null,
+      "tarih": "2010-03-10"
+    }
+  ]
+}

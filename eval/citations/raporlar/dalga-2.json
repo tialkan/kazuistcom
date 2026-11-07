@@ -1,0 +1,320 @@
+{
+  "surum": "atif-1.0",
+  "kumeler": {
+    "ornek-7": {
+      "belgeler": {
+        "yargitay:746229100": {
+          "karar": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 1,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 0,
+            "bulunan": 0
+          },
+          "yayimlanan_kenar": 0
+        },
+        "yargitay:1196596300": {
+          "karar": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 1,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 2,
+            "bulunan": 2
+          },
+          "yayimlanan_kenar": 0
+        },
+        "yargitay:899210400": {
+          "karar": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 3,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 0,
+            "bulunan": 0
+          },
+          "yayimlanan_kenar": 0
+        },
+        "yargitay:729300000": {
+          "karar": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 2,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 3,
+            "bulunan": 3
+          },
+          "yayimlanan_kenar": 0
+        },
+        "yargitay:54419600": {
+          "karar": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 1,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 4,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 1,
+            "bulunan": 1
+          },
+          "yayimlanan_kenar": 4
+        },
+        "yargitay:77008700": {
+          "karar": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 1,
+            "bulunan": 1
+          },
+          "yayimlanan_kenar": 0
+        },
+        "yargitay:831914500": {
+          "karar": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 0,
+            "bulunan": 0
+          },
+          "yayimlanan_kenar": 0
+        }
+      },
+      "toplam": {
+        "karar": {
+          "tp": 8,
+          "fp": 0,
+          "fn": 0,
+          "kesinlik": 1.0,
+          "duyarlilik": 1.0
+        },
+        "doktrin": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 0,
+          "kesinlik": 1.0,
+          "duyarlilik": 1.0
+        }
+      },
+      "alan_hatasi": 0,
+      "alt_mahkeme_uyumsuz": [],
+      "yayimlanan_kenar": 4
+    },
+    "sentetik": {
+      "belgeler": {
+        "s1": {
+          "karar": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 2,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 0,
+            "bulunan": 0
+          },
+          "yayimlanan_kenar": 0
+        },
+        "s2": {
+          "karar": {
+            "tp": 4,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 4,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 0,
+            "bulunan": 0
+          },
+          "yayimlanan_kenar": 0
+        },
+        "s3": {
+          "karar": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 2,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 0,
+            "bulunan": 0
+          },
+          "yayimlanan_kenar": 2
+        },
+        "s4": {
+          "karar": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "fp_ayrinti": [],
+            "fn_ayrinti": [],
+            "alan_hatasi": [],
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "doktrin": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "cikarilan": 0,
+            "kuyruk": 0
+          },
+          "alt_mahkeme": {
+            "beklenen": 0,
+            "bulunan": 0
+          },
+          "yayimlanan_kenar": 0
+        }
+      },
+      "toplam": {
+        "karar": {
+          "tp": 5,
+          "fp": 0,
+          "fn": 0,
+          "kesinlik": 1.0,
+          "duyarlilik": 1.0
+        },
+        "doktrin": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "kesinlik": 1.0,
+          "duyarlilik": 1.0
+        }
+      },
+      "alan_hatasi": 0,
+      "alt_mahkeme_uyumsuz": [],
+      "yayimlanan_kenar": 2
+    }
+  },
+  "kapi_15_3_4": "ölçülmedi",
+  "esikler": {
+    "yayin": 0.9,
+    "kuyruk": 0.5
+  }
+}

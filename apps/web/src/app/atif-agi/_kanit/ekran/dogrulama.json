@@ -1,0 +1,353 @@
+{
+  "genislikler": [375, 768, 1440],
+  "kontroller": [
+    {
+      "ad": "h1 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "düğümler gerçek düğme 375",
+      "tamam": true,
+      "ayrinti": "sayı 7"
+    },
+    {
+      "ad": "yatay taşma yok: ag 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "Tab ile düğüme ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "Enter ile seçilir (aria-pressed=true) 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "ayrıntı paneli seçileni adlandırır 375",
+      "tamam": true,
+      "ayrinti": "Yargıtay Hukuk Genel Kurulu E. 2012/4-179 K. 2012/412"
+    },
+    {
+      "ad": "bağlantılı düğümler vurgulanır ve metinle bildirilir 375",
+      "tamam": true,
+      "ayrinti": "4/4"
+    },
+    {
+      "ad": "Esc seçimi kaldırır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "panelden geçişte odak panel başlığına gider 375",
+      "tamam": true,
+      "ayrinti": "detay-baslik"
+    },
+    {
+      "ad": "iki tablo ve başlıkları 375",
+      "tamam": true,
+      "ayrinti": "Kararlar ve atıf yaptıkları eserler | Eserler ve atıf yapan kararlar"
+    },
+    {
+      "ad": "tabloda 2012/4-179 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tabloda 2018/20 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tabloda 2006/3-533 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Akipek 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda İmre 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Köprülü 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Uygur 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: tablo 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "süzgeç yalnız 2012 kararını ve 4 eseri bırakır 375",
+      "tamam": true,
+      "ayrinti": "düğüm 5"
+    },
+    {
+      "ad": "geçersiz süzgeç duyurulur 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "boş sonuç açıklanır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "h1 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "düğümler gerçek düğme 768",
+      "tamam": true,
+      "ayrinti": "sayı 7"
+    },
+    {
+      "ad": "yatay taşma yok: ag 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "Tab ile düğüme ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "Enter ile seçilir (aria-pressed=true) 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "ayrıntı paneli seçileni adlandırır 768",
+      "tamam": true,
+      "ayrinti": "Yargıtay Hukuk Genel Kurulu E. 2012/4-179 K. 2012/412"
+    },
+    {
+      "ad": "bağlantılı düğümler vurgulanır ve metinle bildirilir 768",
+      "tamam": true,
+      "ayrinti": "4/4"
+    },
+    {
+      "ad": "seçimde çizgiler görünür yükseklikte ve vurgulu 768",
+      "tamam": true,
+      "ayrinti": "{\"yukseklik\":384.96875,\"acik\":4}"
+    },
+    {
+      "ad": "Esc seçimi kaldırır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "panelden geçişte odak panel başlığına gider 768",
+      "tamam": true,
+      "ayrinti": "detay-baslik"
+    },
+    {
+      "ad": "iki tablo ve başlıkları 768",
+      "tamam": true,
+      "ayrinti": "Kararlar ve atıf yaptıkları eserler | Eserler ve atıf yapan kararlar"
+    },
+    {
+      "ad": "tabloda 2012/4-179 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tabloda 2018/20 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tabloda 2006/3-533 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Akipek 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda İmre 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Köprülü 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Uygur 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: tablo 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "süzgeç yalnız 2012 kararını ve 4 eseri bırakır 768",
+      "tamam": true,
+      "ayrinti": "düğüm 5"
+    },
+    {
+      "ad": "geçersiz süzgeç duyurulur 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "boş sonuç açıklanır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "h1 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "düğümler gerçek düğme 1440",
+      "tamam": true,
+      "ayrinti": "sayı 7"
+    },
+    {
+      "ad": "yatay taşma yok: ag 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "Tab ile düğüme ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "Enter ile seçilir (aria-pressed=true) 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "ayrıntı paneli seçileni adlandırır 1440",
+      "tamam": true,
+      "ayrinti": "Yargıtay Hukuk Genel Kurulu E. 2012/4-179 K. 2012/412"
+    },
+    {
+      "ad": "bağlantılı düğümler vurgulanır ve metinle bildirilir 1440",
+      "tamam": true,
+      "ayrinti": "4/4"
+    },
+    {
+      "ad": "seçimde çizgiler görünür yükseklikte ve vurgulu 1440",
+      "tamam": true,
+      "ayrinti": "{\"yukseklik\":384.96875,\"acik\":4}"
+    },
+    {
+      "ad": "Esc seçimi kaldırır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "panelden geçişte odak panel başlığına gider 1440",
+      "tamam": true,
+      "ayrinti": "detay-baslik"
+    },
+    {
+      "ad": "iki tablo ve başlıkları 1440",
+      "tamam": true,
+      "ayrinti": "Kararlar ve atıf yaptıkları eserler | Eserler ve atıf yapan kararlar"
+    },
+    {
+      "ad": "tabloda 2012/4-179 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tabloda 2018/20 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tabloda 2006/3-533 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Akipek 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda İmre 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Köprülü 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "eser tablosunda Uygur 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: tablo 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "süzgeç yalnız 2012 kararını ve 4 eseri bırakır 1440",
+      "tamam": true,
+      "ayrinti": "düğüm 5"
+    },
+    {
+      "ad": "geçersiz süzgeç duyurulur 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "boş sonuç açıklanır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    }
+  ],
+  "axe": {
+    "ag-375": [],
+    "secim-375": [],
+    "eser-secimi-375": [],
+    "tablo-375": [],
+    "suzgec-375": [],
+    "gecersiz-375": [],
+    "bos-375": [],
+    "ag-768": [],
+    "secim-768": [],
+    "eser-secimi-768": [],
+    "tablo-768": [],
+    "suzgec-768": [],
+    "gecersiz-768": [],
+    "bos-768": [],
+    "ag-1440": [],
+    "secim-1440": [],
+    "eser-secimi-1440": [],
+    "tablo-1440": [],
+    "suzgec-1440": [],
+    "gecersiz-1440": [],
+    "bos-1440": []
+  }
+}

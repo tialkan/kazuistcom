@@ -1,0 +1,107 @@
+{
+  "meta": {
+    "baslik": "Atıf ağı",
+    "aciklama": "Yargıtay Hukuk Genel Kurulu, İçtihadı Birleştirme ve Anayasa Mahkemesi kararlarının hangi kitap, makale ve kararlara atıf yaptığını görün."
+  },
+  "baslik": "Atıf ağı",
+  "giris": "Solda kararlar, sağda kararların atıf yaptığı kitap ve makaleler yer alır. Bir kararı veya eseri seçtiğinizde bağlantıları vurgulanır ve ayrıntıları yanda açılır. Atıflar karar metinlerinden otomatik çıkarılır; emin olunmayanlar editör onayına gider ve onaylanana kadar çizilmez.",
+  "kapsamNotu": "Bu sürümün kapsamı: Yargıtay Hukuk Genel Kurulu, Yargıtay İçtihadı Birleştirme kararları ve Anayasa Mahkemesi.",
+  "filtre": {
+    "baslik": "Süzgeç",
+    "mahkeme": "Mahkeme",
+    "daire": "Daire veya kurul",
+    "baslangic": "Başlangıç yılı",
+    "bitis": "Bitiş yılı",
+    "konu": "Başlıkta geçen sözcük",
+    "uygula": "Süz",
+    "temizle": "Süzgeci temizle",
+    "tumKapsam": "Tüm kapsam",
+    "yargitay": "Yargıtay",
+    "aym": "Anayasa Mahkemesi",
+    "hgk": "Hukuk Genel Kurulu",
+    "ibk": "İçtihadı Birleştirme",
+    "gecersiz": "Süzgeç değerleri geçersiz. Yıl dört haneli olmalıdır."
+  },
+  "gorunum": {
+    "baslik": "Görünüm",
+    "ag": "Ağ görünümü",
+    "tablo": "Tablo görünümü",
+    "tabloAciklama": "Aynı bilgi tablolarda da verilir; klavye ve ekran okuyucu kullanımı için bu görünüm eşdeğerdir."
+  },
+  "ozet": {
+    "baslik": "Özet",
+    "kararSayisi": "Karar sayısı",
+    "eserSayisi": "Eser sayısı",
+    "doktrinAtfiSayisi": "Doktrin atfı sayısı",
+    "kararAtfiSayisi": "Karar atfı sayısı",
+    "enCok": "En çok atıf alan eser",
+    "enCokYok": "Birden fazla kararda atıf alan eser henüz yok.",
+    "enCokSayi": "{sayi} kararda atıf"
+  },
+  "ag": {
+    "baslik": "Atıf ağı: solda kararlar, sağda eserler",
+    "ipucu": "Bir düğümü Enter veya Boşluk ile seçin; Esc seçimi kaldırır. Düğümler listedir, Tab ile gezilir. Çizgiler yalnız geniş ekranda görünür; bağlantılar ayrıca ayrıntı panelinde yazıyla listelenir.",
+    "kararlar": "Kararlar",
+    "eserler": "Eserler",
+    "sayi": "{sayi} kayıt",
+    "secimiTemizle": "Seçimi kaldır",
+    "bagli": "seçili düğümle bağlantılı",
+    "secili": "seçili",
+    "cokAtif": "Çok atıf alan",
+    "kararda": "{sayi} kararda atıf",
+    "yil": "yıl {yil}",
+    "yillar": "yıllar {yillar}",
+    "sinirli": "Yalnız ilk {sinir} kayıt gösterilir; tablo görünümü tümünü içerir.",
+    "atifSayisi": "{sayi} atıf"
+  },
+  "detay": {
+    "baslik": "Ayrıntı",
+    "bos": "Ayrıntıyı görmek için bir karar veya eser seçin.",
+    "kunye": "Künye",
+    "mahkeme": "Mahkeme",
+    "tarih": "Karar tarihi",
+    "metniAc": "Metni aç",
+    "kaynagaGit": "Kaynağa git",
+    "yazarlar": "Yazarlar",
+    "tur": "Tür",
+    "kitap": "Kitap",
+    "makale": "Makale",
+    "basklar": "Atıf yapılan baskılar",
+    "atifYaptigiEserler": "Atıf yaptığı eserler",
+    "atifYaptigiKararlar": "Atıf yaptığı kararlar",
+    "atifYapanKararlar": "Ona atıf yapan kararlar",
+    "atifYapanKararlarEser": "Bu esere atıf yapan kararlar",
+    "yok": "Yok.",
+    "corpustaYok": "Kayıtlarımızda yok",
+    "sayfa": "s. {sayfa}",
+    "baski": "{baski}. baskı",
+    "cilt": "cilt {cilt}"
+  },
+  "tablo": {
+    "kararlarBaslik": "Kararlar ve atıf yaptıkları eserler",
+    "eserlerBaslik": "Eserler ve atıf yapan kararlar",
+    "karar": "Karar",
+    "tarih": "Tarih",
+    "eserler": "Atıf yaptığı eserler (sayfa)",
+    "kararAtfi": "Atıf yaptığı karar sayısı",
+    "eser": "Eser",
+    "yazarlar": "Yazarlar",
+    "yil": "Yıl",
+    "kararSayisi": "Atıf yapan karar sayısı",
+    "kararlar": "Atıf yapan kararlar",
+    "yilYok": "belirtilmemiş",
+    "atifYok": "Atıf yok"
+  },
+  "durum": {
+    "bos": "Bu süzgeçle gösterilecek karar yok.",
+    "bosAciklama": "Süzgeci genişletin veya temizleyin. Kararlar yalnız atıfları çıkarılıp yayımlandıkça burada görünür.",
+    "doktrinYok": "Doktrin atıfları bu sürümde henüz yüklenmedi; yalnız karar atıfları gösterilir.",
+    "kuyrukta": "{sayi} atıf editör onayı bekliyor ve çizilmiyor.",
+    "kesildi": "Süzgeç çok geniş: yalnız en yeni {sinir} karar alındı. Süzgeci daraltın.",
+    "ornek": "Örnek veri: bu görünüm gerçek karar metinlerinden çıkarılan atıflarla yerel geliştirme ve deneme için doldurulmuştur; canlı karar corpusu değildir.",
+    "hata": "Atıf ağı şu an yüklenemedi. Lütfen biraz sonra yeniden deneyin."
+  },
+  "sabit": {
+    "kaynakNotu": "Atıflar karar metinlerinden otomatik çıkarılır ve yanlış olabilir. Yayımlanan her kenar güven eşiğini geçmiştir veya bir editör onaylamıştır. Kararın bağlayıcı metni için resmî kaynağa bakın."
+  }
+}
