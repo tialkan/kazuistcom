@@ -28,6 +28,7 @@ const pages = [
   ['eski', '/eski'],
   ['tespit', '/tespit'],
   ['pratik', '/pratik'],
+  ['yazma', '/yazma'],
 ];
 const widths = [375, 768, 1440];
 mkdirSync(out, { recursive: true });

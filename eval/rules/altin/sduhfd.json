@@ -1,0 +1,57 @@
+{
+  "kilavuz": "sduhfd",
+  "dergi": "Süleyman Demirel Üniversitesi Hukuk Fakültesi Dergisi",
+  "tur": "makale",
+  "etiketleyen": "yazma ajanı, 2026-11-07; editör doğrulaması bekliyor",
+  "alanlar": {
+    "paper": {
+      "deger": "A4",
+      "alinti": "Makale metni, A4 sayfa boyutunda Times New Roman yazı tipinde, 1,5 satır aralığı ve 12 punto"
+    },
+    "font": {
+      "deger": "Times New Roman",
+      "alinti": "Makale metni, A4 sayfa boyutunda Times New Roman yazı tipinde, 1,5 satır aralığı ve 12 punto"
+    },
+    "size": {
+      "deger": 12,
+      "alinti": "Makale metni, A4 sayfa boyutunda Times New Roman yazı tipinde, 1,5 satır aralığı ve 12 punto"
+    },
+    "line": {
+      "deger": 1.5,
+      "alinti": "Makale metni, A4 sayfa boyutunda Times New Roman yazı tipinde, 1,5 satır aralığı ve 12 punto"
+    },
+    "footSize": {
+      "deger": 10,
+      "alinti": "dipnotları ise, tek satır aralığı ve 10 punto olarak hazırlanmalıdır"
+    },
+    "mTop": {
+      "deger": 3,
+      "alinti": "Sayfa kenarlarında üst 3 cm., alt 3 cm., sol 3 cm., sağ 3 cm. boşluk bırakılmalı"
+    },
+    "mBottom": {
+      "deger": 3,
+      "alinti": "Sayfa kenarlarında üst 3 cm., alt 3 cm., sol 3 cm., sağ 3 cm. boşluk bırakılmalı"
+    },
+    "mLeft": {
+      "deger": 3,
+      "alinti": "Sayfa kenarlarında üst 3 cm., alt 3 cm., sol 3 cm., sağ 3 cm. boşluk bırakılmalı"
+    },
+    "mRight": {
+      "deger": 3,
+      "alinti": "Sayfa kenarlarında üst 3 cm., alt 3 cm., sol 3 cm., sağ 3 cm. boşluk bırakılmalı"
+    },
+    "citation": {
+      "anahtar": "oscola",
+      "alinti": "Atıflar OSCOLA atıf sistemi esas alınarak yapılmalıdır."
+    },
+    "wordLimit": {
+      "deger": { "min": null, "max": 20000 },
+      "alinti": "kaynakça ve dipnotlar hariç 20.000 kelime sınırı bulunmaktadır"
+    },
+    "absLimit": {
+      "deger": { "min": null, "max": 250 },
+      "alinti": "en fazla 250 kelimeden oluşan (anahtar kelimeler dahil) Türkçe “Öz” ile İngilizce “Abstract” bulunmalıdır"
+    }
+  },
+  "bos": ["pageNum", "indent"]
+}

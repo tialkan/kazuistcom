@@ -39,3 +39,4 @@ Yeni ADR: sıradaki numarayla, aynı bölüm düzeniyle; sözleşme değişikli�
 - ADR-0029: [Ücretsiz ürün ve ayrı açık kaynak yayın kararı](0029-ucretsiz-urun-ve-acik-kaynak-onerisi.md), 27 Ekim 2026 kabul edildi; public/lisans uygulaması ayrı onay kapısında.
 - ADR-0030: [Barındırma sağlayıcısı Hetzner](0030-hetzner-barindirma.md), 6 Kasım 2026 kabul edildi; üretimde kişisel veri KVKK m.9 koşullarına bağlı.
 - ADR-0031: [Turkuaz Kampüs kapsam dışı; /tespit eklendi](0031-turkuaz-kampus-kapsam-disi.md), 6 Kasım 2026 kabul edildi.
+- ADR-0032: [Kazuist yalnız Türkçe; İngilizce sayfalar kaldırılır](0032-yalniz-turkce.md), 7 Kasım 2026 kabul edildi; eski İngilizce adresler yönlendirmesiz 404.

@@ -28,6 +28,9 @@ export default function TespitSayfasi() {
         <h1>{tr.baslik}</h1>
         <p className="sayfa-ust__giris">{tr.giris}</p>
         <p>{tr.amac}</p>
+        <p>
+          {tr.yazma.metin} <a href="/yazma">{tr.yazma.baglanti}</a>
+        </p>
         <p className={styles.surum}>{surum}</p>
       </header>
 

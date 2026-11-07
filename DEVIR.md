@@ -17,14 +17,26 @@ Kullanıcı kararı (ADR-0032, PR #64) uygulandı; PR açık, birleştirilmedi. 
 - Testler: Ek H tablosu 23 satır kaldı; 2-11 numaralı satırlar `gone` ve 404 beklenir, /en de 404 ve Location yok.
   Güvenlik başlık testinde /problem yerine /tr. Lighthouse bütçesi /en yerine /tr (CI adımı adı dahil).
 - SEO: main'de sitemap.ts, robots.ts ve public/llms.txt yok; temizlenecek adres yoktu.
-- Doğrulama: typecheck, lint, check:text, build; i18n 18, contracts 122, ui 31, casuist 104, db 43, web 364/1 skip,
-  worker-node 47, ai-gateway 67/2 skip; ledger tam koşuda iki PGlite testi 900 sn zaman aşımına düştü, tek başına
-  23/23 geçti. Yerel üretim sunucusunda 11 İngilizce adres 404 (Location yok), /tr ve altı 200, beş Türkçe hukuki
-  301. e2e ek-h + sayfalar + erişilebilirlik 96/96. Ekran ve axe `docs/tasarim/ekran` (375/1440 axe 0, taşma 0).
+- Doğrulama (origin/main #63 ve #64 birleştirildikten sonra): typecheck, lint, check:text, build; i18n 20,
+  contracts 122, ui 31, casuist 104, db 43, ledger 168, web 487/1 skip, worker-node 77, ai-gateway 67/2 skip.
+  #63'ün eklediği `packages/i18n/en/{yazma,kalemcik,tespit}.json` silindi, yeni `ortak('tr')` çağrıları
+  `ortak()` oldu. Yerel üretim sunucusunda 11 İngilizce adres 404 (Location yok), /tr ve altı, /yazma, /kalemcik
+  200, beş Türkçe hukuki 301. Ekran ve axe `docs/tasarim/ekran`: 16 sayfa, 375/1440 axe 0, üç genişlikte taşma 0.
 - Açık: sözleşme ve sahiplik temizliği `docs/istekler/on-yuz-yalniz-turkce-sozlesme.md` (mimar). Arşiv HTML'leri
   `docs/tasarim/casuist-arsiv/*.html` kayıt olarak duruyor, dönüştürücü artık yalnız Türkçe sayfaları üretir.
   Search Console kaldırma talebi seo ajanında (ADR-0032).
 
+## 7 Kasım 2026, yazma: Dalga 2 yazma modülü (codex/dalga2-yazma)
+
+Yeni sözleşme veya şema değişikliği yok; ihtiyaçlar docs/istekler/yazma-*.md (sozlesme, bildirim-ve-hesap, yz-gecidi, orkestra).
+- Çekirdek `apps/web/src/app/yazma/_cekirdek`: kural şeması (SRS 6.2), tez ve makale .docx üreticisi (docx 9.15; iki bölüm, i/ii ve 1/2 numara, Normal/Başlık 1-3/Dipnot Metni stilleri, içindekiler alanı, kapak, ASCII dosya adı), PDF/DOCX/TXT metin çıkarma (20 MB, tür içerikten, zip bombası sınırı, 200 karakter altı uyarı), kural çıkarma hattı (Haiku, şema düşerse Sonnet, alan başına sayfa ve alıntı, alıntı kılavuzda birebir aranır, değer alıntıda geçmezse "Örnek değer"), kısaltmalar cetveli.
+- API (`api/v1/{writing-projects,journals,templates,jobs,abbreviations}`): çalışmalar ve ilerleme, dergi profilleri (yalnız editörün onayladığı sürüm görünür), kılavuz yükleme işi, .docx denetimi, kısaltma cetveli. Dosyalar saklanmaz, YZ'ye gitmez (denetim) ya da maskelenmiş gider (kılavuz; YZ bağlaması kapalı gelir, `YAZMA_YZ=acik`).
+- Sayfalar: /yazma, /yazma/sablon (?dergi=<slug> onaylı profili ekrana doldurur), /yazma/dergiler/[slug], /kalemcik; /tespit ile karşılıklı bağlantı; `acikModuller`'e '/yazma'.
+- Python `services/worker-py/docxcheck`: stdlib ile .docx denetimi (kenar boşluğu, yazı tipi, punto, satır aralığı, girinti, başlıklar, dipnot, sayfa numarası konumu ve Roma/Arap, bölüm sırası, kelime sınırı), iç HTTP ucu, LibreOffice headless PDF ve sayfa numarası doğrulaması, CLI. 43 test.
+- Kalemcik: `apps/worker-node/src/kalemcik` günlük iş (teslim 14/7/3/1/0 gün, üç gün sessizlik kuralı ve iki günde bir tekrar, hitap sen/siz, 30 gün saklama temizliği); mesajlar `content/kalemcik.yaml`'dan (JSON kopyası, test sapmayı yakalar). Metin `notify.send` refId'sinde adlandırılır; kimliğin `render()` satırı bekleniyor.
+- eval/rules: beş gerçek DergiPark kılavuzu, altın etiketler, ölçüm betiği. Plan 15.3/3: "3 kılavuzda hatasız .docx" geçti; "çekirdek %95" **geçmedi** (canlı model ölçümü yok, 5/10 kılavuz). Word ve Google Docs elle kontrol kaydı bekliyor (eval/rules/el-kontrol-kaydi.md).
+- Doğrulama: web 307 test, worker-node 77, i18n 15, python docxcheck 43; typecheck, lint, prettier, check:text, üretim derlemesi; 375/768/1440 axe 0 ihlal ve taşma 0 (eval/rules/ekran, gerçek PostgreSQL 18, gerçek docxcheck servisi, Brave).
+- Açık: orkestra kayıtları (kalemcik.daily, docxcheck bağlama, pyproject testpaths), YZ bütçe ve kredi girişi (yz-gecidi), 10 enstitü/dergi kılavuzu ve canlı ölçüm, DergiPark protokolü olmadan otomatik çekme yapılmadı, editör kuyruğuna düşen dergi taslakları için yönetim arayüzü kimlik/orkestra'da.
 ## 7 Kasım 2026, casuist: /ara, kaynaklı özet ve /kaydettiklerim (codex/dalga2-casuist)
 
 Dalga 2 casuist ilk teslimi; PR açık, birleştirilmedi. `packages/contracts` ve `packages/db` değişmedi.

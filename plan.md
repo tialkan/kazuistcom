@@ -79,7 +79,7 @@ Ana kararlar:
 | Kod | Karar | Gerekçe |
 |---|---|---|
 | K-01 | Konumlandırma: Kazuist, Casuist kaynak bağlama çekirdeği üzerine kurulu araştırma ve yazma platformudur. SRS'teki "Kısa cevap" arayüzde "Kaynaklı özet" adını alır: her cümle kaynağa bağlanır, birebir dayanak alıntısı doğrulanır, dayanak yetersizse sistem susar. | kazuist.com bugün "Kazuist hukuki soruyu cevaplamıyor, cevabı denetlenebilir kılar" diyor ve Eurostars ortak çağrısı bu taahhüt üzerine kurulu. Ürün dili bu metinle çelişmemeli. Aynı çekirdek Eurostars WP4'ün (retrieval, grounding, provenance) arka plan IP'sidir. |
-| K-02 | URL: Türkçe ürün kökte. Mevcut 22 adresin hiçbiri kırılmaz: 16'sı aynen kalır, 5 Türkçe hukuki sayfa tek 301 ile ürünün hukuki sayfalarına gider, "/" ürün ana sayfası olur ve eski İngilizce ana sayfa "/en" adresine taşınır (Ek H). | Eurostars çağrısı 4 Mart 2027'ye kadar açık; ortaklara gönderilen bağlantılar kırılmamalı. |
+| K-02 | URL: Türkçe ürün kökte. Türkçe Casuist sayfaları (/tr ve altı) kalır, 5 Türkçe hukuki sayfa tek 301 ile ürünün hukuki sayfalarına gider. Eski İngilizce Casuist sayfaları ve /en yönlendirmesiz kaldırılır (ADR-0032, 7 Kasım 2026). | Kullanıcı kararı; Eurostars için İngilizce tanıtım site dışında hazırlanır. |
 | K-03 | Barındırma: siteyarat.md akışı (GitHub, Coolify, Cloudflare DNS) korunur. Sağlayıcı Hetzner Cloud, AB konumu (ADR-0030, 6 Kasım 2026). Üretimde kişisel veri, KVKK m.9 aktarım dayanağı ve bildirimi tamamlanmadan işlenmez. | SRS 10.3 verinin Türkiye'de tutulmasını istiyor. Yurt dışı sağlayıcıda KVKK m.9 için Kurul'un standart sözleşmesinin değiştirilmeden imzalanması ve 5 iş günü içinde bildirimi gerekir; yabancı sağlayıcıdan bu imzayı almak belirsiz. |
 | K-04 | Cloudflare: alan adı zaten Cloudflare ad sunucularında. Kişisel veri taşıyan adresler başlangıçta "DNS only"; TLS sunucuda (Coolify Traefik ve Let's Encrypt). Proxy, Cloudflare ile KVKK aktarım mekanizması kurulursa ADR ile açılır. | Proxy, IP ve istek içeriğini yurt dışındaki bir işleyene aktarır. |
 | K-05 | Yığın: TypeScript monorepo (Next.js web ve /api/v1), Python işçi (toplama, anonimleştirme, NLP), PostgreSQL ve pgvector, Valkey, Türkiye'de S3 uyumlu depo. | İki dil, tek veri tabanı, az hareketli parça; ajanların paralel çalışmasına uygun sınırlar. |
@@ -93,7 +93,7 @@ Ana kararlar:
 | K-13 | iOS: yerel SwiftUI uygulaması, aynı API; web 1.0 kararlı olunca TestFlight, ardından App Store. | Apple 4.2 (paketlenmiş web sitesi reddi) ve sRepetition deneyimi. |
 | K-14 | Kaldırıldı (ADR-0031, 6 Kasım 2026): Turkuaz Kampüs Kazuist kapsamında değildir. Yerine /tespit sayfası 1.0 kapsamındadır. | İlk yıl tek alan adı soğuk başlangıcı azaltır; modül sınırı ayrı ürün hattı olarak ayrılmayı mümkün kılar. |
 | K-15 | Tasarım: açık tema, özgün kimlik, imza öğesi "kenar şerhi"; YZ ile üretilmiş görsel ve emoji yok. | webtasarim.md ve açık tema tercihi. |
-| K-16 | Dil: kaynak dil Türkçe; i18n anahtarları ilk günden; ürünün İngilizcesi 2.0. Casuist İngilizce sayfaları sürer. | wt.3 ve wt.84-96. |
+| K-16 | Dil: Kazuist yalnız Türkçedir; İngilizce ürün, İngilizce hukuki sürüm ve İngilizce sayfa yoktur (ADR-0032). i18n anahtar yapısı korunur. | Kullanıcı kararı, 7 Kasım 2026. |
 | K-17 | 1.0'a eklenenler: HMGS modu, FSRS aralıklı tekrar, kaynakça dışa aktarma (CSL), kısaltmalar cetveli, KVKK-GDPR madde eşleniği ilk seti, kural kaynağını gösterme, otorite sınıfı etiketi. | Düşük maliyet, yüksek dönüşüm; ekipte FSRS deneyimi var. |
 | K-18 | Yayın kapıları: webtools robotları ve RAG, anonimleştirme, ödeme, güvenlik ölçütleri. | Eski projelerin dersleri. |
 | K-19 | IP: kod Kulular'ın GitHub organizasyonunda özel depoda. ADR ve commit geçmişi tarihli arka plan IP kaydıdır. | Eurostars brifingi: arka plan IP taraflarda kalır, çekirdek yazılım Kulular'dadır. |
@@ -152,7 +152,7 @@ Ana kararlar:
 | Soru | Cevap |
 |---|---|
 | Ücretsiz özellikler ve BYOK mu? | Evet; gelir yalnız isteğe bağlı platform YZ kredileridir. Kurumsal özellik kilidi veya lisans satışı yok (ADR-0029). |
-| Arayüz yalnız Türkçe mi? | Ürün 1.0 Türkçe; i18n hazır; ürün İngilizcesi 2.0. Casuist İngilizce sayfaları sürer. |
+| Arayüz yalnız Türkçe mi? | Evet; İngilizce hiçbir sürümde yok (ADR-0032). |
 | Hâkim, savcı, avukat adları açık mı? | Ek E. |
 | Kampüs içeride mi, hesaplar ortak mı? | Kampüs kapsam dışıdır (ADR-0031). |
 | Hangi LLM sağlayıcısı ve sözleşme? | K-07 ve 8.10. |
@@ -217,7 +217,7 @@ Ana kararlar:
 
 ### 3.3 1.0 dışında kalanlar
 
-Kişiye özgü hukuki görüş, Google Scholar sonuçlarını çekme, OCR, SMS, kurumsal SSO, ürünün İngilizcesi, YZ ile görsel üretimi, Word eklentisi, Apple Watch, dışa açık API.
+Kişiye özgü hukuki görüş, Google Scholar sonuçlarını çekme, OCR, SMS, kurumsal SSO, YZ ile görsel üretimi, Word eklentisi, Apple Watch, dışa açık API.
 
 ### 3.4 Kapsam kısma sırası
 
@@ -852,13 +852,13 @@ webtasarim.md'nin tamamı bağlayıcıdır. Kazuist'e özgü kararlar (parantez 
 | /hukuki/... | Hukuki metinler |
 | /bot | KazuistBot bilgi sayfası |
 | /yonetim | Yönetim paneli (noindex, hız sınırlı) |
-| /en ve korunan Casuist sayfaları | Ek H |
+| /tr ve korunan Türkçe Casuist sayfaları | Ek H |
 
 ### 13.2 İndeksleme
 
 1. Mevzuat maddesi, çekirdek dizindeki karar ve kurum kararı sayfaları, rehberler ve dergi profilleri indekslenir. Canlı federasyonla gelen önbellek sayfaları noindex.
 2. Site haritası parçalı (mevzuat, kararlar, rehberler, dergiler, Kampüs açık paylaşımları); `lastModified` gerçek değişiklik tarihi (wt.111).
-3. Canonical her sayfada; hreflang yalnız eşdeğer sayfalar arasında (Ek H).
+3. Canonical her sayfada; hreflang kullanılmaz (ADR-0032).
 4. Yapılandırılmış veri: Organization (Kulular), WebSite ve SearchAction, BreadcrumbList, Article (rehberler), mevzuat için Legislation, kararlar için uygun schema.org türü; WebSCHEMArobot ve Rich Results testiyle doğrulanır (wt.113, wt.115d).
 5. llms.txt ürün özeti ve kaynak politikasıyla (wt.115).
 6. robots.txt: staging tamamen kapalı. Üretimde arama ve alıntı botlarına izin (OAI-SearchBot, ChatGPT-User, PerplexityBot, Perplexity-User, Claude-SearchBot, Claude-User, Googlebot, Bingbot); eğitim botları (GPTBot, ClaudeBot, Google-Extended, CCBot) corpus sayfalarında engellenir. Gerekçe veri tabanı emeğinin korunması (FSEK ek m.8); engel arama görünürlüğünü düşürmez (wt.115a). Yayından sonra her bot kendi user-agent'ıyla `curl -A` ile denenir (wt.115b).
@@ -1112,7 +1112,7 @@ Dalga 0 sonunda ADR'lerin toplu onayı; Dalga 1 sonunda hukuki taslaklar, fiyat 
 | 12-13 | 11-24 Ocak | Dalga 6: iOS gönderimi; Dalga 7 (1.1) başlar | App Review |
 | | Şubat-Mart 2027 | 1.1; Eurostars teslimi 4 Mart | |
 | | Nisan 2027 | HMGS 2027/1 öncesi 1.200 soru (tarih ÖSYM takviminden) | |
-| | Mayıs-Eylül 2027 | 2.0: kurumsal SSO/havuz kredi desteği, İngilizce ürün, karşı içtihat, vaka ağacı, kitle kaynaklı doğrulama, yabancı kaynaklar, widget ve Watch | |
+| | Mayıs-Eylül 2027 | 2.0: kurumsal SSO/havuz kredi desteği, karşı içtihat, vaka ağacı, kitle kaynaklı doğrulama, yabancı kaynaklar, widget ve Watch | |
 
 Kritik yol: iyzico onayı, anonimleştirme altın setinin etiketlenmesi, hukuki metinlerin onayı, HMGS içerik üretimi, Apple kuruluş üyeliği. Kod bu takvimde kritik yol değildir.
 
@@ -1465,7 +1465,7 @@ permissionMode: acceptEdits
 color: purple
 ---
 Rolün hukuki metin taslaklarıdır. plan.md 4.5, 5.5, 9.2/8, 11 ve Ek E'yi oku. Mevzuatı güncel halinden (mevzuat.gov.tr, Resmî Gazete) doğrula; madde numarası tahmin etme. Hiçbir metin uyum garantisi vermez. Her dosyanın başında "TASLAK, Tarık onayı bekliyor" yazar.
-Dalga 1: content/hukuki altında bölüm 11 tablosundaki metinler (bağlayıcı Türkçe ve İngilizce bilgilendirme sürümü); docs/kvkk/envanter.md (kimlik, odeme ve yz-gecidi ajanlarının gerçek veri akışından); docs/kvkk/aktarim.md; ödeme adımı ve abonelik metinleri; docs/protokol altında altı kurum için yazı taslakları; App Privacy cevap taslağı (ios ile); ETBİS, VERBİS, İYS, e-Arşiv kontrol listesi.
+Dalga 1: content/hukuki altında bölüm 11 tablosundaki metinler (yalnız Türkçe, ADR-0032); docs/kvkk/envanter.md (kimlik, odeme ve yz-gecidi ajanlarının gerçek veri akışından); docs/kvkk/aktarim.md; ödeme adımı ve abonelik metinleri; docs/protokol altında altı kurum için yazı taslakları; App Privacy cevap taslağı (ios ile); ETBİS, VERBİS, İYS, e-Arşiv kontrol listesi.
 Bitti: metinler ürün davranışıyla tutarlı (bağımsız denetçi kontrolü), onaya hazır.
 ```
 
@@ -1771,15 +1771,15 @@ Mevcut site 22 adreslik site haritası taşıyor (lastmod 11.09.2026); 23. adres
 
 | No | Mevcut adres | Bugünkü içerik | Yeni durum |
 |---|---|---|---|
-| 1 | / | Casuist İngilizce ana sayfa | Kazuist ürün ana sayfası (Türkçe). Eski içerik /en'de. İngilizce tarayıcılar için sayfa üstünde küçük not: "Casuist research and the Eurostars partner call: /en". Otomatik yönlendirme yok. |
-| 2-6 | /problem, /how-it-works, /evaluation, /partner, /about | Casuist İngilizce | Aynen kalır (200); içerik birebir, yeni tasarım sistemiyle; hreflang eşleri /tr/... |
-| 7-11 | /legal/notice, /legal/privacy, /legal/cookies, /legal/ai, /legal/accessibility | İngilizce hukuki | Kalır; ürün metinlerinin İngilizce bilgilendirme sürümü, "bağlayıcı sürüm Türkçedir" notuyla (wt.107); hreflang eşleri /hukuki/... |
+| 1 | / | Casuist İngilizce ana sayfa | Kazuist ürün ana sayfası (Türkçe). Eski İngilizce içerik kaldırıldı (ADR-0032). |
+| 2-6 | /problem, /how-it-works, /evaluation, /partner, /about | Casuist İngilizce | Kaldırıldı, yönlendirme yok, 404 (ADR-0032) |
+| 7-11 | /legal/notice, /legal/privacy, /legal/cookies, /legal/ai, /legal/accessibility | İngilizce hukuki | Kaldırıldı, yönlendirme yok, 404 (ADR-0032) |
 | 12-17 | /tr, /tr/sorun, /tr/nasil-calisir, /tr/degerlendirme, /tr/ortak, /tr/hakkinda | Casuist Türkçe | Aynen kalır; ürün gezinmesinde "Ar-Ge: Casuist" bağlantısı. Eurostars süreci bitince /arastirma altına taşıma ADR ile değerlendirilir. |
 | 18-22 | /tr/hukuki/uyari, /tr/hukuki/gizlilik, /tr/hukuki/cerezler, /tr/hukuki/yapay-zeka, /tr/hukuki/erisilebilirlik | Casuist Türkçe hukuki | Tek 301 ile /hukuki/uyari, /hukuki/gizlilik, /hukuki/cerezler, /hukuki/yapay-zeka, /hukuki/erisilebilirlik |
 | 23 | /eski | Önceki site | Kalır, noindex |
-| Yeni | /en | | Casuist İngilizce ana sayfa (eski / içeriği) |
+| Yeni | /en | | Açılmaz (ADR-0032) |
 
-Test: her eski adres 200 veya tek 301 ile 200'e gider (WebLINKrobot); site haritası korunan ve yeni sayfaları, yönlendirilen adresler hariç, içerir; hreflang çiftleri tutarlı (WebSEORobot). Mevcut Casuist metinleri değiştirilmez; yalnız şirket künyesi ve hukuki bağlantılar güncellenir.
+Test: korunan her eski adres 200 veya tek 301 ile 200'e gider; ADR-0032 ile kaldırılan İngilizce adresler 404 verir ve kırık bağlantı sayılmaz (WebLINKrobot); site haritasında İngilizce adres ve hreflang yoktur.
 
 ---
 

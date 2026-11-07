@@ -1,0 +1,457 @@
+{
+  "tarih": "2026-11-06T22:49:46.652Z",
+  "kip": "oracle",
+  "uyari": "Oracle kipi: model cevabı yerine altın etiketler kullanıldı. Doğruluk yüzdesi modelin değil hattın ve etiketlerin tutarlılığını gösterir.",
+  "kilavuzlar": [
+    {
+      "kilavuz": "auhfd",
+      "dergi": "Ankara Üniversitesi Hukuk Fakültesi Dergisi",
+      "altinAlintiBulundu": [
+        {
+          "anahtar": "font",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "size",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "line",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "footSize",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "citation",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "wordLimit",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "absLimit",
+          "bulundu": true,
+          "degerAlintida": true
+        }
+      ],
+      "dogru": ["font", "size", "line", "footSize", "citation", "wordLimit", "absLimit"],
+      "yanlis": [],
+      "bosDogru": ["mTop", "mBottom", "mLeft", "mRight", "pageNum", "indent"],
+      "bosYanlis": [],
+      "cekirdek": {
+        "dogru": 9,
+        "toplam": 9
+      },
+      "tum": {
+        "dogru": 13,
+        "toplam": 13
+      },
+      "sonnetYedegi": false
+    },
+    {
+      "kilavuz": "sduhfd",
+      "dergi": "Süleyman Demirel Üniversitesi Hukuk Fakültesi Dergisi",
+      "altinAlintiBulundu": [
+        {
+          "anahtar": "paper",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "font",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "size",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "line",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "footSize",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "mTop",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "mBottom",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "mLeft",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "mRight",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "citation",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "wordLimit",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "absLimit",
+          "bulundu": true,
+          "degerAlintida": true
+        }
+      ],
+      "dogru": [
+        "paper",
+        "font",
+        "size",
+        "line",
+        "footSize",
+        "mTop",
+        "mBottom",
+        "mLeft",
+        "mRight",
+        "citation",
+        "wordLimit",
+        "absLimit"
+      ],
+      "yanlis": [],
+      "bosDogru": ["pageNum", "indent"],
+      "bosYanlis": [],
+      "cekirdek": {
+        "dogru": 9,
+        "toplam": 9
+      },
+      "tum": {
+        "dogru": 14,
+        "toplam": 14
+      },
+      "sonnetYedegi": false
+    },
+    {
+      "kilavuz": "tauhfd",
+      "dergi": "Türk-Alman Üniversitesi Hukuk Fakültesi Dergisi",
+      "altinAlintiBulundu": [
+        {
+          "anahtar": "font",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "size",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "line",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "footSize",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "absLimit",
+          "bulundu": true,
+          "degerAlintida": true
+        }
+      ],
+      "dogru": ["font", "size", "line", "footSize", "absLimit"],
+      "yanlis": [],
+      "bosDogru": ["mTop", "mBottom", "mLeft", "mRight", "pageNum", "indent"],
+      "bosYanlis": [],
+      "cekirdek": {
+        "dogru": 8,
+        "toplam": 8
+      },
+      "tum": {
+        "dogru": 11,
+        "toplam": 11
+      },
+      "sonnetYedegi": false
+    },
+    {
+      "kilavuz": "toguhfd",
+      "dergi": "Tokat Gaziosmanpaşa Üniversitesi Hukuk Fakültesi Dergisi",
+      "altinAlintiBulundu": [
+        {
+          "anahtar": "font",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "size",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "line",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "footSize",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "indent",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "citation",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "wordLimit",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "absLimit",
+          "bulundu": true,
+          "degerAlintida": true
+        }
+      ],
+      "dogru": ["font", "size", "line", "footSize", "indent", "citation", "wordLimit", "absLimit"],
+      "yanlis": [],
+      "bosDogru": ["mTop", "mBottom", "mLeft", "mRight", "pageNum"],
+      "bosYanlis": [],
+      "cekirdek": {
+        "dogru": 9,
+        "toplam": 9
+      },
+      "tum": {
+        "dogru": 13,
+        "toplam": 13
+      },
+      "sonnetYedegi": false
+    },
+    {
+      "kilavuz": "yuhfd",
+      "dergi": "Yeditepe Üniversitesi Hukuk Fakültesi Dergisi",
+      "altinAlintiBulundu": [
+        {
+          "anahtar": "paper",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "mTop",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "mBottom",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "mLeft",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "mRight",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "font",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "size",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "line",
+          "bulundu": true,
+          "degerAlintida": true
+        },
+        {
+          "anahtar": "footSize",
+          "bulundu": true,
+          "degerAlintida": true
+        }
+      ],
+      "dogru": ["paper", "mTop", "mBottom", "mLeft", "mRight", "font", "size", "line", "footSize"],
+      "yanlis": [],
+      "bosDogru": ["pageNum", "indent"],
+      "bosYanlis": [],
+      "cekirdek": {
+        "dogru": 8,
+        "toplam": 8
+      },
+      "tum": {
+        "dogru": 11,
+        "toplam": 11
+      },
+      "sonnetYedegi": false
+    }
+  ],
+  "altinEtiketlerKilavuzdaBirebir": true,
+  "toplam": {
+    "cekirdek": {
+      "dogru": 43,
+      "toplam": 43,
+      "oran": 1
+    },
+    "tum": {
+      "dogru": 62,
+      "toplam": 62,
+      "oran": 1
+    }
+  },
+  "docx": [
+    {
+      "ad": "auhfd",
+      "tur": "makale",
+      "kaynak": "kilavuz-altin",
+      "hatasiz": true,
+      "uyumsuz": [],
+      "libreOffice": {
+        "varMi": true,
+        "ok": true,
+        "sayfa": 2,
+        "sorunlar": []
+      }
+    },
+    {
+      "ad": "sduhfd",
+      "tur": "makale",
+      "kaynak": "kilavuz-altin",
+      "hatasiz": true,
+      "uyumsuz": [],
+      "libreOffice": {
+        "varMi": true,
+        "ok": true,
+        "sayfa": 2,
+        "sorunlar": []
+      }
+    },
+    {
+      "ad": "tauhfd",
+      "tur": "makale",
+      "kaynak": "kilavuz-altin",
+      "hatasiz": true,
+      "uyumsuz": [],
+      "libreOffice": {
+        "varMi": true,
+        "ok": true,
+        "sayfa": 1,
+        "sorunlar": []
+      }
+    },
+    {
+      "ad": "toguhfd",
+      "tur": "makale",
+      "kaynak": "kilavuz-altin",
+      "hatasiz": true,
+      "uyumsuz": [],
+      "libreOffice": {
+        "varMi": true,
+        "ok": true,
+        "sayfa": 1,
+        "sorunlar": []
+      }
+    },
+    {
+      "ad": "yuhfd",
+      "tur": "makale",
+      "kaynak": "kilavuz-altin",
+      "hatasiz": true,
+      "uyumsuz": [],
+      "libreOffice": {
+        "varMi": true,
+        "ok": true,
+        "sayfa": 2,
+        "sorunlar": []
+      }
+    },
+    {
+      "ad": "sentetik-tez",
+      "tur": "tez",
+      "kaynak": "sentetik",
+      "hatasiz": true,
+      "uyumsuz": [],
+      "libreOffice": {
+        "varMi": true,
+        "ok": true,
+        "sayfa": 17,
+        "sorunlar": []
+      }
+    },
+    {
+      "ad": "sentetik-makale",
+      "tur": "makale",
+      "kaynak": "sentetik",
+      "hatasiz": true,
+      "uyumsuz": [],
+      "libreOffice": {
+        "varMi": true,
+        "ok": true,
+        "sayfa": 1,
+        "sorunlar": []
+      }
+    },
+    {
+      "ad": "sentetik-tez-ust-sag",
+      "tur": "tez",
+      "kaynak": "sentetik",
+      "hatasiz": true,
+      "uyumsuz": [],
+      "libreOffice": {
+        "varMi": true,
+        "ok": true,
+        "sayfa": 17,
+        "sorunlar": []
+      }
+    }
+  ],
+  "olcutler": {
+    "cekirdekDogruluk": {
+      "esik": 0.95,
+      "olculen": 1,
+      "kilavuzSayisi": 5,
+      "gerekenKilavuz": 10,
+      "model": "oracle",
+      "gecti": false,
+      "neden": "Model ölçümü yapılmadı: oracle kipi yalnız hattı ve altın etiketleri sınar."
+    },
+    "hatasizDocx": {
+      "gereken": 3,
+      "hatasiz": 8,
+      "kilavuzdanHatasiz": 5,
+      "gecti": true,
+      "neden": null
+    }
+  }
+}
