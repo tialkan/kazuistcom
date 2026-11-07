@@ -267,10 +267,6 @@
 .ana-ornekler a:hover {
   border-color: var(--kz-color-accent);
 }
-.ana-en-notu {
-  font-size: var(--kz-text-sm);
-  color: var(--kz-color-text-muted);
-}
 .ana-serh {
   padding-top: var(--kz-space-12);
   padding-bottom: var(--kz-space-12);

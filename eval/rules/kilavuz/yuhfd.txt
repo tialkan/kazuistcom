@@ -1,0 +1,28 @@
+# Kaynak: https://dergipark.org.tr/tr/pub/yuhfd/writing-rules
+# Alındığı tarih: 2026-11-07 (tek istek, KazuistBot kimliğiyle; sayfa metni olduğu gibi, gezinme çubukları çıkarıldı)
+# Dergi: Yeditepe Üniversitesi Hukuk Fakültesi Dergisi
+
+Yazım Kuralları
+1) Yeditepe Üniversitesi Hukuk Fakültesi Dergisi (YÜHFD), Ocak ve Haziran aylarında olmak üzere yılda iki kez yayımlanan hakemli bir dergidir.
+2) Dergi’de yayımlanabilecek yazılar, hukuk içerikli her türlü makale, karar incelemesi ve çevirilerdir. Çeviri metni ile birlikte asıl metin ve hak sahiplerinin muvafakatı da iletilmelidir. Makale ve çeviriler, hakem değerlendirilmesi kadar intihal taramasına da tabi tutulur. Yazıların dili, Türkçe veya diğer Avrupa dilleridir.
+3) Dergi’de yayımlanmak üzere gönderilen yazılar başka bir yerde yayımlanmamış ya da yayımlanmak üzere gönderilmemiş olmalıdır.
+4) Yazılar Microsoft Word (Microsoft Office 98 ve üzeri versiyonlar) formatında (.doc veya .docx dosya uzantılı olarak) yazılmış olmalıdır. Ayrıca yazılar, aşağıdaki şekil şartlarına uygun olarak kaleme alınmış olmalıdır:
+Kağıt boyutu: A4
+Üst: 2,5 cm; Alt: 2,5 cm; Sol: 2 cm; Sağ: 2 cm
+Metin: Times New Roman, 12 punto, 1.5 satır aralığı, iki yana yaslı
+Dipnotlar: Sayfa altında, Times New Roman, 10 punto, 1 satır aralığı, iki yana yaslı
+5) Her yazı, doğrudan Dergipark üzerinden ya da bu mümkün değilse elektronik posta yolu (yuhfd@yeditepe.edu.tr) ile Microsoft Word formatında editöre teslim edilmelidir. Yazının basılı olarak teslimi gerekmemektedir.
+6) Yazıyla birlikte yazarın (veya yazarların) adına, unvanına, çalıştığı kuruma, orcid numarasına, açık adresine, kolay ulaşım sağlanabilecek telefon numaralarına ve elektronik posta adreslerine ilişkin bilgiler de editöre ulaştırılmalıdır.
+7) Dergi’ye gönderilen makaleler Türkçe ve İngilizce başlık ile hem İngilizce hem de Türkçe özet kısmı içermelidir.
+8) Dergi’ye gönderilen makalelerde, ilgili makaledeki konuyu tanımlayan Türkçe ve İngilizce uygun anahtar kelimeler bulunmalıdır.
+9) Dergi’ye gönderilen makalelerde kullanılan kaynaklar, makale sonunda kaynakça olarak alfabetik sırada verilmiş olmalı ve kullanılan kaynaklar dipnotunda veya metin içerisinde kısa olarak yer almalıdır.
+10) Dergi’ye gönderilen makalelerin yazım bakımından son denetimlerinin yapılmış olduğu ve basılmaya hazır olarak verildiği kabul edilir.
+11) Dergi'de yayımlanmak üzere gönderilen çalışmaların yazarları, çalışmalarının elektronik ortamda da yayımlanmasına rıza göstermiş sayılır.
+12) Yayın Kurulu tarafından yapılan ilk incelemede, açıkça yayın ilkelerine uyulmadığı saptanan yazılar hakeme gönderilmeden önce gerekli düzeltmelerin yapılması için yazara gönderilir. Bilimsel ölçütlere uymayan yazılar Yayın Kurulunca hakeme gönderilmeksizin yazarına iade edilir. Yayın Kurulu tarafından uygun bulunan yazılar iki hakemin incelemesine sunulur. Hakemlerden gelen rapor doğrultusunda yazının yayımlanmasına, düzeltilmesine ya da geri çevrilmesine karar verilir. Yazar, bu durumdan derhal haberdar edilir. Tamamlanmış veya düzeltilmiş yazı, Yayım Kurulu’nca, tekrar hakeme gönderilebilir.
+13) Dergi, hakemin yazarı bilmemesi esasına (kör hakemlik) dayanır. Hakeme gönderilecek makalelerde de yazarın kimliğine ilişkin bilgilerin gizliliği sağlanır.
+14) Tüm Hakem Raporları, ULAKBİM (Ulusal Akademik Ağ ve Bilgi Merkezi) Hukuk Veri Tabanı Komitesi tarafından denetlenmesine olanak verecek şekilde 5 yıl saklanır.
+15) Dergi’ye ait yeni sayı yayımlandıkça, bu sayı tek bir PDF dosyası şeklinde ULAKBİM Online Dergi Takip Sistemine (ODİS) ve Hukuk Fakültesinin web sitesine yüklenir.
+16) Dergimizin Ocak sayısı için yazı kabul tarihi 1 Ekim’de başlar 1 Kasım’da biter; Haziran sayısı için 1 Mart’ta başlar 1 Nisan’da biter. Son kabul tarihinden daha geç ulaşan yazılar bir sonraki sayı için değerlendirmeye alınır.
+Son Güncelleme Zamanı:
+15 Aralık 2025
+Keşfet

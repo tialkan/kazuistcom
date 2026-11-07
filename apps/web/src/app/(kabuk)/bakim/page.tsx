@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { ortak } from '@kazuist/i18n';
 import { Yukleniyor } from '@kazuist/ui';
 
-const t = ortak('tr');
+const t = ortak();
 export const metadata: Metadata = {
   title: `${t.durum.bakimBaslik} | ${t.marka}`,
   robots: { index: false, follow: false },

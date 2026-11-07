@@ -4,7 +4,6 @@ import { renderToStaticMarkup, renderToString } from 'react-dom/server';
 import { createElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import tr from '@kazuist/i18n/tr/tespit.json';
-import en from '@kazuist/i18n/en/tespit.json';
 import { flattenKeys } from '@kazuist/i18n';
 import { Denetleyici } from './_bilesen/Denetleyici.tsx';
 import { KopyalaDugmesi } from './_bilesen/KopyalaDugmesi.tsx';
@@ -173,7 +172,7 @@ describe('page', () => {
   it('presents the result as trace count and density with the false positive warning, never a verdict', () => {
     expect(html).toContain(tr.denetleyici.uyari.baslik);
     expect(html).toContain('Yanlış pozitifler olur');
-    const arayuz = JSON.stringify([tr.denetleyici, en.denetleyici]);
+    const arayuz = JSON.stringify(tr.denetleyici);
     expect(arayuz).not.toMatch(/%\s?\{?\w*\}?\s+(yapay|ai)/i);
     expect(arayuz.toLocaleLowerCase('tr-TR')).not.toContain('yapay zekâ yazdı');
     expect(arayuz.toLocaleLowerCase('tr-TR')).not.toContain('yapay zekâ oranı');
@@ -230,10 +229,12 @@ describe('the pasted text stays in the browser', () => {
 });
 
 describe('dictionary', () => {
-  it('keeps en identical in shape to tr', () => {
-    expect(flattenKeys(en).sort()).toEqual(flattenKeys(tr).sort());
+  it('has unique, non-empty keys', () => {
+    const anahtarlar = flattenKeys(tr);
+    expect(anahtarlar.length).toBeGreaterThan(0);
+    expect(new Set(anahtarlar).size).toBe(anahtarlar.length);
   });
   it('has no em dash', () => {
-    expect(JSON.stringify([tr, en]).includes(String.fromCharCode(0x2014))).toBe(false);
+    expect(JSON.stringify(tr).includes(String.fromCharCode(0x2014))).toBe(false);
   });
 });

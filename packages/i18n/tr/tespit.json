@@ -6,6 +6,10 @@
   "baslik": "Metninizdeki yapay zekâ izlerini ayıklayın",
   "giris": "Bu sayfada iki şey var: bir yapay zekâ asistanına verebileceğiniz yazım kuralı seti ve metninizi tarayıcınızda tarayan bir iz denetleyicisi. İkisi de ücretsizdir, giriş gerektirmez.",
   "amac": "Amaç bir dedektörü kandırmak değil. Yapay zekânın bilinen kötü yazı alışkanlıklarını metinden ayıklamak ve her iddianın dayanağını korumak. Kurumunuz veya dergi yapay zekâ kullanımını beyan etmenizi istiyorsa beyan edersiniz.",
+  "yazma": {
+    "metin": "Tez veya makale şablonu, Word dosyası denetimi ve yazma koçu için Yazma zamanı sayfasına gidin.",
+    "baglanti": "Yazma zamanı"
+  },
   "surumSatiri": "Sürüm {surum}, {donem}. {bolum} bölüm, {madde} madde.",
   "istem": {
     "baslik": "İstemi tek tıkla kopyalayın",

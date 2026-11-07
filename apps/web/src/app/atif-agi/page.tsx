@@ -15,7 +15,7 @@ import styles from './atif-agi.module.css';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.baslik} | ${ortak().marka}`,
   description: tr.meta.aciklama,
 };
 
@@ -97,7 +97,7 @@ export default async function AtifAgiSayfasi({ searchParams }: { searchParams: P
 
       <footer className={styles.sabit}>
         <p>{tr.sabit.kaynakNotu}</p>
-        <p>{ortak('tr').uyari.danismanlik}</p>
+        <p>{ortak().uyari.danismanlik}</p>
       </footer>
     </div>
   );

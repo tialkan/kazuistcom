@@ -1,0 +1,319 @@
+{
+  "tarih": "2026-11-06T22:45:51.064Z",
+  "tarayici": "Brave (Chromium), headless; yerel üretim derlemesi, PostgreSQL 18 betik veritabanı, gerçek docxcheck servisi",
+  "sonuclar": [
+    {
+      "sayfa": "yazma",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-dergi",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "dergi-profili",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-girissiz",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "yazma",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-dergi",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "dergi-profili",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-girissiz",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "yazma",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-dergi",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "dergi-profili",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-girissiz",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-bos",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-dolu",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-onizleme",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-makale",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-denetim",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-denetim-uyumsuz",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-yukle-kapali",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "yazma-kisaltma",
+      "genislik": 375,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-bos",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-dolu",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-onizleme",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-makale",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-denetim",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-denetim-uyumsuz",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-yukle-kapali",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "yazma-kisaltma",
+      "genislik": 768,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-bos",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-dolu",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "kalemcik-onizleme",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-makale",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-denetim",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-denetim-uyumsuz",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "sablon-yukle-kapali",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    },
+    {
+      "sayfa": "yazma-kisaltma",
+      "genislik": 1440,
+      "durum": 200,
+      "axeIhlal": 0,
+      "ihlaller": [],
+      "yatayTasma": 0
+    }
+  ],
+  "sorunlar": []
+}

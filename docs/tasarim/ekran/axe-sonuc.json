@@ -76,17 +76,6 @@
     "violations": [],
     "horizontalOverflowPx": 0
   },
-  "casuist-legal-privacy@375": {
-    "violations": [],
-    "horizontalOverflowPx": 0
-  },
-  "casuist-legal-privacy@768": {
-    "horizontalOverflowPx": 0
-  },
-  "casuist-legal-privacy@1440": {
-    "violations": [],
-    "horizontalOverflowPx": 0
-  },
   "bulunamadi@375": {
     "violations": [],
     "horizontalOverflowPx": 0
@@ -106,39 +95,6 @@
     "horizontalOverflowPx": 0
   },
   "bakim@1440": {
-    "violations": [],
-    "horizontalOverflowPx": 0
-  },
-  "casuist-en@375": {
-    "violations": [],
-    "horizontalOverflowPx": 0
-  },
-  "casuist-en@768": {
-    "horizontalOverflowPx": 0
-  },
-  "casuist-en@1440": {
-    "violations": [],
-    "horizontalOverflowPx": 0
-  },
-  "casuist-partner@375": {
-    "violations": [],
-    "horizontalOverflowPx": 0
-  },
-  "casuist-partner@768": {
-    "horizontalOverflowPx": 0
-  },
-  "casuist-partner@1440": {
-    "violations": [],
-    "horizontalOverflowPx": 0
-  },
-  "casuist-legal-notice@375": {
-    "violations": [],
-    "horizontalOverflowPx": 0
-  },
-  "casuist-legal-notice@768": {
-    "horizontalOverflowPx": 0
-  },
-  "casuist-legal-notice@1440": {
     "violations": [],
     "horizontalOverflowPx": 0
   },
@@ -183,6 +139,39 @@
     "horizontalOverflowPx": 0
   },
   "eski@1440": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "tespit@375": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "tespit@768": {
+    "horizontalOverflowPx": 0
+  },
+  "tespit@1440": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "pratik@375": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "pratik@768": {
+    "horizontalOverflowPx": 0
+  },
+  "pratik@1440": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "yazma@375": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "yazma@768": {
+    "horizontalOverflowPx": 0
+  },
+  "yazma@1440": {
     "violations": [],
     "horizontalOverflowPx": 0
   }

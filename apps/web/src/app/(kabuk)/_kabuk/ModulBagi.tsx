@@ -23,7 +23,7 @@ export function ModulBagi({
     );
   return (
     <span className={`${className ?? ''} modul-kapali`.trim()}>
-      {children} <span className="modul-kapali__not">{ortak('tr').gezinme.yakinda}</span>
+      {children} <span className="modul-kapali__not">{ortak().gezinme.yakinda}</span>
     </span>
   );
 }

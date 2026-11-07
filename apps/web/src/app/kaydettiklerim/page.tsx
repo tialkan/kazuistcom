@@ -13,7 +13,7 @@ import { listSaved, type SavedRow } from './_sunucu/kutuphane.ts';
 import styles from './kaydettiklerim.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.baslik} | ${ortak().marka}`,
   description: tr.meta.aciklama,
   robots: { index: false, follow: false },
 };

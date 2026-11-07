@@ -1,0 +1,92 @@
+{
+  "slug": "makale",
+  "guncelleme": "2026-11-07",
+  "baslik": "Makale yazım rehberi",
+  "ozet": "Hukuk makalesini konudan gönderime kadar on iki adımda yazın. Her adımda ne yapacağınızı, nelere dikkat edeceğinizi ve ilgili kaynak aramasını bulursunuz.",
+  "adimlar": [
+    {
+      "id": "m01",
+      "baslik": "Konuyu soruya çevirin",
+      "aciklama": "Geniş bir konu başlığını yanıtlanabilir tek bir soruya indirin. \"Kira sözleşmesi\" bir konudur; \"Kira bedelinin belirlenmesinde hâkimin takdir yetkisi nereye kadar uzanır?\" bir sorudur.",
+      "ipucu": "Soruyu yazdıktan sonra cevabın ne tür kaynakta çıkacağını düşünün: mevzuat, karar ya da doktrin. Cevabın hangi kaynakta çıkacağını söyleyemiyorsanız soru yeterince dar değildir.",
+      "kaynakTuru": "makale"
+    },
+    {
+      "id": "m02",
+      "baslik": "Yayın yerini seçin ve yazım kurallarını edinin",
+      "aciklama": "Göndereceğiniz dergiyi yazmaya başlamadan seçin. Dergi sayfasındaki yazım kurallarını (atıf sistemi, özet ve anahtar kelime koşulları, uzunluk sınırı, beyan istekleri) taslağınızın yanına koyun.",
+      "ipucu": "Kural yoksa ya da belirsizse derginin editörlüğüne yazın. Bir kuralı varsaymak yerine sormak, sonradan yeniden biçimlendirmekten kısa sürer.",
+      "baglanti": { "href": "/yazma", "etiket": "Yazma zamanı: şablon" }
+    },
+    {
+      "id": "m03",
+      "baslik": "Mevzuatı ve kararları birincil kaynaktan toplayın",
+      "aciklama": "Kanun, yönetmelik ve karar metnini resmî yayınından okuyun. Bir madde için değişiklik ve yürürlükten kaldırma notlarına bakın; yazacağınız dönemde yürürlükte olan metni kullanın.",
+      "ipucu": "Karar atıfında daire, tarih, esas ve karar numarasını karar metninden alın. Numarayı hafızadan ya da bir özetten yazmayın.",
+      "kaynakTuru": "mevzuat"
+    },
+    {
+      "id": "m04",
+      "baslik": "Doktrini tarayın ve görüş ayrılıklarını haritalayın",
+      "aciklama": "Konuyu işleyen kitap ve makaleleri okuyun. Her görüş için kimin, hangi eserde, hangi sayfada savunduğunu not edin. Görüş ayrılığı varsa tarafları ve gerekçelerini yazın.",
+      "ipucu": "Okumadığınız eseri doğrudan kaynak gibi göstermeyin; ikinci elden öğrendiyseniz \"aktaran\" kalıbıyla yazın.",
+      "kaynakTuru": "makale"
+    },
+    {
+      "id": "m05",
+      "baslik": "Kaynakları bir kaynakça yöneticisine kaydedin",
+      "aciklama": "Okuduğunuz her eseri Zotero ya da EndNote kütüphanesine künyesiyle kaydedin. Atıfları sonradan elle yazmak yerine Word eklentisiyle ekleyin; kaynakça belgeyle birlikte güncellenir.",
+      "ipucu": "Kayıt otomatik gelse bile yazar adını, başlığı, yılı ve sayfayı kontrol edin. Eksik künye atıf hatasına dönüşür.",
+      "baglanti": { "href": "/rehberler/zotero-endnote", "etiket": "Zotero ve EndNote rehberi" }
+    },
+    {
+      "id": "m06",
+      "baslik": "İddianızı tek cümleyle yazın",
+      "aciklama": "Makalenin sorusuna vereceğiniz cevabı tek cümlede yazın. Makalenin geri kalanı bu cümleyi kanıtlar. Cümleyi yazamıyorsanız yazmaya geçmeden okumaya dönün.",
+      "ipucu": "İddianız yeni mi, bariz olmayan mı, yararlı mı ve sağlam mı? Dört soruya evet diyemiyorsanız iddiayı daraltın ya da değiştirin.",
+      "baglanti": { "href": "/rehberler/tez", "etiket": "Tez rehberi, 5. adım ve dayanağı" }
+    },
+    {
+      "id": "m07",
+      "baslik": "Başlık ve bölüm planını çıkarın",
+      "aciklama": "İddianızdan bölümlere inin. Her bölüm tek bir soruyu yanıtlasın ve iddiaya bir şey eklesin. Başlıkları konu adı olarak değil, bölümün vardığı sonucu gösterecek biçimde kurun.",
+      "ipucu": "Planı bir sayfaya sığdıramıyorsanız makale birden çok iddia taşıyordur. Bunlardan birini seçin.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "m08",
+      "baslik": "İlk taslağı yazın",
+      "aciklama": "Yazma saatlerini takviminize koyun ve ilk taslakta dil cilasına zaman harcamayın. Eksik kaynak yerine [KAYNAK GEREKLİ] gibi görünür bir işaret bırakın ve taslağı bitirin.",
+      "ipucu": "Taslağı bir oturumda bitirmeniz gerekmez. Her oturumu bir bölümle ya da bir paragraf hedefiyle sınırlayın.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "m09",
+      "baslik": "Atıfları ve alıntıları kaynakla karşılaştırın",
+      "aciklama": "Her atıfın bağlı olduğu cümlenin iddiasını gerçekten desteklediğini kontrol edin. Birebir alıntıları ilk elden metinle, mevzuat alıntısını yürürlükteki metinle karşılaştırın.",
+      "ipucu": "Kaynakçadaki her eser metinde, metindeki her atıf kaynakçada geçsin. Fazla ve eksik kayıtları listeleyip kapatın.",
+      "kaynakTuru": "mevzuat"
+    },
+    {
+      "id": "m10",
+      "baslik": "Özet, anahtar kelime ve başlığı en sona bırakın",
+      "aciklama": "Özeti gövde bitince yazın ve gövdeyle satır satır karşılaştırın. Özet, gövdenin söylediğinden daha kesin bir sonuç söylemesin. Anahtar kelimeleri derginin sayı ve dil koşuluna göre seçin.",
+      "ipucu": "İngilizce özet gerekiyorsa terimleri Türkçe metindeki karşılıklarla tutarlı kullanın.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "m11",
+      "baslik": "Dili, biçimi ve benzerliği denetleyin",
+      "aciklama": "Metni yüksek sesle okuyun, hataları kâğıt üzerinde arayın. Yapay zekâ yazı alışkanlıklarını Kazuist yazım kurallarıyla tarayın. Benzerlik raporu alıyorsanız raporu sayıyla değil, işaretlenen yerlerin kaynağıyla birlikte okuyun.",
+      "ipucu": "Kurumunuz ya da dergi yapay zekâ kullanımının beyanını istiyorsa kullandıysanız beyan edin. Kazuist yazım kuralları metni gizlemek için değil, kötü yazı alışkanlıklarını ayıklamak için yazıldı.",
+      "baglanti": { "href": "/tespit", "etiket": "Yazım kuralları ve iz denetleyicisi" }
+    },
+    {
+      "id": "m12",
+      "baslik": "Etik beyanı yazın ve gönderimi tamamlayın",
+      "aciklama": "Derginin istediği beyanları (etik kurul, çıkar çatışması, yazar katkısı, destek) yazın. Yazarlar arasında yalnız çalışmaya aktif katkı verenler olsun ve sıralama bu katkıyı yansıtsın. Gönderim öncesi kontrol listesini baştan sona işaretleyin.",
+      "ipucu": "Metnin başka bir yerde yayımlanıp yayımlanmadığını ve başka bir yerde değerlendirmede olup olmadığını derginin kuralına göre beyan edin.",
+      "baglanti": { "href": "/rehberler/kontrol-listesi", "etiket": "Kontrol listesi" }
+    }
+  ]
+}

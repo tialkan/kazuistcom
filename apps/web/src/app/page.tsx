@@ -6,7 +6,7 @@ import { ModulBagi } from './(kabuk)/_kabuk/ModulBagi.tsx';
 import { OrnekSoru } from './(kabuk)/_kabuk/OrnekSoru.tsx';
 import { modulAcik } from './(kabuk)/_kabuk/rotalar.ts';
 
-const t = ortak('tr');
+const t = ortak();
 const a = t.anasayfa;
 
 export const metadata: Metadata = { title: a.baslik, description: a.aciklama };
@@ -47,9 +47,6 @@ export default function Home() {
             ))}
           </ul>
         </div>
-        <p className="ana-en-notu" lang="en">
-          {a.enNotu} <Link href="/en">/en</Link>
-        </p>
       </section>
 
       <section className="sayfa ana-serh" aria-labelledby="serh-baslik">

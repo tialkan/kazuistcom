@@ -1,0 +1,24 @@
+{
+  "kilavuz": "yuhfd",
+  "dergi": "Yeditepe Üniversitesi Hukuk Fakültesi Dergisi",
+  "tur": "makale",
+  "etiketleyen": "yazma ajanı, 2026-11-07; editör doğrulaması bekliyor",
+  "alanlar": {
+    "paper": { "deger": "A4", "alinti": "Kağıt boyutu: A4" },
+    "mTop": { "deger": 2.5, "alinti": "Üst: 2,5 cm; Alt: 2,5 cm; Sol: 2 cm; Sağ: 2 cm" },
+    "mBottom": { "deger": 2.5, "alinti": "Üst: 2,5 cm; Alt: 2,5 cm; Sol: 2 cm; Sağ: 2 cm" },
+    "mLeft": { "deger": 2, "alinti": "Üst: 2,5 cm; Alt: 2,5 cm; Sol: 2 cm; Sağ: 2 cm" },
+    "mRight": { "deger": 2, "alinti": "Üst: 2,5 cm; Alt: 2,5 cm; Sol: 2 cm; Sağ: 2 cm" },
+    "font": {
+      "deger": "Times New Roman",
+      "alinti": "Metin: Times New Roman, 12 punto, 1.5 satır aralığı, iki yana yaslı"
+    },
+    "size": { "deger": 12, "alinti": "Metin: Times New Roman, 12 punto, 1.5 satır aralığı, iki yana yaslı" },
+    "line": { "deger": 1.5, "alinti": "Metin: Times New Roman, 12 punto, 1.5 satır aralığı, iki yana yaslı" },
+    "footSize": {
+      "deger": 10,
+      "alinti": "Dipnotlar: Sayfa altında, Times New Roman, 10 punto, 1 satır aralığı, iki yana yaslı"
+    }
+  },
+  "bos": ["pageNum", "indent"]
+}

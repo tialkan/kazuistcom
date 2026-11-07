@@ -1,0 +1,223 @@
+/* Kalemcik: the same paper and ink as the writing pages; the tone only changes the rule colour and the face. */
+
+.duzen {
+  display: grid;
+  gap: var(--kz-space-8);
+  max-width: 62rem;
+}
+.bolum {
+  padding-top: var(--kz-space-6);
+  border-top: 2px solid var(--kz-color-text);
+}
+.bolum > h2 {
+  font-size: var(--kz-text-2xl);
+  margin-top: 0;
+}
+.okuma {
+  max-width: var(--kz-reading-max);
+}
+.durum {
+  min-height: 1.6em;
+  margin: var(--kz-space-2) 0 0;
+  font-weight: 600;
+}
+.kutu {
+  max-width: var(--kz-reading-max);
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: var(--kz-serh-rule) solid var(--kz-color-accent);
+  background: var(--kz-color-surface);
+}
+.kutu p {
+  margin: 0;
+}
+.uyari {
+  border-left-color: var(--kz-color-warning);
+}
+.hata {
+  border-left-color: var(--kz-color-danger);
+}
+.eylemler {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-3);
+  margin-top: var(--kz-space-3);
+}
+
+/* Project list */
+.liste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kz-space-2);
+  margin: var(--kz-space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.projeDugme {
+  min-height: 2.75rem;
+  padding: var(--kz-space-2) var(--kz-space-4);
+  border: 1px solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+  color: var(--kz-color-text);
+  font: inherit;
+  cursor: pointer;
+}
+.projeDugme[aria-pressed='true'] {
+  border-color: var(--kz-color-text);
+  border-width: 2px;
+  font-weight: 600;
+}
+.projeDugme:focus-visible {
+  outline: 2px solid var(--kz-color-focus);
+  outline-offset: 2px;
+}
+
+/* Coach card: face, tone, message */
+.koc {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--kz-space-6);
+  padding: var(--kz-space-4);
+  border: 1px solid var(--kz-color-border);
+  border-left: 6px solid var(--kz-color-border);
+  background: var(--kz-color-surface);
+}
+.kocYesil {
+  border-left-color: var(--kz-color-success);
+}
+.kocTuruncu {
+  border-left-color: var(--kz-color-warning);
+}
+.kocPembe {
+  border-left-color: var(--kz-color-danger);
+}
+.kocKutlama {
+  border-left-color: var(--kz-color-accent);
+}
+.kocTon {
+  margin: 0 0 var(--kz-space-1);
+  font-size: var(--kz-text-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.kocMesaj {
+  margin: 0;
+  font-size: var(--kz-text-lg);
+}
+@media (max-width: 30rem) {
+  .koc {
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+}
+
+/* Progress */
+.ilerleme {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  gap: var(--kz-space-8);
+}
+.ozet {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: var(--kz-space-4);
+  margin: 0;
+  flex: 1 1 18rem;
+}
+.sayi {
+  padding-top: var(--kz-space-2);
+  border-top: 2px solid var(--kz-color-text);
+}
+.sayi dt {
+  font-size: var(--kz-text-xs);
+  font-weight: 600;
+  color: var(--kz-color-text-muted);
+}
+.sayi dd {
+  margin: 0;
+  font-family: var(--kz-font-heading);
+  font-size: var(--kz-text-xl);
+  line-height: var(--kz-leading-tight);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Last seven days */
+.takvim {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(2.5rem, 1fr));
+  gap: var(--kz-space-2);
+  max-width: 28rem;
+  margin: var(--kz-space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.gun {
+  display: grid;
+  justify-items: center;
+  gap: var(--kz-space-1);
+  font-size: var(--kz-text-xs);
+}
+.daire {
+  display: block;
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
+  border: 2px solid var(--kz-color-text);
+  border-radius: 50%;
+}
+.daireDolu {
+  background: var(--kz-color-text);
+}
+.gizli {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Forms */
+.form {
+  display: grid;
+  gap: var(--kz-space-3);
+  max-width: 32rem;
+}
+.ikili {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--kz-space-3);
+}
+.ipucu {
+  margin: 0;
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-sm);
+  max-width: var(--kz-reading-max);
+}
+.secenek {
+  display: flex;
+  align-items: start;
+  gap: var(--kz-space-2);
+  min-height: 2.75rem;
+}
+.secenek input {
+  margin-top: 0.35rem;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+.secenekler {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--kz-space-1);
+}
+.secenekler legend {
+  font-weight: 600;
+  margin-bottom: var(--kz-space-1);
+}
+
+.bolum h3 {
+  margin-top: var(--kz-space-6);
+}

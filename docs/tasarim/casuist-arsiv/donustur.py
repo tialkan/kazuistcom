@@ -3,7 +3,8 @@
 
 Usage: python3 -I docs/tasarim/casuist-arsiv/donustur.py <archive dir> <output dir>
 
-Each output file holds {path, lang, title, description, nav, langLink, tagline, main}.
+Each output file holds {path, lang, title, description, nav, tagline, main}.
+Kazuist is Turkish only (ADR-0032): the English Casuist pages and the language links are not converted.
 A node is a string or [tag, {attrs}, ...children]. Only whitelisted tags and attributes survive.
 Scripts, styles, svg and canvas are dropped. Images keep their alt text, size and the original file
 path (src, with the Next.js image optimizer URL unwrapped); the page maps that path to the local
@@ -19,15 +20,15 @@ from html.parser import HTMLParser
 from urllib.parse import unquote
 
 PAGES = {
-    'index': '/en', 'problem': '/problem', 'how-it-works': '/how-it-works', 'evaluation': '/evaluation',
-    'partner': '/partner', 'about': '/about', 'legal_notice': '/legal/notice', 'legal_privacy': '/legal/privacy',
-    'legal_cookies': '/legal/cookies', 'legal_ai': '/legal/ai', 'legal_accessibility': '/legal/accessibility',
     'tr': '/tr', 'tr_sorun': '/tr/sorun', 'tr_nasil-calisir': '/tr/nasil-calisir',
     'tr_degerlendirme': '/tr/degerlendirme', 'tr_ortak': '/tr/ortak', 'tr_hakkinda': '/tr/hakkinda',
     'tr_hukuki_uyari': '/hukuki/uyari', 'tr_hukuki_gizlilik': '/hukuki/gizlilik',
     'tr_hukuki_cerezler': '/hukuki/cerezler', 'tr_hukuki_yapay-zeka': '/hukuki/yapay-zeka',
     'tr_hukuki_erisilebilirlik': '/hukuki/erisilebilirlik', 'eski': '/eski',
 }
+# The archived /eski wrapper carried an English title around Turkish text; the page is served in Turkish.
+META = {'eski': {'lang': 'tr', 'title': 'Önceki Kazuist sitesi | Casuist',
+                 'description': 'Önceki Kazuist sitesinin arşivi.'}}
 TAGS = {'section', 'div', 'p', 'h1', 'h2', 'h3', 'h4', 'span', 'a', 'strong', 'em', 'b', 'i', 'ul', 'ol',
         'li', 'dl', 'dt', 'dd', 'article', 'blockquote', 'details', 'summary', 'table', 'thead', 'tbody',
         'tr', 'th', 'td', 'br', 'img', 'nav', 'footer', 'header', 'small', 'code', 'sup', 'sub', 'figure',
@@ -59,7 +60,7 @@ def fix_href(h):
     if h.startswith('/tr/hukuki/'):
         return '/hukuki/' + h[len('/tr/hukuki/'):]
     if h == '/':
-        return '/en'
+        return '/tr'
     return h
 
 
@@ -182,7 +183,6 @@ def main(src, dst):
         tree = clean(t.root)
         main_node = find(tree, lambda n: n[0] == 'main')
         nav = find(tree, lambda n: n[0] == 'nav' and n[1].get('class') == 'masaustu-menu')
-        lang_link = find(tree, lambda n: n[0] == 'a' and n[1].get('class') == 'dil-bagi')
         tagline = None
         footer = find(tree, lambda n: n[0] == 'footer')
         if footer is not None:
@@ -192,16 +192,15 @@ def main(src, dst):
         data = {
             'path': path,
             'source': 'https://kazuist.com/' + ('' if name == 'index' else name.replace('_', '/')),
-            'lang': lang.group(1) if lang else 'en',
+            'lang': lang.group(1) if lang else 'tr',
             'title': h.unescape(title.group(1)) if title else '',
             'description': h.unescape(desc.group(1)) if desc else '',
             'nav': [{'href': k[1].get('href', ''), 'text': text_of(k)} for k in (nav[2:] if nav else [])
                     if not isinstance(k, str)],
-            'langLink': {'href': lang_link[1].get('href', ''), 'text': text_of(lang_link),
-                         'hreflang': lang_link[1].get('hreflang', '')} if lang_link else None,
             'tagline': tagline,
             'main': main_node[2:] if main_node else [],
         }
+        data.update(META.get(name, {}))
         with open(os.path.join(dst, name + '.json'), 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=1)
             f.write('\n')

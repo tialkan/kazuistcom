@@ -32,6 +32,66 @@ Yeni bağımlılık yok (Batch istemcisi standart kütüphane); `packages/contra
 - i18n: yalnız `packages/i18n/tr/atif-agi.json` (kullanıcı kararı: İngilizce yok); `en` eşlik testi bu dosya için
   düşer, test değiştirilmedi (on-yuz `en` dizinini kaldıracak).
 
+## 7 Kasım 2026, icerik: Rehberler modülü açıldı (codex/dalga2-rehberler)
+
+Yeni bağımlılık yok (MDX yerine JSON, gerekçe docs/istekler/icerik-rehberler.md); contracts ve db değişmedi. `acikModuller`
+kümesine yalnız `'/rehberler'` eklendi. Yalnız Türkçe: `en` dizini yok (orkestra kararı), `packages/i18n/test/parity.test.ts`
+bu yüzden `rehberler.json` için iki test kırar ve `en` kaldırılınca düzelir; test değiştirilmedi.
+- İçerik `content/rehberler/*.json`: makale 12 adım, tez monografi modeli ve 12 adım (her adım bir dayanağa bağlı), Zotero 8 ve
+  EndNote 6 adım, karşılaştırma tablosu, 14 maddelik kontrol listesi, YÖK yönergesi m. 4/1 altı ihlal (birebir tanım, kurgusal
+  hukuk örneği). Şema `apps/web/src/app/rehberler/_alan/sema.ts`; geçersiz dosya derlemeyi durdurur.
+- Sayfalar: `/rehberler`, `/rehberler/{makale,tez,zotero-endnote,kontrol-listesi,etik}`. Her sayfada üstte etik kutusu, altta sabit
+  uyarılar ve /tespit bağlantısı. İlerleme `localStorage` `kazuist.rehber.v1`, makale, tez ve kontrol ayrı saklanır; sunucuda
+  saklama (FR-34) için istek yazıldı. Kapalı modüle (/ara, /yazma) bağlantı çizilmez.
+- Kaynak: "Hukuk Atlası: Makale ve Tez Yazım Rehberi" Word belgesi depoda yok, içerik ondan aktarılmadı; yalnız doğrulanmış
+  kaynaklar kullanıldı. Zotero (zotero.org/support) ve EndNote 2025 (docs.endnote.com) düğme ve menü adları resmî sayfalardan
+  alındı, her kayıt URL ve okuma tarihiyle sayfada listeli. YÖK PDF'i okundu. Kitap dayanaklarının (Volokh, Dunleavy,
+  Silvia, Hutchinson ve Duncan) hiçbiri birincil okunmadı, sayfada "ikincil" yazılı; Edinburgh planlayıcısı birincil.
+  Deakin sayfası CAPTCHA istedi (aşılmadı); EndNote sistem gereksinimi sayfası 404 verdi.
+- Doğrulama: typecheck, lint, check:text, web testleri 354 geçti/1 skip, üretim derlemesi; 375/768/1440 px'te 6 sayfa, klavyeyle
+  işaretleme, yenileme sonrası kalıcılık, etik kutusunun klavyeyle açılması: 93 kontrol, 24 axe taraması, 0 sorun
+  (`apps/web/src/app/rehberler/_kanit/`; axe test tarayıcısında `bypassCSP` ile çalıştı, ekran okuyucuyla elle deneme yapılmadı).
+- Açık: FR-34 sunucu saklama, /ara filtre parametresi, seo (Article, canonical), kitap dayanaklarının asıl metinle
+  doğrulanması, Word rehber belgesinin gelmesi, EndNote'ta İSNAD stili doğrulaması.
+## 7 Kasım 2026, on-yuz: ADR-0032 yalnız Türkçe (codex/yalniz-turkce)
+
+Kullanıcı kararı (ADR-0032, PR #64) uygulandı; PR açık, birleştirilmedi. Yönlendirme eklenmedi.
+- i18n: `packages/i18n/en/**` ve `parity.test.ts` silindi. `src/index.ts` tek dilli: `locales`, `Locale`,
+  `sourceLocale` kalktı, `ortak()` parametresiz (tip `tr/ortak.json`'dan). Yeni `test/anahtarlar.test.ts` yalnız tr
+  dizinini, boş değer, yinelenen anahtar ve tip güvenliğini denetler; `check` betiği ona bakar. `ortak.json`'dan
+  `altBilgi.casuistEn`, `anaSayfa.enNotu`, `casuist.baglayiciSurum`, `casuist.turkceSurum` çıktı. Bütün
+  `ortak('tr')` çağrıları `ortak()` oldu.
+- Rotalar: `(casuist)` altındaki /en, /problem, /how-it-works, /evaluation, /partner, /about ve /legal/[belge]
+  sayfaları ile 11 İngilizce arşiv JSON'u silindi. Türkçe arşiv sayfalarından "English" dil bağı (`langLink`)
+  kaldırıldı; `CasuistSayfa` dil dallanmasız, marka bağı /tr. /eski arşivi `lang: tr`, başlığı Türkçe.
+  next.config.ts'deki Türkçe hukuki 301 aynen duruyor (İngilizceye ait girdi yoktu).
+- Kabuk: alt bilgideki "Casuist (English)" bağı ve ana sayfadaki İngilizce not kalktı; `html lang="tr"` zaten sabitti.
+- Hukuki: `content/hukuki/en/**` silindi; altı Türkçe metindeki `alternate: /legal/...` satırı ve /hukuki
+  sayfalarındaki hreflang `alternates` kalktı. `yukle.ts` yalnız `tr` okur, `lang: tr` dışını reddeder;
+  `HukukiGovde` bağlayıcı sürüm notu ve en-GB tarih dalı olmadan.
+- Testler: Ek H tablosu 23 satır kaldı; 2-11 numaralı satırlar `gone` ve 404 beklenir, /en de 404 ve Location yok.
+  Güvenlik başlık testinde /problem yerine /tr. Lighthouse bütçesi /en yerine /tr (CI adımı adı dahil).
+- SEO: main'de sitemap.ts, robots.ts ve public/llms.txt yok; temizlenecek adres yoktu.
+- Doğrulama (origin/main #63 ve #64 birleştirildikten sonra): typecheck, lint, check:text, build; i18n 20,
+  contracts 122, ui 31, casuist 104, db 43, ledger 168, web 487/1 skip, worker-node 77, ai-gateway 67/2 skip.
+  #63'ün eklediği `packages/i18n/en/{yazma,kalemcik,tespit}.json` silindi, yeni `ortak('tr')` çağrıları
+  `ortak()` oldu. Yerel üretim sunucusunda 11 İngilizce adres 404 (Location yok), /tr ve altı, /yazma, /kalemcik
+  200, beş Türkçe hukuki 301. Ekran ve axe `docs/tasarim/ekran`: 16 sayfa, 375/1440 axe 0, üç genişlikte taşma 0.
+- Açık: sözleşme ve sahiplik temizliği `docs/istekler/on-yuz-yalniz-turkce-sozlesme.md` (mimar). Arşiv HTML'leri
+  `docs/tasarim/casuist-arsiv/*.html` kayıt olarak duruyor, dönüştürücü artık yalnız Türkçe sayfaları üretir.
+  Search Console kaldırma talebi seo ajanında (ADR-0032).
+
+## 7 Kasım 2026, yazma: Dalga 2 yazma modülü (codex/dalga2-yazma)
+
+Yeni sözleşme veya şema değişikliği yok; ihtiyaçlar docs/istekler/yazma-*.md (sozlesme, bildirim-ve-hesap, yz-gecidi, orkestra).
+- Çekirdek `apps/web/src/app/yazma/_cekirdek`: kural şeması (SRS 6.2), tez ve makale .docx üreticisi (docx 9.15; iki bölüm, i/ii ve 1/2 numara, Normal/Başlık 1-3/Dipnot Metni stilleri, içindekiler alanı, kapak, ASCII dosya adı), PDF/DOCX/TXT metin çıkarma (20 MB, tür içerikten, zip bombası sınırı, 200 karakter altı uyarı), kural çıkarma hattı (Haiku, şema düşerse Sonnet, alan başına sayfa ve alıntı, alıntı kılavuzda birebir aranır, değer alıntıda geçmezse "Örnek değer"), kısaltmalar cetveli.
+- API (`api/v1/{writing-projects,journals,templates,jobs,abbreviations}`): çalışmalar ve ilerleme, dergi profilleri (yalnız editörün onayladığı sürüm görünür), kılavuz yükleme işi, .docx denetimi, kısaltma cetveli. Dosyalar saklanmaz, YZ'ye gitmez (denetim) ya da maskelenmiş gider (kılavuz; YZ bağlaması kapalı gelir, `YAZMA_YZ=acik`).
+- Sayfalar: /yazma, /yazma/sablon (?dergi=<slug> onaylı profili ekrana doldurur), /yazma/dergiler/[slug], /kalemcik; /tespit ile karşılıklı bağlantı; `acikModuller`'e '/yazma'.
+- Python `services/worker-py/docxcheck`: stdlib ile .docx denetimi (kenar boşluğu, yazı tipi, punto, satır aralığı, girinti, başlıklar, dipnot, sayfa numarası konumu ve Roma/Arap, bölüm sırası, kelime sınırı), iç HTTP ucu, LibreOffice headless PDF ve sayfa numarası doğrulaması, CLI. 43 test.
+- Kalemcik: `apps/worker-node/src/kalemcik` günlük iş (teslim 14/7/3/1/0 gün, üç gün sessizlik kuralı ve iki günde bir tekrar, hitap sen/siz, 30 gün saklama temizliği); mesajlar `content/kalemcik.yaml`'dan (JSON kopyası, test sapmayı yakalar). Metin `notify.send` refId'sinde adlandırılır; kimliğin `render()` satırı bekleniyor.
+- eval/rules: beş gerçek DergiPark kılavuzu, altın etiketler, ölçüm betiği. Plan 15.3/3: "3 kılavuzda hatasız .docx" geçti; "çekirdek %95" **geçmedi** (canlı model ölçümü yok, 5/10 kılavuz). Word ve Google Docs elle kontrol kaydı bekliyor (eval/rules/el-kontrol-kaydi.md).
+- Doğrulama: web 307 test, worker-node 77, i18n 15, python docxcheck 43; typecheck, lint, prettier, check:text, üretim derlemesi; 375/768/1440 axe 0 ihlal ve taşma 0 (eval/rules/ekran, gerçek PostgreSQL 18, gerçek docxcheck servisi, Brave).
+- Açık: orkestra kayıtları (kalemcik.daily, docxcheck bağlama, pyproject testpaths), YZ bütçe ve kredi girişi (yz-gecidi), 10 enstitü/dergi kılavuzu ve canlı ölçüm, DergiPark protokolü olmadan otomatik çekme yapılmadı, editör kuyruğuna düşen dergi taslakları için yönetim arayüzü kimlik/orkestra'da.
 ## 7 Kasım 2026, casuist: /ara, kaynaklı özet ve /kaydettiklerim (codex/dalga2-casuist)
 
 Dalga 2 casuist ilk teslimi; PR açık, birleştirilmedi. `packages/contracts` ve `packages/db` değişmedi.

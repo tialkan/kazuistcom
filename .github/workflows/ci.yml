@@ -33,7 +33,7 @@ jobs:
         run: pnpm --filter @kazuist/contracts lint
       - name: Generated client is up to date
         run: pnpm --filter @kazuist/contracts check:generated
-      - name: i18n key parity
+      - name: i18n key structure
         run: pnpm --filter @kazuist/i18n check
       - name: Tests (includes PGlite migration test)
         run: pnpm test
@@ -281,7 +281,7 @@ jobs:
       - name: E2E smoke against the production image (tests/e2e)
         if: success() || failure()
         run: KAZUIST_E2E_BASE_URL=http://localhost:3000 pnpm --dir tests/e2e exec playwright test
-      - name: Lighthouse CI budgets (mobile, performance 90; /, /fiyatlar, /en)
+      - name: Lighthouse CI budgets (mobile, performance 90; /, /fiyatlar, /tr)
         if: success() || failure()
         env:
           LHCI_VERSION: 0.15.1

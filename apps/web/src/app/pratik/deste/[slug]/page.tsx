@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const deste = desteBul(slug);
   if (!deste) return {};
   return {
-    title: `${doldur(tr.meta.desteBaslik, { deste: deste.baslik })} | ${ortak('tr').marka}`,
+    title: `${doldur(tr.meta.desteBaslik, { deste: deste.baslik })} | ${ortak().marka}`,
     description: deste.aciklama,
   };
 }

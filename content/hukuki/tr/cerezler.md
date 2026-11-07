@@ -8,7 +8,6 @@ version: 2026-11-02.1
 date: 2026-11-02
 status: taslak
 consent_kind: acik_riza_analitik
-alternate: /legal/cookies
 ---
 
 > TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026.

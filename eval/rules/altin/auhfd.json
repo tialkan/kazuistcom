@@ -1,0 +1,37 @@
+{
+  "kilavuz": "auhfd",
+  "dergi": "Ankara Üniversitesi Hukuk Fakültesi Dergisi",
+  "tur": "makale",
+  "etiketleyen": "yazma ajanı, 2026-11-07; editör doğrulaması bekliyor",
+  "alanlar": {
+    "font": {
+      "deger": "Times New Roman",
+      "alinti": "“Times New Roman” yazı tipi ve 12 punto kullanılarak, iki yana yaslı olacak şekilde ve 1,5 satır aralığı"
+    },
+    "size": {
+      "deger": 12,
+      "alinti": "“Times New Roman” yazı tipi ve 12 punto kullanılarak, iki yana yaslı olacak şekilde ve 1,5 satır aralığı"
+    },
+    "line": {
+      "deger": 1.5,
+      "alinti": "“Times New Roman” yazı tipi ve 12 punto kullanılarak, iki yana yaslı olacak şekilde ve 1,5 satır aralığı"
+    },
+    "footSize": {
+      "deger": 10,
+      "alinti": "Dipnotlar ve (varsa) metin içi özellikli gösterimler ise 10 punto kullanılarak düzenlenmelidir."
+    },
+    "citation": {
+      "anahtar": "chicago",
+      "alinti": "Dipnotlarda ve kaynakçada “The Chicago Manual of Style, 18th Edition (2024), Notes and Bibliography” sistemi esas alınır."
+    },
+    "wordLimit": {
+      "deger": { "min": 5000, "max": 15000 },
+      "alinti": "metin kısmının 5.000 kelimeden az olmaması ve 15.000 kelimeyi geçmemesi gerekmektedir"
+    },
+    "absLimit": {
+      "deger": { "min": 150, "max": 200 },
+      "alinti": "özetlerin en az 150 kelime olması ve 200 kelimeyi geçmemesi gerekmektedir"
+    }
+  },
+  "bos": ["mTop", "mBottom", "mLeft", "mRight", "pageNum", "indent"]
+}
