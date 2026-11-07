@@ -7,7 +7,14 @@
       "sourceKey": "yargitay:746229100",
       "baslik": "Yargıtay 12. Ceza Dairesi E. 2019/14037 K. 2022/2232",
       "karar_atiflari": [
-        { "kind": "yargi", "esas": "2012/1510", "karar": "2014/331", "court": "Yargıtay", "chamber": "Ceza Genel Kurulu", "date": "2014-06-17" }
+        {
+          "kind": "yargi",
+          "esas": "2012/1510",
+          "karar": "2014/331",
+          "court": "Yargıtay",
+          "chamber": "Ceza Genel Kurulu",
+          "date": "2014-06-17"
+        }
       ],
       "doktrin_atiflari": [],
       "alt_mahkeme_anmalari": 0
@@ -16,7 +23,14 @@
       "sourceKey": "yargitay:1196596300",
       "baslik": "Yargıtay 4. Hukuk Dairesi E. 2023/12295 K. 2025/14577",
       "karar_atiflari": [
-        { "kind": "yargi", "esas": "2014/4-56", "karar": "2015/1679", "court": "Yargıtay", "chamber": "Hukuk Genel Kurulu", "date": "2015-06-17" }
+        {
+          "kind": "yargi",
+          "esas": "2014/4-56",
+          "karar": "2015/1679",
+          "court": "Yargıtay",
+          "chamber": "Hukuk Genel Kurulu",
+          "date": "2015-06-17"
+        }
       ],
       "doktrin_atiflari": [],
       "alt_mahkeme_anmalari": 2
@@ -25,8 +39,22 @@
       "sourceKey": "yargitay:899210400",
       "baslik": "Yargıtay 7. Ceza Dairesi E. 2023/30 K. 2023/2890",
       "karar_atiflari": [
-        { "kind": "yargi", "esas": "2016/15510", "karar": "2017/5325", "court": "Yargıtay", "chamber": "19. Ceza Dairesi", "date": "2017-06-05" },
-        { "kind": "yargi", "esas": "2014/4-56", "karar": "2015/1679", "court": "Yargıtay", "chamber": "Hukuk Genel Kurulu", "date": "2015-06-17" },
+        {
+          "kind": "yargi",
+          "esas": "2016/15510",
+          "karar": "2017/5325",
+          "court": "Yargıtay",
+          "chamber": "19. Ceza Dairesi",
+          "date": "2017-06-05"
+        },
+        {
+          "kind": "yargi",
+          "esas": "2014/4-56",
+          "karar": "2015/1679",
+          "court": "Yargıtay",
+          "chamber": "Hukuk Genel Kurulu",
+          "date": "2015-06-17"
+        },
         { "kind": "aym", "number": "2014/18260", "court": "Anayasa Mahkemesi", "date": "2017-10-04" }
       ],
       "doktrin_atiflari": [],
@@ -36,8 +64,22 @@
       "sourceKey": "yargitay:729300000",
       "baslik": "Yargıtay Hukuk Genel Kurulu E. 2018/20 K. 2021/1383",
       "karar_atiflari": [
-        { "kind": "yargi", "esas": "2014/15458", "karar": "2015/7409", "court": "Yargıtay", "chamber": "2. Hukuk Dairesi", "date": "2015-04-14" },
-        { "kind": "yargi", "esas": "2016/17076", "karar": "2017/1451", "court": "Yargıtay", "chamber": "2. Hukuk Dairesi", "date": "2017-02-15" }
+        {
+          "kind": "yargi",
+          "esas": "2014/15458",
+          "karar": "2015/7409",
+          "court": "Yargıtay",
+          "chamber": "2. Hukuk Dairesi",
+          "date": "2015-04-14"
+        },
+        {
+          "kind": "yargi",
+          "esas": "2016/17076",
+          "karar": "2017/1451",
+          "court": "Yargıtay",
+          "chamber": "2. Hukuk Dairesi",
+          "date": "2017-02-15"
+        }
       ],
       "doktrin_atiflari": [],
       "alt_mahkeme_anmalari": 3
@@ -46,13 +88,25 @@
       "sourceKey": "yargitay:54419600",
       "baslik": "Yargıtay Hukuk Genel Kurulu E. 2012/4-179 K. 2012/412",
       "karar_atiflari": [
-        { "kind": "yargi", "esas": "2009/6603", "karar": "2010/2563", "court": "Yargıtay", "chamber": "4. Hukuk Dairesi", "date": "2010-03-10" }
+        {
+          "kind": "yargi",
+          "esas": "2009/6603",
+          "karar": "2010/2563",
+          "court": "Yargıtay",
+          "chamber": "4. Hukuk Dairesi",
+          "date": "2010-03-10"
+        }
       ],
       "doktrin_atiflari": [
         { "yazar": "Akipek", "baslik": "Türk Medeni Hukuku", "yil": 1961, "sayfa": "108" },
         { "yazar": "İmre", "baslik": "Medeni Hukuka Giriş", "yil": 1980, "sayfa": "445" },
         { "yazar": "Köprülü", "baslik": "Medeni Hukuk", "yil": 1984, "sayfa": "263" },
-        { "yazar": "Uygur", "baslik": "Açıklamalı–İçtihatlı Borçlar Kanunu Sorumluluk ve Tazminat Hukuku", "yil": 2003, "sayfa": "2268" }
+        {
+          "yazar": "Uygur",
+          "baslik": "Açıklamalı–İçtihatlı Borçlar Kanunu Sorumluluk ve Tazminat Hukuku",
+          "yil": 2003,
+          "sayfa": "2268"
+        }
       ],
       "alt_mahkeme_anmalari": 1
     },

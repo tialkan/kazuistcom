@@ -6,8 +6,22 @@
       "id": "s1",
       "metin": "HGK'nın 13.11.2013 tarih ve 2013/19-199 E., 2013/1418 K. sayılı kararı uyarınca; 4. HD 2021/26076 E., 2024/10643 K.",
       "karar_atiflari": [
-        { "kind": "yargi", "esas": "2013/19-199", "karar": "2013/1418", "court": "Yargıtay", "chamber": "Hukuk Genel Kurulu", "date": "2013-11-13" },
-        { "kind": "yargi", "esas": "2021/26076", "karar": "2024/10643", "court": null, "chamber": "4. Hukuk Dairesi", "date": null }
+        {
+          "kind": "yargi",
+          "esas": "2013/19-199",
+          "karar": "2013/1418",
+          "court": "Yargıtay",
+          "chamber": "Hukuk Genel Kurulu",
+          "date": "2013-11-13"
+        },
+        {
+          "kind": "yargi",
+          "esas": "2021/26076",
+          "karar": "2024/10643",
+          "court": null,
+          "chamber": "4. Hukuk Dairesi",
+          "date": null
+        }
       ],
       "doktrin_atiflari": []
     },
@@ -15,7 +29,13 @@
       "id": "s2",
       "metin": "Anayasa Mahkemesinin 12.3.2014 tarihli ve E.2013/19, K.2014/12 sayılı kararı; AYM, B. No: 2014/1234, 12.3.2015; ABAD'ın Google Spain kararı (C-131/12); Avrupa İnsan Hakları Mahkemesi, no. 12345/09, 5.5.2010.",
       "karar_atiflari": [
-        { "kind": "aym", "esas": "2013/19", "karar": "2014/12", "court": "Anayasa Mahkemesi", "date": "2014-03-12" },
+        {
+          "kind": "aym",
+          "esas": "2013/19",
+          "karar": "2014/12",
+          "court": "Anayasa Mahkemesi",
+          "date": "2014-03-12"
+        },
         { "kind": "aym", "number": "2014/1234", "court": "Anayasa Mahkemesi", "date": null },
         { "kind": "abad", "number": "C-131/12", "court": "ABAD", "date": null },
         { "kind": "aihm", "number": "12345/09", "court": "AİHM", "date": null }

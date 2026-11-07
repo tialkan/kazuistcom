@@ -1,3 +1,37 @@
+## 7 Kasım 2026, atif-agi: atıf çıkarma, atıf ağı uçları ve /atif-agi (codex/dalga2-atif-agi)
+
+Yeni bağımlılık yok (Batch istemcisi standart kütüphane); `packages/contracts` ve `packages/db` değişmedi (istekler
+`docs/istekler/atif-agi-sema.md` ve `atif-agi-sozlesme.md`). Menüde `/atif-agi` açıldı (`acikModuller`, yalnız o satır).
+- Çıkarma `services/worker-py/citations/`: `decisions.py` E/K/T (harf önce, numara önce, "E.K." birleşik), AYM bireysel
+  başvuru ve norm denetimi, ABAD `C-131/12`, AİHM `no. 12345/09`; mahkeme, daire ve tarih yalnız yazılıysa doldurulur,
+  alt mahkeme anmaları (dosya geçmişi) kenar sayılmaz. `doctrine.py` sayfa işaretine (`s. 373 vd.`) tutunup geriye doğru
+  okuyan kural ayrıştırıcı: tam künye, `Soyad, A.:` biçimi, makale, `age.` ve kısa başlık. `names.py` unvan temizleme ve
+  Türkçe karakter, `works.py` baskıların tek düğümde toplanması ve belge içi `age.` çözümü (birden çok aday ya da yazarsız
+  uzak `age.` yayın çizgisinin altında kalır).
+- Güven ve kuyruk (`scoring.py`, `pipeline.py`): yayın eşiği 0,90, kuyruk 0,50, altı atılır; karar kenarı hedef kayıt
+  corpusta tek ve alanları uyumlu ise çizilir, aksi halde `hedef_yok` (saklanır, çizilmez) ya da kuyruk. Kuyruk
+  `review_queue.queue='citations'`, bağlam yalnız maskeli metinden.
+- Model katmanı (`llm.py`): yalnız `masked_text` ve yalnız doktrin işareti taşıyan paragraflar; doğrulanmış kimlik
+  kalıntısı görülürse hiçbir şey gitmez (`UnmaskedText`); model cevabı veridir: katı JSON, birebir alıntı yoksa atılır;
+  Batch iş akışı (`job.py`) gönder, 10 dk aralıkla yokla, topla. Gerçek model çağrısı yapılmadı, anahtar kullanılmadı.
+- API: `GET /v1/citation-network` ve `GET /v1/records/:id/network` (zod, IP başına hız sınırı, yalnız servis edilebilir
+  kayıt). Sözleşmeye ek alanlar (`works`, `workEdges`, `externalCitations`, `summary`, `meta`) geriye uyumlu eklendi.
+- Arayüz `apps/web/src/app/atif-agi/`: solda kararlar, sağda eserler; düğümler gerçek düğme (Tab, Enter, Boşluk, Esc),
+  çizgiler aria-hidden SVG; seçim kalın kenar ve gizli metinle bildirilir; ayrıntı paneli (`aria-live`), özet kartları,
+  `?gorunum=tablo` eşdeğer tablo görünümü, GET süzgeç formu. Örnek veri `_veri/ornek-ag.json`, eval betiği üretir.
+- Kaynak seçimi `ara` ile aynı: `KAZUIST_ARAMA_KAYNAGI=fikstur` yalnız yerel ve deneme; üretimde veritabanı yoksa 503.
+- Ölçüm `eval/citations/olc.py`: 7 gerçek karar (8 karar atfı, 4 doktrin atfı) ve 4 sentetik metinde kenar kimliği
+  kesinliği %100. Bu 15.3/4 değildir: 100 kararlık altın set ve gerçek corpus yok, "ölçülmedi" yazıldı.
+- Erişilemeyen kaynak: Yargıtay karar arama (`karararama.yargitay.gov.tr/aramalist`) otomatik istemciye "Hata Oluştu"
+  döndü (robot doğrulaması yolu var); dürüst kimlikle 3 deneme yapıldı, kimlik taklidi ve aşma yapılmadı. SRS'teki dört
+  kararın resmî metni bu yüzden alınamadı; HGK E.2014/4-56 K.2015/1679 atfı gerçek iki kararda (4. HD 2023/12295 ve
+  7. CD 2023/30) bulundu, kararın kendisi corpusta yok.
+- Açık: doktrin tabloları (`work_citations`, `works.work_key`) ve `citation_edges.rejected`; editör kuyruğu ekranı
+  (kimlik, admin); 100 kararlık set; `bozma/onama/ayni_yonde/aksi_yonde` türleri üretilmiyor (yalnız `atif`);
+  yıl içermeyen eski numaralar (`7803-9629 sayılı`) desteklenmiyor; pyproject `testpaths` içine `citations/tests` eklenmeli.
+- i18n: yalnız `packages/i18n/tr/atif-agi.json` (kullanıcı kararı: İngilizce yok); `en` eşlik testi bu dosya için
+  düşer, test değiştirilmedi (on-yuz `en` dizinini kaldıracak).
+
 ## 7 Kasım 2026, casuist: /ara, kaynaklı özet ve /kaydettiklerim (codex/dalga2-casuist)
 
 Dalga 2 casuist ilk teslimi; PR açık, birleştirilmedi. `packages/contracts` ve `packages/db` değişmedi.
