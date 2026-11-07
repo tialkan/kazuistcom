@@ -1,0 +1,237 @@
+{
+  "slug": "zotero-endnote",
+  "guncelleme": "2026-11-07",
+  "baslik": "Zotero ve EndNote rehberi",
+  "ozet": "Kaynakça yöneticisi, okuduğunuz eserleri künyesiyle saklar ve Word'de atıf ile kaynakçayı sizin yerinize biçimlendirir. İki aracı yan yana görün, sonra adım adım kurun.",
+  "arayuzNotu": "Düğme ve menü adları aşağıda arayüzün İngilizce adlarıyla yazıldı. Arayüz dilini Türkçe seçtiyseniz adlar farklı görünebilir; adlar aşağıdaki resmî belgelerden alındı.",
+  "karsilastirmaBaslik": "Zotero ve EndNote karşılaştırması",
+  "karsilastirma": [
+    {
+      "ozellik": "Lisans ve ücret",
+      "zotero": "Ücretsiz ve açık kaynak, bağımsız bir kâr amacı gütmeyen kuruluş geliştiriyor. Veri eşitleme ücretsiz ve sınırsız; dosya eşitlemek için her kullanıcıya 300 MB ücretsiz Zotero Storage verilir, daha büyük depolama ücretlidir.",
+      "endnote": "Ücretli ürün. Satın alma sayfasında öğrenci lisansı ve kurum site lisansı seçenekleri anılır. Kurumunuzun lisansı olup olmadığını kütüphanenizden sorun."
+    },
+    {
+      "ozellik": "Platform",
+      "zotero": "Masaüstünde Mac, Windows ve Linux; mobilde iOS ve Android.",
+      "endnote": "Masaüstü yazılımı Windows ve Mac için; tarayıcıdan erişilen EndNote Web ayrıca vardır."
+    },
+    {
+      "ozellik": "Yazı programı eklentisi",
+      "zotero": "Word, LibreOffice ve Google Docs. Word'de \"Zotero\" sekmesi eklenir. Windows'ta Word 2010-2024 ve Office 365, Mac'te Word 2016-2024 ve Office 365 desteklenir.",
+      "endnote": "Cite While You Write. Word'de \"EndNote 2025\" sekmesi eklenir."
+    },
+    {
+      "ozellik": "Tarayıcıdan kaydetme",
+      "zotero": "Zotero Connector (Chrome, Edge, Firefox, Safari) tek tıkla kayıt yapar.",
+      "endnote": "Online Search ile veri tabanlarından doğrudan getirme ve File > Import ile dosyadan aktarma; PDF'ler de içe aktarılabilir."
+    },
+    {
+      "ozellik": "Türkçe hukuk atıf stilleri",
+      "zotero": "Citation Style Language deposunda \"İSNAD Atıf Sistemi 2. Edisyon (dipnotlu)\" ve Ankara Üniversitesi Sosyal Bilimler Enstitüsü Hukuk Fakültesi stilleri bulunur.",
+      "endnote": "Resmî belgeden doğrulanamadı. İSNAD ve kurum stillerinin EndNote'ta bulunup bulunmadığını Style menüsünde \"Select another style\" ile arayarak ve enstitünüze sorarak kontrol edin."
+    },
+    {
+      "ozellik": "Yinelenen kayıtlar",
+      "zotero": "\"Duplicate Items\" koleksiyonu başlık, DOI ve ISBN'e bakar; kayıtları silmek yerine birleştirmeniz önerilir.",
+      "endnote": "Library > Find Duplicates varsayılan olarak tür, yazar, yıl ve başlığı karşılaştırır."
+    },
+    {
+      "ozellik": "Verinin saklanması",
+      "zotero": "Veri varsayılan olarak bilgisayarınızda durur; isterseniz Zotero hesabıyla eşitlenir. Veri klasörünü bulut klasörüne koymak veri tabanını bozabilir.",
+      "endnote": "Kütüphane bir .enl dosyası ve bir .Data klasöründen oluşur. Bulut eşitlemeli klasörlere koymayın; eşitleme için önerilen yol EndNote Web'dir."
+    }
+  ],
+  "zotero": {
+    "baslik": "Zotero: sekiz adım",
+    "adimlar": [
+      {
+        "id": "z01",
+        "baslik": "Zotero'yu indirin ve kurun",
+        "aciklama": "Zotero'yu zotero.org/download sayfasından indirin. Mac'te indirdiğiniz .dmg dosyasını açıp Zotero'yu Applications klasörüne sürükleyin; Windows'ta kurulum programını çalıştırın. Zotero kendini güncellemezse Help menüsünde \"Check for Updates…\" ile kontrol edin."
+      },
+      {
+        "id": "z02",
+        "baslik": "Zotero Connector'ı tarayıcınıza ekleyin",
+        "aciklama": "Tarayıcıdan kayıt için masaüstü uygulamasının yanında tarayıcınıza uygun Zotero Connector gerekir (Chrome, Edge, Firefox ve Safari için vardır). Connector sayfadaki künye bilgisini bulur ve kaydet düğmesinin simgesini sayfa türüne göre değiştirir."
+      },
+      {
+        "id": "z03",
+        "baslik": "Kaynakları kaydedin",
+        "aciklama": "Dergi makalesinin ya da kitabın kayıt sayfasındayken Connector'ın kaydet düğmesine basın; Zotero kaydı ve varsa açık erişimli PDF'i ekler. ISBN, DOI, PubMed ID, arXiv ID ya da ADS Bibcode biliyorsanız araç çubuğundaki \"Add Item by Identifier\" düğmesine yazın. Metadata'sı gelmeyen bir PDF için sağ tıklayıp \"Create Parent Item\" seçin.",
+        "ipucu": "Yayıncının sayfasından kaydetmek Google Scholar sonuç listesinden kaydetmekten genellikle daha iyi künye verir."
+      },
+      {
+        "id": "z04",
+        "baslik": "Kayıtların doğruluğunu kontrol edin",
+        "aciklama": "Zotero'ya gelen künye eksik ya da yanlış olabilir: yazarlardan biri eksik, yazar adı yalnız baş harf, dergi adı yanlış. Her kaydı açıp yazar, başlık, yıl, cilt, sayı ve sayfayı kaynağın kendisiyle karşılaştırın. Başlıkları cümle büyük harfiyle saklayın; Zotero stile göre dönüştürür.",
+        "ipucu": "Hata düzelttikten sonra atıflar her stilde doğru çıkar."
+      },
+      {
+        "id": "z05",
+        "baslik": "Koleksiyon ve etiketlerle düzenleyin",
+        "aciklama": "Sol bölmede \"New Collection…\" düğmesiyle her makale ya da bölüm için bir koleksiyon açın. Bir kayıt birden çok koleksiyonda durabilir; kopyalanmaz. Konu, yöntem ya da \"okunacak\" gibi durum için etiket (tag) kullanın."
+      },
+      {
+        "id": "z06",
+        "baslik": "Yinelenen kayıtları birleştirin",
+        "aciklama": "Sol bölmede \"Duplicate Items\" koleksiyonunu açın, bir kayıt seçin ve sağdaki \"Merge … Items\" düğmesine basın. Yinelenenleri silmek yerine birleştirin; birleştirme koleksiyonları ve etiketleri korur ve Word atıflarını bozmaz."
+      },
+      {
+        "id": "z07",
+        "baslik": "Atıf stilini kurun",
+        "aciklama": "Ayarlardaki Cite bölümünde \"Get additional styles…\" ile Zotero Style Repository'yi açıp stili arayın ve başlığına tıklayarak kurun. Türkiye'deki dipnotlu hukuk metinleri için \"İSNAD Atıf Sistemi 2. Edisyon (dipnotlu)\" ve enstitünüzün kendi stili adaylardır. Enstitünüzün ya da derginizin istediği stili kılavuzdan öğrenin.",
+        "ipucu": "Kurulu stil kılavuzla birebir uyuşmuyorsa hatayı Zotero Forums'a stil adıyla bildirebilirsiniz."
+      },
+      {
+        "id": "z08",
+        "baslik": "Word'de atıf ve kaynakça ekleyin",
+        "aciklama": "Zotero kurulumuyla Word'e bir \"Zotero\" sekmesi eklenir. İmleci atıf yerine koyup \"Add/Edit Citation\" düğmesine basın, kaydı arayıp seçin, Enter'a basın. \"Add/Edit Bibliography\" kaynakçayı ekler. \"Document Preferences\" ile stili değiştirir, dipnotlu stillerde atıfın dipnota mı sona not olarak mı gireceğini seçersiniz. \"Refresh\" kayıtlardaki değişiklikleri belgeye yansıtır. Sayfa numarası için atıf kutusuna \"p.34\" ya da yalnız \"34\" yazabilirsiniz.",
+        "ipucu": "\"Unlink Citations\" alan kodlarını kalıcı olarak siler ve geri alınamaz. Yalnız belgenin son kopyasında kullanın; çalışma dosyanızı saklayın."
+      }
+    ]
+  },
+  "endnote": {
+    "baslik": "EndNote: altı adım",
+    "adimlar": [
+      {
+        "id": "e01",
+        "baslik": "Kütüphane oluşturun",
+        "aciklama": "File menüsünden New seçin, kütüphaneye bir ad verin (uzantı yazmayın; EndNote .enl dosyasını ve .Data klasörünü kendi ekler) ve kaydedeceğiniz yeri seçin. Kütüphaneyi bulut eşitlemeli bir klasöre koymayın. Birden çok kütüphane yerine tek ana kütüphane tutup kayıtları Groups, Keywords ve Label alanlarıyla düzenlemeniz önerilir."
+      },
+      {
+        "id": "e02",
+        "baslik": "Kaynakları kütüphaneye alın",
+        "aciklama": "Z39.50 protokolünü destekleyen bir kütüphane kataloğu ya da veri tabanından \"Online Search\" ile doğrudan kayıt getirin. Başka bir yerden aldığınız dosyalar için File > Import menüsünü ve uygun import filtresini kullanın. Tam metin için kayıtları seçip References > Find Full Text > Find Full Text komutunu çalıştırın.",
+        "ipucu": "İçe aktarırken önce geçici bir kütüphaneye alıp tutacaklarınızı seçmek, ana kütüphanenizin kirlenmesini önler. Online Search gruplarındaki kayıtların tam metni bulunamaz; önce kütüphanenize kopyalayın."
+      },
+      {
+        "id": "e03",
+        "baslik": "Yinelenen kayıtları bulun",
+        "aciklama": "Kütüphane açıkken \"All References\" grubuna tıklayın, sonra Library > Find Duplicates komutunu çalıştırın. Her yinelenen çifti için \"Keep This Record\", \"Skip\" ya da \"Cancel\" seçeneklerinden birini seçin.",
+        "ipucu": "\"Keep This Record\" öteki kaydı çöp kutusuna taşır. Makalede zaten atıf yaptığınız bir kaydı silmediğinizden emin olmak için kayıt numaralarına bakın."
+      },
+      {
+        "id": "e04",
+        "baslik": "Word'de atıf ekleyin",
+        "aciklama": "EndNote kütüphanenizi ve Word belgenizi açın. İmleci atıf yerine koyup \"EndNote 2025\" sekmesinde \"Insert Citation\" düğmesine basın. Açılan \"Find & Insert My References\" penceresine yazar soyadı, yıl ya da anahtar kelime yazın, \"Find\" ile arayın, kaydı seçip \"Insert\" ile ekleyin. Insert düğmesinin açılır menüsünde yazarı ya da yılı atıftan çıkarma seçenekleri vardır."
+      },
+      {
+        "id": "e05",
+        "baslik": "Stili seçin ve kaynakçayı güncelleyin",
+        "aciklama": "Aynı sekmedeki \"Style\" menüsünden atıf stilini seçin; listede yoksa \"Select another style\" ile bilgisayarınızdaki tüm stilleri görün. \"Instant Formatting\" açıkken (varsayılan olarak açıktır) atıflar eklendikçe biçimlenir ve kaynakça belgenin sonunda güncellenir. Güncellenmezse \"Update Citations and Bibliography\" düğmesine basın. Kaynakçanın biçimlendirme seçenekleri \"Configure Bibliography\" penceresindedir."
+      },
+      {
+        "id": "e06",
+        "baslik": "Teslim öncesi düz metin kopyası alın",
+        "aciklama": "Teslim edeceğiniz kopyada alan kodlarını kaldırmak için \"Convert Citations and Bibliography\" menüsündeki \"Convert to Plain Text\" komutunu kullanın. Komut, atıf alan kodları kaldırılmış bir belge kopyası kaydeder; atıflar ve kaynakça düz metin olur.",
+        "ipucu": "Düz metin kopyayı yalnız son kopya olarak kullanın. Çalışma dosyanızı saklayın; düz metne dönüşen atıflar güncellenmez."
+      }
+    ]
+  },
+  "oneriler": [
+    {
+      "baslik": "Kurumunuz EndNote lisansı veriyorsa",
+      "metin": "Ek ücret ödemeden EndNote kullanabilirsiniz. Enstitünüz ya da derginiz EndNote stili yayımlıyorsa bu seçim iş yükünü azaltır. Lisans durumunu kütüphanenizden öğrenin."
+    },
+    {
+      "baslik": "Lisans ücreti ödemek istemiyorsanız",
+      "metin": "Zotero ücretsizdir ve Word, LibreOffice ile Google Docs'ta çalışır. Dipnotlu Türkçe hukuk stili gerekiyorsa İSNAD 2. Edisyon (dipnotlu) ya da enstitünüzün stili için Zotero Style Repository'ye bakın."
+    },
+    {
+      "baslik": "Aynı belgede iki aracı karıştırmayın",
+      "metin": "Bir belgede tek kaynakça yöneticisinin alan kodları bulunsun. Aracı değiştirecekseniz önce belgenin bir kopyasında alan kodlarını kaldırıp atıfları yeniden ekleyin."
+    },
+    {
+      "baslik": "Hangisini seçerseniz seçin",
+      "metin": "Kayıtların künyesini kendiniz kontrol edin ve stilin kılavuzdaki örneklerle birebir uyuştuğunu birkaç atıfta deneyin. Yönetici biçimlendirir, doğruluğun sorumluluğu sizdedir."
+    }
+  ],
+  "kaynaklar": [
+    {
+      "ad": "Zotero, Using the Zotero Word Plugin (son güncelleme 2026-05-14)",
+      "url": "https://www.zotero.org/support/word_processor_plugin_usage",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Zotero, Adding Items to Zotero",
+      "url": "https://www.zotero.org/support/adding_items_to_zotero",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Zotero, Collections and Tags",
+      "url": "https://www.zotero.org/support/collections_and_tags",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Zotero, Duplicate Detection",
+      "url": "https://www.zotero.org/support/duplicate_detection",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Zotero, Citation Styles (son güncelleme 2026-07-09)",
+      "url": "https://www.zotero.org/support/styles",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Zotero, System Requirements (son güncelleme 2026-08-26)",
+      "url": "https://www.zotero.org/support/system_requirements",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Zotero, Syncing",
+      "url": "https://www.zotero.org/support/sync",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Zotero, Installation Instructions",
+      "url": "https://www.zotero.org/support/installation",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Citation Style Language stil deposu, İSNAD Atıf Sistemi 2. Edisyon (dipnotlu) stil dosyası (güncelleme 2022-05-31)",
+      "url": "https://raw.githubusercontent.com/citation-style-language/styles/master/isnad-dipnotlu.csl",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "Citation Style Language stil deposu, Ankara Üniversitesi Sosyal Bilimler Enstitüsü Hukuk Fakültesi stil dosyası (güncelleme 2025-09-08)",
+      "url": "https://raw.githubusercontent.com/citation-style-language/styles/master/ankara-universitesi-sosyal-bilimler-enstitusu-hukuk-fakultesi.csl",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "EndNote 2025, ürün sayfası",
+      "url": "https://endnote.com/product-details/",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "EndNote 2025 belgeleri (Windows), Creating a New Library",
+      "url": "https://docs.endnote.com/docs/endnote/2025/v1/windows/en/content/02library/creating_a_new_library.htm",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "EndNote 2025 belgeleri (Windows), Importing Reference Data into EndNote",
+      "url": "https://docs.endnote.com/docs/endnote/2025/v1/windows/en/content/08import/importing_ref_data_intoen.htm",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "EndNote 2025 belgeleri (Windows), How to Find and Retrieve Full Text",
+      "url": "https://docs.endnote.com/docs/endnote/2025/v1/windows/en/content/07searchingonline/how_tofind_retrvefulltext.htm",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "EndNote 2025 belgeleri (Windows), Finding Duplicate References",
+      "url": "https://docs.endnote.com/docs/endnote/2025/v1/windows/en/content/04search/finding_duplicaterefs.htm",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "EndNote 2025 belgeleri (Mac), How to Cite While You Write with Microsoft Word",
+      "url": "https://docs.endnote.com/docs/endnote/2025/macos/v1/content/09word/basic_instructions_word.htm",
+      "okuma": "2026-11-07"
+    },
+    {
+      "ad": "EndNote 2025 belgeleri (Windows), Cite While You Write Commands",
+      "url": "https://docs.endnote.com/docs/endnote/2025/v1/windows/en/content/09word/the_cwyw_cmmnds_word-win.htm",
+      "okuma": "2026-11-07"
+    }
+  ]
+}

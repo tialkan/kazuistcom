@@ -1,0 +1,567 @@
+{
+  "kontroller": [
+    {
+      "ad": "tek h1: anasayfa 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: anasayfa 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: makale 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: makale 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: tez 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: tez 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: zotero-endnote 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: zotero-endnote 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: kontrol-listesi 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: kontrol-listesi 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: etik 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: etik 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "etik özeti Tab ile odaklanır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "etik kutusu Enter ile açılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "altı ihlal görünür 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: makale-etik-acik 375",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "makale: ilk onay kutusuna Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: Boşluk ile işaretlenir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: adım işareti metindir (kaydet durumu satırı yok) 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: işaret yenilemeden sonra kalır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tez ilerlemesi ayrı: 0 / 12 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "ana sayfa makale ilerlemesini gösterir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: onay kutusuna Tab ile ulaşılır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: işaretlenir 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: işaret yenilemeden sonra kalır 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: anasayfa 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: makale 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: tez 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: zotero-endnote 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: kontrol-listesi 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: etik 375",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tek h1: anasayfa 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: anasayfa 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: makale 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: makale 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: tez 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: tez 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: zotero-endnote 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: zotero-endnote 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: kontrol-listesi 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: kontrol-listesi 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: etik 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: etik 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "etik özeti Tab ile odaklanır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "etik kutusu Enter ile açılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "altı ihlal görünür 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: makale-etik-acik 768",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "makale: ilk onay kutusuna Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: Boşluk ile işaretlenir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: adım işareti metindir (kaydet durumu satırı yok) 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: işaret yenilemeden sonra kalır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tez ilerlemesi ayrı: 0 / 12 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "ana sayfa makale ilerlemesini gösterir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: onay kutusuna Tab ile ulaşılır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: işaretlenir 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: işaret yenilemeden sonra kalır 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: anasayfa 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: makale 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: tez 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: zotero-endnote 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: kontrol-listesi 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: etik 768",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tek h1: anasayfa 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: anasayfa 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: makale 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: makale 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: tez 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: tez 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: zotero-endnote 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: zotero-endnote 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: kontrol-listesi 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: kontrol-listesi 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "tek h1: etik 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: etik 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "etik özeti Tab ile odaklanır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "etik kutusu Enter ile açılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "altı ihlal görünür 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "yatay taşma yok: makale-etik-acik 1440",
+      "tamam": true,
+      "ayrinti": "fark 0"
+    },
+    {
+      "ad": "makale: ilk onay kutusuna Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: Boşluk ile işaretlenir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: adım işareti metindir (kaydet durumu satırı yok) 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "makale: işaret yenilemeden sonra kalır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "tez ilerlemesi ayrı: 0 / 12 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "ana sayfa makale ilerlemesini gösterir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: onay kutusuna Tab ile ulaşılır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: işaretlenir 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kontrol: işaret yenilemeden sonra kalır 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: anasayfa 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: makale 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: tez 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: zotero-endnote 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: kontrol-listesi 1440",
+      "tamam": true,
+      "ayrinti": ""
+    },
+    {
+      "ad": "kapalı modüle bağlantı yok: etik 1440",
+      "tamam": true,
+      "ayrinti": ""
+    }
+  ],
+  "axe": {
+    "anasayfa-375": {
+      "ihlal": [],
+      "gecen": 27
+    },
+    "makale-375": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "tez-375": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "zotero-endnote-375": {
+      "ihlal": [],
+      "gecen": 30
+    },
+    "kontrol-listesi-375": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "etik-375": {
+      "ihlal": [],
+      "gecen": 27
+    },
+    "makale-etik-acik-375": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "kontrol-isaretli-375": {
+      "ihlal": [],
+      "gecen": 30
+    },
+    "anasayfa-768": {
+      "ihlal": [],
+      "gecen": 27
+    },
+    "makale-768": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "tez-768": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "zotero-endnote-768": {
+      "ihlal": [],
+      "gecen": 30
+    },
+    "kontrol-listesi-768": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "etik-768": {
+      "ihlal": [],
+      "gecen": 27
+    },
+    "makale-etik-acik-768": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "kontrol-isaretli-768": {
+      "ihlal": [],
+      "gecen": 30
+    },
+    "anasayfa-1440": {
+      "ihlal": [],
+      "gecen": 27
+    },
+    "makale-1440": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "tez-1440": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "zotero-endnote-1440": {
+      "ihlal": [],
+      "gecen": 30
+    },
+    "kontrol-listesi-1440": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "etik-1440": {
+      "ihlal": [],
+      "gecen": 27
+    },
+    "makale-etik-acik-1440": {
+      "ihlal": [],
+      "gecen": 29
+    },
+    "kontrol-isaretli-1440": {
+      "ihlal": [],
+      "gecen": 30
+    }
+  }
+}

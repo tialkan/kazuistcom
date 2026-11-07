@@ -20,6 +20,7 @@ export const moduller = [
  */
 export const acikModuller: ReadonlySet<string> = new Set<string>([
   '/ara',
+  '/rehberler',
   '/yazma',
   '/pratik',
   '/kaydettiklerim',

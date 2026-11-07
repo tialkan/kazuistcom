@@ -1,0 +1,191 @@
+{
+  "slug": "tez",
+  "guncelleme": "2026-11-07",
+  "baslik": "Tez yazım rehberi",
+  "ozet": "Hukuk tezini monografi düzeniyle, on iki adımda ve her adımın dayanağıyla yazın. Enstitü kılavuzunuz ve danışmanınız bu rehberden önce gelir.",
+  "modelUyari": "Aşağıdaki düzen bir örnektir. Bölüm sayısını, adlarını ve sınırlarını enstitü kılavuzunuz ve danışmanınız belirler.",
+  "model": [
+    {
+      "baslik": "Giriş",
+      "aciklama": "Sorun, araştırma sorusu, iddia, yöntem, kapsam ve sınırlar, tezin planı."
+    },
+    {
+      "baslik": "Birinci bölüm: Kavram ve çerçeve",
+      "aciklama": "Temel kavramlar, tarihsel arka plan gerekiyorsa kısa tutulur, hukuki nitelendirme."
+    },
+    {
+      "baslik": "İkinci bölüm: Düzenleme",
+      "aciklama": "Yürürlükteki mevzuatın sistematiği; gerekiyorsa karşılaştırmalı hukuk."
+    },
+    {
+      "baslik": "Üçüncü bölüm: Uygulama",
+      "aciklama": "Yargı kararları ve uygulamadaki sorunlar; kararlar numaralarıyla ve birincil metinle."
+    },
+    {
+      "baslik": "Dördüncü bölüm: Değerlendirme ve öneri",
+      "aciklama": "İddianın sınanması. Yürürlükteki hukuk ile olması gereken hukuk ayrı cümlelerde yazılır."
+    },
+    {
+      "baslik": "Sonuç",
+      "aciklama": "Soruya verilen cevap ve cevabın kesinlik derecesi; yeni kaynak ya da yeni iddia içermez."
+    },
+    {
+      "baslik": "Kaynakça ve ekler",
+      "aciklama": "Enstitü kılavuzunun istediği sıra ve biçimde; ekler gövdeyi şişirmek için kullanılmaz."
+    }
+  ],
+  "adimlar": [
+    {
+      "id": "t01",
+      "baslik": "Konu ve danışmanı belirleyin",
+      "aciklama": "Aklınızdaki konuları yazın ve ilgili öğretim üyeleriyle konuşarak yapılabilirliğini sınayın. Danışmanınızı kesinleştirip görüşme sıklığını ve geri bildirimin türünü baştan konuşun.",
+      "ipucu": "Danışmanın tez dönemindeki uygunluğunu da sorun. Görüşme takvimi yazılı olursa iki taraf da hazırlanır.",
+      "dayanak": "edinburgh",
+      "dayanakNotu": "Planlayıcının ilk aşaması konu fikirlerini tartışmayı, danışmanı doğrulamayı ve görüşme sıklığıyla geri bildirim türünü konuşmayı sayar.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "t02",
+      "baslik": "Araştırma sorusunu ve yöntemi yazın",
+      "aciklama": "Tezin tek bir araştırma sorusu olsun. Hukuk tezlerinde yaygın yöntem, yürürlükteki hukuku mevzuat, karar ve doktrin üzerinden inceleyen doktriner araştırmadır; yöntemi giriş bölümünde adıyla anın ve nasıl uygulayacağınızı yazın.",
+      "ipucu": "Yöntem bölümünü hukuk dışından okuyan biri de anlayacak biçimde yazın. Hangi kaynak türlerini, hangi sırayla ve hangi ölçütle taradığınızı söyleyin.",
+      "dayanak": "hutchinson",
+      "dayanakNotu": "Makale, doktriner hukuk araştırmasının ne olduğunu ve diğer yöntemler arasında nerede durduğunu açıklama ihtiyacını işler.",
+      "kaynakTuru": "makale"
+    },
+    {
+      "id": "t03",
+      "baslik": "Proje takvimini ve acil durum planını çıkarın",
+      "aciklama": "Aşamaları, ara hedefleri ve teslim tarihlerini bir takvime yerleştirin. Araştırmayı parçalara bölün: kaynak tarama, karar tarama, yazma, düzeltme. Beklenmedik gecikme olursa ne yapacağınızı ve kime ne zaman başvuracağınızı önceden yazın.",
+      "ipucu": "Teslim tarihinden geriye doğru sayın. Düzeltme ve biçimlendirme için son aşamada zaman bırakın.",
+      "dayanak": "edinburgh",
+      "dayanakNotu": "Planlayıcı, zaman çizelgesi hazırlamayı, ara aşamaları ve teslim tarihlerini işaretlemeyi ve gecikme için acil durum planı düşünmeyi önerir.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "t04",
+      "baslik": "Kaynakları tarayın ve notlarınızı düzenli tutun",
+      "aciklama": "Mevzuat, karar ve doktrini birlikte tarayın. Okuduğunuz her eser için not, alıntı ve sayfa bilgisini aynı yerde tutun; kaynakça yöneticisi kullanıyorsanız güncel tutun.",
+      "ipucu": "Not alırken kendi cümlenizle yazdığınızı ve alıntıladığınızı ayrı işaretleyin. Aksi hâlde sonradan hangisinin alıntı olduğunu çıkaramazsınız.",
+      "dayanak": "edinburgh",
+      "dayanakNotu": "Planlayıcı not, kaynak, veri ve fikirleri kayıt altında tutmayı ve kaynakça yöneticisini güncel tutmayı söyler.",
+      "baglanti": { "href": "/rehberler/zotero-endnote", "etiket": "Zotero ve EndNote rehberi" },
+      "kaynakTuru": "mevzuat"
+    },
+    {
+      "id": "t05",
+      "baslik": "Tezin iddiasını belirleyin",
+      "aciklama": "Tezin ana iddiası, hukuk yazınında kabul gören ölçütlere göre yeni, bariz olmayan, yararlı ve sağlam olmalıdır. İddiayı tek cümleyle yazın ve her bölümün bu cümleye ne kattığını sorun.",
+      "ipucu": "Eski bir kuralı biraz değişen olgulara uygulamak yeterli bir iddia değildir. İddianın hangi okura, hangi sorunda yarayacağını yazın.",
+      "dayanak": "volokh",
+      "dayanakNotu": "Volokh, yayımlanabilir hukuk çalışmasının ana iddiasını yeni, bariz olmayan, yararlı ve sağlam olarak tanımlar (5. baskı, s. 10).",
+      "kaynakTuru": null
+    },
+    {
+      "id": "t06",
+      "baslik": "Tezin genel yapısını kurun",
+      "aciklama": "Bölümleri ve aralarındaki ilişkiyi tezin bütününe bakarak tasarlayın. Her bölümün iddiaya katkısını bir cümleyle yazın ve bölüm sırasını bu katkılara göre belirleyin. Yukarıdaki monografi düzeni başlangıç noktasıdır.",
+      "ipucu": "Bölümlerin uzunluğunu iddiaya katkısına göre ayarlayın. Yalnız arka plan veren bir bölüm uzadıkça tezin merkezi gölgelenir.",
+      "dayanak": "dunleavy",
+      "dayanakNotu": "Kitapta tezin bütününü tasarlama ve tezin makro yapısı ayrı konular olarak işlenir.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "t07",
+      "baslik": "Her bölümün iç yapısını planlayın",
+      "aciklama": "Bölüme başlamadan önce başlıklarını ve alt başlıklarını çıkarın. Her alt başlığın tek bir soruyu yanıtlamasına dikkat edin. Bölüm girişinde bölümün sorusunu, sonunda vardığı sonucu yazın.",
+      "ipucu": "Alt başlık düzeylerini ve numaralandırmayı enstitünün biçim kılavuzuna göre kurun.",
+      "dayanak": "dunleavy",
+      "dayanakNotu": "Kitapta bir bölümün mikro yapısı ayrı bir konu olarak işlenir.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "t08",
+      "baslik": "Yazmayı düzenli bir takvime bağlayın",
+      "aciklama": "Yazmak için zaman bulmaya çalışmak yerine takviminizde yazmaya ayrılmış saatler tanımlayın ve bu saatleri başka işlere vermeyin. Her oturumun somut bir hedefi olsun.",
+      "ipucu": "Yazamadığınız günlerde beş dakika serbest yazmak bile yeniden başlamayı kolaylaştırır. Yazdıklarınızı sonra düzeltirsiniz.",
+      "dayanak": "silvia",
+      "dayanakNotu": "Silvia, yazıya zaman bulmak yerine zaman ayırmayı ve ayrılan saatlere bağlı kalmayı önerir.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "t09",
+      "baslik": "Biçim şablonunu baştan kurun",
+      "aciklama": "Enstitünün istediği yazı tipi, punto, satır aralığı, kenar boşluğu ve sayfa numaralarıyla bir belge hazırlayın ve tezi doğrudan o belgenin içine yazın. Son hafta biçimlendirme yapmak yerine baştan kurulu düzende yazın.",
+      "ipucu": "Kılavuzda belirsiz kalan bir ölçü varsa enstitüden yazılı teyit alın.",
+      "dayanak": "edinburgh",
+      "dayanakNotu": "Planlayıcının ipucu, gereken biçimle bir belge açıp en baştan onun içinde yazmayı önerir.",
+      "baglanti": { "href": "/yazma", "etiket": "Yazma zamanı: şablon" }
+    },
+    {
+      "id": "t10",
+      "baslik": "Danışmandan düzenli geri bildirim alın",
+      "aciklama": "Bölümleri bittikçe danışmana verin. Yazılı geri bildirim mi, görüşme mi istediğinizi önceden söyleyin. Geri bildirimi bir sonraki taslağın başında yapılacaklar listesine çevirin.",
+      "ipucu": "Geri bildirim için beklediğiniz süreyi danışmanla önceden konuşun.",
+      "dayanak": "edinburgh",
+      "dayanakNotu": "Planlayıcı, yazım sürecinde geri bildirim fırsatlarını danışmanla konuşmayı ve bir bölüm ya da tam taslak üzerinde görüşmeyi ister.",
+      "kaynakTuru": null
+    },
+    {
+      "id": "t11",
+      "baslik": "Atıfları ve kaynakçayı kontrol edin",
+      "aciklama": "Atıfların ve dipnotların enstitünün istediği atıf sisteminde olduğunu doğrulayın. Kaynakçadaki her eserin metinde, metindeki her atıfın kaynakçada bulunduğunu tek tek eşleştirin. Birebir alıntıları ve mevzuat metinlerini ilk elden karşılaştırın.",
+      "ipucu": "Kaynakça yöneticisi bu adımı çok kısaltır. Yine de yöneticinin ürettiği her kaydı bir kez gözle kontrol edin.",
+      "dayanak": "edinburgh",
+      "dayanakNotu": "Planlayıcının son aşamaları atıf ve kaynakçanın programın istediği stilde olduğunu kontrol etmeyi sayar.",
+      "baglanti": { "href": "/rehberler/kontrol-listesi", "etiket": "Kontrol listesi" },
+      "kaynakTuru": "mevzuat"
+    },
+    {
+      "id": "t12",
+      "baslik": "Son okumayı yapın ve teslim şartlarını doğrulayın",
+      "aciklama": "Düzeltme için birden fazla tur ayırın. Metni basıp yüksek sesle okuyun; ekranda göz kaçıran hataları kâğıt ve ses yakalar. Teslim tarihini, basılı ve elektronik nüsha koşullarını ve ciltleme isteğini enstitüden teyit edin.",
+      "ipucu": "Yapay zekâ yazı alışkanlıklarını Kazuist yazım kurallarıyla taratın ve kurumunuz yapay zekâ kullanımının beyanını istiyorsa beyanı ekleyin.",
+      "dayanak": "edinburgh",
+      "dayanakNotu": "Planlayıcı çoklu düzeltme turu, çıktı alıp yüksek sesle okuma ve teslim tarihi ile nüsha koşullarını kontrol etmeyi sayar.",
+      "baglanti": { "href": "/tespit", "etiket": "Yazım kuralları ve iz denetleyicisi" }
+    }
+  ],
+  "kaynaklar": [
+    {
+      "id": "edinburgh",
+      "kisa": "Edinburgh Üniversitesi, Akademik Gelişim Enstitüsü",
+      "kunye": "University of Edinburgh, Institute for Academic Development, Dissertation and Project Planner (dijital sürüm, Ocak 2024).",
+      "url": "https://www.docs.hss.ed.ac.uk/iad/Student_resources/Dissertations/Diss-proj_planner_digital_Jan2024.pdf",
+      "dogrulama": "birincil",
+      "dogrulamaNotu": "Belgenin kendisi okundu. Planlayıcı genel bir tez ve proje planlayıcısıdır; hukuka özgü değildir."
+    },
+    {
+      "id": "volokh",
+      "kisa": "Volokh",
+      "kunye": "Eugene Volokh, Academic Legal Writing: Law Review Articles, Student Notes, Seminar Papers, and Getting on Law Review, 5. baskı, Foundation Press, 2016.",
+      "url": "https://law-capital.libguides.com/ULWR/Publishable",
+      "dogrulama": "ikincil",
+      "dogrulamaNotu": "Kitap okunmadı. Ölçütler, 5. baskının 10. sayfasına atıf yapan bir üniversite hukuk kütüphanesi rehberinden alındı (bağlantı o rehberdir)."
+    },
+    {
+      "id": "hutchinson",
+      "kisa": "Hutchinson ve Duncan",
+      "kunye": "Terry Hutchinson ve Nigel Duncan, Defining and Describing What We Do: Doctrinal Legal Research, Deakin Law Review 17(1), 2012, s. 83 vd.",
+      "url": "https://openaccess.city.ac.uk/id/eprint/4335/",
+      "dogrulama": "ikincil",
+      "dogrulamaNotu": "Künye ve özet City Research Online kaydından okundu. Derginin kendi sayfası bir doğrulama kodu istediği için erişilemedi; tam metin okunmadı."
+    },
+    {
+      "id": "dunleavy",
+      "kisa": "Dunleavy",
+      "kunye": "Patrick Dunleavy, Authoring a PhD: How to Plan, Draft, Write and Finish a Doctoral Thesis or Dissertation, Palgrave Macmillan, 2003.",
+      "url": "https://onlineacademiccommunity.uvic.ca/gradwriters/?p=72",
+      "dogrulama": "ikincil",
+      "dogrulamaNotu": "Kitap okunmadı. Bölüm konuları katalog kayıtlarından ve bir üniversite yazım merkezinin özetinden alındı (bağlantı o özettir)."
+    },
+    {
+      "id": "silvia",
+      "kisa": "Silvia",
+      "kunye": "Paul J. Silvia, How to Write a Lot: A Practical Guide to Productive Academic Writing, 2. baskı, American Psychological Association, 2019.",
+      "url": "https://blogs.baylor.edu/gwc/?p=171",
+      "dogrulama": "ikincil",
+      "dogrulamaNotu": "Kitap okunmadı. Öneri, bir üniversite yazım merkezinin kitap incelemesinden alındı (bağlantı o incelemedir)."
+    }
+  ]
+}
