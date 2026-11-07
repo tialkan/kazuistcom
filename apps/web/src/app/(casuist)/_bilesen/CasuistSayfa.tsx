@@ -26,16 +26,14 @@ export function CasuistSayfa({
   gezinmesiz?: boolean;
 }) {
   const s = casuistSayfalari[anahtar];
-  const dil = s.lang === 'tr' ? 'tr' : 'en';
-  const t = ortak(dil);
-  const ev = dil === 'tr' ? '/tr' : '/en';
+  const t = ortak();
   const metin = { yerTutucu: t.casuist.gorselYerTutucu, gorselAlt: t.casuist.gorselAlt };
   return (
-    <div lang={dil} className="casuist">
+    <div className="casuist">
       {s.nav.length > 0 && !gezinmesiz ? (
         <div className="casuist-ust">
           <div className="casuist-ust__ic">
-            <Link href={ev} className="casuist-marka">
+            <Link href="/tr" className="casuist-marka">
               Casuist
             </Link>
             <nav aria-label={t.casuist.ustBilgi}>
@@ -47,13 +45,6 @@ export function CasuistSayfa({
                     </Link>
                   </li>
                 ))}
-                {s.langLink ? (
-                  <li>
-                    <Link href={s.langLink.href} hrefLang={s.langLink.hreflang} lang={s.langLink.hreflang}>
-                      {s.langLink.text}
-                    </Link>
-                  </li>
-                ) : null}
               </ul>
             </nav>
           </div>

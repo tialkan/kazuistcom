@@ -5,14 +5,5 @@ import { CasuistSayfa, casuistMetadata } from '../_bilesen/CasuistSayfa.tsx';
 export const metadata = casuistMetadata('eski', { robots: { index: false, follow: true } });
 
 export default function EskiSayfa() {
-  return (
-    <CasuistSayfa
-      anahtar="eski"
-      ust={
-        <p className="casuist-not" lang="tr">
-          {ortak('tr').casuist.eskiNot}
-        </p>
-      }
-    />
-  );
+  return <CasuistSayfa anahtar="eski" ust={<p className="casuist-not">{ortak().casuist.eskiNot}</p>} />;
 }

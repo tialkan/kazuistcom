@@ -12,13 +12,12 @@ Her dosya Markdown ve YAML ön bilgisiyle başlar. on-yuz kabuğu ön bilgiyi ok
 title: Sayfa başlığı
 slug: aydinlatma            # rota parçası
 route: /hukuki/aydinlatma   # yayın yolu
-lang: tr                    # tr veya en
-binding: true               # Türkçe sürüm bağlayıcıdır; en dosyalarında false
+lang: tr                    # yalnız tr (ADR-0032)
+binding: true               # metinler bağlayıcıdır
 version: 2026-10-23.1       # sürüm; consents.version alanına yazılan değer
 date: 2026-10-19            # sürüm tarihi
 status: taslak              # taslak veya yayinda; taslak durumundaki sayfa yayımlanmaz
 consent_kind: aydinlatma    # varsa packages/db consent_kind değeri
-alternate: /legal/privacy   # varsa hreflang eşi
 ```
 
 Gövdede `{{...}}` biçimindeki yer tutucular (unvan dışı künye bilgileri, iletişim adresi, fiyat) yayından
@@ -46,4 +45,6 @@ Sözleşmeleri Yön. m.5). Yapı kuralları:
 ## Dosyalar
 
 - tr/: bağlayıcı Türkçe metinler (plan 11 tablosu)
-- en/: /legal/* için İngilizce bilgilendirme sürümleri (plan Ek H satır 7-11); her birinde "bağlayıcı sürüm Türkçedir" notu
+
+Kazuist yalnız Türkçedir (ADR-0032). İngilizce bilgilendirme sürümleri ve /legal/* adresleri kaldırıldı; yükleyici
+`lang: tr` dışındaki metni reddeder, `alternate` (hreflang eşi) alanı kullanılmaz.

@@ -6,7 +6,7 @@ import { base } from './yardim.ts';
  * frame-ancestors 'none', base-uri 'self', no unsafe-eval, no third party script; HSTS, nosniff,
  * Referrer-Policy, Permissions-Policy; X-Powered-By off. Checked on pages and on API responses.
  */
-const PAGES = ['/', '/fiyatlar', '/hukuki/aydinlatma', '/problem', '/giris'];
+const PAGES = ['/', '/fiyatlar', '/hukuki/aydinlatma', '/tr', '/giris'];
 const API = ['/api/health', '/api/version', '/api/v1/prices'];
 const https = process.env.KAZUIST_SEC_EXPECT_HTTPS === '1';
 

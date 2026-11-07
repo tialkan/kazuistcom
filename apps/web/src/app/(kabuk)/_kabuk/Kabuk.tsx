@@ -9,7 +9,7 @@ import './kabuk.css';
 
 /** Product shell: skip link, top bar, Hedefim slot, module tabs, footer with company particulars. */
 export function Kabuk({ children }: { children: ReactNode }) {
-  const t = ortak('tr');
+  const t = ortak();
   return (
     <>
       <a className="kz-atla" href="#icerik">
@@ -78,9 +78,6 @@ export function Kabuk({ children }: { children: ReactNode }) {
               <ul>
                 <li>
                   <Link href="/tr">{t.altBilgi.casuistTr}</Link>
-                </li>
-                <li lang="en">
-                  <Link href="/en">{t.altBilgi.casuistEn}</Link>
                 </li>
               </ul>
             </nav>

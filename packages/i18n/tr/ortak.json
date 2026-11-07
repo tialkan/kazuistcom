@@ -41,7 +41,6 @@
     "hukuki": "Hukuki metinler",
     "arge": "Ar-Ge",
     "casuistTr": "Casuist araştırma projesi",
-    "casuistEn": "Casuist (English)",
     "kunye": "Şirket künyesi",
     "mersis": "MERSİS",
     "adres": "Merkez",
@@ -107,8 +106,7 @@
     },
     "tespitBaslik": "Yazım kuralları ve iz denetleyicisi",
     "tespitMetin": "Yapay zekânın bilinen kötü yazı alışkanlıklarını metninizden ayıklayın: kural setini asistanınıza tek istemle verin, metninizi tarayıcıda denetleyin. Ücretsiz ve girişsizdir; metniniz cihazınızdan çıkmaz.",
-    "tespitBag": "Kuralları ve denetleyiciyi açın",
-    "enNotu": "Casuist research and the Eurostars partner call:"
+    "tespitBag": "Kuralları ve denetleyiciyi açın"
   },
   "fiyatlar": {
     "baslik": "Fiyatlar",
@@ -149,8 +147,6 @@
     "yukleniyor": "Yükleniyor"
   },
   "casuist": {
-    "baglayiciSurum": "Bağlayıcı sürüm Türkçedir.",
-    "turkceSurum": "Türkçe sürüm",
     "gorselYerTutucu": "Görsel yer tutucu",
     "gorselAlt": {
       "kazuistBaslik": "Gri zemin üzerinde lacivert ve bronz renkli yay biçimli parçaların birbirine geçtiği soyut heykel"

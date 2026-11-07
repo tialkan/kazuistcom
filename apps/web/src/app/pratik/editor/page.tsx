@@ -8,7 +8,7 @@ import { doldur, oyunMetni, tarihTr, tr } from '../_bilesen/metin.ts';
 import styles from '../pratik.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.editorBaslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.editorBaslik} | ${ortak().marka}`,
   robots: { index: false, follow: false },
 };
 

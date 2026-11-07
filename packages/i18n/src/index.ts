@@ -1,9 +1,6 @@
-import enOrtak from '../en/ortak.json' with { type: 'json' };
 import trOrtak from '../tr/ortak.json' with { type: 'json' };
 
-export const locales = ['tr', 'en'] as const;
-export type Locale = (typeof locales)[number];
-export const sourceLocale: Locale = 'tr';
+/** Kazuist is Turkish only (ADR-0032): one dictionary per module under tr/, no locale switch. */
 
 type Dict = { [key: string]: string | Dict };
 
@@ -14,10 +11,9 @@ export function flattenKeys(dict: Dict, prefix = ''): string[] {
   );
 }
 
-/** Shared UI strings. The type comes from the Turkish source; the parity test keeps en identical in shape. */
+/** Shared UI strings. The type comes from tr/ortak.json, so a missing key fails the type check. */
 export type OrtakSozluk = typeof trOrtak;
-const ortakSozlukleri: Record<Locale, OrtakSozluk> = { tr: trOrtak, en: enOrtak };
-export const ortak = (locale: Locale = sourceLocale): OrtakSozluk => ortakSozlukleri[locale];
+export const ortak = (): OrtakSozluk => trOrtak;
 
 /** Turkish aware case mapping (CLAUDE.md metin kurallari). Never use bare toUpperCase on Turkish text. */
 export const upperTr = (s: string): string => s.toLocaleUpperCase('tr-TR');

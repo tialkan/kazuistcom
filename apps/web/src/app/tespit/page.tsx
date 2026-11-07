@@ -9,7 +9,7 @@ import { maddeler } from './_veri/ayristir.ts';
 import styles from './tespit.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${tr.meta.baslik} | ${ortak().marka}`,
   description: tr.meta.aciklama,
 };
 

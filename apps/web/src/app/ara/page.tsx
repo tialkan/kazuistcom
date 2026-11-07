@@ -13,7 +13,7 @@ import { oturum } from './_sunucu/oturum.ts';
 import styles from './ara.module.css';
 
 export const metadata: Metadata = {
-  title: `${ara.meta.baslik} | ${ortak('tr').marka}`,
+  title: `${ara.meta.baslik} | ${ortak().marka}`,
   description: ara.meta.aciklama,
 };
 

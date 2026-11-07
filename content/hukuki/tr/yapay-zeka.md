@@ -7,7 +7,6 @@ binding: true
 version: 2026-11-02.1
 date: 2026-11-02
 status: taslak
-alternate: /legal/ai
 ---
 
 > TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026. Mevcut sayfanın güncellenmiş hâlidir.

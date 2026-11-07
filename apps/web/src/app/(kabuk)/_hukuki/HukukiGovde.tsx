@@ -118,17 +118,17 @@ export function BlokGoster({ bloklar, tablo }: { bloklar: Blok[]; tablo: string 
   });
 }
 
-const tarih = (iso: string, lang: 'tr' | 'en') =>
-  new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-GB', { dateStyle: 'long', timeZone: 'UTC' }).format(
+const tarih = (iso: string) =>
+  new Intl.DateTimeFormat('tr-TR', { dateStyle: 'long', timeZone: 'UTC' }).format(
     new Date(`${iso}T00:00:00Z`),
   );
 
-/** Legal text page: title, visible version and date, optional draft band, binding-language note. */
+/** Legal text page: title, visible version and date, optional draft band. Turkish only (ADR-0032). */
 export function HukukiGovde({ metin, taslak }: { metin: HukukiMetin; taslak: boolean }) {
   const { fm } = metin;
-  const t = ortak(fm.lang);
+  const t = ortak();
   return (
-    <article className="sayfa hukuki-belge" lang={fm.lang}>
+    <article className="sayfa hukuki-belge">
       {taslak ? (
         <p className="hukuki-taslak" role="note">
           {t.hukuki.taslakBandi}
@@ -145,18 +145,10 @@ export function HukukiGovde({ metin, taslak }: { metin: HukukiMetin; taslak: boo
           <div>
             <dt>{t.hukuki.guncelleme}</dt>
             <dd>
-              <time dateTime={fm.date}>{tarih(fm.date, fm.lang)}</time>
+              <time dateTime={fm.date}>{tarih(fm.date)}</time>
             </dd>
           </div>
         </dl>
-        {!fm.binding && fm.alternate ? (
-          <p className="casuist-not">
-            {t.casuist.baglayiciSurum}{' '}
-            <Link href={fm.alternate} hrefLang="tr" lang="tr">
-              {ortak('tr').casuist.turkceSurum}
-            </Link>
-          </p>
-        ) : null}
       </header>
       <div className="hukuki-metin">
         <BlokGoster bloklar={metin.govde} tablo={t.hukuki.tablo} />

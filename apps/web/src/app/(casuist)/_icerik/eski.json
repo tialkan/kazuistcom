@@ -1,11 +1,10 @@
 {
   "path": "/eski",
   "source": "https://kazuist.com/eski",
-  "lang": "en",
-  "title": "Previous Kazuist site | Casuist",
-  "description": "The archived previous Kazuist website.",
+  "lang": "tr",
+  "title": "Önceki Kazuist sitesi | Casuist",
+  "description": "Önceki Kazuist sitesinin arşivi.",
   "nav": [],
-  "langLink": null,
   "tagline": "Hacettepe Üniversitesi & Ankara Yıldırım Beyazıt Üniversitesi ortak projesidir.",
   "main": [
     [

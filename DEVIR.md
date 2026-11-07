@@ -1,3 +1,30 @@
+## 7 Kasım 2026, on-yuz: ADR-0032 yalnız Türkçe (codex/yalniz-turkce)
+
+Kullanıcı kararı (ADR-0032, PR #64) uygulandı; PR açık, birleştirilmedi. Yönlendirme eklenmedi.
+- i18n: `packages/i18n/en/**` ve `parity.test.ts` silindi. `src/index.ts` tek dilli: `locales`, `Locale`,
+  `sourceLocale` kalktı, `ortak()` parametresiz (tip `tr/ortak.json`'dan). Yeni `test/anahtarlar.test.ts` yalnız tr
+  dizinini, boş değer, yinelenen anahtar ve tip güvenliğini denetler; `check` betiği ona bakar. `ortak.json`'dan
+  `altBilgi.casuistEn`, `anaSayfa.enNotu`, `casuist.baglayiciSurum`, `casuist.turkceSurum` çıktı. Bütün
+  `ortak('tr')` çağrıları `ortak()` oldu.
+- Rotalar: `(casuist)` altındaki /en, /problem, /how-it-works, /evaluation, /partner, /about ve /legal/[belge]
+  sayfaları ile 11 İngilizce arşiv JSON'u silindi. Türkçe arşiv sayfalarından "English" dil bağı (`langLink`)
+  kaldırıldı; `CasuistSayfa` dil dallanmasız, marka bağı /tr. /eski arşivi `lang: tr`, başlığı Türkçe.
+  next.config.ts'deki Türkçe hukuki 301 aynen duruyor (İngilizceye ait girdi yoktu).
+- Kabuk: alt bilgideki "Casuist (English)" bağı ve ana sayfadaki İngilizce not kalktı; `html lang="tr"` zaten sabitti.
+- Hukuki: `content/hukuki/en/**` silindi; altı Türkçe metindeki `alternate: /legal/...` satırı ve /hukuki
+  sayfalarındaki hreflang `alternates` kalktı. `yukle.ts` yalnız `tr` okur, `lang: tr` dışını reddeder;
+  `HukukiGovde` bağlayıcı sürüm notu ve en-GB tarih dalı olmadan.
+- Testler: Ek H tablosu 23 satır kaldı; 2-11 numaralı satırlar `gone` ve 404 beklenir, /en de 404 ve Location yok.
+  Güvenlik başlık testinde /problem yerine /tr. Lighthouse bütçesi /en yerine /tr (CI adımı adı dahil).
+- SEO: main'de sitemap.ts, robots.ts ve public/llms.txt yok; temizlenecek adres yoktu.
+- Doğrulama: typecheck, lint, check:text, build; i18n 18, contracts 122, ui 31, casuist 104, db 43, web 364/1 skip,
+  worker-node 47, ai-gateway 67/2 skip; ledger tam koşuda iki PGlite testi 900 sn zaman aşımına düştü, tek başına
+  23/23 geçti. Yerel üretim sunucusunda 11 İngilizce adres 404 (Location yok), /tr ve altı 200, beş Türkçe hukuki
+  301. e2e ek-h + sayfalar + erişilebilirlik 96/96. Ekran ve axe `docs/tasarim/ekran` (375/1440 axe 0, taşma 0).
+- Açık: sözleşme ve sahiplik temizliği `docs/istekler/on-yuz-yalniz-turkce-sozlesme.md` (mimar). Arşiv HTML'leri
+  `docs/tasarim/casuist-arsiv/*.html` kayıt olarak duruyor, dönüştürücü artık yalnız Türkçe sayfaları üretir.
+  Search Console kaldırma talebi seo ajanında (ADR-0032).
+
 ## 7 Kasım 2026, casuist: /ara, kaynaklı özet ve /kaydettiklerim (codex/dalga2-casuist)
 
 Dalga 2 casuist ilk teslimi; PR açık, birleştirilmedi. `packages/contracts` ve `packages/db` değişmedi.

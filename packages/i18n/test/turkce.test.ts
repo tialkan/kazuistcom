@@ -28,23 +28,19 @@ describe('number formatting', () => {
   });
 });
 
-describe('proper names are not translated (wt.88)', () => {
-  it('keeps brand and company names identical in en', () => {
-    expect(ortak('en').marka).toBe(ortak('tr').marka);
-    expect(ortak('en').altBilgi.telif).toBe(ortak('tr').altBilgi.telif);
-  });
+describe('shared dictionary content', () => {
   it('has no Turkuaz Kampus key after ADR-0031', () => {
-    for (const dil of ['tr', 'en'] as const) {
-      expect(JSON.stringify(ortak(dil))).not.toMatch(/kampus|Kampüs/i);
-    }
+    expect(JSON.stringify(ortak())).not.toMatch(/kampus|Kampüs/i);
+  });
+  it('has no English page link or English note after ADR-0032', () => {
+    const metin = JSON.stringify(ortak());
+    expect(metin).not.toMatch(/English|"\/en"|casuistEn|enNotu/);
   });
   it('keeps the fixed warnings in the source text required by plan 7.5', () => {
-    expect(ortak('tr').uyari.intihal).toBe('Kazuist intihale ve etik ihlaline aracılık etmez.');
-    expect(ortak('tr').uyari.danismanlik).toBe(
+    expect(ortak().uyari.intihal).toBe('Kazuist intihale ve etik ihlaline aracılık etmez.');
+    expect(ortak().uyari.danismanlik).toBe(
       'Kazuist hukuki danışmanlık vermez ve kişisel durumunuz için görüş bildirmez.',
     );
-    expect(ortak('tr').amac).toBe(
-      'Hukuk kaynağını bulun, dayanağını görün, metninizi kurallarına uygun yazın.',
-    );
+    expect(ortak().amac).toBe('Hukuk kaynağını bulun, dayanağını görün, metninizi kurallarına uygun yazın.');
   });
 });

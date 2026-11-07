@@ -5,12 +5,11 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./tr/*": "./tr/*",
-    "./en/*": "./en/*"
+    "./tr/*": "./tr/*"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "test": "vitest run",
-    "check": "vitest run test/parity.test.ts"
+    "check": "vitest run test/anahtarlar.test.ts"
   }
 }
