@@ -92,7 +92,7 @@ Ana kararlar:
 | K-12 | Veri edinimi: çekirdek dizin (lisans dayanağı açık kaynaklar ve seçili kurullar) ve canlı resmî kaynak federasyonu (talep üzerine getir, anonimleştir, önbellekle). Protokol başvuruları paralel yürür. | FSEK ek m.8 riski toplu çekmede yoğunlaşır; kullanıcı yine geniş kapsam görür. |
 | K-13 | iOS: yerel SwiftUI uygulaması, aynı API; web 1.0 kararlı olunca TestFlight, ardından App Store. | Apple 4.2 (paketlenmiş web sitesi reddi) ve sRepetition deneyimi. |
 | K-14 | Kaldırıldı (ADR-0031, 6 Kasım 2026): Turkuaz Kampüs Kazuist kapsamında değildir. Yerine /tespit sayfası 1.0 kapsamındadır. | İlk yıl tek alan adı soğuk başlangıcı azaltır; modül sınırı ayrı ürün hattı olarak ayrılmayı mümkün kılar. |
-| K-15 | Tasarım: açık tema, özgün kimlik, imza öğesi "kenar şerhi"; YZ ile üretilmiş görsel ve emoji yok. | webtasarim.md ve açık tema tercihi. |
+| K-15 | Tasarım: açık tema, özgün kimlik, imza öğesi "kenar şerhi"; ürüne YZ ile üretilmiş görsel girmez (taslak aşaması serbest, ADR-0034) ve emoji yok. | webtasarim.md ve açık tema tercihi. |
 | K-16 | Dil: Kazuist yalnız Türkçedir; İngilizce ürün, İngilizce hukuki sürüm ve İngilizce sayfa yoktur (ADR-0032). i18n anahtar yapısı korunur. | Kullanıcı kararı, 7 Kasım 2026. |
 | K-17 | 1.0'a eklenenler: HMGS modu, FSRS aralıklı tekrar, kaynakça dışa aktarma (CSL), kısaltmalar cetveli, KVKK-GDPR madde eşleniği ilk seti, kural kaynağını gösterme, otorite sınıfı etiketi. | Düşük maliyet, yüksek dönüşüm; ekipte FSRS deneyimi var. |
 | K-18 | Yayın kapıları: webtools robotları ve RAG, anonimleştirme, ödeme, güvenlik ölçütleri. | Eski projelerin dersleri. |
@@ -817,7 +817,7 @@ webtasarim.md'nin tamamı bağlayıcıdır. Kazuist'e özgü kararlar (parantez 
 4. Tipografi (yasaklı listeden değil, wt.26): okuma ve başlık için Literata veya Source Serif 4; arayüz için IBM Plex Sans; künye, esas ve karar numarası için IBM Plex Mono. Fontlar yerel, alt kümeli, `font-display: swap` (wt.121). Alt küme Türkçe glifleri kapsar; İıŞşĞğÇçÖöÜü ve büyük-küçük dönüşüm testi CI'da.
 5. Belirteçler tek dosyada (`packages/ui/tokens.css`): renk, boşluk, tipografi ölçeği, köşe, gölge (wt.12). Her öğe aynı köşe ve gölgeyi taşımaz (wt.31).
 6. Yasaklar: mor-mavi gradyan, cam efekti, neon, "ikon, başlık, iki satır" üçlü kart düzeni, ortada dev başlık ve iki düğme kalıbı, emoji süsü, sahte sayaç ve sahte sohbet balonu, açılır pencere (wt.27-30, wt.44-46).
-7. Görseller: YZ ile üretilmiş görsel yok (wt.32). Meslek avatarları, Kalemcik ve kart piktogramları tek çizerden, tek çizgi diliyle (wt.19). Çizer işi teslim edene kadar yalın yer tutucular kullanılır; YZ görseli kullanılmaz.
+7. Görseller: YZ ile üretilmiş görsel yok (wt.32). Meslek avatarları, Kalemcik ve kart piktogramları tek çizerden, tek çizgi diliyle (wt.19). Çizer işi teslim edene kadar yalın yer tutucular kullanılır. YZ (Midjourney) yalnız taslak ve brifing aşamasında kullanılabilir; ürüne YZ çıktısı girmez (ADR-0034, seçenek B).
 8. Kalemcik: yüz ifadeli kalem karakteri; beş ruh hâli (iyi gidiyor, son 7 gün, yazılmadı, hedefe ulaşıldı, nötr); suçlayıcı veya baskıcı dil yok.
 9. Mikro metin: başlıklar fiil ve nesne taşır (wt.38); her iddia somut (wt.37); yasak kelimeler wt.35 ve ürün listesi (`content/yasak-ifadeler.txt`: "kesin cevap", "%100 doğru", "avukatınız", "hukuki danışmanlık sunar" ve benzerleri). Uzun çizgi yok; CI yakalar.
 10. Türkçe büyük harf `toLocaleUpperCase('tr-TR')` ile; kaynak ve kurum adları otomatik küçültülmez (wt.115e dersi).
@@ -1408,7 +1408,7 @@ isolation: worktree
 permissionMode: acceptEdits
 color: blue
 ---
-Rolün tasarım sistemidir. ~/Desktop/promptlar/webtasarim.md'nin tamamını ve plan.md 12, 13.1 ve Ek H'yi oku. YZ görseli, emoji süsü, yasaklı fontlar ve uzun çizgi yok.
+Rolün tasarım sistemidir. ~/Desktop/promptlar/webtasarim.md'nin tamamını ve plan.md 12, 13.1 ve Ek H'yi oku. Üründe YZ görseli (yalnız taslakta serbest, ADR-0034), emoji süsü, yasaklı fontlar ve uzun çizgi yok.
 Dalga 1: docs/tasarim/yon.md (tek yön, 12. bölüme göre); tokens.css; yerel ve Türkçe alt kümeli fontlar; erişilebilir bileşenler (düğme, form, sekme, iletişim kutusu, etiket, kaynak çipi, kenar şerhi, halka grafik, tablo, boş ve hata durumları); kabuk (üst menü, Hedefim avatarı, yedi sekme, şirket künyeli alt bilgi); ana sayfa, fiyatlar, hukuki sayfa kabuğu, 404, bakım; korunan Casuist sayfalarının içeriğinin birebir taşınması (Ek H) ve /en; i18n anahtarları.
 Dalga 2: modül ajanlarına bileşen desteği; 375, 768, 1440 px görsel kontrol ve Playwright görsel anlık görüntüleri.
 Bitti: axe kritik yok; Lighthouse erişilebilirlik 95 ve üstü; ekran görüntüleri docs/tasarim altında.
