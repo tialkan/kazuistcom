@@ -29,6 +29,31 @@ orkestranın verdiği `docs/hukuk/**` ve istek dosyası değişti; kod, sözleş
   itilmedi ve PR açılmadı. Ön bilgi alanları ve yer tutucu adları test beklentilerine göre elle denetlendi.
 - Kesin sonraki adım: orkestra testleri çalıştırıp dalı iter ve PR açar; ardından on-yuz madde 1, Tarık'ın Hetzner'a
   Standart Sözleşme 2 sorusu.
+## 12 Kasım 2026, on-yuz: P4 görsel varlıklar (on-yuz/p4-gorsel-varliklar)
+
+review.md P4, ADR-0034 seçenek B. YZ görseli ürüne girmedi; Midjourney'e erişilmedi. Yeni bağımlılık yok
+(sharp ve fontTools yalnız yerel üretim betiklerinde, depo bağımlılığı değil); contracts ve db değişmedi.
+- `docs/tasarim/gorsel-istemleri.md`: her varlık için yol, ölçü, biçim, dosya sınırı, kabul ölçütü, son dosyayı kimin
+  çizeceği, yalnız taslak için Midjourney istemi (sanatçı adı, tanınmış karakter, marka yok) ve kayıt tablosu.
+  Avatar (8 meslek x a, b, n), Kalemcik (4 ifade ve ton eşlemesi) ve 20 HMGS konu piktogramı için çizer brifingi.
+- Marka işareti `apps/web/src/app/icon.svg`: kâğıt üzerinde mürekkep K, ince ayraç ve aynı hizada lâl şerh (kenar
+  şerhinin en küçük hâli), 32 birimlik ızgarada elle yazılmış koordinatlar. `docs/tasarim/simge-uret.mjs` bundan
+  `favicon.ico` (16, 32, 48; RGBA, Turbopack paletli girdiyi çözemiyor), `apple-icon.png` (180, yüzde 88),
+  `public/icon-192.png`, `icon-512.png` ve `icon-maskable-512.png` (yüzde 80 güvenli alan) üretir; çıktı
+  belirleyicidir. Önizleme: `docs/tasarim/gorsel/simgeler-onizleme.png`.
+- `apps/web/src/app/manifest.ts` (ad, amaç, `tr`, standalone, kâğıt rengi) ve `opengraph-image.tsx` (statik, 1200 x
+  630, yalnız tipografi). Çizim ve sabitler `apps/web/src/app/(kabuk)/_marka/`; renkler `marka.ts`'te belirteçlere
+  bağlı (test). next/og WOFF2 okumadığı için sitenin alt kümeli yazı tiplerinin sabit ağırlıklı TTF kopyaları
+  `_marka/yazi/` altında (OFL, NOTICE.txt; yeniden üretim `docs/tasarim/og-yazi.py`). Önizleme:
+  `docs/tasarim/gorsel/paylasim-karti.png`.
+- i18n: `ortak.paylasim.kartAlt` ve `ortak.paylasim.alanAdi`.
+- Doğrulama: `marka.test.ts` 21 test; web 619 geçti 1 atlandı, bütün paket testleri, typecheck, lint, check:text,
+  build yeşil. Yerel üretimde simge, apple, manifest bağlantıları ve `og:image` 8 sayfada görüldü. 16 sayfa x 375,
+  768, 1440 px ekran görüntüsü ve axe: ihlal 0, yatay taşma 0 (sayfa arayüzü değişmediği için görüntüler depoya
+  alınmadı). e2e 97 geçti, 3 hesap akışı yerelde veritabanı olmadığı için düştü (`/api/health` 503 degraded).
+- Sahiplik: `app/icon.svg`, `favicon.ico`, `apple-icon.png`, `manifest.ts`, `opengraph-image.tsx`, `public/icon-*`
+  on-yuz satırında değil; orkestranın görevlendirmesiyle yazıldı. İstekler (seo `twitter.card`, hukuk-uyum IP kaydı ve
+  işaret tescili, `public/avatar` sahibi, Kalemcik nötr yüzü): `docs/istekler/on-yuz-p4-gorsel-varliklar.md`.
 ## 12 Kasım 2026, on-yuz: kabukta oturum ve "yakında" düzeneğinin kaldırılması (codex/on-yuz-kabuk-oturum)
 
 İstek `docs/istekler/kimlik-p7-kabuk-oturum.md` karşılandı; ADR-0033 ve review.md T2 gereği kapalı modül kalmadı.
