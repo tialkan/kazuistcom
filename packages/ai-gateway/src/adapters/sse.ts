@@ -40,6 +40,8 @@ export async function* readSse(
     }
     yield* flush();
   } finally {
+    // Close the provider connection when the consumer stops early ([DONE] or abort).
+    await reader.cancel().catch(() => undefined);
     reader.releaseLock();
   }
 }

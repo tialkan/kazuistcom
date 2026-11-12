@@ -72,7 +72,7 @@ def parse_work(data: Mapping[str, Any], fetched_at: datetime) -> RecordDraft:
         extra={
             "work": {
                 "openalex_id": short,
-                "doi": doi.removeprefix("https://doi.org/") if isinstance(doi, str) else None,
+                "doi": doi.removeprefix("https://doi.org/").lower() if isinstance(doi, str) else None,
                 "title": title,
                 "authors": authors,
                 "year": year if isinstance(year, int) else None,

@@ -1,3 +1,18 @@
+## 12 Kasım 2026, orkestra: yayın öncesi tam denetim ve review.md (codex/yayin-oncesi-denetim)
+
+Üç salt okunur ajan (ön yüz, işçiler ve paketler, altyapı ve belgeler) ve yerel typecheck, lint, test, build ile `main`
+(bfefdb6) denetlendi. Sonuç ve ajanlara devredilecek 11 iş paketi kökteki `review.md` dosyasındadır; Tarık'ın vermesi
+gereken 11 karar aynı dosyanın 1. bölümündedir. Yeni bağımlılık yok; `packages/contracts` ve `packages/db` değişmedi.
+- Düzeltilen hatalar: Kalemcik günlük işi 00.00 yerine İstanbul saatiyle 08.00'e kuruluyor (hatırlatmalar hiç
+  gönderilmiyordu); hata veren `tick` kuyruğu durdurmuyor; SSE akışı erken bitince sağlayıcı bağlantısı kapanıyor;
+  `cited_by` yalnız yayın eşiğini geçen atıfları sayıyor; OpenAlex DOI küçük harfe çevriliyor; dergi profili sayfası
+  sorguyu istek başına bir kez çalıştırıyor.
+- Temizlik: `adr0031Kaldirilan`, `hreflang` eşlemesi, yanlış yorumlar; CI'da `uv sync --frozen`; gitleaks dizin çıktısı
+  ekleniyor; `engines.node` 26; kök `pnpm e2e` betiği; rastgele kırılan Kalemcik sıralama testi.
+- Doğrulanmayan: tarayıcıda görünüm ve axe, arm64 derlemesi, `pnpm e2e` betiğinin çalıştırılması. Denetimin okumadığı
+  yerler `review.md` 8. bölümdedir.
+- Kesin sonraki adım: T1, T2, T3 kararları ve Hetzner sunucusu; ardından P1 madde 1 (ADR-0033 ve ADR-0034).
+
 ## 7 Kasım 2026, atif-agi: atıf çıkarma, atıf ağı uçları ve /atif-agi (codex/dalga2-atif-agi)
 
 Yeni bağımlılık yok (Batch istemcisi standart kütüphane); `packages/contracts` ve `packages/db` değişmedi (istekler

@@ -5,7 +5,7 @@ import { defineConfig, devices } from '@playwright/test';
  *   KAZUIST_E2E_BASE_URL   default http://localhost:3300 (local production build, docs/kalite/README.md)
  *   KAZUIST_E2E_BASIC_AUTH user:password for staging behind HTTP Basic Auth (plan 5.4); read from the
  *                          environment only, never written to a file or a report.
- * Not wired into CI yet: docs/istekler/kalite-ci-e2e.md.
+ * CI runs them in the docker job (.github/workflows/ci.yml).
  */
 const baseURL = process.env.KAZUIST_E2E_BASE_URL ?? 'http://localhost:3300';
 const basic = process.env.KAZUIST_E2E_BASIC_AUTH;

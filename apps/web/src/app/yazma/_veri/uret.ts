@@ -3,7 +3,7 @@
  *   node apps/web/src/app/yazma/_veri/uret.ts
  * content/kisaltmalar.yaml -> yazma/_veri/kisaltmalar.json
  * content/kalemcik.yaml    -> kalemcik/_veri/kalemcik.json and worker-node kalemcik/_veri/kalemcik.json
- * The YAML files are the source (plan 10.5/6 and 10.5/7); icerik.test.ts fails when a copy drifts from it.
+ * The YAML files are the source (plan 10.5/6 and 10.5/7); yazma/cekirdek.test.ts fails when a copy drifts from it.
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';

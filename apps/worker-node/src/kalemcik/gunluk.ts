@@ -204,8 +204,9 @@ export function createKalemcikDailyHandler(deps: GunlukBagimliliklar): JobHandle
 
 /** One kalemcik.daily job per Istanbul day (the partial unique index drops a repeat while one is queued or running). */
 export const enqueueKalemcikDailySql = `
-INSERT INTO jobs (type, payload, dedupe_key)
-VALUES ('kalemcik.daily', '{}'::jsonb, 'kalemcik.daily:' || $1)
+INSERT INTO jobs (type, payload, dedupe_key, run_after)
+VALUES ('kalemcik.daily', '{}'::jsonb, 'kalemcik.daily:' || $1::text,
+        ($1::text::date + time '08:00') AT TIME ZONE 'Europe/Istanbul')
 ON CONFLICT DO NOTHING`;
 
 /** Tick for the runner (same shape as dailyBillingTick): enqueues at most once per Istanbul day per process. */

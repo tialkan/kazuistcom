@@ -68,7 +68,14 @@ export function startWorker(o: WorkerOptions): RunningWorker {
       while (running) {
         try {
           await o.db.query(releaseStaleJobsSql, [stale]);
-          if (o.tick) await o.tick();
+          // A failing tick must not stop the queue from draining.
+          if (o.tick) {
+            try {
+              await o.tick();
+            } catch (err) {
+              log('tick failed', { error: err instanceof Error ? err.name : 'Error' });
+            }
+          }
           // A poll round tries every type; a notification round only the notified ones.
           const round = pending.size ? [...pending] : [...o.consumer.types];
           pending.clear();
