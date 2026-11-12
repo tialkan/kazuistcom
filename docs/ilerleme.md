@@ -33,6 +33,7 @@ Güncel orkestra kaydı, 2 Kasım 2026: CI hesap kısıtı kalktı; #43, #50, #5
 | 2 | icerik (codex/dalga2-rehberler) | Rehberler: makale, tez, Zotero ve EndNote, kontrol listesi, etik kutusu | PR açık | 12+12+8+6 adım, 14 madde, altı ihlal; typecheck, lint, check:text, testler, build, 375/768/1440 axe 0 yeşil; i18n eşlik testi `en` kalkana dek kırık (orkestra kararı); FR-34 sunucu saklama, /ara parametresi ve seo istekleri docs/istekler/icerik-rehberler.md; kitap dayanakları ikincil, Word rehber belgesi depoda yok |
 | 2 | on-yuz (codex/yalniz-turkce) | ADR-0032: İngilizce sözlükler, /en ve eski İngilizce Casuist sayfaları, dil bağları ve hreflang kaldırıldı | PR açık | 11 İngilizce adres yerel üretimde 404, /tr 200, Türkçe 301'ler duruyor; typecheck, lint, check:text, testler, build, e2e 96/96, 375/768/1440 axe 0 yeşil. Sözleşme isteği docs/istekler/on-yuz-yalniz-turkce-sozlesme.md |
 | 2 | seo, odeme, veri-toplama, ios | Ürün modülleri (Kampüs ADR-0031 ile çıktı) | bekliyor | |
+| P1 | mimar (codex/p1-mimar-kararlar) | review.md P1 madde 1-3 ve 10: ADR-0033, ADR-0034, ADR durum notları, sahiplik, ajan tanımları, .env.example; madde 4-9 için plan (docs/istekler/mimar-p1-sozlesme-temizligi.md) | PR açık | ADR-0033 ve ADR-0034 Önerildi, Tarık onayı bekliyor; contracts ve db değişmedi; lint, check:text, typecheck temiz |
 | 3 | kalite-guvenlik, bagimsiz-denetci | Sertleştirme | bekliyor | |
 | 4 | sahip ajanlar, icerik | Kapalı beta | bekliyor | |
 | 5 | altyapi, seo, kalite-guvenlik | Genel yayın | bekliyor | |
