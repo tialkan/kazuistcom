@@ -256,7 +256,8 @@ describe('kalemcik.daily: deadline reminders (FR-51)', () => {
       expect((await gunlukCalistir(saat(gun))).teslim, `day -${n}`).toBe(1);
     }
     const turler = (await bildirimler()).map((j) => refIdCoz(j.payload.refId)?.tur);
-    expect(turler).toEqual(['teslim14', 'teslim7', 'teslim3', 'teslim1', 'teslim0']);
+    // Jobs created in the same millisecond have no stable order (random ids), so compare as a set.
+    expect([...turler].sort()).toEqual(['teslim0', 'teslim1', 'teslim14', 'teslim3', 'teslim7']);
   });
   it('uses the form of address the user chose', async () => {
     await pg.query(

@@ -110,7 +110,7 @@
   },
   "fiyatlar": {
     "baslik": "Fiyatlar",
-    "aciklama": "Kazuist’in tüm özellikleri ücretsizdir. Kendi YZ anahtarınızı kullanabilir veya isteğe bağlı platform kredisi alabilirsiniz. Paket fiyatları KDV dahildir.",
+    "aciklama": "Kazuist'in tüm özellikleri ücretsizdir. Kendi YZ anahtarınızı kullanabilir veya isteğe bağlı platform kredisi alabilirsiniz. Paket fiyatları KDV dahildir.",
     "giris": "Tüm özellikler ücretsizdir. Platformun günlük YZ hakkını kullanabilir, kendi sağlayıcı anahtarınızla (BYOK) çalışabilir veya platform YZ işlemleri için kredi alabilirsiniz. BYOK kullanım bedelini kendi sağlayıcınıza ödersiniz.",
     "kdv": "Tüm fiyatlar KDV dahildir.",
     "planlar": "Kullanım seçenekleri",

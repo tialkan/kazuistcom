@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import { ortak } from '@kazuist/i18n';
 import tr from '@kazuist/i18n/tr/yazma.json';
 import { SablonIndirme } from '../../_bilesen/SablonIndirme.tsx';
@@ -14,7 +15,8 @@ export const dynamic = 'force-dynamic';
 
 const t = tr.dergi;
 
-async function yukle(slug: string) {
+// generateMetadata and the page share one lookup per request.
+const yukle = cache(async (slug: string) => {
   const db = yazmaDb();
   if (!db) return null;
   try {
@@ -25,7 +27,7 @@ async function yukle(slug: string) {
   } catch {
     return null;
   }
-}
+});
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;

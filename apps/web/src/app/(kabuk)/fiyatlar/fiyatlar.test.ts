@@ -8,11 +8,6 @@ import { islemler, paketler, planlar } from './fiyatlar.ts';
 const kok = (p: string) => fileURLToPath(new URL(`../../../../../../${p}`, import.meta.url));
 const plan = readFileSync(kok('plan.md'), 'utf8');
 const duz = (s: string) => s.replace(/[‘’]/g, "'").trim();
-/**
- * Plan 4.4 rows of Turkuaz Kampus operations. ADR-0031 removed the product, so the public price list
- * omits them until plan.md 4.4 drops them too (docs/istekler/on-yuz-kampus-temizligi.md).
- */
-const adr0031Kaldirilan = new Set(['Kampüs YZ özeti', 'Poster taslağı']);
 
 /** Rows of the first Markdown table after a heading, without the header and separator rows. */
 function tablo(baslik: string): string[][] {
@@ -37,9 +32,7 @@ describe('/fiyatlar matches plan.md 4.2-4.4 (approved 2026-10-20)', () => {
   });
   it('credits per operation', () => {
     expect(islemler.map((p) => [p.ad, p.kredi])).toEqual(
-      tablo('### 4.4 İşlem fiyatları')
-        .filter((r) => !adr0031Kaldirilan.has(r[0] ?? ''))
-        .map((r) => [r[0], r[4]]),
+      tablo('### 4.4 İşlem fiyatları').map((r) => [r[0], r[4]]),
     );
   });
   it('the draft note is gone and VAT is stated', () => {

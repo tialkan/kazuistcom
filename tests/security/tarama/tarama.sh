@@ -18,9 +18,10 @@ g=$?
 tail -2 "$OUT/gitleaks.txt"
 [ $g -eq 0 ] || status=1
 # Uncommitted test sources (gitleaks dir does not honour .gitignore, so node_modules and test-results are skipped).
+: > "$OUT/gitleaks-dir.txt"
 for d in tests/e2e/specs tests/security/http tests/security/enjeksiyon tests/security/tarama; do
   [ -d "$d" ] || continue
-  gitleaks dir --redact --no-banner "$d" > "$OUT/gitleaks-dir.txt" 2>&1 || { status=1; echo "leak in $d"; }
+  gitleaks dir --redact --no-banner "$d" >> "$OUT/gitleaks-dir.txt" 2>&1 || { status=1; echo "leak in $d"; }
 done
 
 echo "== pnpm audit (workspace, all dependencies)"

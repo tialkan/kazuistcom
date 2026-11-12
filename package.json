@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@11.0.8",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "scripts": {
     "dev": "pnpm --filter @kazuist/web dev",
@@ -14,6 +14,7 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "test": "pnpm -r --if-present test",
+    "e2e": "pnpm --dir tests/e2e exec playwright test",
     "check:text": "node scripts/check-text.mjs",
     "contracts:lint": "pnpm --filter @kazuist/contracts lint",
     "hooks:install": "git config core.hooksPath .githooks"

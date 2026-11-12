@@ -22,7 +22,8 @@ ner = [
 ]
 # Run time NER only (ADR-0026, istek anonimlestirme-ner-calisma-zamani): the ONNX graphs exported by
 # eval/anon/export_ner.py run with these three; no torch, transformers or gliner. Licenses: onnxruntime MIT,
-# tokenizers Apache-2.0, numpy BSD-3-Clause. The worker-py image installs this extra; CI does not.
+# tokenizers Apache-2.0, numpy BSD-3-Clause. Neither the worker-py image nor CI installs this extra yet
+# (infra/docker/worker-py/Dockerfile runs `uv sync --frozen --no-dev`); see review.md.
 ner-runtime = [
   "onnxruntime>=1.20",
   "tokenizers>=0.20",

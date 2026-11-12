@@ -152,7 +152,8 @@ export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBac
     if (!ids.length) return [];
     const { rows } = await db.query<RecordRow>(
       `SELECT ${RECORD_COLUMNS},
-        (SELECT count(*) FROM citation_edges e WHERE e.to_record_id = r.id) AS cited_by
+        (SELECT count(*) FROM citation_edges e WHERE e.to_record_id = r.id
+          AND ((e.confirmed AND e.confidence > 0) OR e.confidence >= 0.90)) AS cited_by
        FROM records r WHERE r.id = ANY($1::uuid[]) AND ${SERVABLE}`,
       [ids],
     );

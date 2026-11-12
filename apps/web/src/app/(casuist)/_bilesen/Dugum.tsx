@@ -50,7 +50,6 @@ const izinli = new Set([
 ]);
 const ozellikAdi: Record<string, string> = {
   class: 'className',
-  hreflang: 'hrefLang',
   colspan: 'colSpan',
   rowspan: 'rowSpan',
   datetime: 'dateTime',
