@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import tr from '@kazuist/i18n/tr/tespit.json';
 import { Denetleyici } from './_bilesen/Denetleyici.tsx';
 import { KopyalaDugmesi } from './_bilesen/KopyalaDugmesi.tsx';
@@ -9,7 +8,7 @@ import { maddeler } from './_veri/ayristir.ts';
 import styles from './tespit.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak().marka}`,
+  title: tr.meta.baslik,
   description: tr.meta.aciklama,
 };
 

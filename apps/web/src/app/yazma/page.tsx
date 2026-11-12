@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import tr from '@kazuist/i18n/tr/yazma.json';
 import { Dugme } from '@kazuist/ui';
 import { KisaltmaAraci } from './_bilesen/KisaltmaAraci.tsx';
@@ -8,7 +7,7 @@ import { dergiAra, type DergiOzeti } from './_sunucu/dergiler.ts';
 import styles from './yazma.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak().marka}`,
+  title: tr.meta.baslik,
   description: tr.meta.aciklama,
 };
 

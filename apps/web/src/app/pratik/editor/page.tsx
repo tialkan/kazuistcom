@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { ortak } from '@kazuist/i18n';
 import { gecerliOnaylar } from '../_alan/kart.ts';
 import { onayKuyrugu } from '../_alan/onay.ts';
 import { tumDesteler } from '../_veri/desteler.ts';
@@ -8,7 +7,7 @@ import { doldur, oyunMetni, tarihTr, tr } from '../_bilesen/metin.ts';
 import styles from '../pratik.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.editorBaslik} | ${ortak().marka}`,
+  title: tr.meta.editorBaslik,
   robots: { index: false, follow: false },
 };
 

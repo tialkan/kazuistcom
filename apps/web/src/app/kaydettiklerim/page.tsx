@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import ara from '@kazuist/i18n/tr/ara.json';
 import tr from '@kazuist/i18n/tr/kaydettiklerim.json';
 import { BosDurum, Dugme, Etiket, HataDurumu } from '@kazuist/ui';
@@ -13,7 +12,7 @@ import { listSaved, type SavedRow } from './_sunucu/kutuphane.ts';
 import styles from './kaydettiklerim.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak().marka}`,
+  title: tr.meta.baslik,
   description: tr.meta.aciklama,
   robots: { index: false, follow: false },
 };

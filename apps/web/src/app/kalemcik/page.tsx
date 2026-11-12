@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import tr from '@kazuist/i18n/tr/kalemcik.json';
 import { Kalemcik } from './_bilesen/Kalemcik.tsx';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak().marka}`,
+  title: tr.meta.baslik,
   description: tr.meta.aciklama,
 };
 

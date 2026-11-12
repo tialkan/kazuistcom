@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
-import { ortak } from '@kazuist/i18n';
 import tr from '@kazuist/i18n/tr/yazma.json';
 import { SablonIndirme } from '../../_bilesen/SablonIndirme.tsx';
 import { degerMetni } from '../../_bilesen/deger-metni.ts';
@@ -33,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const r = await yukle(slug);
   const ad = r?.dergi.name ?? t.bulunamadi;
-  return { title: `${doldur(t.baslik, { ad })} | ${ortak().marka}` };
+  return { title: doldur(t.baslik, { ad }) };
 }
 
 export default async function DergiProfili({ params }: { params: Promise<{ slug: string }> }) {

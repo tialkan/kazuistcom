@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import { gorunenKartlar, onizlemeAcik, tumDesteler } from '../_veri/desteler.ts';
 import { Calisma } from '../_bilesen/Calisma.tsx';
 import { tr } from '../_bilesen/metin.ts';
 import { OnizlemeBandi, SabitNotlar } from '../_bilesen/Ortak.tsx';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.bugunBaslik} | ${ortak().marka}`,
+  title: tr.meta.bugunBaslik,
 };
 
 /** Today's spaced repetition over every visible deck. */

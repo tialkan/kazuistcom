@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import { oyunlar } from './_alan/kart.ts';
 import { oyunKartlari } from './_alan/oyun.ts';
 import { alanOzetleri, denemeHavuzu, gorunenKartlar, onizlemeAcik, tumDesteler } from './_veri/desteler.ts';
@@ -9,7 +8,7 @@ import { OnizlemeBandi, SabitNotlar } from './_bilesen/Ortak.tsx';
 import styles from './pratik.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak().marka}`,
+  title: tr.meta.baslik,
   description: tr.meta.aciklama,
 };
 

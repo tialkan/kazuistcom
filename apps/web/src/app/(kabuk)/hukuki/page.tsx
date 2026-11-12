@@ -4,7 +4,7 @@ import { ortak } from '@kazuist/i18n';
 import { hukukiBelgeler } from '../_kabuk/rotalar.ts';
 
 const t = ortak();
-export const metadata: Metadata = { title: `${t.hukuki.baslik} | ${t.marka}`, description: t.hukuki.giris };
+export const metadata: Metadata = { title: t.hukuki.baslik, description: t.hukuki.giris };
 
 export default function HukukiDizin() {
   return (

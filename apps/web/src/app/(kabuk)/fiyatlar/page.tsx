@@ -7,7 +7,7 @@ import styles from './fiyatlar.module.css';
 const t = ortak();
 const f = t.fiyatlar;
 
-export const metadata: Metadata = { title: `${f.baslik} | ${t.marka}`, description: f.aciklama };
+export const metadata: Metadata = { title: f.baslik, description: f.aciklama };
 
 export default function FiyatlarSayfasi() {
   const s = f.sutun;

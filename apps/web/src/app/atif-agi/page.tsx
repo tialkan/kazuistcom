@@ -15,7 +15,7 @@ import styles from './atif-agi.module.css';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.baslik} | ${ortak().marka}`,
+  title: tr.meta.baslik,
   description: tr.meta.aciklama,
 };
 

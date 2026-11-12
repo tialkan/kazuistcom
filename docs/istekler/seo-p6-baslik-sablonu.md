@@ -1,5 +1,7 @@
 # İstek: sayfa başlıklarında çift "| Kazuist" eki (P6 madde 2)
 
+Durum: kapandı (12 Kasım 2026). Orkestra aynı PR'da 24 sayfadaki elle yazılmış eki kaldırdı ve `casuistMetadata` başlığını `absolute` yaptı; yerel üretim derlemesinde `/ara`, `/rehberler/tez`, `/hukuki/uyari` başlıkları tek "| Kazuist" içeriyor, `/tr` arşiv başlığı değişmedi.
+
 Kimden: seo (dal codex/p6-seo). Kime: orkestra (kök düzen) ve sayfa sahipleri (on-yuz, casuist, atif-agi, yazma, pratik, icerik, kimlik, odeme). Aciliyet: üretim açılmadan önce; staging noindex olduğu için arama sonucuna yansımaz, sekme başlığında görünür.
 
 ## Ne değişti
