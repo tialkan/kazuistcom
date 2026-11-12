@@ -33,3 +33,23 @@ Büyük corpusta `esas_no` üzerindeki trigram dizini `replace(...)` ile kullan�
 `decision` değerleri mevcut check kısıtıyla uyumludur (`onay`, `ret`, `duzelt`, `superseded`). Editör ekranı (kimlik ajanı,
 `api/v1/admin/**`) onayda `confirmed = true`, retde `confirmed = true, confidence = 0` yazmalıdır. Bu ekran yoktur;
 kuyruk şimdilik yalnız dolar.
+
+## Sonuç (mimar, 12 Kasım 2026, sözleşme v1.5, ADR-0035)
+
+Kabul. Migration `0007_v1_5_jobs_citations_deliveries.sql`, yalnız ekleme:
+
+- `works.work_key text` tekil (`works_work_key_unique`), boş olabilir; `ON CONFLICT (work_key)` bununla çalışır.
+- `work_citations`: istenen sütunlar ve ek olarak `rejected boolean not null default false`; `pages jsonb not null
+  default '[]'`; tekil `work_citations_uq (from_record_id, work_id)` (`ON CONFLICT` hedefi), dizin
+  `work_citations_work_idx (work_id)`; `from_record_id` silmede cascade, `work_id` `works`'e bağlı.
+- `citation_edges.rejected boolean not null default false`. Mevcut `confirmed = true AND confidence = 0` satırları
+  migration'da `rejected = true` yapıldı; `confirmed` ve `confidence` değişmedi.
+- Madde 2'deki `esas_key` sütunu yerine ifade dizinleri: `records_esas_key_idx` ve `records_karar_key_idx`
+  (`replace(esas_no, ' ', '')`, `replace(karar_no, ' ', '')`). `FIND_SQL` ve `FIND_NUMBER_SQL` aynı ifadeyle aradığı
+  için değişmeden dizini kullanır (gerçek PostgreSQL 18'de `Index Scan using records_esas_key_idx` görüldü).
+- `works.csl` değişmedi.
+
+Sahip işleri (`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md`): `store.py` reddi `rejected = true` ile yazar
+ve `confirmed = false` budamasına `NOT rejected` ekler; `SqlCitationStore(doctrine=True)`; okuma sorgusu
+(`atif-agi/_sunucu/sql.ts`) `NOT rejected` koşulunu ekler ve `42P01` yedeği kaldırılabilir. Editör ekranı (kimlik)
+retde `rejected = true` yazar.

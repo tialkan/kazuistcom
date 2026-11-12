@@ -1,3 +1,35 @@
+## 12 Kasım 2026, mimar: sözleşme v1.5, P1 adım A (codex/p1-sozlesme-v1-5)
+
+review.md P1 madde 4, 5 (doğrulama), 6 (ekleme) ve 8; plan `docs/istekler/mimar-p1-sozlesme-temizligi.md` adım A.
+ADR-0035 "Önerildi, Tarık onayı bekliyor"; sözleşme ve şema 1.5.0; migration
+`0007_v1_5_jobs_citations_deliveries.sql` yalnız ekler. Adım B (kaldırıcı, ADR-0036, migration 0008) yapılmadı. Canlı
+veri tabanına hiçbir şey uygulanmadı. Yeni bağımlılık yok.
+- İş kuyruğu (`packages/db/src/jobs.ts`, `services/worker-py/core/jobs.py`): bitirme, hata, gömme ve kalp atışı
+  işçi kimliğini eşler ve `RETURNING` döndürür (kilit kaybı loglanır, iş yeni sahibinde kalır); bayat kilit deneme
+  sınırında `dead`; kalp atışı 300 sn; `pruneJobsSql` (done 14, failed/dead 90 gün, 5000'lik batch);
+  `enqueueOnceSql` ve doğrulayan `enqueueJob`. Python SQL'i test içinde TypeScript metniyle karşılaştırılır.
+- İş yükleri: `parseJobPayload`, beş yerel şema sözleşmede, `jobPayloadExempt`; worker-node ve worker-py tüketicileri
+  geçersiz yükü çalıştırmadan `invalid payload` ile gömer, yük loglanmaz. Ortak fikstür
+  `packages/contracts/test/fixtures/job-payloads.json` hem zod hem Python testinde.
+- OpenAPI: `x-kazuist-uygulama` (`planlandi` 11, `kaldirilacak` 11 Kampüs yolu); dört yeni uç
+  (`/v1/templates/check`, `/v1/templates/rules/{id}`, `/v1/writing-projects/ayarlar`, `/auth/step-up/confirm`) ve
+  `extractTemplateRules.kind`; `rotalar.test.ts` yol, ek ve HTTP yöntemi eşleşmesini sınar. TS istemcisi yeniden
+  üretildi; Swift istemcisi üretilmedi (`apps/ios` yok).
+- Şema: `works.work_key`, `work_citations`, `citation_edges.rejected` (eski ret biçimi işaretlendi), ifade
+  dizinleri, `sources_raw_record_idx`, `jobs_dedupe_idx`, `jobs_finished_idx`, `notification_deliveries`.
+- Sahiplik dışı dokunuşlar (plan adım A gereği): orkestra `apps/worker-node/src/{queue,runner,handlers}.ts` ve
+  `test/{queue,runner,billing}.test.ts`; anonimlestirme `anonymizer/tests/test_anonymizer.py` içinde tüketici
+  testinin kayıt kimliği UUID oldu. yazma ve odeme dosyalarına dokunulmadı; yönlendirme
+  `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md`.
+- `.env.example`: `KAZUIST_EMBED_BACKEND`, `_DIR`, `_THREADS`, `_QUANTIZED`, `KAZUIST_TEST_DATABASE_URL`.
+- Doğrulama: `pnpm check:text`, `typecheck`, `lint`, `test` (contracts 148, db 54, worker-node 102, web 598, tüm
+  paketler geçti), `build`, Redocly lint temiz, enjeksiyon seti 60/60; `uv run pytest` 308 geçti 10 atlandı.
+  Geçici yerel PostgreSQL 18.6 ve pgvector kümesinde (sonra durduruldu): v1.4 verisi üstüne 0007 ve ikinci kez
+  boş geçiş, ret işaretlemesi, ifade dizini planı, iki bağlantıda `enqueueOnce` yarışı (10/10 tek satır), iki
+  işçide SKIP LOCKED çakışmasızlığı, kilit kaybı, temizlik ve cascade; Python tüketicisinde psycopg ile kalp atışı,
+  gömme ve kilit kaybı; `nlp/tests/test_pg.py` 4/4.
+- Açık: ADR-0035 onayı; ADR-0036 ve Tarık'ın yıkıcı migration onayı; `live.fetch` kapsam kararı; yönlendirme
+  dosyasındaki sahip işleri (yazma `kalemcikTick`, kimlik teslim kaydı, atif-agi ve casuist `rejected`).
 ## 12 Kasım 2026, hukuk-uyum: P5 metinler, KVKK envanteri, protokoller, Midjourney değerlendirmesi
 
 review.md P5 ve ADR-0034 ek görevi. Yalnız `content/hukuki/**`, `docs/kvkk/**`, `docs/protokol/**`, `docs/ip/**`,

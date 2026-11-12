@@ -1,6 +1,7 @@
 import type { JobType } from '@kazuist/contracts';
+import { enqueueJob } from '@kazuist/db/jobs';
 import { createPurgeHandler, type PurgeDeps } from './account/purge.ts';
-import { billingHandlers, enqueueDailyBillingSql, type BillingJobsDeps } from './billing/jobs.ts';
+import { billingHandlers, type BillingJobsDeps } from './billing/jobs.ts';
 import { createKalemcikDailyHandler, type GunlukBagimliliklar } from './kalemcik/gunluk.ts';
 import { createNotifyHandler, type NotifyDeps } from './notify/index.ts';
 import type { JobHandler, SqlClient } from './queue.ts';
@@ -43,9 +44,10 @@ export const unavailableBilling: BillingJobsDeps = {
 const day = (d: Date) => d.toISOString().slice(0, 10);
 
 /**
- * Daily billing schedule (plan 9.2/3 and 9.2/5): once a day per job type, keyed by the day, through odeme's
- * enqueueDailyBillingSql (the partial unique index drops a repeat while the first is queued or running).
- * Returns a tick for the runner that enqueues at most once per UTC day per process.
+ * Daily billing schedule (plan 9.2/3 and 9.2/5): once a day per job type, keyed <type>:<UTC day>. The payload is
+ * checked against the contract and the key is enqueued once in any state (ADR-0035, enqueueOnceSql), so a restart
+ * or a second deployment on the same day does not queue a finished day again. The in-process day only saves the
+ * round trip; it is no longer the guard.
  */
 export function dailyBillingTick(db: SqlClient, now: () => Date = () => new Date()): () => Promise<void> {
   let last = '';
@@ -53,8 +55,18 @@ export function dailyBillingTick(db: SqlClient, now: () => Date = () => new Date
     const today = day(now());
     if (today === last) return;
     const yesterday = day(new Date(now().getTime() - 86_400_000));
-    await db.query(enqueueDailyBillingSql, ['billing.monthly_grant', '{}', today]);
-    await db.query(enqueueDailyBillingSql, ['billing.reconcile', JSON.stringify({ day: yesterday }), today]);
+    await enqueueJob(
+      db,
+      'billing.monthly_grant',
+      {},
+      { once: true, dedupeKey: `billing.monthly_grant:${today}` },
+    );
+    await enqueueJob(
+      db,
+      'billing.reconcile',
+      { day: yesterday },
+      { once: true, dedupeKey: `billing.reconcile:${today}` },
+    );
     last = today;
   };
 }

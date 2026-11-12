@@ -79,6 +79,9 @@ export const records = pgTable(
     index('records_court_date_idx').on(t.court, t.decisionDate),
     index('records_title_tsv_idx').using('gin', t.titleTsv),
     index('records_esas_trgm_idx').using('gin', sql`${t.esasNo} gin_trgm_ops`),
+    // v1.5 (ADR-0035): citation number lookup compares numbers without spaces (citations/store.py FIND_SQL).
+    index('records_esas_key_idx').on(sql`replace(${t.esasNo}, ' ', '')`),
+    index('records_karar_key_idx').on(sql`replace(${t.kararNo}, ' ', '')`),
   ],
 );
 
@@ -136,7 +139,10 @@ export const sourcesRaw = pgTable(
     fetchedAt: ts('fetched_at').notNull(),
     recordId: uuid('record_id').references(() => records.id),
   },
-  (t) => [uniqueIndex('sources_raw_uq').on(t.source, t.externalId, t.sha256)],
+  (t) => [
+    uniqueIndex('sources_raw_uq').on(t.source, t.externalId, t.sha256),
+    index('sources_raw_record_idx').on(t.recordId),
+  ],
 );
 
 export const normRefs = pgTable(
@@ -157,12 +163,17 @@ export const normRefs = pgTable(
   (t) => [index('norm_refs_lookup_idx').on(t.kanunNo, t.madde)],
 );
 
-/** Doctrine works (articles, books, theses), OpenAlex or manual. */
+/**
+ * Doctrine works (articles, books, theses), OpenAlex or manual. work_key (v1.5, ADR-0035) is the dedupe key of the
+ * citation extractor: first author surname and title words, independent of edition and year
+ * (services/worker-py/citations/works.py work_key). csl holds {kind, venue, editions[]}.
+ */
 export const works = pgTable('works', {
   id: id(),
   recordId: uuid('record_id').references(() => records.id),
   openalexId: text('openalex_id').unique(),
   doi: text('doi').unique(),
+  workKey: text('work_key').unique(),
   title: text('title').notNull(),
   authors: jsonb('authors').$type<string[]>(),
   year: integer('year'),
@@ -191,12 +202,44 @@ export const citationEdges = pgTable(
     kind: citationEdgeKind('kind').notNull().default('atif'),
     confidence: real('confidence').notNull(),
     confirmed: boolean('confirmed').notNull().default(false),
+    /**
+     * Editor rejection (v1.5, ADR-0035). Before v1.5 a rejection was stored as confirmed = true and confidence = 0;
+     * migration 0007 marks those rows rejected. Serving queries add NOT rejected.
+     */
+    rejected: boolean('rejected').notNull().default(false),
     extractor: text('extractor').notNull(),
     createdAt: createdAt(),
   },
   (t) => [
     uniqueIndex('citation_edges_uq').on(t.fromRecordId, t.toRaw, t.kind),
     index('citation_edges_to_idx').on(t.toRecordId),
+  ],
+);
+
+/**
+ * Decision to doctrine work citations (v1.5, ADR-0035, docs/istekler/atif-agi-sema.md): one edge per decision and
+ * work with the cited pages. Same editor fields as citation_edges.
+ */
+export const workCitations = pgTable(
+  'work_citations',
+  {
+    id: id(),
+    fromRecordId: uuid('from_record_id')
+      .notNull()
+      .references(() => records.id, { onDelete: 'cascade' }),
+    workId: uuid('work_id')
+      .notNull()
+      .references(() => works.id),
+    pages: jsonb('pages').$type<string[]>().notNull().default([]),
+    confidence: real('confidence').notNull(),
+    confirmed: boolean('confirmed').notNull().default(false),
+    rejected: boolean('rejected').notNull().default(false),
+    extractor: text('extractor').notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex('work_citations_uq').on(t.fromRecordId, t.workId),
+    index('work_citations_work_idx').on(t.workId),
   ],
 );
 

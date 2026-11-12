@@ -165,3 +165,24 @@ Kod tarafından okunmayan dokuz tablo. Körlemesine silinmez; her biri bir 1.0 �
 - ADR-0035 ve ADR-0036 metinlerinin onayı (yazıldıklarında).
 - Adım B'deki yıkıcı migration için açık onay.
 - `live.fetch` (canlı federasyon) 1.0 kapsamında mı.
+
+## Sonuç: adım A uygulandı (mimar, 12 Kasım 2026, dal `codex/p1-sozlesme-v1-5`)
+
+ADR-0035 "Sözleşme v1.5" (Önerildi, Tarık onayı bekliyor), sözleşme ve şema 1.5.0, migration
+`0007_v1_5_jobs_citations_deliveries.sql` (yalnız ekleme). Adım B (ADR-0036, migration 0008) yapılmadı; Tarık'ın açık
+onayını bekler.
+
+- Madde 4: 4.1-4.5 planlandığı gibi. Sapmalar: temizlik `failed` satırlarını da `dead` süresiyle (90 gün) siler,
+  çünkü web sürecinin bitirdiği `rules.extract` satırlarının son durumu `failed`'dır; `jobs_finished_idx` bu yüzden
+  üç durumu kapsar. Ek olarak `buryJobSql` (yük geçersizse yeniden denemeden `dead`), `enqueueJobSql` ve doğrulayan
+  `enqueueJob` yardımcısı. Kalp atışı 300 sn, bayat sınırı 900 sn.
+- Madde 5 (doğrulama kısmı): `parseJobPayload`, yerel şemalar sözleşmede, `jobPayloadExempt` listesi ve testi, iki
+  tüketicide doğrulama, ortak fikstür `packages/contracts/test/fixtures/job-payloads.json`.
+- Madde 6 (ekleme kısmı): `x-kazuist-uygulama` eki (`planlandi` 11, `kaldirilacak` 11 Kampüs yolu), dört yeni uç,
+  `rotalar.test.ts` (yöntem eşleşmesi dahil). Plan dışı ek: `extractTemplateRules` gövdesine rotanın okuduğu `kind`.
+  `staging.kazuist.com` sunucusu kaldı (ADR-0033 onaylanmadı). Kullanılmayan şema taraması ADR-0035'te.
+- Madde 8: planlandığı gibi; `work_citations` istekteki sütunlara ek olarak `rejected` taşır.
+- Ek: `notification_deliveries` (kimlik isteği) ve `.env.example` gömme değişkenleri (casuist isteği).
+- Orkestra dosyaları (`apps/worker-node/src/{queue,runner,handlers}.ts` ve testleri) plan gereği aynı PR'da
+  güncellendi. yazma `gunluk.ts` ve odeme `billing/jobs.ts` dokunulmadı; yönlendirme
+  `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md`.

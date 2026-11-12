@@ -30,7 +30,7 @@ describe('initial migration on PGlite (PostgreSQL 18 wasm)', () => {
     const r = await one<{ n: number }>(
       "select count(*)::int n from information_schema.tables where table_schema in ('public','kampus') and table_type = 'BASE TABLE'",
     );
-    expect(r.n).toBe(77);
+    expect(r.n).toBe(79);
     const k = await one<{ n: number }>(
       "select count(*)::int n from information_schema.tables where table_schema = 'kampus'",
     );
@@ -203,7 +203,7 @@ describe('initial migration on PGlite (PostgreSQL 18 wasm)', () => {
 
     const requeued: string[] = [];
     const un2 = await pg.listen(jobsChannel('anon.run'), (p) => requeued.push(p));
-    await pg.query(failJobSql, [job.id, 'boom']);
+    await pg.query(failJobSql, [job.id, 'boom', 'w1']);
     await new Promise((r) => setTimeout(r, 50));
     expect(requeued).toContain(job.id);
     await un2();
@@ -211,7 +211,7 @@ describe('initial migration on PGlite (PostgreSQL 18 wasm)', () => {
     expect(failed.status).toBe('queued');
     await pg.query("update jobs set run_after = now() - interval '1 second' where id = $1", [job.id]);
     await pg.query(claimJobsSql, ['anon.run', 'w1', 1]);
-    await pg.query(completeJobSql, [job.id, '{"ok":true}']);
+    await pg.query(completeJobSql, [job.id, '{"ok":true}', 'w1']);
     const done = await one<{ status: string }>('select status from jobs where id = $1', [job.id]);
     expect(done.status).toBe('done');
   });

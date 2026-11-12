@@ -64,3 +64,15 @@ karakteri>` (revizyon `kazuist_manifest.json` içindedir, yoksa `local`). Farkl�
   modelle denenmedi; ONNX yolu yalnız küçük bir yapay grafikle yerelde denendi.
 - `chunk.ts` sıra sayılarında da keser ("Yargıtay 4. HD" gibi); kural değişirse iki taraf birlikte değişir
   (`packages/casuist/fixtures/parcalar.json`).
+
+## Sonuç (mimar, 12 Kasım 2026, sözleşme v1.5, ADR-0035)
+
+- Madde 2: `services/worker-py/tests/test_main.py` içindeki `EMBED_CHUNKS` satırı kabul edildi (dosya mimarın). Bu
+  PR'da aynı dosyanın sahte imleci iş kuyruğunun yeni `RETURNING` cevabına ve sözleşmeye uygun yüke göre
+  güncellendi.
+- Madde 3: `.env.example`'a `KAZUIST_EMBED_BACKEND`, `KAZUIST_EMBED_DIR` (öntanım `~/.cache/kazuist-embed`),
+  `KAZUIST_EMBED_THREADS`, `KAZUIST_EMBED_QUANTIZED` ve `nlp/tests/test_pg.py` için `KAZUIST_TEST_DATABASE_URL`
+  eklendi; değer yok. Model kimliği ile web tarafındaki `KAZUIST_EMBED_MODEL` eşleşmesi açıklamada yazılı.
+- `embed.chunks` tüketicisi yeni tüketici kuralına uyar: yük `{recordId}` UUID olmazsa iş `invalid payload` ile
+  gömülür. `nlp/tests/test_pg.py` gerçek PostgreSQL 18'de yeni tüketiciyle 4/4 geçti.
+- Madde 1 (`testpaths`) orkestranın, madde 4 altyapının; bu sonuç onları değiştirmez.
