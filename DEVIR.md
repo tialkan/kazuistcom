@@ -36,6 +36,62 @@ kalıyordu. Yeni bağımlılık yok (ONNX yolu mevcut `ner-runtime` ekstrasını
   çalıştırılmadı, ONNX yolu yalnız küçük yapay bir grafikle yerelde denendi.
 - Açık: `pyproject.toml` `testpaths` içine `nlp/tests` (orkestra); sorgu gömmesi HTTP servisi; eval/embed seti ve
   ölçümü; uzlaştırma zamanlayıcısı ve model birimi (altyapi); `.env.example` değişkenleri (mimar).
+## 12 Kasım 2026, seo: görünürlüğün ortama bağlanması, robots, site haritası, llms.txt (codex/p6-seo)
+
+Yeni bağımlılık yok; `packages/contracts` ve `packages/db` değişmedi. P6 madde 1 ve 2 kapandı; madde 3 ve 4 bu PR'da yok.
+- Ortam kararı `apps/web/src/app/(seo)/_seo/ortam.ts`: yalnız `NODE_ENV=production`, `KAZUIST_ENV=production` ve `APP_URL` https `kazuist.com`
+  birlikte olduğunda index; eksik, staging, geliştirme, www veya http her durumda `noindex, nofollow`. Varsayılan kapalı.
+- `layout.tsx` (orkestra yolu) yalnız iki satır: `temelMetadata()` içe aktarımı ve eski `title` ile `robots` satırlarının yerine
+  `...temelMetadata()`. Kaynak `(seo)/_seo/metadata.ts`: metadataBase (APP_URL), `title: { template: '%s | Kazuist', default: 'Kazuist' }`,
+  robots, `alternates.canonical: './'` (her sayfa kendi adresine; sorgu dizgisiz), OpenGraph `website`, `tr_TR`, görsel yok. Plan
+  dışı iki küçük ek (canonical ve OpenGraph) aynı nesnede olduğu için layout'a ayrı satır eklenmedi. hreflang yok (ADR-0032).
+- `robots.ts`: üretim dışında `Disallow: /` ve site haritası satırı yok. Üretimde `*` ve arama botları (OAI-SearchBot, ChatGPT-User,
+  PerplexityBot, Perplexity-User, Claude-SearchBot, Claude-User, Googlebot, Bingbot) serbest; eğitim botları (GPTBot, ClaudeBot,
+  Google-Extended, CCBot) `/mevzuat/`, `/karar/`, `/kurum-karari/`, `/makale/` altında engelli; herkese `/api/`, `/yonetim`, `/odeme`
+  kapalı (botun kendi grubu `*` grubunu geçersiz kıldığı için her grupta yinelenir). `force-dynamic`: ortam değişkeni çalışma zamanında okunur.
+- `sitemap.ts`: `rotalar.ts` `acikModuller` ile tutarlı (yalnız `/kaydettiklerim` bilerek dışarıda, kişisel ve noindex), açık modüllerin genel
+  alt sayfaları, `/`, `/fiyatlar`, `/tespit`, `/hukuki` ve üretimde yayımlanan hukuki metinler (taslak olan listelenmez; Casuist arşiv
+  sürümü duran beş belge listelenir), `/tr` ve beş alt sayfa. İngilizce adres, `/eski` ve `/tr/hukuki/*` (301 kaynağı) yok. `lastModified`
+  yalnız gerçek tarih biliniyorsa (yayınlanmış hukuki sürüm tarihi) yazılır; uydurma `new Date()` yok. Dinamik kayıt sayfaları ve dergi profilleri
+  Dalga 2 parçalı site haritasına kaldı.
+- `public/llms.txt`: Türkçe, plan 1 ve 13'ten ürün tanımı, kaynak politikası, bot politikası; rakam ve güncellik iddiası yok; yalnız var olan sayfalara bağlantı.
+- Testler `apps/web/test/seo.test.ts` (23): noindex matrisi, robots grupları, sitemap'te kaldırılan 11 İngilizce adresin yokluğu, listedeki her yolun
+  uygulamada sayfası olduğu, llms.txt bağlantılarının varlığı.
+- Elle görülen (yerel üretim derlemesi, iki ortam): üretimde `index, follow`, canonical `https://kazuist.com/ara`, tam robots ve 28 adreslik site
+  haritası; ortam değişkensiz `noindex, nofollow`, `Disallow: /`; `/en` ve `/problem` 404; `/llms.txt` 200.
+- Bilinen kusur: sayfaların elle yazdığı "| Kazuist" ekiyle sekme başlığı "Başlık | Kazuist | Kazuist" oluyor (24 dosya, başka ajanların yolu);
+  liste ve düzeltme biçimi `docs/istekler/seo-p6-baslik-sablonu.md`. OpenGraph görseli yok: `docs/istekler/seo-p6-og-gorseli.md`.
+- Doğrulanmayan: gerçek alan adında robots ve bot `curl -A` denemeleri, WebSEORobot ve WebSCHEMArobot (DNS ve yayın sonrası), staging'de
+  `X-Robots-Tag` başlığı (next.config orkestranın; yalnız meta ve robots.txt var).
+- Kesin sonraki adım: sayfa sahipleri çift eki kaldırır; ardından P6 madde 3 (kayıt sayfası rotası, citation_*, Article/Legislation JSON-LD, Organization,
+  WebSite ve SearchAction, BreadcrumbList) ve Search Console adım listesi.
+## 12 Kasım 2026, mimar: P1 kararlarının yazımı ve sözleşme temizliği planı (codex/p1-mimar-kararlar)
+
+review.md P1 madde 1, 2, 3 ve 10 yapıldı; madde 4-9 yalnız plan olarak yazıldı. `packages/contracts` ve `packages/db`
+değişmedi; yeni bağımlılık yok.
+- ADR-0033 (Önerildi): staging yok, Hetzner'da tek sunucu, Coolify, tek seferde yayın; sunucu boyutu seçilmedi
+  (CAX21 Arm64 8 GB ile 16 GB x86 arası, Hetzner sayfasından 12 Kasım'da okundu), imajlar GitHub Actions'ta
+  amd64 ve arm64 için derlenip çekilir. ADR-0030 madde 3-4'ü değiştirir; ADR-0030'un KVKK m.9 koşulu değişmez ve
+  yayının ön koşulu olarak yazıldı. K-11 ile ilişki açık soru (T4), karar verilmedi.
+- ADR-0034 (Önerildi, karar yok): görsellerde YZ serbest, YZ yalnız taslak ve son hali çizer, mevcut kural. Midjourney
+  koşulları resmî sayfadan okunamadı (otomatik istemciye HTTP 403); sahiplik, görünürlük ve otomasyon maddeleri
+  "doğrulanmadı" diye yazıldı. FSEK m.1/B tanımları mevzuat.gov.tr metninden okundu.
+- ADR-0002, 0003, 0014, 0016 Durum satırları ve `docs/adr/README.md` özetleri "ADR-0030/0031/0032 ile değişti";
+  README tablosu 0028-0034 satırlarıyla tek tabloya toplandı; ADR-0030 Durum satırına ADR-0033 notu.
+- `docs/sahiplik.md`: kampus pasif; `{tr,en}` desenleri `tr`; yazma satırına `/tespit`, `docs/tespit`, `tespit.json`
+  ve yazma API yolları; `hesap.json` kimlik, `/kaydettiklerim` ve `kaydettiklerim.json` casuist (git geçmişinden);
+  sahipsiz kalan `api/v1` yolları (search, answers, norms, library, records, citation-network, decks) ilk ekleyene
+  verildi; kök `review.md` orkestranın; not 3'teki eski "henüz atanmadı" cümlesi düzeltildi.
+- Ajan tanımları: seo (hreflang), on-yuz (/en, altı sekme), hukuk-uyum (İngilizce sürüm), ios (Kampüs sekmesi),
+  kampus (pasif, çağrılmaz). plan.md'de yalnız Ek A seo kopyasının iki satırı.
+- `.env.example`: kodda okunan 14 eksik değişken eklendi; kodda okunmayan 17 yer tutucu `[gelecek faz]` işaretli
+  (S3 anahtar çifti uygulamada okunmuyor, yalnız yerel compose ve CI kullanıyor); staging ve "endpoint in Turkey"
+  anlatımı ADR-0033'e göre düzeltildi; `ACCOUNT_PURGE_GRACE_DAYS` kimlik bölümüne taşındı (boş değer kodda 14'e düşer).
+- `docs/istekler/mimar-p1-sozlesme-temizligi.md`: P1 madde 4-9 için iki adımlı plan (A ekleyici, ADR-0035, migration
+  0007; B kaldırıcı, ADR-0036, migration 0008, Tarık onayıyla ve ilk üretim dağıtımından önce).
+- `docs/ip/arka-plan-kaydi.md` ADR listesine 0021-0034 durumları eklendi.
+- Doğrulanmayan: ADR-0033 ve 0034 Tarık onayı bekliyor; Midjourney koşulları birincil kaynaktan okunmadı.
+- Kesin sonraki adım: Tarık'ın T1 (ADR-0033), T3 (ADR-0034) ve T4 kararları; ardından adım A (ADR-0035).
 
 ## 12 Kasım 2026, orkestra: yayın öncesi tam denetim ve review.md (codex/yayin-oncesi-denetim)
 

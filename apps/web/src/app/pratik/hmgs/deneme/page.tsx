@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import { denemeHavuzu, onizlemeAcik } from '../../_veri/desteler.ts';
 import { DenemeEkrani } from '../../_bilesen/DenemeEkrani.tsx';
 import { tr } from '../../_bilesen/metin.ts';
 import { OnizlemeBandi, SabitNotlar } from '../../_bilesen/Ortak.tsx';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.denemeBaslik} | ${ortak().marka}`,
+  title: tr.meta.denemeBaslik,
 };
 
 export default function DenemeSayfasi() {

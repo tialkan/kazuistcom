@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import { denemeKur, denemeyeUygun } from '../_alan/deneme.ts';
 import { hmgsAlanlari } from '../_alan/hmgs-alanlari.ts';
 import { alanOzetleri, denemeHavuzu, onizlemeAcik } from '../_veri/desteler.ts';
@@ -9,7 +8,7 @@ import { OnizlemeBandi, SabitNotlar } from '../_bilesen/Ortak.tsx';
 import styles from '../pratik.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.hmgsBaslik} | ${ortak().marka}`,
+  title: tr.meta.hmgsBaslik,
   description: tr.meta.hmgsAciklama,
 };
 
