@@ -14,3 +14,5 @@
 5. `/giris` testleri değişmeden geçer: sayfada adı "giriş" içeren tek düğme ("Giriş yap") ve etiketi "e-posta" içeren
    tek alan kalacak biçimde tasarlandı.
 6. Aciliyet: orta; `pnpm e2e` kapısı bu satır olmadan bu testte kırmızıdır.
+
+Durum: kapandı (12 Kasım 2026). Orkestra satırı aynı PR'da ekledi.
