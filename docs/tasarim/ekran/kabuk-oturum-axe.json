@@ -1,0 +1,170 @@
+{
+  "misafir:/@375": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "misafir:/@768": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "misafir:/@1440": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "misafir:/bulunmayan-adres@375": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "misafir:/bulunmayan-adres@768": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "misafir:/bulunmayan-adres@1440": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "misafir:/giris@375": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "misafir:/giris@768": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "misafir:/giris@1440": {
+    "hedefim": {
+      "href": "/giris",
+      "metin": "Hedefim Giriş yapın"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/@375": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/@768": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/@1440": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/hesap@375": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/hesap@768": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/hesap@1440": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/pratik@375": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/pratik@768": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum:/pratik@1440": {
+    "hedefim": {
+      "href": "/hesap",
+      "metin": "İİrem Kaya Avukat"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum-hedefsiz:/@375": {
+    "hedefim": {
+      "href": "/hesap/hedef",
+      "metin": "Ççağla Meslek seçin"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum-hedefsiz:/@768": {
+    "hedefim": {
+      "href": "/hesap/hedef",
+      "metin": "Ççağla Meslek seçin"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "oturum-hedefsiz:/@1440": {
+    "hedefim": {
+      "href": "/hesap/hedef",
+      "metin": "Ççağla Meslek seçin"
+    },
+    "violations": [],
+    "horizontalOverflowPx": 0
+  }
+}

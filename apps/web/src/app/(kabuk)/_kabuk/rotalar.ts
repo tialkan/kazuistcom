@@ -14,18 +14,13 @@ export const moduller = [
 ] as const satisfies readonly { anahtar: keyof OrtakSozluk['gezinme']['sekme']; href: string }[];
 
 /**
- * Modules whose routes are live. A module agent adds its href here in the PR that ships the route;
- * closed modules render as "yakında" text instead of a link, so no link points at a 404
- * (docs/istekler/kalite-on-yuz-baglantilar.md).
+ * Every module ships at launch (ADR-0033, review.md T2), so there is no closed module and no "yakında"
+ * marker. These two exports stay only until the remaining callers (seo, rehberler, apps/web/test) drop them
+ * (docs/istekler/on-yuz-acik-modul-listesi.md); they are derived from `moduller` and hold no separate list.
+ * @deprecated Use `moduller`.
  */
-export const acikModuller: ReadonlySet<string> = new Set<string>([
-  '/ara',
-  '/atif-agi',
-  '/rehberler',
-  '/yazma',
-  '/pratik',
-  '/kaydettiklerim',
-]);
+export const acikModuller: ReadonlySet<string> = new Set<string>(moduller.map((m) => m.href));
+/** @deprecated Every module is open; see `acikModuller`. */
 export const modulAcik = (href: string) => acikModuller.has(href);
 
 /** Legal documents of plan 11 served under /hukuki/<slug>. */
