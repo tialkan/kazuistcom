@@ -2,9 +2,6 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ortak } from '@kazuist/i18n';
 import { Dugme, FormAlani, KaynakCipi, SerhliMetin, SerhSatiri } from '@kazuist/ui';
-import { ModulBagi } from './(kabuk)/_kabuk/ModulBagi.tsx';
-import { OrnekSoru } from './(kabuk)/_kabuk/OrnekSoru.tsx';
-import { modulAcik } from './(kabuk)/_kabuk/rotalar.ts';
 
 const t = ortak();
 const a = t.anasayfa;
@@ -42,7 +39,7 @@ export default function Home() {
           <ul className="ana-ornekler">
             {ornekler.map((s) => (
               <li key={s}>
-                <OrnekSoru soru={s} araAcik={modulAcik('/ara')} />
+                <Link href={`/ara?q=${encodeURIComponent(s)}`}>{s}</Link>
               </li>
             ))}
           </ul>
@@ -106,7 +103,7 @@ export default function Home() {
           ).map(([href, ad, metin]) => (
             <div key={href}>
               <dt>
-                <ModulBagi href={href}>{ad}</ModulBagi>
+                <Link href={href}>{ad}</Link>
               </dt>
               <dd>{metin}</dd>
             </div>
