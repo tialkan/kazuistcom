@@ -1,10 +1,13 @@
 # Meşru menfaat denge testi: yargı kararları corpus'u
 
-TASLAK, Tarık onayı bekliyor. Sürüm: 2026-10-19 (taslak 1). Uyum garantisi vermez; hukukçu editör onayı gerekir (plan Ek E).
+TASLAK, Tarık onayı bekliyor. Sürüm: 2026-11-12 (taslak 2). Uyum garantisi vermez; hukukçu editör onayı gerekir (plan Ek E).
 
 Dayanak: 6698 sayılı Kanun m.5/2-f (ilgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla
 veri sorumlusunun meşru menfaati için zorunlu işleme; metin mevzuat.gov.tr'den okundu) ve m.4/2 ilkeleri.
-Resmî metinlerin çoğaltılması FSEK m.31 [DOĞRULANACAK: FSEK güncel metninden madde içeriği].
+Resmî metinler: FSEK m.31 "Resmen yayımlanan veya ilan olunan kanun, Cumhurbaşkanlığı kararnamesi, yönetmelik,
+tebliğ, genelge ve kazai kararların çoğaltılması, yayılması, işlenmesi veya her hangi bir suretle bunlardan
+faydalanma serbesttir" (mevzuat.gov.tr, 12 Kasım 2026). Bu hüküm telif yönünden serbestlik sağlar; kişisel veri
+yönünden KVKK ayrıca uygulanır, bu belge o yüzden vardır.
 
 ## 1. İşleme faaliyeti
 
@@ -34,8 +37,9 @@ dayanağı olarak kullanılması. Kararlarda taraf, vekil, tanık, hâkim ve ben
 | Makul beklenti | Kişi, adıyla aranabilir bir arşiv beklemez: kişi adları hiçbir dizine ve öneri listesine girmez |
 | Profilleme | Vekil ve avukat adları da maskelenir |
 | Çocuklar | Sıkı mod: yaş, okul ve yer genelleştirilir |
-| Güvenceler | Anonimleştirme Türkiye'de (ADR-0011); kalite seti eval/anon; politika değişince yeniden işleme ve fark raporu; kaldırma süreci (72 saat içinde geçici gizleme, KVKK m.13/2 en geç otuz gün) |
-| Dış aktarım | Yalnız anonim metin yurt dışına gider (aktarim.md) |
+| Güvenceler | Anonimleştirme yeri açık: ADR-0011 ve K-11 Türkiye diyor, ADR-0033 tek sunucuyu Hetzner AB'ye koyuyor (Tarık kararı T4). Kalite seti eval/anon; politika değişince yeniden işleme ve fark raporu; kaldırma süreci (72 saat içinde geçici gizleme, KVKK m.13/2 en geç otuz gün) |
+| Dış aktarım | YZ sağlayıcısına yalnız anonim metin gider. Ham karar metni T4 kararına göre ya Türkiye'de kalır ya da Hetzner'a Standart Sözleşme 2 kapsamında aktarılır (aktarim.md) |
+| NER | Üretim imajı NER modelini kurmuyor; maskeleme yalnız kural katmanıyla yapılırsa kalite eşiği yeniden ölçülür (Tarık kararı T5). Eşik geçilmezse bu değerlendirme olumsuz sonuçlanır |
 
 ## 5. Sonuç (taslak)
 

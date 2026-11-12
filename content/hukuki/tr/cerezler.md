@@ -4,13 +4,14 @@ slug: cerezler
 route: /hukuki/cerezler
 lang: tr
 binding: true
-version: 2026-11-02.1
-date: 2026-11-02
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 consent_kind: acik_riza_analitik
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Tarayıcı depolaması bölümü koddaki anahtarlara göre
+> (apps/web/src/app/pratik/_alan/depo.ts, deneme-oturumu.ts, rehberler/_alan/ilerleme.ts) genişletildi.
 
 Dayanak: KVKK ve Kişisel Verileri Koruma Kurumu'nun çerez uygulamalarına ilişkin rehberi
 "Çerez Uygulamaları Hakkında Rehber" (Kurumun internet sitesindeki güncel sürüm: Temmuz 2025, KVKK
@@ -28,11 +29,25 @@ Reklam ve üçüncü taraf izleme çerezi kullanılmaz. Analitik etkin olmadığ
 ve tercih çerezi kullanılmaz; analitik etkinleştirilmeden önce tercih kaydı ve süresi bu tabloya eklenir ve
 sayfa yeni sürümle onaya sunulur.
 
-Tarayıcı depolaması: kendi YZ anahtarınızı (BYOK) girerseniz anahtar varsayılan olarak yalnız o oturum için
+## 2. Tarayıcı depolaması
+
+Bazı özellikler, istediğiniz hizmeti sunmak için tarayıcınızın yerel deposunu (localStorage) kullanır. Bu veriler
+çerez değildir, sunucumuza gönderilmez ve izin gerektirmez; tarayıcı ayarlarınızdan silebilirsiniz.
+
+| Anahtar | Ne işe yarar | Ne kadar kalır |
+|---|---|---|
+| kazuist.pratik.v1 | Pratik kartlarındaki ilerlemeniz, tekrar zamanları ve ayarlarınız | Siz silene kadar |
+| kazuist.pratik.deneme.v1 | Yarım kalan HMGS denemesinin durumu | Deneme bitince veya siz silene kadar |
+| kazuist.rehber.v1 | Rehberlerde işaretlediğiniz adımlar | Siz silene kadar |
+
+Yazım kuralları ve iz denetleyicisi (/tespit) tarayıcı deposu kullanmaz; yapıştırdığınız metin sayfayı
+kapattığınızda gider.
+
+Kendi YZ anahtarınızı (BYOK) girme özelliği kullanıma açıldığında anahtar varsayılan olarak yalnız o oturum için
 tarayıcınızda (sessionStorage) tutulur; "bu cihazda hatırla" seçerseniz kalıcı depolamada (localStorage) kalır.
 Anahtar sunucumuza kaydedilmez.
 
-## 2. Tercih paneli
+## 3. Tercih paneli
 
 Bu bölüm analitik etkinleştirildiğinde uygulanır. İlk ziyarette "Kabul et" ve "Reddet" düğmeleri eşit büyüklükte ve eşit görünürlükte gösterilir. Reddetmek
 siteyi kullanmanızı engellemez. Tercihinizi her sayfanın altındaki "Çerez tercihleri" bağlantısından
@@ -50,7 +65,7 @@ veri tutmaz ve kendi sunucumuzda kalır.
 
 Düğmeler: **Reddet** | **Kabul et** | **Seçimimi kaydet**
 
-## 3. Analitik çerez açık rıza metni
+## 4. Analitik çerez açık rıza metni
 
 "Kazuist'in, kullanım istatistiklerini ölçmek amacıyla kişisel veri içermeyen analitik çerezi kendi
 sunucusunda çalıştırmasına izin veriyorum. İznimi dilediğim zaman Çerez tercihleri bağlantısından geri

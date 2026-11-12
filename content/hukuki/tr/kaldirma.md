@@ -4,12 +4,14 @@ slug: kaldirma
 route: /hukuki/kaldirma
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Kampüs paylaşımları çıkarıldı (ADR-0031). Sitede
+> henüz talep formu veya kayıt sayfasında talep bağlantısı olmadığı için başvuru yolu e-posta olarak yazıldı; form
+> eklendiğinde bu bölüm güncellenir.
 
 Dayanak: 5846 sayılı Fikir ve Sanat Eserleri Kanunu; KVKK m.11 ve m.13 (başvuru en geç otuz gün içinde
 ücretsiz sonuçlandırılır, m.13/2).
@@ -17,24 +19,24 @@ Dayanak: 5846 sayılı Fikir ve Sanat Eserleri Kanunu; KVKK m.11 ve m.13 (başvu
 ## 1. Ne için talep gönderebilirsiniz
 
 - Bir kararda sizi tanımlayan bilginin maskelenmeden kalması veya yeniden tanımlamaya imkân vermesi.
-- Kampüs'te veya başka bir yerde sizin telif hakkınızdaki eserin izinsiz yayımlanması.
+- Kazuist'te sizin telif hakkınızdaki bir eserin (örneğin makale özeti veya tam metni) izinsiz gösterilmesi.
 - Resmî kaynakta kaldırılmış veya düzeltilmiş bir kararın Kazuist'te eski hâliyle durması.
 
 ## 2. Nasıl
 
-Her karar ve paylaşım sayfasındaki "Kaldırma talebi" bağlantısı veya teknoloji@kulular.com. Talepte: ilgili
-sayfa bağlantısı, gerekçe, iletişim e-postası; telif talebinde hak sahipliğinize ilişkin bilgi.
+teknoloji@kulular.com adresine e-posta gönderin. Talepte: ilgili sayfanın bağlantısı, gerekçe, iletişim
+e-postası; telif talebinde hak sahipliğinize ilişkin bilgi. Kişisel veriye ilişkin talepleri
+[KVKK başvuru formu](/hukuki/basvuru) yoluyla da iletebilirsiniz.
 
 ## 3. Süreç ve süreler
 
-1. Talep alındığında otomatik alındı bildirimi gönderilir.
+1. Talebinizin alındığı e-postayla bildirilir.
 2. Talep ilk bakışta yerinde görünüyorsa ilgili içerik en geç 72 saat içinde geçici olarak gizlenir.
 3. Kişisel veriye ilişkin talepler KVKK m.13/2 uyarınca en geç otuz gün içinde sonuçlandırılır; sonuç ve
    gerekçe yazılı olarak veya elektronik ortamda bildirilir.
 4. Sonuç: kalıcı kaldırma, ek maskeleme (anonimleştirme politikası güncellenebilir) veya gerekçeli ret.
    Retten sonra Kişisel Verileri Koruma Kurulu'na şikâyet hakkınız saklıdır (KVKK m.14).
-5. Kampüs içeriğinde paylaşan kullanıcıya bildirim yapılır ve itiraz imkânı tanınır.
-6. Her karar denetim kaydına yazılır.
+5. Her karar denetim kaydına yazılır.
 
 ## 4. Resmî kaynak ilişkisi
 

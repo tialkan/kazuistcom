@@ -4,7 +4,7 @@
 - Karar kodu: yok (plan 17.3/4; review.md P1 madde 4, 5, 6 ve 8; plan `docs/istekler/mimar-p1-sozlesme-temizligi.md` adım A)
 - İstekler: `docs/istekler/atif-agi-sema.md`, `docs/istekler/kimlik-p7-bildirim-idempotency.md`,
   `docs/istekler/casuist-p9-arama-dizini.md` (madde 2 ve 3)
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (Tarık İsmet Alkan, 13 Kasım 2026)
 - İlgili kararlar: ADR-0023 (iş kuyruğu sözleşmesi, masked_text), ADR-0026 (embed.chunks), ADR-0031, ADR-0032,
   ADR-0033; sonraki kaldırıcı adım ADR-0036 (yazılmadı)
 

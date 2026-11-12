@@ -4,13 +4,14 @@ slug: iade-ve-kredi
 route: /hukuki/iade-ve-kredi
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026. Bu metin plan 4.5'i birebir izler; dayanak
-> atıfları ayrıca doğrulanmıştır (aşağıdaki notlar).
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Bu metin plan 4.5'i birebir izler; dayanak
+> atıfları ayrıca doğrulanmıştır (aşağıdaki notlar). ADR-0029 uyarınca yeni abonelik satışı yapılmadığı 6. bölüme
+> yazıldı.
 
 ## 1. Krediler
 
@@ -41,6 +42,9 @@ başlamışsa iade yoktur; bu durum ödeme öncesinde ayrı bir kutuyla onayın�
 Yönetmeliği m.15/1-ğ ve h).
 
 ## 6. Abonelik
+
+Kazuist yeni abonelik satmaz; bütün özellikler ücretsizdir ve yalnız kredi paketi satılır. Bu bölüm, daha önce
+başlatılmış bir abonelik varsa o aboneliğin hakları için geçerlidir.
 
 1. Abonelik belirsiz sürelidir; ödeme dönemi aylık veya yıllıktır. Yıllık plan, belirsiz süreli sözleşmenin
    yıllık ödeme dönemidir; belirli süreli sözleşme kendiliğinden uzamaz (Abonelik Sözleşmeleri Yönetmeliği m.13).

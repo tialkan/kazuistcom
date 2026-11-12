@@ -30,6 +30,86 @@ veri tabanına hiçbir şey uygulanmadı. Yeni bağımlılık yok.
   gömme ve kilit kaybı; `nlp/tests/test_pg.py` 4/4.
 - Açık: ADR-0035 onayı; ADR-0036 ve Tarık'ın yıkıcı migration onayı; `live.fetch` kapsam kararı; yönlendirme
   dosyasındaki sahip işleri (yazma `kalemcikTick`, kimlik teslim kaydı, atif-agi ve casuist `rejected`).
+## 12 Kasım 2026, hukuk-uyum: P5 metinler, KVKK envanteri, protokoller, Midjourney değerlendirmesi
+
+review.md P5 ve ADR-0034 ek görevi. Yalnız `content/hukuki/**`, `docs/kvkk/**`, `docs/protokol/**`, `docs/ip/**`,
+orkestranın verdiği `docs/hukuk/**` ve istek dosyası değişti; kod, sözleşme ve şema değişmedi. Bütün metinler
+`status: taslak`; yayım kararı verilmedi.
+- Metinler (sürüm 2026-11-12.1): barındırma Hetzner AB'ye göre (uyari, aydinlatma, gizlilik); Kampüs çıktı (aydinlatma,
+  kosullar, kaldirma; topluluk "uygulanmaz" notuna indi); ADR-0029 (kosullar 5, iade-ve-kredi 6, on-bilgilendirme,
+  mesafeli-satis); koda göre düzeltmeler: kodda olmayan virüs taraması ve koyu tema iddiası çıktı, localStorage
+  anahtarları (pratik, rehber) çerez politikasına girdi, kaldırma ve hesapsız KVKK başvurusu e-posta yoluna çekildi,
+  18 yaş beyanı koşul onayına bağlandı. on-bilgilendirme'ye 6563 m.3/1 bilgileri eklendi, `IOS_SURUM` çıktı.
+  abonelik `consent_kind` v1.1 değerine (abonelik_sozlesmesi) çekildi. Ürünle eşleşme tablosu `content/hukuki/README.md`.
+- Birincil kaynaktan okunanlar (12 Kasım): KVKK m.5, 6, 9, 10, 11, 13, 14, 16 (mevzuat.gov.tr); Yurt Dışına Aktarım
+  Yönetmeliği RG 10/7/2024, 32598 m.14-16 (resmigazete.gov.tr); Kurul'un dört standart sözleşmesi ve bildirim modülü
+  (kvkk.gov.tr); VERBİS istisna eşikleri (kvkk.gov.tr/Icerik/8388); 6563 m.2, 3, 4; FSEK m.1/B, 4, 6, 8, 15, 16, 18,
+  21, 31, 48-58, ek m.8; TTK m.82; VUK m.253; Ticari İletiler Yön. RG 30998 değişikliği; Hetzner veri koruma ve sertifika
+  sayfaları. Kapanan işaretler: gizlilik saklama süresi, protokol README FSEK ek m.8, denge testi FSEK m.31.
+- `docs/kvkk/envanter.md` (29 satır, önerilen saklama süreleriyle), `aktarim.md` (Hetzner Standart Sözleşme 2 ve risk),
+  `yukumlulukler.md` (ETBİS, VERBİS, İYS, e-Arşiv ve diğerleri), `app-privacy-taslak.md`, `denge-testi.md` (T4, T5).
+- Protokol yazıları: altısı da 2026-11-12; "Türkiye'deki sunucularımızda anonimleştirilir" cümlesi çıktı (T4'e bağlı
+  işaret), FSEK m.31 ve ek m.8 çerçevesi, 0,5 istek/sn, onaylı adres ve e-posta.
+- `docs/hukuk/midjourney-telif.md`: Midjourney koşulları 403 döndü, aşılmadı, "doğrulanmadı"; FSEK m.1/B, 8, 18, 52, 55,
+  56 üzerinden seçenek B riskleri, uygulama kuralları, çizer sözleşmesi madde listesi. `docs/ip/arka-plan-kaydi.md`
+  görsel varlık tablosu.
+- Önemli bulgu: Hetzner'ın sayfası bireysel sözleşme imzalamadığını söylüyor; KVKK Standart Sözleşme 2 iki tarafın
+  imzasını istiyor. İmza alınamazsa ADR-0033 ön koşul 1 karşılanamaz (aktarim.md "Hetzner: durum ve risk").
+- Önemli bulgu: ödeme adımı `pdf` ve `pdf_fields` ön bilgisini şart koşuyor, on-yuz ayrıştırıcısı liste okuyamıyor;
+  bu yüzden ödeme adımı hiçbir ortamda hukuki metin gösteremiyor. İstek: `docs/istekler/hukuk-uyum-p5-tutarlilik.md`.
+- Doğrulanmayan: bu oturumda kabuk aracı yoktu; `pnpm test`, `pnpm check:text`, `pnpm build` çalıştırılmadı, dal
+  itilmedi ve PR açılmadı. Ön bilgi alanları ve yer tutucu adları test beklentilerine göre elle denetlendi.
+- Kesin sonraki adım: orkestra testleri çalıştırıp dalı iter ve PR açar; ardından on-yuz madde 1, Tarık'ın Hetzner'a
+  Standart Sözleşme 2 sorusu.
+## 12 Kasım 2026, on-yuz: P4 görsel varlıklar (on-yuz/p4-gorsel-varliklar)
+
+review.md P4, ADR-0034 seçenek B. YZ görseli ürüne girmedi; Midjourney'e erişilmedi. Yeni bağımlılık yok
+(sharp ve fontTools yalnız yerel üretim betiklerinde, depo bağımlılığı değil); contracts ve db değişmedi.
+- `docs/tasarim/gorsel-istemleri.md`: her varlık için yol, ölçü, biçim, dosya sınırı, kabul ölçütü, son dosyayı kimin
+  çizeceği, yalnız taslak için Midjourney istemi (sanatçı adı, tanınmış karakter, marka yok) ve kayıt tablosu.
+  Avatar (8 meslek x a, b, n), Kalemcik (4 ifade ve ton eşlemesi) ve 20 HMGS konu piktogramı için çizer brifingi.
+- Marka işareti `apps/web/src/app/icon.svg`: kâğıt üzerinde mürekkep K, ince ayraç ve aynı hizada lâl şerh (kenar
+  şerhinin en küçük hâli), 32 birimlik ızgarada elle yazılmış koordinatlar. `docs/tasarim/simge-uret.mjs` bundan
+  `favicon.ico` (16, 32, 48; RGBA, Turbopack paletli girdiyi çözemiyor), `apple-icon.png` (180, yüzde 88),
+  `public/icon-192.png`, `icon-512.png` ve `icon-maskable-512.png` (yüzde 80 güvenli alan) üretir; çıktı
+  belirleyicidir. Önizleme: `docs/tasarim/gorsel/simgeler-onizleme.png`.
+- `apps/web/src/app/manifest.ts` (ad, amaç, `tr`, standalone, kâğıt rengi) ve `opengraph-image.tsx` (statik, 1200 x
+  630, yalnız tipografi). Çizim ve sabitler `apps/web/src/app/(kabuk)/_marka/`; renkler `marka.ts`'te belirteçlere
+  bağlı (test). next/og WOFF2 okumadığı için sitenin alt kümeli yazı tiplerinin sabit ağırlıklı TTF kopyaları
+  `_marka/yazi/` altında (OFL, NOTICE.txt; yeniden üretim `docs/tasarim/og-yazi.py`). Önizleme:
+  `docs/tasarim/gorsel/paylasim-karti.png`.
+- i18n: `ortak.paylasim.kartAlt` ve `ortak.paylasim.alanAdi`.
+- Doğrulama: `marka.test.ts` 21 test; web 619 geçti 1 atlandı, bütün paket testleri, typecheck, lint, check:text,
+  build yeşil. Yerel üretimde simge, apple, manifest bağlantıları ve `og:image` 8 sayfada görüldü. 16 sayfa x 375,
+  768, 1440 px ekran görüntüsü ve axe: ihlal 0, yatay taşma 0 (sayfa arayüzü değişmediği için görüntüler depoya
+  alınmadı). e2e 97 geçti, 3 hesap akışı yerelde veritabanı olmadığı için düştü (`/api/health` 503 degraded).
+- Sahiplik: `app/icon.svg`, `favicon.ico`, `apple-icon.png`, `manifest.ts`, `opengraph-image.tsx`, `public/icon-*`
+  on-yuz satırında değil; orkestranın görevlendirmesiyle yazıldı. İstekler (seo `twitter.card`, hukuk-uyum IP kaydı ve
+  işaret tescili, `public/avatar` sahibi, Kalemcik nötr yüzü): `docs/istekler/on-yuz-p4-gorsel-varliklar.md`.
+## 12 Kasım 2026, on-yuz: kabukta oturum ve "yakında" düzeneğinin kaldırılması (codex/on-yuz-kabuk-oturum)
+
+İstek `docs/istekler/kimlik-p7-kabuk-oturum.md` karşılandı; ADR-0033 ve review.md T2 gereği kapalı modül kalmadı.
+Yeni bağımlılık yok; `packages/contracts`, `packages/db` ve kök `layout.tsx` değişmedi.
+- Hedefim alanı (`apps/web/src/app/(kabuk)/_kabuk/`): `oturum.ts` (tip ve saf görünüm), `oturumYukle.ts` (sunucu:
+  `pageSession`, `getMe`, `findProfession`; çerez yoksa veri tabanına gidilmez, silinmiş hesap misafir, profil
+  okunamazsa ad ve hedefsiz oturum ve yalnız hata sınıfı loglanır), `HedefimBagi.tsx`, `Hedefim.tsx` (async).
+  Misafir: "Hedefim / Giriş yapın", `/giris`. Oturum: ad (yoksa "Hesabım") ve hedef meslek, `/hesap`; hedef
+  seçilmemişse "Meslek seçin", `/hesap/hedef`. Avatar halkası adın ilk harfini Türkçe büyük harfle gösterir;
+  çizim avatarlar (ADR-0034) gelince `avatar` alanı kullanılır. Dar ekranda metin görsel olarak gizlenir ama
+  bağlantının erişilebilir adında kalır (eskiden `display: none` idi).
+- `Kabuk` isteğe bağlı `oturum` alır; verilmezse alan oturumu kendisi okur. Layout istek başına çalıştığı için
+  ek önbellek yok.
+- "Yakında" düzeneği: `ModulBagi.tsx`, `OrnekSoru.tsx`, `.modul-kapali` stilleri ve `gezinme.yakinda` silindi;
+  sekmeler, alt bilgi, ana sayfa modül listesi, örnek sorular ve 404 doğrudan bağlantı verir. `acikModuller` ve
+  `modulAcik` artık `moduller`'den türetilir ve `@deprecated`; seo, icerik ve orkestra çağıranları
+  `docs/istekler/on-yuz-acik-modul-listesi.md` ile istendi, onlar birleşince silinecek.
+- i18n `ortak.json`: `hedefim.girisYapin`, `hedefim.girisAciklama`, `hedefim.hesapAciklama` eklendi.
+- Doğrulama: web 47 dosya 608 test (607 geçti, 1 atlandı; yeni `kabuk.test.tsx` 9 test), i18n 22, typecheck,
+  lint, check:text, build. Yerel PostgreSQL 18 ve üretim derlemesiyle misafir, hedefli ve hedefsiz oturumda
+  375/768/1440: 21 sayfa ve genişlikte axe ihlali 0, yatay taşma 0 (`docs/tasarim/ekran/kabuk-*.png`,
+  `kabuk-oturum-axe.json`, betik `docs/tasarim/kabuk-oturum-ekran.mjs`). e2e 100/100 aynı sunucuya karşı.
+- Güncellenmedi: `docs/tasarim/ekran/ana-sayfa-*.png` gibi eski ekranlar Hedefim'de hâlâ "Meslek seçin" gösterir
+  (T11 kararı beklendiği için 48 PNG yeniden üretilmedi). Lighthouse çalıştırılmadı.
 
 ## 12 Kasım 2026, casuist: arama dizini, embed.chunks tüketicisi (codex/p9-arama-dizini)
 

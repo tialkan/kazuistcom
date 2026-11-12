@@ -1,14 +1,18 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ortak } from '@kazuist/i18n';
+import { Hedefim } from './Hedefim.tsx';
 import { kunye } from './kunye.ts';
-import { ModulBagi } from './ModulBagi.tsx';
 import { ModulGezinmesi } from './ModulGezinmesi.tsx';
+import type { KabukOturumu } from './oturum.ts';
 import { hukukiBelgeler, moduller } from './rotalar.ts';
 import './kabuk.css';
 
-/** Product shell: skip link, top bar, Hedefim slot, module tabs, footer with company particulars. */
-export function Kabuk({ children }: { children: ReactNode }) {
+/**
+ * Product shell: skip link, top bar, Hedefim slot, module tabs, footer with company particulars. `oturum` is
+ * optional: undefined lets the Hedefim slot read the session itself, null renders the guest state.
+ */
+export function Kabuk({ children, oturum }: { children: ReactNode; oturum?: KabukOturumu | null }) {
   const t = ortak();
   return (
     <>
@@ -25,13 +29,7 @@ export function Kabuk({ children }: { children: ReactNode }) {
             <Link href="/fiyatlar">{t.gezinme.fiyatlar}</Link>
             <Link href="/tr">{t.gezinme.arge}</Link>
           </nav>
-          <Link href="/hesap" className="kabuk-hedefim" title={t.hedefim.aciklama}>
-            <span className="kabuk-hedefim__avatar" aria-hidden="true" />
-            <span className="kabuk-hedefim__metin">
-              <span className="kabuk-hedefim__etiket">{t.hedefim.etiket}</span>
-              <span>{t.hedefim.secilmedi}</span>
-            </span>
-          </Link>
+          <Hedefim oturum={oturum} />
         </div>
         <ModulGezinmesi />
       </header>
@@ -51,7 +49,7 @@ export function Kabuk({ children }: { children: ReactNode }) {
             <ul>
               {moduller.map((m) => (
                 <li key={m.href}>
-                  <ModulBagi href={m.href}>{t.gezinme.sekme[m.anahtar]}</ModulBagi>
+                  <Link href={m.href}>{t.gezinme.sekme[m.anahtar]}</Link>
                 </li>
               ))}
               <li>
