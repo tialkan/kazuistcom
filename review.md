@@ -13,8 +13,10 @@ Okuma sırası: önce 1. bölümdeki kararlar (Tarık), sonra 3. bölümdeki iş
   metinler, arama için eksik iki parça ve henüz verilmemiş birkaç karardır.
 - Site dili değişmez: Next.js (TypeScript) ve Python kalır. PHP ya da Rust'a geçmek çalışan ve test edilmiş
   kodu baştan yazmak demektir; darboğaz dil değil, veri tabanı ve YZ çağrılarıdır.
-- Önerilen yol iki fazdır. Faz 1 kişisel veri tutmaz (tanıtım, /tespit, /rehberler, /fiyatlar, hukuki
-  metinler). Faz 2 hesap, ödeme, arama, Pratik, Yazma ve Atıf Ağı'nı açar ve KVKK m.9 dayanağına bağlıdır.
+- Karar (Tarık, 12 Kasım 2026): yayın tek seferde yapılır, fazlara bölünmez. Bu yüzden yayın tarihi en yavaş
+  parçaya bağlıdır: hukuki metinlerin yayımı, KVKK m.9 aktarım dayanağı, arama dizini, canlı ödeme. Aşağıdaki
+  "Faz 1" ve "Faz 2" etiketleri artık çıkış sırası değil, yalnız çalışma sırasıdır; P1 ile P11 arasındaki
+  bütün paketler yayın ön koşuludur.
 
 ## 1. Tarık'ın vermesi gereken kararlar
 
@@ -23,7 +25,7 @@ Ajanlar bu kararlar olmadan ilgili paketi bitiremez. Her biri bir ADR'ye bağlan
 | # | Karar | Neden gerekli | Bağlı paket |
 |---|---|---|---|
 | T1 | Staging'siz, tek sunuculu, fazlı yayın (ADR-0033) | ADR-0030, plan 5.4, 5.5, 14 ve beş runbook iki sunucu ve staging varsayıyor | P1, P2 |
-| T2 | Faz 1'de neler açık | `/giris`, `/kayit`, `/api/auth`, KVKK başvuru formu ve IP tutan hız sınırı kişisel veri işler; ADR-0030 bunu m.9 dayanağı olmadan yasaklıyor | P3, P5 |
+| T2 | Karara bağlandı: hepsi birlikte açılır | Hesap, ödeme ve formlar kişisel veri işler; ADR-0030 bunu m.9 dayanağı olmadan yasaklıyor. Yayın bu dayanak tamamlanınca yapılır ya da ADR-0030 koşulu ADR-0033 ile açıkça değiştirilir | P1, P5 |
 | T3 | Görsellerde YZ kullanımı (ADR-0034) | plan 12 madde 7 avatar ve Kalemcik için "tek çizerden, YZ görseli yasak" diyor; Midjourney isteğiyle çelişir | P4 |
 | T4 | Karar metinleri yurt dışı sunucuda işlenebilir mi | ADR-0011 ve K-11 "anonimleştirme Türkiye'deki sunucuda" diyor; ADR-0030 bunu ele almıyor | P9 |
 | T5 | NER modeli olmadan anonimleştirme yayına açılır mı | Üretim imajı NER kurmuyor; kararlar yalnız kural katmanıyla maskelenip servis edilir | P9 |
@@ -270,13 +272,19 @@ sınırı, her görsel için kaynak ve istem kaydı.
    `yazma/page.tsx:20-28` veri tabanı hatasını yutuyor.
 3. Rehber Word belgesi `docs/kaynak/` altına konmadı.
 
-## 4. Faz 1 için en kısa yol
+## 4. Tek seferde yayın için kritik yol
 
-1. T1, T2, T3 kararları ve sunucu.
-2. P1 madde 1 (ADR'ler).
-3. P2 madde 1 ile 5, P3 madde 1 ile 3, P5 madde 1 ile 3, P6 madde 1 ve 2, P4'ten favicon ve OpenGraph.
-4. P10 madde 1 ve 5.
-5. DNS onayı ve yayın.
+Sunucu ve kararlar beklenirken başlayabilecek işler işaretlidir.
+
+1. Hemen, sunucu gerekmez: P1 (ADR-0033, ADR-0034, sözleşme), P9 madde 1 ve 2 (arama dizini ve veri toplama
+   zamanlayıcısı), P7 (hesap arayüzü), P5 (hukuki metinler), P6 (SEO dosyaları), P4 (görsel istemleri).
+2. Sunucu gelince: P2 (kurulum, yedek, izleme), ardından P8 (canlı ödeme) ve P9 madde 3 (NER).
+3. Tarık'a bağlı en uzun kalemler: KVKK m.9 dayanağı ve veri işleme sözleşmesi, hukuki yayım onayı, iyzico
+   canlı hesap ve e-Arşiv entegratörü, kaynak onayları, Pratik kartlarının editör onayı.
+4. Kapı: P10, ardından bagimsiz-denetci. Sonra DNS onayı ve yayın.
+
+P3 madde 1 (modülleri Faz 1 için kapatma) bu kararla düşer; madde 12 (yakında düzeneğinin silinmesi) hemen
+yapılabilir.
 
 ## 5. Belgelerdeki bayatlıklar
 
