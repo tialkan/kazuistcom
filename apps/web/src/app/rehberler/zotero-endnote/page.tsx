@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import { EtikKutusu } from '../_bilesen/EtikKutusu.tsx';
 import { KaynakListesi, RehberUst, SabitNotlar } from '../_bilesen/Ortak.tsx';
 import { tr } from '../_bilesen/metin.ts';
@@ -8,7 +7,7 @@ import type { Adim } from '../_alan/sema.ts';
 import styles from '../rehberler.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.zoteroBaslik} | ${ortak().marka}`,
+  title: tr.meta.zoteroBaslik,
   description: tr.meta.zoteroAciklama,
 };
 

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { authorityClasses, recordTypes, SearchQuery, type RecordType } from '@kazuist/contracts';
-import { ortak } from '@kazuist/i18n';
 import ara from '@kazuist/i18n/tr/ara.json';
 import { BosDurum, Dugme, Etiket, FormAlani, HataDurumu } from '@kazuist/ui';
 import { formatNorm, type SearchResult } from '@kazuist/casuist';
@@ -13,7 +12,7 @@ import { oturum } from './_sunucu/oturum.ts';
 import styles from './ara.module.css';
 
 export const metadata: Metadata = {
-  title: `${ara.meta.baslik} | ${ortak().marka}`,
+  title: ara.meta.baslik,
   description: ara.meta.aciklama,
 };
 

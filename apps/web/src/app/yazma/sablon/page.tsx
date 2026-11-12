@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import tr from '@kazuist/i18n/tr/yazma.json';
 import { SablonAtolyesi } from '../_bilesen/SablonAtolyesi.tsx';
 import { doldur } from '../_bilesen/yardimci.ts';
@@ -8,7 +7,7 @@ import { dergiyiBul, onayliKurallar } from '../_sunucu/dergiler.ts';
 import styles from '../yazma.module.css';
 
 export const metadata: Metadata = {
-  title: `${tr.sablon.meta.baslik} | ${ortak().marka}`,
+  title: tr.sablon.meta.baslik,
   description: tr.sablon.meta.aciklama,
 };
 
