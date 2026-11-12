@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { ortak } from '@kazuist/i18n';
 import { kartDurumu } from '../../_alan/kart.ts';
 import { desteBul, gorunenKartlar, onizlemeAcik } from '../../_veri/desteler.ts';
 import { DesteEkrani } from '../../_bilesen/DesteEkrani.tsx';
@@ -16,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const deste = desteBul(slug);
   if (!deste) return {};
   return {
-    title: `${doldur(tr.meta.desteBaslik, { deste: deste.baslik })} | ${ortak().marka}`,
+    title: doldur(tr.meta.desteBaslik, { deste: deste.baslik }),
     description: deste.aciklama,
   };
 }

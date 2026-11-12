@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { ortak } from '@kazuist/i18n';
 import { EtikKutusu } from '../_bilesen/EtikKutusu.tsx';
 import { KontrolListesi, type MaddeGorunumu } from '../_bilesen/KontrolListesi.tsx';
 import { RehberUst, SabitNotlar } from '../_bilesen/Ortak.tsx';
@@ -7,7 +6,7 @@ import { baglantiAcik, tr } from '../_bilesen/metin.ts';
 import { kontrol } from '../_veri/rehberler.ts';
 
 export const metadata: Metadata = {
-  title: `${tr.meta.kontrolBaslik} | ${ortak().marka}`,
+  title: tr.meta.kontrolBaslik,
   description: tr.meta.kontrolAciklama,
 };
 

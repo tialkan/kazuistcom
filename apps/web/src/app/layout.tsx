@@ -5,11 +5,12 @@ import '@kazuist/ui/tokens.css';
 import '@kazuist/ui/fonts.css';
 import '@kazuist/ui/components.css';
 import { Kabuk } from './(kabuk)/_kabuk/Kabuk.tsx';
+import { temelMetadata } from './(seo)/_seo/metadata.ts';
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Kazuist',
-    robots: { index: false, follow: false },
+    // metadataBase, title template, robots by environment, canonical and OpenGraph: (seo)/_seo/metadata.ts.
+    ...temelMetadata(),
     // plan 14.8: the deployed commit, read at run time from the image environment.
     other: { 'kazuist-version': process.env.GIT_COMMIT ?? 'unknown' },
   };

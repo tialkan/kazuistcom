@@ -52,7 +52,7 @@ export async function generateMetadata({
   const g = gosterim(belge);
   const noindex = g.tur === 'hazirlaniyor' || (g.tur === 'metin' && g.taslak);
   return {
-    title: `${g.baslik} | ${t.marka}`,
+    title: g.baslik,
     ...(noindex ? { robots: { index: false, follow: true } } : {}),
   };
 }

@@ -8,7 +8,7 @@ import './casuist.css';
 
 export function casuistMetadata(anahtar: CasuistAnahtari, ek: Partial<Metadata> = {}): Metadata {
   const s = casuistSayfalari[anahtar];
-  return { title: s.title, description: s.description, ...ek };
+  return { title: { absolute: s.title }, description: s.description, ...ek };
 }
 
 /**
