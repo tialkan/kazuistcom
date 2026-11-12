@@ -1,0 +1,112 @@
+{
+  "_comment": "Shared fixture of the job payload contract (ADR-0035). packages/contracts/test/jobs.test.ts checks it with zod, services/worker-py/tests/test_jobs.py with core.jobs.valid_payload. Ids only, no personal data.",
+  "ingest.fetch": {
+    "valid": [
+      { "source": "mevzuat", "kanunNo": "6698", "rgDate": "2026-11-12" },
+      {
+        "source": "mevzuat",
+        "kanunNo": "5237",
+        "title": "Türk Ceza Kanunu",
+        "tur": 1,
+        "tertip": 5,
+        "snapshotDate": "2026-01-02"
+      },
+      { "source": "kvkk", "url": "https://www.kvkk.gov.tr/Icerik/1/karar" },
+      {
+        "source": "rekabet",
+        "url": "https://www.rekabet.gov.tr/Karar?kararId=1",
+        "pdfUrl": "https://www.rekabet.gov.tr/Dosya/1.pdf"
+      },
+      { "source": "rekabet", "url": "https://www.rekabet.gov.tr/Karar?kararId=1" },
+      { "source": "openalex", "doi": "10.1234/abc" },
+      { "source": "crossref", "doi": "10.1234/abc" },
+      { "source": "eurlex", "celex": "32016R0679" }
+    ],
+    "invalid": [
+      {},
+      { "source": "mevzuat", "kanunNo": "6698" },
+      { "source": "mevzuat", "kanunNo": "abc", "rgDate": "2026-11-12" },
+      { "source": "mevzuat", "kanunNo": "6698", "rgDate": "2026-02-30" },
+      { "source": "mevzuat", "kanunNo": 6698, "rgDate": "2026-11-12" },
+      { "source": "mevzuat", "kanunNo": "6698", "rgDate": "2026-11-12", "tur": 1.5 },
+      { "source": "kvkk", "url": "ftp://example.invalid/x" },
+      { "source": "kvkk", "url": "https://example.invalid/x", "extra": true },
+      { "source": "openalex", "doi": "" },
+      { "source": "eurlex" },
+      { "source": "unknown", "url": "https://example.invalid/x" }
+    ]
+  },
+  "anon.run": {
+    "valid": [{ "recordId": "00000000-0000-4000-8000-000000000001" }],
+    "invalid": [{}, { "recordId": "r1" }, { "recordId": "00000000-0000-4000-8000-000000000001", "text": "x" }]
+  },
+  "embed.chunks": {
+    "valid": [{ "recordId": "00000000-0000-4000-8000-000000000001" }],
+    "invalid": [{}, { "recordId": "00000000-0000-0000-0000-000000000001" }, { "recordId": 1 }]
+  },
+  "citations.extract": {
+    "valid": [
+      { "recordId": "00000000-0000-4000-8000-000000000001" },
+      { "recordIds": ["00000000-0000-4000-8000-000000000001", "00000000-0000-4000-8000-000000000002"] },
+      { "batchId": "msgbatch_01", "recordIds": ["00000000-0000-4000-8000-000000000001"], "poll": 0 }
+    ],
+    "invalid": [
+      {},
+      { "recordIds": [] },
+      { "recordIds": ["r1"] },
+      {
+        "recordId": "00000000-0000-4000-8000-000000000001",
+        "recordIds": ["00000000-0000-4000-8000-000000000001"]
+      },
+      { "batchId": "", "recordIds": ["00000000-0000-4000-8000-000000000001"], "poll": 0 },
+      { "batchId": "msgbatch_01", "recordIds": ["00000000-0000-4000-8000-000000000001"], "poll": -1 },
+      { "batchId": "msgbatch_01", "recordIds": ["00000000-0000-4000-8000-000000000001"] }
+    ]
+  },
+  "rules.extract": {
+    "valid": [{ "userId": "00000000-0000-4000-8000-000000000001", "kind": "tez" }],
+    "invalid": [
+      { "userId": "00000000-0000-4000-8000-000000000001" },
+      { "userId": "u", "kind": "tez" },
+      { "userId": "00000000-0000-4000-8000-000000000001", "kind": "odev" }
+    ]
+  },
+  "billing.monthly_grant": { "valid": [{}], "invalid": [{ "day": "2026-11-12" }, null, []] },
+  "billing.reconcile": {
+    "valid": [{}, { "day": "2026-11-11" }],
+    "invalid": [{ "day": "11.11.2026" }, { "day": "2026-11-11", "extra": 1 }]
+  },
+  "notify.send": {
+    "valid": [
+      { "type": "odeme", "userId": "00000000-0000-4000-8000-000000000001" },
+      {
+        "type": "odeme",
+        "subtype": "odeme_alindi",
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "refId": "order:1"
+      },
+      {
+        "type": "kalemcik",
+        "userId": "00000000-0000-4000-8000-000000000001",
+        "channels": ["email", "web_push"]
+      }
+    ],
+    "invalid": [
+      {},
+      { "type": "odeme" },
+      { "type": "yok", "userId": "00000000-0000-4000-8000-000000000001" },
+      { "type": "kalemcik", "subtype": "odeme_alindi", "userId": "00000000-0000-4000-8000-000000000001" },
+      { "type": "odeme", "userId": "00000000-0000-4000-8000-000000000001", "channels": ["sms"] },
+      { "type": "odeme", "userId": "00000000-0000-4000-8000-000000000001", "email": "a@example.invalid" }
+    ]
+  },
+  "kalemcik.daily": { "valid": [{}], "invalid": [{ "day": "2026-11-12" }] },
+  "mevzuat.rg_daily": {
+    "valid": [{}, { "date": "2026-11-12" }],
+    "invalid": [{ "date": "2026/11/12" }, { "date": "2026-11-12", "x": 1 }]
+  },
+  "account.purge": {
+    "valid": [{ "userId": "00000000-0000-4000-8000-000000000001" }],
+    "invalid": [{}, { "userId": "x" }]
+  }
+}

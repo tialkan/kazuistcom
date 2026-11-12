@@ -64,3 +64,15 @@ ADR-0026 ve güncellenen ADR-0024 "Önerildi, Tarık onayı bekliyor". Yönlendi
 | anonimlestirme-embed-payload | Kabul | `EmbedChunksPayload`; parçaları veri tabanı tetikleyicisi siler (`masked_text` değişince veya NULL olunca) ve işi kuyruğa atar; tüketici md5 karşılaştırması ve casuist uzlaştırma işi. |
 | anonimlestirme-ner-calisma-zamani | Kabul | `ner-runtime` ekstrası (torch'suz) ve kilit dosyası; ortam değişkenleri `.env.example`'da; imaj ve birim altyapıda. |
 | kalite-* (9 istek) | Mimara değil | Muhatapları orkestra, altyapi, seo, yz-gecidi, kimlik, on-yuz, hukuk-uyum; sözleşme değişikliği istemiyorlar. |
+
+## Karar tablosu: P1 adım A (2026-11-12, sözleşme v1.5, ADR-0035)
+
+ADR-0035 "Önerildi, Tarık onayı bekliyor". Yönlendirme `mimar-yonlendirme-3-sozlesme-v1-5.md`. Kaldırıcı adım B
+(ADR-0036, migration 0008) yazılmadı; Tarık'ın açık onayını bekler.
+
+| İstek | Karar | Gerekçe ve uygulama |
+|---|---|---|
+| mimar-p1-sozlesme-temizligi (adım A) | Uygulandı | İş kuyruğu kilit sahipliği, kalp atışı, bayat kilitte deneme sınırı, 14/90 gün temizlik, bir kez kuyruğa alma; iş yükü şemaları, `parseJobPayload`, iki tüketicide doğrulama; `x-kazuist-uygulama` eki, dört yeni uç ve rota testi; migration 0007. |
+| atif-agi-sema | Kabul | `works.work_key`, `work_citations` (ek olarak `rejected`), `citation_edges.rejected` ve eski ret biçiminin işaretlenmesi; `esas_key` sütunu yerine ifade dizinleri; `sources_raw_record_idx`. |
+| kimlik-p7-bildirim-idempotency | Değiştirerek kabul | `notification_deliveries`; saklama ayrı 30 gün yerine işle birlikte (`ON DELETE CASCADE`); hedef özeti CHECK ile 64 onaltılık. |
+| casuist-p9-arama-dizini (madde 2, 3) | Kabul | `test_main.py` satırı kabul; `.env.example`'a `KAZUIST_EMBED_BACKEND`, `_DIR`, `_THREADS`, `_QUANTIZED` ve `KAZUIST_TEST_DATABASE_URL`. Madde 1 orkestra, madde 4 altyapı. |

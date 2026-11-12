@@ -23,3 +23,21 @@
 5. Geriye uyumluluk: yalnız ekleme; yıkıcı migration değil.
 6. Aciliyet: orta. Geçici çözüm bu PR'da çalışıyor ve testli
    (`apps/worker-node/src/notify/__tests__/delivery.test.ts`).
+
+## Sonuç (mimar, 12 Kasım 2026, sözleşme v1.5, ADR-0035)
+
+Değiştirerek kabul. Migration `0007_v1_5_jobs_citations_deliveries.sql`:
+
+- `notification_deliveries (job_id, channel, target_hash, delivered_at)`, birincil anahtar
+  `(job_id, channel, target_hash)`. `channel` CHECK ile `email`, `web_push`, `apns`. `target_hash` e-postada
+  `'email'`, push kanallarında HMAC-SHA256 küçük harf onaltılık (64 karakter); CHECK ham uç noktayı ve jetonu reddeder.
+- Değişiklik: `job_id` `jobs(id)`'ye `ON DELETE CASCADE` ile bağlı. Ayrı 30 günlük saklama yok; kayıt işiyle birlikte
+  silinir (`pruneJobsSql`: `done` 14 gün, `failed` ve `dead` 90 gün). Kayıt yalnız aynı işin yeniden denemesinde
+  anlamlıdır; sessiz saat ertelemesi yeni iş açtığı için ertelenen iş kendi kaydını tutar.
+- SQL `@kazuist/db/jobs`: `deliveredTargetsSql` (`$1` iş kimliği; `channel, target_hash` döner) ve
+  `recordDeliverySql` (`$1` iş, `$2` kanal, `$3` özet; `ON CONFLICT DO NOTHING`). İş kimliği `ClaimedJob.id`'dir.
+- `jobPayloadSchemas['notify.send']` değişmedi.
+- Uygulama kimlikte (`apps/worker-node/src/notify/dispatch.ts`): her teslimden önce `deliveredTargetsSql`
+  sonucuna bakılır, teslimden hemen sonra `recordDeliverySql` yazılır; HMAC anahtarı yeni ortam değişkeni
+  istemeden mevcut bir sırdan türetilebilir (öneri: `BETTER_AUTH_SECRET`'tan HKDF, bilgi etiketi
+  `notification-target`). Yönlendirme: `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md`.

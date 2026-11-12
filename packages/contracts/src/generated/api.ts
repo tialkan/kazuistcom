@@ -59,6 +59,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/step-up/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm the second factor of a staff session
+         * @description Editors and administrators confirm the TOTP code once per passkey session before any /v1/admin call
+         *     (plan 5.6/2). Requires a passkey session and an enabled TOTP; the code is never logged.
+         */
+        post: operations["confirmStepUp"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me": {
         parameters: {
             query?: never;
@@ -520,6 +541,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/templates/rules/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["Id"];
+            };
+            cookie?: never;
+        };
+        /** Extracted rule set of the caller (values, sources and guide excerpts) */
+        get: operations["getTemplateRules"];
+        put?: never;
+        post?: never;
+        /** Delete an extracted rule set of the caller */
+        delete: operations["deleteTemplateRules"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/templates/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check a DOCX against a rule set (file is not stored)
+         * @description The file goes to the internal DOCX checker of worker-py in memory only; it is never stored, logged or
+         *     sent to an AI provider. `rules` is a JSON string `{tur, degerler}` validated by the writing module.
+         */
+        post: operations["checkTemplateDocx"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/jobs/{id}": {
         parameters: {
             query?: never;
@@ -604,6 +666,24 @@ export interface paths {
         put?: never;
         /** Create a writing project */
         post: operations["createWritingProject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/writing-projects/ayarlar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Writing settings of the caller (form of address of Kalemcik messages) */
+        get: operations["getWritingSettings"];
+        /** Update writing settings */
+        put: operations["setWritingSettings"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2031,6 +2111,67 @@ export interface components {
                 evidence?: string | null;
             }[];
         };
+        /** @description An extracted rule set as the control screen holds it (yazma kural-semasi KuralKaydi). */
+        TemplateRuleRecord: {
+            /** Format: uuid */
+            id: string;
+            /** @description Model tier that extracted the rules. */
+            model: string | null;
+            institutionName: string | null;
+            /** @enum {string} */
+            tur: "tez" | "makale";
+            /** @description Rule values keyed by rule key (paper, margins, fonts, spacing, limits and so on). */
+            degerler: {
+                [key: string]: unknown;
+            };
+            /** @description Where each value came from, keyed by rule key. */
+            kaynaklar: {
+                [key: string]: "kilavuz" | "ornek" | "duzenlendi";
+            };
+            /** @description Verbatim guide excerpt and page for values taken from the guide, keyed by rule key. */
+            kanitlar: {
+                [key: string]: {
+                    sayfa: number | null;
+                    alinti: string;
+                };
+            };
+        };
+        DocxCheckFinding: {
+            /** @description Rule key, for example margins or wordLimit. */
+            key: string;
+            /** @enum {string} */
+            status: "uygun" | "uyumsuz" | "yok" | "elle";
+            /** @description Value required by the rule set. */
+            expected: unknown;
+            /** @description Value measured in the document, when there is one. */
+            found?: unknown;
+            /** @description Share of the text that complies. */
+            share?: number;
+            detail?: string;
+        };
+        DocxCheckResult: {
+            /** @enum {string} */
+            kind: "tez" | "makale";
+            sections: number;
+            summary: {
+                uygun: number;
+                uyumsuz: number;
+                yok: number;
+                elle: number;
+            };
+            findings: components["schemas"]["DocxCheckFinding"][];
+        };
+        WritingSettings: {
+            /**
+             * @description Form of address of Kalemcik messages.
+             * @enum {string}
+             */
+            hitap: "sen" | "siz";
+        };
+        StepUpConfirmInput: {
+            /** @description TOTP code; never logged. */
+            code: string;
+        };
         WritingProject: {
             /** Format: uuid */
             id: string;
@@ -2614,6 +2755,32 @@ export interface operations {
         responses: {
             200: components["responses"]["Generic"];
             400: components["responses"]["BadRequest"];
+            429: components["responses"]["TooManyRequests"];
+        };
+    };
+    confirmStepUp: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StepUpConfirmInput"];
+            };
+        };
+        responses: {
+            /** @description Second step confirmed for this session. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
             429: components["responses"]["TooManyRequests"];
         };
     };
@@ -3385,6 +3552,11 @@ export interface operations {
                 "multipart/form-data": {
                     file: string;
                     institutionName?: string;
+                    /**
+                     * @default tez
+                     * @enum {string}
+                     */
+                    kind?: "tez" | "makale";
                 };
             };
         };
@@ -3402,6 +3574,92 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             402: components["responses"]["PaymentRequired"];
             413: components["responses"]["PayloadTooLarge"];
+        };
+    };
+    getTemplateRules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["Id"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rule set. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateRuleRecord"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    deleteTemplateRules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: components["parameters"]["Id"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted. */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    checkTemplateDocx: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    file: string;
+                    rules: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Findings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocxCheckResult"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+            413: components["responses"]["PayloadTooLarge"];
+            429: components["responses"]["TooManyRequests"];
+            /** @description The DOCX checker is not configured or not reachable (fail closed). */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
+                };
+            };
         };
     };
     getJob: {
@@ -3546,6 +3804,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WritingProject"];
+                };
+            };
+            400: components["responses"]["BadRequest"];
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    getWritingSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WritingSettings"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+        };
+    };
+    setWritingSettings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WritingSettings"];
+            };
+        };
+        responses: {
+            /** @description Settings. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WritingSettings"];
                 };
             };
             400: components["responses"]["BadRequest"];

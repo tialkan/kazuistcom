@@ -31,6 +31,7 @@ const statusOf = async (id: string) =>
       id,
     ])
   ).rows[0];
+const notice = { type: 'odeme', userId: '00000000-0000-4000-8000-000000000001' };
 const enqueue = async (type: string, payload: unknown = {}) =>
   (
     await pg.query<{ id: string }>('insert into jobs (type, payload) values ($1, $2::jsonb) returning id', [
@@ -83,11 +84,11 @@ describe('worker loop', () => {
       },
     });
     const w = startWorker({ db: pg, consumer, listen, pollMs: 20 });
-    const first = await enqueue('notify.send');
+    const first = await enqueue('notify.send', notice);
     await until(async () => started);
     let stopped = false;
     const stopping = w.stop().then(() => (stopped = true));
-    const second = await enqueue('notify.send');
+    const second = await enqueue('notify.send', notice);
     await new Promise((r) => setTimeout(r, 50));
     expect(stopped).toBe(false);
     release();
@@ -103,6 +104,60 @@ describe('worker loop', () => {
     const id = await enqueue('billing.monthly_grant');
     expect(await consumer.runOnce('billing.monthly_grant')).toBe(1);
     expect(await statusOf(id)).toEqual({ status: 'queued', error: 'BillingStoreUnavailable' });
+  });
+
+  it('buries an invalid payload and releases or buries stale locks of crashed workers', async () => {
+    const ran: string[] = [];
+    const logs: [string, unknown][] = [];
+    const consumer = createConsumer(
+      pg,
+      'w4',
+      {
+        'notify.send': async (job) => {
+          ran.push(job.id);
+          return null;
+        },
+      },
+      { log: (m, extra) => logs.push([m, extra]) },
+    );
+    const bad = await enqueue('notify.send', { type: 'odeme' });
+    expect(await consumer.runOnce('notify.send')).toBe(1);
+    expect(ran).toEqual([]);
+    expect(await statusOf(bad)).toEqual({ status: 'dead', error: 'invalid payload' });
+
+    // Two jobs abandoned by a crashed worker: one with attempts left, one without.
+    const retry = await enqueue('notify.send', notice);
+    const spent = await enqueue('notify.send', notice);
+    await pg.query(
+      "update jobs set status = 'running', locked_by = 'crashed', locked_at = now() - interval '1 hour', attempts = 1, max_attempts = case when id = $2 then 1 else 5 end where id in ($1, $2)",
+      [retry, spent],
+    );
+    const runnerLogs: [string, unknown][] = [];
+    const w = startWorker({
+      db: pg,
+      consumer,
+      listen,
+      pollMs: 60_000,
+      log: (m, extra) => runnerLogs.push([m, extra]),
+    });
+    await until(async () => (await statusOf(retry))?.status === 'done');
+    await w.stop();
+    expect(await statusOf(spent)).toEqual({ status: 'dead', error: 'stale lock' });
+    expect(runnerLogs).toContainEqual(['stale locks released', { requeued: 1, buried: 1 }]);
+  });
+
+  it('prunes finished jobs past their retention once per interval', async () => {
+    await pg.query(
+      "insert into jobs (type, payload, status, updated_at) values ('notify.send', '{}', 'done', now() - interval '30 days'), ('notify.send', '{}', 'done', now())",
+    );
+    const consumer = createConsumer(pg, 'w5', {});
+    const logs: [string, unknown][] = [];
+    const w = startWorker({ db: pg, consumer, listen, pollMs: 20, log: (m, extra) => logs.push([m, extra]) });
+    await until(async () => logs.some(([m]) => m === 'jobs pruned'));
+    await new Promise((r) => setTimeout(r, 80));
+    await w.stop();
+    expect(logs.filter(([m]) => m === 'jobs pruned')).toEqual([['jobs pruned', { deleted: 1 }]]);
+    expect((await pg.query('select 1 from jobs')).rows).toHaveLength(1);
   });
 
   it('registers notify.send only with notify dependencies', () => {
@@ -136,5 +191,15 @@ describe('daily billing schedule', () => {
     now = new Date('2026-10-21T03:00:00Z');
     await tick();
     expect((await pg.query('select 1 from jobs')).rows).toHaveLength(4);
+  });
+
+  it('does not queue a finished day again after a restart (ADR-0035)', async () => {
+    const now = () => new Date('2026-10-20T03:00:00Z');
+    await dailyBillingTick(pg, now)();
+    await pg.query("update jobs set status = 'done'");
+    // A new process (deployment) on the same day starts with an empty memory.
+    await dailyBillingTick(pg, now)();
+    const rows = (await pg.query<{ status: string }>('select status from jobs')).rows;
+    expect(rows.map((r) => r.status)).toEqual(['done', 'done']);
   });
 });

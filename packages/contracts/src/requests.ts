@@ -30,6 +30,8 @@ export const MePatch = z.strictObject({
 });
 export const EduVerificationStart = z.strictObject({ email: z.email() });
 export const EduVerificationConfirm = z.strictObject({ code: z.string().regex(/^[0-9]{6}$/) });
+/** POST /auth/step-up/confirm (v1.5): TOTP code of a staff passkey session. */
+export const StepUpConfirmInput = z.strictObject({ code: z.string().regex(/^[0-9]{6}$/) });
 export const ConsentInput = z.strictObject({
   kind: ConsentKind,
   version: z.string().max(40),
@@ -78,7 +80,14 @@ export const GuideProgressInput = z.strictObject({ completedSteps: z.array(z.str
 export const TemplateRulesUpload = z.strictObject({
   file: filePart,
   institutionName: z.string().max(200).optional(),
+  /** Template kind of the guide (v1.5; the route always read it, default tez). */
+  kind: z.enum(['tez', 'makale']).default('tez'),
 });
+/** POST /v1/templates/check (v1.5): DOCX file and the rule set as a JSON string {tur, degerler}. */
+export const TemplateCheckUpload = z.strictObject({ file: filePart, rules: z.string() });
+/** GET and PUT /v1/writing-projects/ayarlar (v1.5): form of address of Kalemcik messages. */
+export const WritingSettings = z.strictObject({ hitap: z.enum(['sen', 'siz']) });
+export type WritingSettings = z.infer<typeof WritingSettings>;
 export const TemplateDocxInput = z.strictObject({
   templateRuleId: uuid.optional(),
   journalRuleVersionId: uuid.optional(),
@@ -233,6 +242,7 @@ export const requestBodies = {
   deleteMe: MeDeleteInput,
   startEduVerification: EduVerificationStart,
   confirmEduVerification: EduVerificationConfirm,
+  confirmStepUp: StepUpConfirmInput,
   recordConsent: ConsentInput,
   setTargetProfession: TargetProfessionInput,
   createKvkkRequest: KvkkRequestInput,
@@ -245,6 +255,8 @@ export const requestBodies = {
   setGuideProgress: GuideProgressInput,
   extractTemplateRules: TemplateRulesUpload,
   createTemplateDocx: TemplateDocxInput,
+  checkTemplateDocx: TemplateCheckUpload,
+  setWritingSettings: WritingSettings,
   createWritingProject: WritingProjectInput,
   updateWritingProject: WritingProjectInput,
   logWritingProgress: WritingProgressInput,

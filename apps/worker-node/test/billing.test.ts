@@ -14,14 +14,13 @@ it('runs billing.reconcile and billing.monthly_grant through the job consumer', 
   const results: unknown[] = [];
   const db: SqlClient = {
     async query<R>(sql: string, params?: unknown[]) {
-      if (sql.includes('SKIP LOCKED'))
-        return {
-          rows: [
-            { id: 'j', type: params?.[0], payload: { day: '2026-10-19' }, attempts: 1, max_attempts: 5 },
-          ] as R[],
-        };
+      if (sql.includes('SKIP LOCKED')) {
+        // Payloads as the contract defines them (ADR-0035): monthly_grant carries nothing.
+        const payload = params?.[0] === 'billing.reconcile' ? { day: '2026-10-19' } : {};
+        return { rows: [{ id: 'j', type: params?.[0], payload, attempts: 1, max_attempts: 5 }] as R[] };
+      }
       if (sql.includes("status = 'done'")) results.push(JSON.parse(String(params?.[1])));
-      return { rows: [] as R[] };
+      return { rows: [{ id: 'j' }] as R[] };
     },
   };
   const handlers = billingHandlers({
@@ -34,11 +33,13 @@ it('runs billing.reconcile and billing.monthly_grant through the job consumer', 
       ],
     }),
   });
-  const c = createConsumer(db, 'w', handlers);
+  const logs: string[] = [];
+  const c = createConsumer(db, 'w', handlers, { log: (m) => logs.push(m) });
   await c.runOnce('billing.reconcile');
   await c.runOnce('billing.monthly_grant');
   expect(results).toEqual([
     { day: '2026-10-19', disabled: false, differences: 1, paymentIds: ['p1'] },
     { granted: 2, failed: [] },
   ]);
+  expect(logs).toEqual([]);
 });

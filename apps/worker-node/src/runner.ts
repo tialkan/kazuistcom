@@ -1,10 +1,18 @@
 import type { JobType } from '@kazuist/contracts';
-import { jobsChannel, releaseStaleJobsSql } from '@kazuist/db/jobs';
+import {
+  JOB_PRUNE_BATCH,
+  JOB_RETENTION_DAYS,
+  JOB_STALE_SECONDS,
+  jobsChannel,
+  pruneJobsSql,
+  releaseStaleJobsSql,
+} from '@kazuist/db/jobs';
 import type { JobConsumer, SqlClient } from './queue.ts';
 
 /**
- * Worker loop over the jobs contract (plan Ek C.3): LISTEN jobs_<type> for low latency, poll as a fallback,
- * return stale locks of crashed workers, stop cleanly on SIGTERM (finish the job in hand, claim nothing new).
+ * Worker loop over the jobs contract (plan Ek C.3, ADR-0035): LISTEN jobs_<type> for low latency, poll as a
+ * fallback, return stale locks of crashed workers (or bury them when their attempts are used up), prune finished
+ * jobs once a day, stop cleanly on SIGTERM (finish the job in hand, claim nothing new).
  */
 
 export type Log = (msg: string, extra?: Record<string, unknown>) => void;
@@ -23,8 +31,10 @@ export interface WorkerOptions {
   pollMs?: number;
   /** Jobs claimed per round and type (default 5). */
   batch?: number;
-  /** A running job whose lock is older than this returns to the queue (default 15 min). */
+  /** A running job whose lock is older than this returns to the queue (default JOB_STALE_SECONDS, 15 min). */
   staleLockSeconds?: number;
+  /** Interval of the finished job cleanup (default one day; 0 turns it off). */
+  pruneEveryMs?: number;
   /** Extra periodic task, for example daily scheduling (runs at most once per poll round). */
   tick?: () => Promise<void>;
   log?: Log;
@@ -41,7 +51,26 @@ export function startWorker(o: WorkerOptions): RunningWorker {
   const log = o.log ?? (() => {});
   const pollMs = o.pollMs ?? 5000;
   const batch = o.batch ?? 5;
-  const stale = o.staleLockSeconds ?? 900;
+  const stale = o.staleLockSeconds ?? JOB_STALE_SECONDS;
+  const pruneEvery = o.pruneEveryMs ?? 86_400_000;
+  let lastPrune = -Infinity;
+  /** Delete finished rows past their retention, in batches, at most once per pruneEvery. */
+  const maintain = async () => {
+    if (pruneEvery <= 0 || Date.now() - lastPrune < pruneEvery) return;
+    lastPrune = Date.now();
+    let deleted = 0;
+    for (let i = 0; i < 20; i++) {
+      const r = await o.db.query<{ deleted: number }>(pruneJobsSql, [
+        JOB_RETENTION_DAYS.done,
+        JOB_RETENTION_DAYS.dead,
+        JOB_PRUNE_BATCH,
+      ]);
+      const n = r.rows[0]?.deleted ?? 0;
+      deleted += n;
+      if (n < JOB_PRUNE_BATCH) break;
+    }
+    if (deleted) log('jobs pruned', { deleted });
+  };
   const byChannel = new Map<string, JobType>(o.consumer.types.map((t) => [jobsChannel(t), t]));
   const pending = new Set<JobType>(o.consumer.types);
   let running = true;
@@ -67,7 +96,18 @@ export function startWorker(o: WorkerOptions): RunningWorker {
     try {
       while (running) {
         try {
-          await o.db.query(releaseStaleJobsSql, [stale]);
+          const released = await o.db.query<{ id: string; status: string }>(releaseStaleJobsSql, [stale]);
+          if (released.rows.length)
+            log('stale locks released', {
+              requeued: released.rows.filter((r) => r.status === 'queued').length,
+              buried: released.rows.filter((r) => r.status === 'dead').length,
+            });
+          // Cleanup must not stop the queue from draining either.
+          try {
+            await maintain();
+          } catch (err) {
+            log('prune failed', { error: err instanceof Error ? err.name : 'Error' });
+          }
           // A failing tick must not stop the queue from draining.
           if (o.tick) {
             try {

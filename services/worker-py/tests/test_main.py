@@ -30,6 +30,9 @@ class FakeCursor:
         if "SKIP LOCKED" in query:
             self._rows = self.conn.queue[:1]
             self.conn.queue = self.conn.queue[1:]
+        elif query.strip().startswith("UPDATE jobs") and "RETURNING" in query:
+            # complete, fail and bury match the worker id; this fake worker always still holds the lock.
+            self._rows = [("j",)]
         elif "FROM records" in query:
             self._rows = [("Davaci Ahmet Yilmaz tarafindan acilan dava.", None)]
         else:
@@ -58,14 +61,16 @@ def test_loop_drains_jobs_releases_stale_locks_and_stops_after_the_job_in_hand()
             stop.set()  # SIGTERM arrives while the second job runs
         return {"ok": True}
 
-    conn = FakeConn([("j1", "anon.run", {}, 1, 5), ("j2", "anon.run", {}, 1, 5), ("j3", "anon.run", {}, 1, 5)])
+    # Payloads meet the contract (ADR-0035); an invalid one would be buried without reaching the handler.
+    p = {"recordId": "00000000-0000-4000-8000-000000000001"}
+    conn = FakeConn([("j1", "anon.run", p, 1, 5), ("j2", "anon.run", p, 1, 5), ("j3", "anon.run", p, 1, 5)])
     waits: List[float] = []
     logs: List[str] = []
     loop = WorkerLoop(JobConsumer("w", {JobType.ANON_RUN: handler}), conn, waits.append, stop,
                       Heartbeat(60), batch=1, log=lambda msg, **_: logs.append(msg))
     loop.run()
     assert seen == ["j1", "j2"]
-    assert conn.queue == [("j3", "anon.run", {}, 1, 5)]  # never claimed
+    assert conn.queue == [("j3", "anon.run", p, 1, 5)]  # never claimed
     assert conn.statements[0] == "UPDATE"  # stale lock release first
     assert waits == []
     assert logs == ["started", "stopped"]

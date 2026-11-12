@@ -10,6 +10,7 @@ import {
   numeric,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   uuid,
 } from 'drizzle-orm/pg-core';
@@ -53,6 +54,40 @@ export const jobs = pgTable(
     uniqueIndex('jobs_dedupe_active_uq')
       .on(t.type, t.dedupeKey)
       .where(sql`${t.dedupeKey} is not null and ${t.status} in ('queued', 'running')`),
+    // v1.5 (ADR-0035): enqueueOnceSql looks for the key in every state; pruneJobsSql scans finished rows.
+    index('jobs_dedupe_idx')
+      .on(t.type, t.dedupeKey)
+      .where(sql`${t.dedupeKey} is not null`),
+    index('jobs_finished_idx')
+      .on(t.status, t.updatedAt)
+      .where(sql`${t.status} in ('done', 'failed', 'dead')`),
+  ],
+);
+
+/**
+ * Per channel delivery record of a notify.send job (v1.5, ADR-0035, docs/istekler/kimlik-p7-bildirim-idempotency.md).
+ * A retry sends only to the targets without a row. target_hash is 'email' for the e-mail channel and otherwise the
+ * keyed hash (HMAC-SHA256, lower case hex) of the push endpoint or device token; the raw value is never written.
+ * Rows go with their job (ON DELETE CASCADE), so retention follows pruneJobsSql.
+ */
+export const notificationDeliveries = pgTable(
+  'notification_deliveries',
+  {
+    jobId: uuid('job_id')
+      .notNull()
+      .references(() => jobs.id, { onDelete: 'cascade' }),
+    channel: text('channel').notNull(),
+    targetHash: text('target_hash').notNull(),
+    deliveredAt: ts('delivered_at').notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.jobId, t.channel, t.targetHash] }),
+    // contracts notificationChannels; e-mail has one target per job, push targets are hashes.
+    check('notification_deliveries_channel', sql`${t.channel} in ('email', 'web_push', 'apns')`),
+    check(
+      'notification_deliveries_target',
+      sql`(${t.channel} = 'email' and ${t.targetHash} = 'email') or (${t.channel} <> 'email' and ${t.targetHash} ~ '^[0-9a-f]{64}$')`,
+    ),
   ],
 );
 

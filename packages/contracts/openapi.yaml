@@ -1,14 +1,18 @@
 openapi: 3.1.0
 info:
   title: Kazuist API
-  version: 1.4.0
+  version: 1.5.0
   summary: Kazuist web and iOS API contract (single source of truth).
   description: |
-    Contract v1.4 for Kazuist (plan.md Ek C.1; changes in docs/adr/0027-kalici-siparis-belgeleri-ve-urun-surumleri.md,
-    docs/adr/0023-sozlesme-v1-1.md and
-    docs/adr/0026-sozlesme-v1-2.md). All endpoints
+    Contract v1.5 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md,
+    docs/adr/0026-sozlesme-v1-2.md, docs/adr/0027-kalici-siparis-belgeleri-ve-urun-surumleri.md,
+    docs/adr/0028-hesap-silme-iade-yonetimi.md and docs/adr/0035-sozlesme-v1-5.md). All endpoints
     validate input with zod and reject unknown fields. Every error body is `{code, message, requestId}` and
     never exposes internal structure. Paths are relative to the `/api` prefix of the web application.
+
+    Implementation state (v1.5): every path either has a Route Handler under apps/web/src/app/api or carries
+    `x-kazuist-uygulama`: `planlandi` (a 1.0 feature whose handler is not written yet) or `kaldirilacak`
+    (removed in the next breaking contract, ADR-0036). packages/contracts/test/rotalar.test.ts enforces this.
   license:
     name: Proprietary, Kulular Bilisim Teknolojileri Ltd. Sti.
     identifier: LicenseRef-Proprietary
@@ -120,6 +124,26 @@ paths:
       responses:
         '200': { $ref: '#/components/responses/Generic' }
         '400': { $ref: '#/components/responses/BadRequest' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /auth/step-up/confirm:
+    post:
+      tags: [auth]
+      operationId: confirmStepUp
+      summary: Confirm the second factor of a staff session
+      description: |
+        Editors and administrators confirm the TOTP code once per passkey session before any /v1/admin call
+        (plan 5.6/2). Requires a passkey session and an enabled TOTP; the code is never logged.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StepUpConfirmInput' }
+      responses:
+        '204':
+          description: Second step confirmed for this session.
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
 
   /v1/me:
@@ -461,6 +485,7 @@ paths:
               schema: { $ref: '#/components/schemas/CitationGraph' }
         '404': { $ref: '#/components/responses/NotFound' }
   /v1/records/{id}/versions:
+    x-kazuist-uygulama: planlandi
     parameters:
       - $ref: '#/components/parameters/Id'
     get:
@@ -660,6 +685,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
 
   /v1/guides/{id}/progress:
+    x-kazuist-uygulama: planlandi
     parameters:
       - $ref: '#/components/parameters/Slug'
     get:
@@ -709,6 +735,7 @@ paths:
               properties:
                 file: { type: string, contentMediaType: application/pdf }
                 institutionName: { type: string, maxLength: 200 }
+                kind: { type: string, enum: [tez, makale], default: tez }
       responses:
         '202':
           description: Job created.
@@ -719,6 +746,65 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '402': { $ref: '#/components/responses/PaymentRequired' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
+  /v1/templates/rules/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [writing]
+      operationId: getTemplateRules
+      summary: Extracted rule set of the caller (values, sources and guide excerpts)
+      responses:
+        '200':
+          description: Rule set.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TemplateRuleRecord' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [writing]
+      operationId: deleteTemplateRules
+      summary: Delete an extracted rule set of the caller
+      responses:
+        '204': { description: 'Deleted.' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /v1/templates/check:
+    post:
+      tags: [writing]
+      operationId: checkTemplateDocx
+      summary: Check a DOCX against a rule set (file is not stored)
+      description: |
+        The file goes to the internal DOCX checker of worker-py in memory only; it is never stored, logged or
+        sent to an AI provider. `rules` is a JSON string `{tur, degerler}` validated by the writing module.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [file, rules]
+              properties:
+                file:
+                  type: string
+                  contentMediaType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+                rules: { type: string, contentMediaType: application/json }
+      responses:
+        '200':
+          description: Findings.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DocxCheckResult' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503':
+          description: The DOCX checker is not configured or not reachable (fail closed).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
   /v1/jobs/{id}:
     parameters:
       - $ref: '#/components/parameters/Id'
@@ -735,6 +821,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
   /v1/templates/docx:
+    x-kazuist-uygulama: planlandi
     post:
       tags: [writing]
       operationId: createTemplateDocx
@@ -818,6 +905,35 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/WritingProject' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /v1/writing-projects/ayarlar:
+    get:
+      tags: [writing]
+      operationId: getWritingSettings
+      summary: Writing settings of the caller (form of address of Kalemcik messages)
+      responses:
+        '200':
+          description: Settings.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WritingSettings' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    put:
+      tags: [writing]
+      operationId: setWritingSettings
+      summary: Update writing settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WritingSettings' }
+      responses:
+        '200':
+          description: Settings.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/WritingSettings' }
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
   /v1/writing-projects/{id}:
@@ -981,6 +1097,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
   /v1/reviews:
+    x-kazuist-uygulama: planlandi
     post:
       tags: [practice]
       operationId: submitReview
@@ -1010,6 +1127,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
   /v1/hmgs/exams:
+    x-kazuist-uygulama: planlandi
     get:
       tags: [practice]
       operationId: listHmgsExams
@@ -1024,6 +1142,7 @@ paths:
                 items: { $ref: '#/components/schemas/Exam' }
         '401': { $ref: '#/components/responses/Unauthorized' }
   /v1/hmgs/exams/{id}/attempts:
+    x-kazuist-uygulama: planlandi
     parameters:
       - $ref: '#/components/parameters/Id'
     post:
@@ -1061,6 +1180,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
   /v1/hmgs/report:
+    x-kazuist-uygulama: planlandi
     get:
       tags: [practice]
       operationId: getHmgsReport
@@ -1076,6 +1196,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
 
   /v1/kampus/profiles:
+    x-kazuist-uygulama: kaldirilacak
     get:
       tags: [kampus]
       operationId: listKampusProfiles
@@ -1109,6 +1230,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
   /v1/kampus/profiles/{id}:
+    x-kazuist-uygulama: kaldirilacak
     parameters:
       - $ref: '#/components/parameters/Id'
     get:
@@ -1123,6 +1245,7 @@ paths:
               schema: { $ref: '#/components/schemas/KampusProfile' }
         '404': { $ref: '#/components/responses/NotFound' }
   /v1/kampus/posts:
+    x-kazuist-uygulama: kaldirilacak
     get:
       tags: [kampus]
       operationId: listKampusPosts
@@ -1156,6 +1279,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '401': { $ref: '#/components/responses/Unauthorized' }
   /v1/kampus/posts/{id}:
+    x-kazuist-uygulama: kaldirilacak
     parameters:
       - $ref: '#/components/parameters/Id'
     get:
@@ -1178,6 +1302,7 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
   /v1/kampus/follows:
+    x-kazuist-uygulama: kaldirilacak
     get:
       tags: [kampus]
       operationId: listKampusFollows
@@ -1210,6 +1335,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '409': { $ref: '#/components/responses/Conflict' }
   /v1/kampus/follows/{id}:
+    x-kazuist-uygulama: kaldirilacak
     parameters:
       - $ref: '#/components/parameters/Id'
     delete:
@@ -1220,6 +1346,7 @@ paths:
         '204': { description: 'Unfollowed.' }
         '404': { $ref: '#/components/responses/NotFound' }
   /v1/kampus/feed:
+    x-kazuist-uygulama: kaldirilacak
     get:
       tags: [kampus]
       operationId: getKampusFeed
@@ -1236,6 +1363,7 @@ paths:
                 items: { $ref: '#/components/schemas/KampusPost' }
         '401': { $ref: '#/components/responses/Unauthorized' }
   /v1/kampus/summaries:
+    x-kazuist-uygulama: kaldirilacak
     post:
       tags: [kampus]
       operationId: createKampusSummary
@@ -1261,6 +1389,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '402': { $ref: '#/components/responses/PaymentRequired' }
   /v1/kampus/posters:
+    x-kazuist-uygulama: kaldirilacak
     post:
       tags: [kampus]
       operationId: createKampusPoster
@@ -1286,6 +1415,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '402': { $ref: '#/components/responses/PaymentRequired' }
   /v1/kampus/fulltext-requests:
+    x-kazuist-uygulama: kaldirilacak
     get:
       tags: [kampus]
       operationId: listKampusFulltextRequests
@@ -1322,6 +1452,7 @@ paths:
               schema: { $ref: '#/components/schemas/KampusFulltextRequest' }
         '400': { $ref: '#/components/responses/BadRequest' }
   /v1/kampus/reports:
+    x-kazuist-uygulama: kaldirilacak
     post:
       tags: [kampus]
       operationId: createKampusReport
@@ -1632,6 +1763,7 @@ paths:
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
   /v1/webhooks/appstore:
+    x-kazuist-uygulama: planlandi
     post:
       tags: [webhooks]
       operationId: appStoreWebhook
@@ -1652,6 +1784,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
 
   /v1/notifications/preferences:
+    x-kazuist-uygulama: planlandi
     get:
       tags: [notifications]
       operationId: getNotificationPreferences
@@ -1680,6 +1813,7 @@ paths:
               schema: { $ref: '#/components/schemas/NotificationPreferences' }
         '400': { $ref: '#/components/responses/BadRequest' }
   /v1/push/web-subscriptions:
+    x-kazuist-uygulama: planlandi
     post:
       tags: [notifications]
       operationId: registerWebPush
@@ -1705,6 +1839,7 @@ paths:
         '201': { $ref: '#/components/responses/Created' }
         '400': { $ref: '#/components/responses/BadRequest' }
   /v1/push/apns-tokens:
+    x-kazuist-uygulama: planlandi
     post:
       tags: [notifications]
       operationId: registerApnsToken
@@ -2810,6 +2945,71 @@ components:
               key: { type: string }
               value: {}
               evidence: { type: [string, 'null'], description: 'Source excerpt from the guide.' }
+    TemplateRuleRecord:
+      type: object
+      description: An extracted rule set as the control screen holds it (yazma kural-semasi KuralKaydi).
+      required: [id, model, institutionName, tur, degerler, kaynaklar, kanitlar]
+      properties:
+        id: { type: string, format: uuid }
+        model: { type: [string, 'null'], description: 'Model tier that extracted the rules.' }
+        institutionName: { type: [string, 'null'], maxLength: 200 }
+        tur: { type: string, enum: [tez, makale] }
+        degerler:
+          type: object
+          description: Rule values keyed by rule key (paper, margins, fonts, spacing, limits and so on).
+          additionalProperties: true
+        kaynaklar:
+          type: object
+          description: Where each value came from, keyed by rule key.
+          additionalProperties: { type: string, enum: [kilavuz, ornek, duzenlendi] }
+        kanitlar:
+          type: object
+          description: Verbatim guide excerpt and page for values taken from the guide, keyed by rule key.
+          additionalProperties:
+            type: object
+            required: [sayfa, alinti]
+            properties:
+              sayfa: { type: [integer, 'null'] }
+              alinti: { type: string }
+    DocxCheckFinding:
+      type: object
+      required: [key, status, expected]
+      properties:
+        key: { type: string, description: 'Rule key, for example margins or wordLimit.' }
+        status: { type: string, enum: [uygun, uyumsuz, yok, elle] }
+        expected: { description: 'Value required by the rule set.' }
+        found: { description: 'Value measured in the document, when there is one.' }
+        share: { type: number, minimum: 0, maximum: 1, description: 'Share of the text that complies.' }
+        detail: { type: string }
+    DocxCheckResult:
+      type: object
+      required: [kind, sections, summary, findings]
+      properties:
+        kind: { type: string, enum: [tez, makale] }
+        sections: { type: integer, minimum: 0 }
+        summary:
+          type: object
+          required: [uygun, uyumsuz, yok, elle]
+          properties:
+            uygun: { type: integer, minimum: 0 }
+            uyumsuz: { type: integer, minimum: 0 }
+            yok: { type: integer, minimum: 0 }
+            elle: { type: integer, minimum: 0 }
+        findings:
+          type: array
+          items: { $ref: '#/components/schemas/DocxCheckFinding' }
+    WritingSettings:
+      type: object
+      additionalProperties: false
+      required: [hitap]
+      properties:
+        hitap: { type: string, enum: [sen, siz], description: 'Form of address of Kalemcik messages.' }
+    StepUpConfirmInput:
+      type: object
+      additionalProperties: false
+      required: [code]
+      properties:
+        code: { type: string, pattern: '^[0-9]{6}$', description: 'TOTP code; never logged.' }
     WritingProject:
       type: object
       required: [id, title, kind, targetWords]

@@ -180,10 +180,13 @@ class FakeCursor:
 
 
 def test_sql_store_through_job_consumer() -> None:
+    # The consumer checks the payload against the contract (ADR-0035): record ids are UUIDs.
+    RID = "00000000-0000-4000-8000-0000000000a1"
+
     class ConsumerCursor(FakeCursor):
         def fetchall(self):
             if self.calls and self.calls[-1][0] == "WITH":
-                return [("j1", "anon.run", {"recordId": "r1"}, 1, 5)]
+                return [("j1", "anon.run", {"recordId": RID}, 1, 5)]
             return super().fetchall()
 
     cur = ConsumerCursor()
@@ -198,8 +201,8 @@ def test_sql_store_through_job_consumer() -> None:
     at = next(i for i, (_, p) in enumerate(cur.calls) if p and "dedupe_key" in p)
     embed = cur.calls[at]
     assert cur.calls[at - 1][1] is record_update  # queued right after masked_text is written
-    assert embed[0] == "INSERT" and embed[1]["dedupe_key"] == "embed:r1"
-    assert json.loads(embed[1]["payload"]) == {"recordId": "r1"}
+    assert embed[0] == "INSERT" and embed[1]["dedupe_key"] == f"embed:{RID}"
+    assert json.loads(embed[1]["payload"]) == {"recordId": RID}
     final = cur.calls[-1]
     assert final[0] == "UPDATE" and "Selin" not in json.dumps(final[1], default=str)
 
