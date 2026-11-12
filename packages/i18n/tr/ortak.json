@@ -1,6 +1,10 @@
 {
   "marka": "Kazuist",
   "amac": "Hukuk kaynağını bulun, dayanağını görün, metninizi kurallarına uygun yazın.",
+  "paylasim": {
+    "kartAlt": "Kazuist adı ve amaç cümlesi",
+    "alanAdi": "kazuist.com"
+  },
   "atla": "İçeriğe atla",
   "gezinme": {
     "ara": "Ara",

@@ -65,6 +65,11 @@ Form hatası her zaman var olan aria-live bölgesinde duyurulur, etiket görün�
 YZ ile üretilmiş görsel yoktur. Casuist sayfalarındaki başlık görseli ve program logoları yalın yer tutucuyla
 (alt metin görünür) gösterilir; çizer işi gelene kadar meslek avatarı kesik çizgili boş dairedir.
 
+Marka işareti kenar şerhinin en küçük hâlidir: kâğıt üzerinde mürekkep K, ince ayraç ve aynı hizada lâl şerh
+(`apps/web/src/app/icon.svg`, elle vektör). Favicon, Apple ve manifest simgeleri bu tek çizimden üretilir; paylaşım
+kartı yalnız tipografidir (next/og). Midjourney yalnız taslak ve brifing içindir, ürüne girmez (ADR-0034, seçenek B).
+Her varlığın ölçüsü, kabul ölçütü, çizeni ve taslak istemi: `docs/tasarim/gorsel-istemleri.md`.
+
 ## Doğrulama
 
 docs/tasarim/ekran altında 13 sayfanın 375, 768 ve 1440 px tam sayfa ekran görüntüleri ve axe-sonuc.json
