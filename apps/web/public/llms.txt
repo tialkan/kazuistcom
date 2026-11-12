@@ -1,0 +1,42 @@
+# Kazuist
+
+> Kazuist, Türk hukuk kaynaklarında arama yapan, her özet cümlesini dayandığı kaynağa bağlayan ve hukuk yazımına yardım eden bir web platformudur. Ürün yalnız Türkçedir. Sahibi Kulular Bilişim Teknolojileri Ltd. Şti.'dir.
+
+Kazuist hukuki soruyu yanıtlamaz; dayanağı denetlenebilir kılar. Hukuki danışmanlık değildir ve avukatın yerini almaz.
+
+## Ürün
+
+- [Ana sayfa](https://kazuist.com/): tek arama kutusu ve örnek sorular.
+- [Ara](https://kazuist.com/ara): mevzuat, mahkeme kararları, bağımsız kurum kararları ve hukuk makaleleri için tek arama; kaynaklı özet.
+- [Atıf ağı](https://kazuist.com/atif-agi): kararların ve eserlerin birbirine atıflarını gösteren ağ ve eşdeğer tablo görünümü.
+- [Rehberler](https://kazuist.com/rehberler): makale yazımı, tez yazımı, Zotero ve EndNote kullanımı, kontrol listesi ve etik kutusu.
+- [Yazma](https://kazuist.com/yazma): tez ve makale şablonu, kılavuz denetimi, dergi profilleri.
+- [Kalemcik](https://kazuist.com/kalemcik): yazma koçu.
+- [Pratik](https://kazuist.com/pratik): aralıklı tekrarla çalışma ve HMGS hazırlığı.
+- [Tespit](https://kazuist.com/tespit): yazım kuralları istemi ve tarayıcı içinde çalışan iz denetleyici.
+- [Fiyatlar](https://kazuist.com/fiyatlar): özellikler ücretsizdir; yapay zekâ işlemleri günlük ücretsiz hak, kendi anahtarınız veya isteğe bağlı platform kredisiyle çalışır.
+
+## Kaynak politikası
+
+- Kaynaklı özetteki her cümle, dayandığı kaynağın birebir alıntısıyla doğrulanır. Dayanak yetersizse sistem özet yazmaz.
+- Her sonuç resmî kaynağa bağlanır. Mevzuat ve karar metinleri resmî yayınlardan alınır; kararlar anonimleştirildikten sonra dizinlenir.
+- Bir sonucun kapsamı ve güncelliği sayfada gösterilen kaynak ve tarih bilgisine bağlıdır; bilgi yoksa kaynağın kendisine bakılmalıdır.
+
+## Arama ve yapay zekâ botları
+
+- Arama ve alıntı botları (Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User, PerplexityBot, Perplexity-User, Claude-SearchBot, Claude-User) sitenin genel sayfalarını tarayabilir. Kaynak göstererek alıntılamanız beklenir.
+- Model eğitimi botları (GPTBot, ClaudeBot, Google-Extended, CCBot) mevzuat, karar, kurum kararı ve makale kayıt sayfalarında robots.txt ile engellidir; derlenmiş veri tabanı emeği korunur.
+- Yeniden kullanım soruları için alt bilgideki iletişim adresi kullanılır.
+
+## Hukuki metinler
+
+- [Hukuki metinler](https://kazuist.com/hukuki)
+- [Hukuki uyarı ve künye](https://kazuist.com/hukuki/uyari)
+- [Gizlilik politikası](https://kazuist.com/hukuki/gizlilik)
+- [Çerez politikası](https://kazuist.com/hukuki/cerezler)
+- [Yapay zekâ politikası](https://kazuist.com/hukuki/yapay-zeka)
+- [Erişilebilirlik](https://kazuist.com/hukuki/erisilebilirlik)
+
+## Araştırma arka planı
+
+- [Casuist: kaynak bağlama çekirdeği](https://kazuist.com/tr): Kazuist'in dayandığı araştırma çalışması.

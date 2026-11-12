@@ -1,3 +1,33 @@
+## 12 Kasım 2026, seo: görünürlüğün ortama bağlanması, robots, site haritası, llms.txt (codex/p6-seo)
+
+Yeni bağımlılık yok; `packages/contracts` ve `packages/db` değişmedi. P6 madde 1 ve 2 kapandı; madde 3 ve 4 bu PR'da yok.
+- Ortam kararı `apps/web/src/app/(seo)/_seo/ortam.ts`: yalnız `NODE_ENV=production`, `KAZUIST_ENV=production` ve `APP_URL` https `kazuist.com`
+  birlikte olduğunda index; eksik, staging, geliştirme, www veya http her durumda `noindex, nofollow`. Varsayılan kapalı.
+- `layout.tsx` (orkestra yolu) yalnız iki satır: `temelMetadata()` içe aktarımı ve eski `title` ile `robots` satırlarının yerine
+  `...temelMetadata()`. Kaynak `(seo)/_seo/metadata.ts`: metadataBase (APP_URL), `title: { template: '%s | Kazuist', default: 'Kazuist' }`,
+  robots, `alternates.canonical: './'` (her sayfa kendi adresine; sorgu dizgisiz), OpenGraph `website`, `tr_TR`, görsel yok. Plan
+  dışı iki küçük ek (canonical ve OpenGraph) aynı nesnede olduğu için layout'a ayrı satır eklenmedi. hreflang yok (ADR-0032).
+- `robots.ts`: üretim dışında `Disallow: /` ve site haritası satırı yok. Üretimde `*` ve arama botları (OAI-SearchBot, ChatGPT-User,
+  PerplexityBot, Perplexity-User, Claude-SearchBot, Claude-User, Googlebot, Bingbot) serbest; eğitim botları (GPTBot, ClaudeBot,
+  Google-Extended, CCBot) `/mevzuat/`, `/karar/`, `/kurum-karari/`, `/makale/` altında engelli; herkese `/api/`, `/yonetim`, `/odeme`
+  kapalı (botun kendi grubu `*` grubunu geçersiz kıldığı için her grupta yinelenir). `force-dynamic`: ortam değişkeni çalışma zamanında okunur.
+- `sitemap.ts`: `rotalar.ts` `acikModuller` ile tutarlı (yalnız `/kaydettiklerim` bilerek dışarıda, kişisel ve noindex), açık modüllerin genel
+  alt sayfaları, `/`, `/fiyatlar`, `/tespit`, `/hukuki` ve üretimde yayımlanan hukuki metinler (taslak olan listelenmez; Casuist arşiv
+  sürümü duran beş belge listelenir), `/tr` ve beş alt sayfa. İngilizce adres, `/eski` ve `/tr/hukuki/*` (301 kaynağı) yok. `lastModified`
+  yalnız gerçek tarih biliniyorsa (yayınlanmış hukuki sürüm tarihi) yazılır; uydurma `new Date()` yok. Dinamik kayıt sayfaları ve dergi profilleri
+  Dalga 2 parçalı site haritasına kaldı.
+- `public/llms.txt`: Türkçe, plan 1 ve 13'ten ürün tanımı, kaynak politikası, bot politikası; rakam ve güncellik iddiası yok; yalnız var olan sayfalara bağlantı.
+- Testler `apps/web/test/seo.test.ts` (23): noindex matrisi, robots grupları, sitemap'te kaldırılan 11 İngilizce adresin yokluğu, listedeki her yolun
+  uygulamada sayfası olduğu, llms.txt bağlantılarının varlığı.
+- Elle görülen (yerel üretim derlemesi, iki ortam): üretimde `index, follow`, canonical `https://kazuist.com/ara`, tam robots ve 28 adreslik site
+  haritası; ortam değişkensiz `noindex, nofollow`, `Disallow: /`; `/en` ve `/problem` 404; `/llms.txt` 200.
+- Bilinen kusur: sayfaların elle yazdığı "| Kazuist" ekiyle sekme başlığı "Başlık | Kazuist | Kazuist" oluyor (24 dosya, başka ajanların yolu);
+  liste ve düzeltme biçimi `docs/istekler/seo-p6-baslik-sablonu.md`. OpenGraph görseli yok: `docs/istekler/seo-p6-og-gorseli.md`.
+- Doğrulanmayan: gerçek alan adında robots ve bot `curl -A` denemeleri, WebSEORobot ve WebSCHEMArobot (DNS ve yayın sonrası), staging'de
+  `X-Robots-Tag` başlığı (next.config orkestranın; yalnız meta ve robots.txt var).
+- Kesin sonraki adım: sayfa sahipleri çift eki kaldırır; ardından P6 madde 3 (kayıt sayfası rotası, citation_*, Article/Legislation JSON-LD, Organization,
+  WebSite ve SearchAction, BreadcrumbList) ve Search Console adım listesi.
+
 ## 12 Kasım 2026, orkestra: yayın öncesi tam denetim ve review.md (codex/yayin-oncesi-denetim)
 
 Üç salt okunur ajan (ön yüz, işçiler ve paketler, altyapı ve belgeler) ve yerel typecheck, lint, test, build ile `main`
