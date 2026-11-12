@@ -1,7 +1,7 @@
 # ADR-0030: Barındırma sağlayıcısı Hetzner
 
 - Tarih: 2026-11-06
-- Durum: Kabul edildi, 6 Kasım 2026 kullanıcı kararı
+- Durum: Kabul edildi, 6 Kasım 2026 kullanıcı kararı. Madde 3 (staging) ve madde 4 (iki sunucu) için ADR-0033 önerildi (Tarık onayı bekliyor); "Sonuçlar ve koşullar" bölümü ADR-0033'te de değişmez.
 - İlgili kararlar: K-03, K-04; plan 5.4, 5.5, 11; ADR-0021
 
 ## Bağlam

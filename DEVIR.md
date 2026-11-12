@@ -27,6 +27,33 @@ Yeni bağımlılık yok; `packages/contracts` ve `packages/db` değişmedi. P6 m
   `X-Robots-Tag` başlığı (next.config orkestranın; yalnız meta ve robots.txt var).
 - Kesin sonraki adım: sayfa sahipleri çift eki kaldırır; ardından P6 madde 3 (kayıt sayfası rotası, citation_*, Article/Legislation JSON-LD, Organization,
   WebSite ve SearchAction, BreadcrumbList) ve Search Console adım listesi.
+## 12 Kasım 2026, mimar: P1 kararlarının yazımı ve sözleşme temizliği planı (codex/p1-mimar-kararlar)
+
+review.md P1 madde 1, 2, 3 ve 10 yapıldı; madde 4-9 yalnız plan olarak yazıldı. `packages/contracts` ve `packages/db`
+değişmedi; yeni bağımlılık yok.
+- ADR-0033 (Önerildi): staging yok, Hetzner'da tek sunucu, Coolify, tek seferde yayın; sunucu boyutu seçilmedi
+  (CAX21 Arm64 8 GB ile 16 GB x86 arası, Hetzner sayfasından 12 Kasım'da okundu), imajlar GitHub Actions'ta
+  amd64 ve arm64 için derlenip çekilir. ADR-0030 madde 3-4'ü değiştirir; ADR-0030'un KVKK m.9 koşulu değişmez ve
+  yayının ön koşulu olarak yazıldı. K-11 ile ilişki açık soru (T4), karar verilmedi.
+- ADR-0034 (Önerildi, karar yok): görsellerde YZ serbest, YZ yalnız taslak ve son hali çizer, mevcut kural. Midjourney
+  koşulları resmî sayfadan okunamadı (otomatik istemciye HTTP 403); sahiplik, görünürlük ve otomasyon maddeleri
+  "doğrulanmadı" diye yazıldı. FSEK m.1/B tanımları mevzuat.gov.tr metninden okundu.
+- ADR-0002, 0003, 0014, 0016 Durum satırları ve `docs/adr/README.md` özetleri "ADR-0030/0031/0032 ile değişti";
+  README tablosu 0028-0034 satırlarıyla tek tabloya toplandı; ADR-0030 Durum satırına ADR-0033 notu.
+- `docs/sahiplik.md`: kampus pasif; `{tr,en}` desenleri `tr`; yazma satırına `/tespit`, `docs/tespit`, `tespit.json`
+  ve yazma API yolları; `hesap.json` kimlik, `/kaydettiklerim` ve `kaydettiklerim.json` casuist (git geçmişinden);
+  sahipsiz kalan `api/v1` yolları (search, answers, norms, library, records, citation-network, decks) ilk ekleyene
+  verildi; kök `review.md` orkestranın; not 3'teki eski "henüz atanmadı" cümlesi düzeltildi.
+- Ajan tanımları: seo (hreflang), on-yuz (/en, altı sekme), hukuk-uyum (İngilizce sürüm), ios (Kampüs sekmesi),
+  kampus (pasif, çağrılmaz). plan.md'de yalnız Ek A seo kopyasının iki satırı.
+- `.env.example`: kodda okunan 14 eksik değişken eklendi; kodda okunmayan 17 yer tutucu `[gelecek faz]` işaretli
+  (S3 anahtar çifti uygulamada okunmuyor, yalnız yerel compose ve CI kullanıyor); staging ve "endpoint in Turkey"
+  anlatımı ADR-0033'e göre düzeltildi; `ACCOUNT_PURGE_GRACE_DAYS` kimlik bölümüne taşındı (boş değer kodda 14'e düşer).
+- `docs/istekler/mimar-p1-sozlesme-temizligi.md`: P1 madde 4-9 için iki adımlı plan (A ekleyici, ADR-0035, migration
+  0007; B kaldırıcı, ADR-0036, migration 0008, Tarık onayıyla ve ilk üretim dağıtımından önce).
+- `docs/ip/arka-plan-kaydi.md` ADR listesine 0021-0034 durumları eklendi.
+- Doğrulanmayan: ADR-0033 ve 0034 Tarık onayı bekliyor; Midjourney koşulları birincil kaynaktan okunmadı.
+- Kesin sonraki adım: Tarık'ın T1 (ADR-0033), T3 (ADR-0034) ve T4 kararları; ardından adım A (ADR-0035).
 
 ## 12 Kasım 2026, orkestra: yayın öncesi tam denetim ve review.md (codex/yayin-oncesi-denetim)
 

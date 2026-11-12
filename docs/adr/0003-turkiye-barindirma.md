@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-19
 - Karar kodu: K-03 (plan.md bölüm 1)
-- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)
+- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026). ADR-0030 ile değişti (6 Kasım 2026): sağlayıcı Hetzner Cloud, AB konumu; üretimde kişisel veri KVKK m.9 dayanağı olmadan işlenmez. Tek sunucu ve staging'siz düzen için ADR-0033 önerildi.
 
 ## Bağlam
 
@@ -25,3 +25,5 @@ Kişisel veri için yurt dışı aktarım doğmaz; aktarım envanteri (plan 5.5)
 ## Durum
 
 Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026).
+
+ADR-0030 ile değişti (6 Kasım 2026): sağlayıcı Hetzner Cloud, AB konumu; üretimde kişisel veri KVKK m.9 dayanağı olmadan işlenmez. Tek sunucu ve staging'siz düzen için ADR-0033 önerildi.
