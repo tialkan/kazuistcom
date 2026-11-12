@@ -32,6 +32,10 @@ ADR-0021 (yerel S3 deposu), ADR-0022 (altın set etiketleme yöntemi) ve ADR-002
 tarihli, durum "Önerildi, Tarık onayı bekliyor". ADR-0024 (abonelik atıfları ve yıllık iade formülü, 2026-10-22,
 güncelleme 2026-10-25) ve ADR-0026 (sözleşme v1.2, 2026-10-25) "Önerildi, Tarık onayı bekliyor"; ADR-0025 (platform YZ
 sağlayıcısı OpenRouter) "Kabul edildi (Tarık İsmet Alkan, 23 Ekim 2026)".
+Güncelleme 2026-11-12 (docs/adr/README.md ile aynı): ADR-0021, 0022, 0023, 0024 ve 0026 kullanıcı onayıyla 2026-10-25,
+ADR-0027, 0028 ve 0029 2026-10-27, ADR-0030 ve 0031 2026-11-06, ADR-0032 2026-11-07 tarihinde kabul edildi. ADR-0033 (tek
+sunucu, staging'siz, tek seferde yayın) ve ADR-0034 (görsel varlık üretimi) 2026-11-12 tarihli, "Önerildi, Tarık onayı
+bekliyor". ADR-0034 hangi seçenekle sonuçlanırsa sonuçlansın görsel varlıkların aracı, istemi ve çizeni bu kayda yazılır.
 ADR-0001 (kaynaklı özet ve kaynak bağlama) ve ADR-0006 (PostgreSQL içinde hibrit getirme) Eurostars WP4'ün
 (retrieval, grounding, provenance) arka plan IP'si bakımından temel kayıtlardır.
 

@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-19
 - Karar kodu: K-02 (plan.md bölüm 1)
-- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)
+- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026). ADR-0032 ile değişti (7 Kasım 2026): eski İngilizce Casuist sayfaları ve /en yönlendirmesiz kaldırıldı, 404 döner; Türkçe Casuist sayfaları (/tr ve altı) ve beş Türkçe hukuki 301 geçerli.
 
 ## Bağlam
 
@@ -25,3 +25,5 @@ Bağlantı kırılmadan ürün kökte açılır; yönlendirme zinciri tek adımd
 ## Durum
 
 Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026).
+
+ADR-0032 ile değişti (7 Kasım 2026): eski İngilizce Casuist sayfaları ve /en yönlendirmesiz kaldırıldı, 404 döner; Türkçe Casuist sayfaları (/tr ve altı) ve beş Türkçe hukuki 301 geçerli.
