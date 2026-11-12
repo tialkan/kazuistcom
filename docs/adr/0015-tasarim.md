@@ -2,7 +2,7 @@
 
 - Tarih: 2026-10-19
 - Karar kodu: K-15 (plan.md bölüm 1)
-- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026)
+- Durum: Kabul edildi (Tarık İsmet Alkan, 19 Ekim 2026); görsel kuralı ADR-0034 ile daraltıldı: YZ yalnız taslakta
 
 ## Bağlam
 

@@ -26,7 +26,7 @@ Ajanlar bu kararlar olmadan ilgili paketi bitiremez. Her biri bir ADR'ye bağlan
 |---|---|---|---|
 | T1 | Staging'siz, tek sunuculu, fazlı yayın (ADR-0033) | ADR-0030, plan 5.4, 5.5, 14 ve beş runbook iki sunucu ve staging varsayıyor | P1, P2 |
 | T2 | Karara bağlandı: hepsi birlikte açılır | Hesap, ödeme ve formlar kişisel veri işler; ADR-0030 bunu m.9 dayanağı olmadan yasaklıyor. Yayın bu dayanak tamamlanınca yapılır ya da ADR-0030 koşulu ADR-0033 ile açıkça değiştirilir | P1, P5 |
-| T3 | Görsellerde YZ kullanımı (ADR-0034) | plan 12 madde 7 avatar ve Kalemcik için "tek çizerden, YZ görseli yasak" diyor; Midjourney isteğiyle çelişir | P4 |
+| T3 | Karara bağlandı: ADR-0034 seçenek B. Midjourney yalnız taslak; son dosyalar çizerden, simgeler elde vektör | plan 12 madde 7 buna göre daraltıldı | P4 |
 | T4 | Karar metinleri yurt dışı sunucuda işlenebilir mi | ADR-0011 ve K-11 "anonimleştirme Türkiye'deki sunucuda" diyor; ADR-0030 bunu ele almıyor | P9 |
 | T5 | NER modeli olmadan anonimleştirme yayına açılır mı | Üretim imajı NER kurmuyor; kararlar yalnız kural katmanıyla maskelenip servis edilir | P9 |
 | T6 | Kaynak onayları | `docs/kaynaklar/*.md` yedi dosyada `tarik_onayi: bekliyor`; üretimde hepsi kapalı. KVKK ve Rekabet'te robots.txt yokluğu yorumu ve EUR-Lex için CELLAR ucu açık kabul ister | P9 |

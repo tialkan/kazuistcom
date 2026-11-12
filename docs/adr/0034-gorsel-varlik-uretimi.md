@@ -1,7 +1,7 @@
 # ADR-0034: Görsel varlık üretimi
 
 - Tarih: 2026-11-12
-- Durum: Önerildi, Tarık onayı bekliyor (karar verilmedi)
+- Durum: Kabul edildi, seçenek B (Tarık İsmet Alkan, 12 Kasım 2026)
 - İlgili kararlar: K-15, ADR-0015, ADR-0019; plan 12 madde 7 ve 14; webtasarim.md 18, 19, 32; review.md T3, P4
 
 ## Bağlam
@@ -96,5 +96,6 @@ favicon ve simgeler elde vektör; OpenGraph kartı tipografik. Karar Tarık'ınd
 
 ## Onay kaydı
 
-Tarık'ın Midjourney isteği review.md T3 olarak kaydedildi. Bu ADR karar içermez; Tarık seçeneklerden birini açıkça
-seçene kadar plan 12 madde 7 ve ADR-0015 geçerlidir.
+Tarık'ın Midjourney isteği review.md T3 olarak kaydedildi. Tarık İsmet Alkan 12 Kasım 2026'da sohbette seçenek B'yi
+seçti: Midjourney yalnız taslak, yön ve brifing için kullanılır; ürüne YZ çıktısı girmez, son dosyalar çizerden ya da
+ekipten bir kişinin elden veya vektör çizimidir. Favicon ve simgeler elde vektör, OpenGraph kartı tipografiktir.
