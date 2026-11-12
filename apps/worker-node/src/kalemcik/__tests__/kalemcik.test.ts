@@ -415,10 +415,12 @@ describe('daily schedule and handler', () => {
 });
 
 describe('the notify worker text for Kalemcik references', () => {
-  it('currently renders the generic text; the Kalemcik text needs the one-line hook of the request', () => {
-    // docs/istekler/yazma-bildirim-metni.md asks kimlik to call renderKalemcikNotice from notify/dispatch.ts render().
-    const genel = render('kalemcik', 'kalemcik:sessizlik:sen:0:5000:100:50:3');
-    expect(genel.path).toBe('/kalemcik');
-    expect(genel.title.length).toBeGreaterThan(0);
+  it('renders the Kalemcik text named by refId (render() calls renderKalemcikNotice)', () => {
+    // docs/istekler/yazma-bildirim-ve-hesap.md item 1, wired by kimlik in notify/dispatch.ts render().
+    const ref = 'kalemcik:sessizlik:sen:0:5000:100:50:3';
+    const metin = render('kalemcik', ref);
+    expect(metin).toEqual(renderKalemcikNotice(ref));
+    expect(metin).not.toEqual(render('kalemcik'));
+    expect(metin.path).toBe('/kalemcik');
   });
 });

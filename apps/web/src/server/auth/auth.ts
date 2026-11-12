@@ -121,7 +121,13 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: Ac
     },
     /** Rate limiting is done in front of the handler with the shared Valkey limiter (rate-limit.ts). */
     rateLimit: { enabled: false },
-    emailAndPassword: { enabled: true, minPasswordLength: 10, maxPasswordLength: 128 },
+    emailAndPassword: {
+      enabled: true,
+      minPasswordLength: 10,
+      maxPasswordLength: 128,
+      // A reset by e-mail code ends every other session (stolen session after a password leak).
+      revokeSessionsOnPasswordReset: true,
+    },
     socialProviders,
     account: {
       accountLinking: { enabled: true, trustedProviders: ['google', 'apple'] },
