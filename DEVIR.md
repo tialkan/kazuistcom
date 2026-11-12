@@ -1,3 +1,28 @@
+## 12 Kasım 2026, on-yuz: kabukta oturum ve "yakında" düzeneğinin kaldırılması (codex/on-yuz-kabuk-oturum)
+
+İstek `docs/istekler/kimlik-p7-kabuk-oturum.md` karşılandı; ADR-0033 ve review.md T2 gereği kapalı modül kalmadı.
+Yeni bağımlılık yok; `packages/contracts`, `packages/db` ve kök `layout.tsx` değişmedi.
+- Hedefim alanı (`apps/web/src/app/(kabuk)/_kabuk/`): `oturum.ts` (tip ve saf görünüm), `oturumYukle.ts` (sunucu:
+  `pageSession`, `getMe`, `findProfession`; çerez yoksa veri tabanına gidilmez, silinmiş hesap misafir, profil
+  okunamazsa ad ve hedefsiz oturum ve yalnız hata sınıfı loglanır), `HedefimBagi.tsx`, `Hedefim.tsx` (async).
+  Misafir: "Hedefim / Giriş yapın", `/giris`. Oturum: ad (yoksa "Hesabım") ve hedef meslek, `/hesap`; hedef
+  seçilmemişse "Meslek seçin", `/hesap/hedef`. Avatar halkası adın ilk harfini Türkçe büyük harfle gösterir;
+  çizim avatarlar (ADR-0034) gelince `avatar` alanı kullanılır. Dar ekranda metin görsel olarak gizlenir ama
+  bağlantının erişilebilir adında kalır (eskiden `display: none` idi).
+- `Kabuk` isteğe bağlı `oturum` alır; verilmezse alan oturumu kendisi okur. Layout istek başına çalıştığı için
+  ek önbellek yok.
+- "Yakında" düzeneği: `ModulBagi.tsx`, `OrnekSoru.tsx`, `.modul-kapali` stilleri ve `gezinme.yakinda` silindi;
+  sekmeler, alt bilgi, ana sayfa modül listesi, örnek sorular ve 404 doğrudan bağlantı verir. `acikModuller` ve
+  `modulAcik` artık `moduller`'den türetilir ve `@deprecated`; seo, icerik ve orkestra çağıranları
+  `docs/istekler/on-yuz-acik-modul-listesi.md` ile istendi, onlar birleşince silinecek.
+- i18n `ortak.json`: `hedefim.girisYapin`, `hedefim.girisAciklama`, `hedefim.hesapAciklama` eklendi.
+- Doğrulama: web 47 dosya 608 test (607 geçti, 1 atlandı; yeni `kabuk.test.tsx` 9 test), i18n 22, typecheck,
+  lint, check:text, build. Yerel PostgreSQL 18 ve üretim derlemesiyle misafir, hedefli ve hedefsiz oturumda
+  375/768/1440: 21 sayfa ve genişlikte axe ihlali 0, yatay taşma 0 (`docs/tasarim/ekran/kabuk-*.png`,
+  `kabuk-oturum-axe.json`, betik `docs/tasarim/kabuk-oturum-ekran.mjs`). e2e 100/100 aynı sunucuya karşı.
+- Güncellenmedi: `docs/tasarim/ekran/ana-sayfa-*.png` gibi eski ekranlar Hedefim'de hâlâ "Meslek seçin" gösterir
+  (T11 kararı beklendiği için 48 PNG yeniden üretilmedi). Lighthouse çalıştırılmadı.
+
 ## 12 Kasım 2026, casuist: arama dizini, embed.chunks tüketicisi (codex/p9-arama-dizini)
 
 review.md P9 madde 1 ve 8. Üretimde `chunks` tablosunu yazan bir tüketici yoktu; tam metin ve vektör araması boş

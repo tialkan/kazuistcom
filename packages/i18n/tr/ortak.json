@@ -20,13 +20,15 @@
       "pratik": "Eğlenerek öğrenme",
       "kaydettiklerim": "Kaydettiklerim"
     },
-    "yakinda": "yakında",
     "tespit": "Yazım kuralları ve iz denetleyicisi"
   },
   "hedefim": {
     "etiket": "Hedefim",
     "secilmedi": "Meslek seçin",
-    "aciklama": "Hedef mesleğinizi seçin veya değiştirin"
+    "aciklama": "Hedef mesleğinizi seçin veya değiştirin",
+    "girisYapin": "Giriş yapın",
+    "girisAciklama": "Hesabınıza giriş yapın veya yeni hesap açın",
+    "hesapAciklama": "Hesabınızı, hedef mesleğinizi ve ayarlarınızı yönetin"
   },
   "uyari": {
     "danismanlik": "Kazuist hukuki danışmanlık vermez ve kişisel durumunuz için görüş bildirmez.",

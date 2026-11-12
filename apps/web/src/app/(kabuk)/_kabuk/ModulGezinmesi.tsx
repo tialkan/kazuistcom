@@ -1,7 +1,7 @@
 'use client';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ortak } from '@kazuist/i18n';
-import { ModulBagi } from './ModulBagi.tsx';
 import { etkinMi, moduller } from './rotalar.ts';
 
 /** Module tabs. Client side only to mark the current section with aria-current. */
@@ -15,9 +15,9 @@ export function ModulGezinmesi() {
           const etkin = etkinMi(path, m.href);
           return (
             <li key={m.href}>
-              <ModulBagi href={m.href} current={etkin}>
+              <Link href={m.href} aria-current={etkin ? 'page' : undefined}>
                 {t.gezinme.sekme[m.anahtar]}
-              </ModulBagi>
+              </Link>
             </li>
           );
         })}

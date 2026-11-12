@@ -56,14 +56,34 @@
   line-height: 1.2;
 }
 .kabuk-hedefim__avatar {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
   width: 36px;
   height: 36px;
   border-radius: 50%;
   border: 1.5px dashed var(--kz-color-text-muted);
   background: var(--kz-color-surface-muted);
 }
+/* Signed in: a solid ring and the initial of the name; the hand drawn avatars replace it later (ADR-0034). */
+.kabuk-hedefim__avatar--oturum {
+  border: 1.5px solid var(--kz-color-text);
+  background: var(--kz-color-surface);
+  /* Sans: the serif capital İ reads as a lower case i at this size. */
+  font-family: var(--kz-font-body);
+  font-size: var(--kz-text-md);
+  font-weight: 700;
+  color: var(--kz-color-text);
+}
 .kabuk-hedefim__metin {
   display: grid;
+  min-width: 0;
+}
+.kabuk-hedefim__metin > span {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .kabuk-hedefim__etiket {
   font-size: var(--kz-text-xs);
@@ -97,32 +117,18 @@
   color: var(--kz-color-text);
   border-bottom-color: var(--kz-color-accent);
 }
-.kabuk-moduller .modul-kapali {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  min-height: 44px;
-  padding: 0 var(--kz-space-3);
-  white-space: nowrap;
-  font-size: var(--kz-text-sm);
-  font-weight: 600;
-  color: var(--kz-color-text-muted);
-}
-.modul-kapali__not {
-  font-size: var(--kz-text-xs);
-  font-weight: 500;
-  color: var(--kz-color-text-muted);
-}
-.kabuk-alt li .modul-kapali {
-  display: inline-block;
-  padding: 0.35rem 0;
-}
 .kabuk-icerik:focus {
   outline: none;
 }
 @media (max-width: 40rem) {
+  /* Only the avatar shows on narrow screens; the text stays in the accessible name of the link. */
   .kabuk-hedefim__metin {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .kabuk-ust__bag {
     gap: var(--kz-space-3);
