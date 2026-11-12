@@ -6,8 +6,9 @@ import { migrationsFolder } from '@kazuist/db';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { parseQuery, search, seedCorpus, sqlBackend, type SqlClient } from '@kazuist/casuist';
+import { parseQuery, search, sqlBackend, type SqlClient } from '@kazuist/casuist';
 import { fixtureRecords } from '@kazuist/casuist/fixture';
+import { seedCorpus } from '@kazuist/casuist/testing';
 import { schema } from '@/server/auth/db';
 
 /** The PostgreSQL backend on the real schema (migrations of packages/db) with the fixture corpus seeded. */

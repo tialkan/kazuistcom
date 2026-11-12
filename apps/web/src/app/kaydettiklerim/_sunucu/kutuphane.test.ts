@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- test assertions on known fixtures */
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { seedCorpus, type SqlClient } from '@kazuist/casuist';
+import type { SqlClient } from '@kazuist/casuist';
 import { fixtureRecords } from '@kazuist/casuist/fixture';
+import { seedCorpus } from '@kazuist/casuist/testing';
 import { api, createHarness, params, signUp, type Harness } from '@/server/auth/__tests__/harness';
 import { MemoryRateLimitStore, RateLimiter } from '@/server/auth/rate-limit';
 import {

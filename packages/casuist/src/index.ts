@@ -1,7 +1,7 @@
 /**
  * Casuist source binding core (plan 7). Pure functions, UI independent. Owner: casuist agent.
- * Entry points: "." (this file), "./validator" (browser safe line validator, BYOK client mode) and
- * "./fixture" (fixture corpus, server and tests only).
+ * Entry points: "." (this file), "./validator" (browser safe line validator, BYOK client mode),
+ * "./fixture" (fixture corpus, server and tests only) and "./testing" (seedCorpus, tests and local only).
  */
 export { ModelLine, parseModelLine } from '@kazuist/contracts';
 export * from './normalize.ts';
@@ -19,7 +19,6 @@ export * from './vector.ts';
 export * from './backend.ts';
 export * from './memory.ts';
 export * from './sql.ts';
-export * from './seed.ts';
 export * from './search.ts';
 export * from './api.ts';
 export * from './export.ts';

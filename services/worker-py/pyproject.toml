@@ -44,7 +44,7 @@ dev = [
 package = false
 
 [tool.pytest.ini_options]
-testpaths = ["tests", "anonymizer/tests", "docxcheck/tests", "citations/tests"]
+testpaths = ["tests", "anonymizer/tests", "docxcheck/tests", "citations/tests", "nlp/tests"]
 pythonpath = ["."]
 
 [tool.ruff]

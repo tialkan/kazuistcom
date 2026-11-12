@@ -111,7 +111,7 @@ def test_health_probe_reflects_the_heartbeat() -> None:
 
 def test_registers_ingest_rg_and_anon_handlers() -> None:
     handlers = build_handlers(rt=object(), connect=lambda: None)
-    assert set(handlers) == {JobType.INGEST_FETCH, JobType.MEVZUAT_RG_DAILY, JobType.ANON_RUN}
+    assert set(handlers) == {JobType.INGEST_FETCH, JobType.MEVZUAT_RG_DAILY, JobType.ANON_RUN, JobType.EMBED_CHUNKS}
 
 
 def test_anon_run_commits_or_rolls_back_as_one_transaction() -> None:
