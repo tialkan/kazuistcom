@@ -1,0 +1,16 @@
+Fonts for the OpenGraph card (opengraph-image.tsx)
+
+These files are used only at build time to draw the share card; they are not served to visitors.
+All are licensed under the SIL Open Font License, Version 1.1. The licence texts and the original
+modification notes are in apps/web/public/fonts (NOTICE.txt and OFL-*.txt).
+
+SourceSerif4-Regular.ttf, SourceSerif4-Semibold.ttf
+  From apps/web/public/fonts/SourceSerif4.woff2, weight pinned at 400 and 600.
+KzSans-Medium.ttf
+  From apps/web/public/fonts/KzSans.woff2 (modified IBM Plex Sans, renamed under OFL section 3),
+  weight pinned at 500.
+KzMono-Regular.ttf
+  From apps/web/public/fonts/KzMono-Regular.woff2 (modified IBM Plex Mono, renamed under OFL section 3).
+
+Modification: fontTools.varLib.instancer pinned the variable axes, then the fonts were saved as plain
+TrueType because next/og (Satori) does not read WOFF2. The glyph subset is unchanged.
