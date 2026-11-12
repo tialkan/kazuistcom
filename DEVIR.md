@@ -36,6 +36,36 @@ kalıyordu. Yeni bağımlılık yok (ONNX yolu mevcut `ner-runtime` ekstrasını
   çalıştırılmadı, ONNX yolu yalnız küçük yapay bir grafikle yerelde denendi.
 - Açık: `pyproject.toml` `testpaths` içine `nlp/tests` (orkestra); sorgu gömmesi HTTP servisi; eval/embed seti ve
   ölçümü; uzlaştırma zamanlayıcısı ve model birimi (altyapi); `.env.example` değişkenleri (mimar).
+## 12 Kasım 2026, kimlik: hesap arayüzü ve bildirim düzeltmeleri (codex/p7-hesap-arayuzu)
+
+review.md P7 madde 1, 2, 3 ve 5. Yönetim paneli (madde 4) bu PR'da yok. Yeni bağımlılık yok (passkey için mevcut
+`better-auth/client` ve `@better-auth/passkey/client`); `packages/contracts` ve `packages/db` değişmedi.
+- Oturum denetimi: `server/auth/page-session.ts` (`requirePageSession`, `safeNext`). `/hesap/**` oturumsuzsa
+  `/giris?sonra=<yol>`'a yönlenir; `sonra` yalnız site içi yol kabul eder (açık yönlendirme testli).
+- `/hesap`: profil özeti, ad formu (PATCH /v1/me), güncel kullanım koşulları ve aydınlatma metni onaylanmadıysa rıza
+  kutusu (`account-view.ts` `pendingConsents`; e-posta kodu, Google, Apple ve iOS ile açılan hesaplar da buradan
+  onaylar), alt sayfalara bağlantılar, çıkış düğmesi. Alt sayfalar: `hedef` (PUT target-profession, meslek ve görünüm),
+  `ogrenci` (edu.tr kodu, iki adım), `kvkk` (m.11 talep türü, açıklama, cevap kanalı, makbuz), `guvenlik` (yeni:
+  passkey ekle ve kaldır, TOTP kurulumu, editör ve yönetici için `/api/auth/step-up/confirm` onayı), `verilerim`.
+- `/giris`: parola, tek kullanımlık e-posta kodu, passkey; TOTP açık hesapta parola girişinden sonra ikinci adım.
+  `/parola-sifirla` (yeni): e-posta kodu ve yeni parola. `auth.ts` `revokeSessionsOnPasswordReset: true`;
+  `/email-otp/request-password-reset` dar kod sınırına eklendi.
+- `/kayit`: zorunlu rıza kutusu; kayıttan sonra `POST /api/v1/me/consents` ile `kullanim_kosullari` ve
+  `aydinlatma` satırları `content/hukuki` sürümüyle yazılır.
+- Bildirim: `render()` Kalemcik referansında `renderKalemcikNotice` kullanır (push yine genel metin); `/kampus` yolları
+  `/hesap`; APNs yalnız 410 ya da `BadDeviceToken`/`Unregistered` gerekçesiyle aboneliği siler; web-push ve APNs 10 sn
+  zaman aşımı, APNs bağlantısı her yolda kapanır; push hatası artık e-postayı yinelemez (yalnız hiçbir kanal
+  teslim edilmediyse iş yeniden denenir). Tam çözüm için istek: `docs/istekler/kimlik-p7-bildirim-idempotency.md`.
+- yazma ajanının dosyasına tek dokunuş: `apps/worker-node/src/kalemcik/__tests__/kalemcik.test.ts` içindeki render
+  beklentisi Kalemcik metnine göre güncellendi.
+- İstekler: `kimlik-p7-kabuk-oturum.md` (on-yuz, Kabuk prop önerisi; Kabuk.tsx'e dokunulmadı),
+  `kimlik-p7-e2e-riza.md` (kalite-guvenlik: `/kayit` e2e testi kutuyu işaretlemeli, şu an bu tek test kırmızı).
+- Doğrulama: typecheck, lint, test (web 575, worker-node 96), check:text, build temiz. Yerel üretim derlemesinde
+  27 sayfa ve genişlik için axe: kritik ve ciddi 0, orta ve düşük 0, yatay taşma 0; kayıt, rıza, hedef, KVKK,
+  edu.tr, TOTP kurulumu, çıkış, parola ve TOTP ile giriş Playwright ile uçtan uca geçti. Gerçek passkey töreni
+  (donanım doğrulayıcı) ve gerçek SMTP ile kod teslimi denenmedi.
+- Kesin sonraki adım: kalite-guvenlik `hesap.spec.ts`'e kutu satırını ekler; on-yuz Kabuk oturum prop'unu bağlar;
+  mimar teslim tablosunu karara bağlar; ardından P7 madde 4 (yönetim paneli).
 ## 12 Kasım 2026, seo: görünürlüğün ortama bağlanması, robots, site haritası, llms.txt (codex/p6-seo)
 
 Yeni bağımlılık yok; `packages/contracts` ve `packages/db` değişmedi. P6 madde 1 ve 2 kapandı; madde 3 ve 4 bu PR'da yok.

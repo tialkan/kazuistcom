@@ -2,6 +2,7 @@ import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
 import type { ClaimedJob } from '@kazuist/db/jobs';
 import type { SqlClient } from '../queue.ts';
 import { renderBillingNotice } from '../billing/notice-text.ts';
+import { renderKalemcikNotice } from '../kalemcik/bildirim.ts';
 import { deliverLegalDocuments } from './legal-delivery.ts';
 import { channelAllows, commercialAllowed, type Prefs } from './prefs.ts';
 import { isQuietHour, nextSendTime } from './quiet-hours.ts';
@@ -47,8 +48,9 @@ export interface DispatchResult {
 const paths: Record<NotificationType, string> = {
   teslim_hatirlatmasi: '/yazma',
   kalemcik: '/kalemcik',
-  tam_metin_istegi: '/kampus',
-  tam_metin_cevabi: '/kampus',
+  // Kampus is passive (ADR-0031); these types are not produced, the link lands on the account page.
+  tam_metin_istegi: '/hesap',
+  tam_metin_cevabi: '/hesap',
   takip: '/hesap',
   odeme: '/hesap/cuzdan',
   fesih_teyidi: '/hesap/cuzdan',
@@ -60,6 +62,11 @@ export function render(type: NotificationType, refId?: string): Message {
   if (refId && (type === 'odeme' || type === 'fesih_teyidi')) {
     const billing = renderBillingNotice(refId);
     if (billing !== null) return billing;
+  }
+  // Kalemcik reminders name their message in refId (docs/istekler/yazma-bildirim-ve-hesap.md).
+  if (refId && (type === 'teslim_hatirlatmasi' || type === 'kalemcik')) {
+    const kalemcik = renderKalemcikNotice(refId);
+    if (kalemcik !== null) return kalemcik;
   }
   const t = tr.bildirim[type];
   return { title: t.baslik, body: t.metin, path: paths[type] };
@@ -159,25 +166,48 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
   }>('select id, channel, endpoint, keys, environment from push_subscriptions where user_id = $1', [
     payload.userId,
   ]);
+  /*
+   * Push is best effort once anything was delivered: a failing subscription is logged (error class only)
+   * and the next one is tried, so a retry of this job never sends the e-mail or an earlier push again.
+   * Only when nothing at all went out does the job fail and retry. Per channel idempotency across
+   * retries needs a delivery table (docs/istekler/kimlik-p7-bildirim-idempotency.md).
+   */
+  let pushFailures = 0;
   for (const s of subs) {
-    let r: 'ok' | 'gone' | undefined;
-    if (s.channel === 'web_push' && deps.webPush && wanted('web_push')) {
-      r = await deps.webPush.send(
-        { endpoint: s.endpoint, keys: s.keys as { p256dh: string; auth: string } },
-        pushMessage,
+    try {
+      let r: 'ok' | 'gone' | undefined;
+      if (s.channel === 'web_push' && deps.webPush && wanted('web_push')) {
+        r = await deps.webPush.send(
+          { endpoint: s.endpoint, keys: s.keys as { p256dh: string; auth: string } },
+          pushMessage,
+        );
+        if (r === 'ok' && !sent.includes('web_push')) sent.push('web_push');
+      } else if (s.channel === 'apns' && deps.apns && wanted('apns')) {
+        r = await deps.apns.send(
+          s.endpoint,
+          s.environment === 'production' ? 'production' : 'sandbox',
+          pushMessage,
+        );
+        if (r === 'ok' && !sent.includes('apns')) sent.push('apns');
+      }
+      if (r === 'gone') await deps.db.query('delete from push_subscriptions where id = $1', [s.id]);
+    } catch (err) {
+      pushFailures++;
+      console.error(
+        JSON.stringify({
+          at: 'notify',
+          level: 'error',
+          channel: s.channel,
+          type: payload.type,
+          error: err instanceof Error ? err.name : 'Unknown',
+        }),
       );
-      if (r === 'ok' && !sent.includes('web_push')) sent.push('web_push');
-    } else if (s.channel === 'apns' && deps.apns && wanted('apns')) {
-      r = await deps.apns.send(
-        s.endpoint,
-        s.environment === 'production' ? 'production' : 'sandbox',
-        pushMessage,
-      );
-      if (r === 'ok' && !sent.includes('apns')) sent.push('apns');
     }
-    if (r === 'gone') await deps.db.query('delete from push_subscriptions where id = $1', [s.id]);
   }
-  return sent.length ? { status: 'sent', sent } : { status: 'skipped', reason: 'no_channel', sent };
+  if (!sent.length && pushFailures) throw new Error('notify: every push delivery failed');
+  return sent.length
+    ? { status: 'sent', sent, ...(pushFailures ? { reason: 'push_partial' } : {}) }
+    : { status: 'skipped', reason: 'no_channel', sent };
 }
 
 /** JobHandler for the consumer in queue.ts: `{ 'notify.send': createNotifyHandler(deps) }`. */

@@ -39,15 +39,59 @@
   "sayfa": {
     "giris": {
       "baslik": "Giriş yapın",
-      "aciklama": "E-posta ve parola, e-posta kodu, passkey, Google veya Apple ile giriş yapabilirsiniz."
+      "aciklama": "E-posta ve parolayla, e-postanıza gelen tek kullanımlık kodla ya da passkey ile giriş yapabilirsiniz."
     },
     "kayit": {
       "baslik": "Hesap oluşturun",
-      "aciklama": "Kayıt olarak kullanım koşullarını ve aydınlatma metnini okuduğunuzu belirtirsiniz."
+      "aciklama": "Hesap oluşturmak için kullanım koşullarını kabul etmeniz ve aydınlatma metnini okumanız gerekir."
     },
     "hesap": {
       "baslik": "Hesabım",
-      "aciklama": "Profil, oturumlar, passkey, bildirim tercihleri ve haklarınız."
+      "aciklama": "Profiliniz, güvenlik ayarlarınız ve kişisel verilerinizle ilgili haklarınız.",
+      "profilBaslik": "Profil",
+      "eposta": "E-posta",
+      "ad": "Adınız",
+      "adKaydet": "Adı kaydedin",
+      "adKaydedildi": "Adınız kaydedildi.",
+      "plan": "Plan",
+      "planlar": {
+        "ucretsiz": "Ücretsiz",
+        "byok": "Kendi anahtarınızla",
+        "ogrenci_plus": "Öğrenci Plus",
+        "akademisyen": "Akademisyen"
+      },
+      "ogrenci": "Öğrenci doğrulaması",
+      "dogrulandi": "Doğrulandı",
+      "dogrulanmadi": "Doğrulanmadı",
+      "hedef": "Hedef meslek",
+      "secilmedi": "Seçilmedi",
+      "ayarlarBaslik": "Hesap ayarları",
+      "bolum": {
+        "hedef": {
+          "baslik": "Hedef meslek",
+          "aciklama": "Hedeflediğiniz mesleği ve görünümünüzü seçin."
+        },
+        "ogrenci": {
+          "baslik": "Öğrenci doğrulaması",
+          "aciklama": "edu.tr adresinizle öğrenci olduğunuzu doğrulayın."
+        },
+        "guvenlik": {
+          "baslik": "Güvenlik",
+          "aciklama": "Passkey ve iki adımlı doğrulama."
+        },
+        "kvkk": {
+          "baslik": "KVKK başvurusu",
+          "aciklama": "6698 sayılı Kanun m.11 kapsamındaki haklarınız için başvurun."
+        },
+        "verilerim": {
+          "baslik": "Verilerim",
+          "aciklama": "Verilerinizi indirin ya da hesabınızı silin."
+        }
+      },
+      "cikis": "Çıkış yapın",
+      "cikiliyor": "Çıkış yapılıyor",
+      "cikisHata": "Çıkış yapılamadı. Lütfen yeniden deneyin.",
+      "geri": "Hesabım sayfasına dönün"
     },
     "veri": {
       "baslik": "Verilerim",
@@ -58,15 +102,59 @@
     },
     "kvkk": {
       "baslik": "KVKK başvurusu",
-      "aciklama": "6698 sayılı Kanun'un 11. maddesindeki haklarınız için başvuru yapabilirsiniz."
+      "aciklama": "6698 sayılı Kanun'un 11. maddesindeki haklarınız için başvuru yapabilirsiniz.",
+      "tur": "Talep türü",
+      "turler": {
+        "islenip_islenmedigi": "Kişisel verilerimin işlenip işlenmediğini öğrenmek",
+        "bilgi": "İşlenmişse buna ilişkin bilgi talep etmek",
+        "amac": "İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenmek",
+        "aktarim_bilgisi": "Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilmek",
+        "duzeltme": "Eksik veya yanlış işlenmişse düzeltilmesini istemek",
+        "silme": "KVKK m.7 şartlarıyla silinmesini veya yok edilmesini istemek",
+        "ucuncu_kisilere_bildirim": "Düzeltme ve silme işlemlerinin aktarıldığı üçüncü kişilere bildirilmesini istemek",
+        "itiraz": "Münhasıran otomatik sistemlerle analiz sonucu aleyhime çıkan sonuca itiraz etmek",
+        "zarar_giderimi": "Kanuna aykırı işleme nedeniyle uğradığım zararın giderilmesini talep etmek"
+      },
+      "detay": "Talebiniz",
+      "detayIpucu": "Talebinizi açıklayın. En fazla 4.000 karakter.",
+      "kanal": "Cevabı nasıl almak istersiniz?",
+      "kanallar": {
+        "eposta": "Hesabımdaki e-posta adresine",
+        "posta": "Posta ile"
+      },
+      "adres": "Posta adresiniz",
+      "adresGerekli": "Posta ile cevap için adres gerekir.",
+      "detayGerekli": "Lütfen talebinizi yazın.",
+      "gonder": "Başvuruyu gönderin",
+      "alindi": "Başvurunuz alındı. Başvuru numarası: {id}. En geç {tarih} tarihine kadar cevaplanır.",
+      "hata": "Başvurunuz gönderilemedi. Lütfen yeniden deneyin."
     },
     "ogrenci": {
       "baslik": "Öğrenci doğrulaması",
-      "aciklama": "edu.tr uzantılı adresinize 6 haneli bir kod göndeririz. Doğrulama yılda bir yenilenir."
+      "aciklama": "edu.tr uzantılı adresinize 6 haneli bir kod göndeririz. Doğrulama yılda bir yenilenir.",
+      "dogrulandi": "Öğrenci doğrulamanız etkin.",
+      "eposta": "Kurum adresiniz (edu.tr)",
+      "epostaIpucu": "Örnek: ad.soyad@ogr.universite.edu.tr",
+      "kodGonder": "Kod gönderin",
+      "kodGonderildi": "Kodu gönderdik. Gelen kutunuzu kontrol edin; kod 10 dakika geçerlidir.",
+      "kod": "Doğrulama kodu",
+      "dogrula": "Doğrulayın",
+      "tamam": "Öğrenci doğrulamanız tamamlandı.",
+      "baskaAdres": "Başka bir adres girin"
     },
     "hedef": {
       "baslik": "Hedef meslek",
-      "aciklama": "Hedeflediğiniz mesleği ve avatarınızı seçebilirsiniz. Seçim zorunlu değildir."
+      "aciklama": "Hedeflediğiniz mesleği ve avatarınızı seçebilirsiniz. Seçim zorunlu değildir.",
+      "meslek": "Meslek",
+      "avatar": "Görünüm",
+      "avatarlar": {
+        "a": "Birinci görünüm",
+        "b": "İkinci görünüm",
+        "n": "Cinsiyet belirtmeyen görünüm"
+      },
+      "kaydet": "Kaydedin",
+      "kaydedildi": "Hedef mesleğiniz kaydedildi.",
+      "hata": "Seçiminiz kaydedilemedi. Lütfen yeniden deneyin."
     },
     "silme": {
       "baslik": "Hesabınızı silin",
@@ -81,6 +169,74 @@
       "siliniyor": "Hesabınız kapatılıyor.",
       "silindi": "Hesabınız kapatıldı. Veri silme işlemi saklama kuralları çerçevesinde sıraya alındı.",
       "islemHata": "Hesabınız kapatılamadı. Lütfen yeniden deneyin."
+    },
+    "riza": {
+      "baslik": "Güncel metinleri onaylayın",
+      "aciklama": "Kullanım koşullarının veya aydınlatma metninin güncel sürümünü henüz onaylamadınız.",
+      "dugme": "Onaylayın",
+      "tamam": "Onayınız kaydedildi.",
+      "hata": "Onayınız kaydedilemedi. Lütfen yeniden deneyin."
+    },
+    "parola": {
+      "baslik": "Parolanızı sıfırlayın",
+      "aciklama": "Adresinize 6 haneli bir kod göndeririz. Kodla yeni parolanızı belirleyebilirsiniz.",
+      "kodIste": "Kod gönderin",
+      "kodGonderildi": "Bu adrese bağlı bir hesap varsa kodu gönderdik. Kod 10 dakika geçerlidir.",
+      "kod": "Tek kullanımlık kod",
+      "yeniParola": "Yeni parola",
+      "kaydet": "Parolayı değiştirin",
+      "tamam": "Parolanız değiştirildi. Diğer cihazlardaki oturumlarınız kapatıldı.",
+      "girisBaglanti": "Giriş sayfasına gidin",
+      "hata": "Parola değiştirilemedi. Kodu ve parolayı kontrol edip yeniden deneyin."
+    },
+    "guvenlik": {
+      "baslik": "Güvenlik",
+      "aciklama": "Passkey ve iki adımlı doğrulama ayarlarınız.",
+      "passkey": {
+        "baslik": "Passkey",
+        "aciklama": "Parola yerine cihazınızın ekran kilidiyle giriş yapabilirsiniz.",
+        "yukleniyor": "Passkey kayıtlarınız yükleniyor.",
+        "yok": "Kayıtlı passkey yok.",
+        "adsiz": "Adsız passkey",
+        "eklenme": "Eklenme tarihi: {tarih}",
+        "ad": "Passkey adı (isteğe bağlı)",
+        "ekle": "Passkey ekleyin",
+        "eklendi": "Passkey eklendi.",
+        "sil": "Kaldırın",
+        "silEtiket": "{ad} kaydını kaldırın",
+        "silindi": "Passkey kaldırıldı.",
+        "desteklenmiyor": "Bu tarayıcı passkey desteklemiyor.",
+        "hata": "İşlem tamamlanamadı. Lütfen yeniden deneyin."
+      },
+      "totp": {
+        "baslik": "İki adımlı doğrulama",
+        "aciklama": "Doğrulama uygulamasıyla (TOTP) girişe ikinci bir adım ekler. Yönetim paneli için zorunludur.",
+        "acik": "İki adımlı doğrulama açık.",
+        "kapali": "İki adımlı doğrulama kapalı.",
+        "parola": "Mevcut parolanız",
+        "baslat": "Kurulumu başlatın",
+        "baslatHata": "Kurulum başlatılamadı. Parolanızı kontrol edip yeniden deneyin.",
+        "anahtar": "Kurulum anahtarı",
+        "anahtarAciklama": "Bu anahtarı doğrulama uygulamanıza elle ekleyin ya da bağlantıyı bu cihazda açın.",
+        "baglanti": "Doğrulama uygulamasında açın",
+        "yedek": "Yedek kodlar",
+        "yedekAciklama": "Bu kodları güvenli bir yerde saklayın. Her biri bir kez kullanılabilir ve bir daha gösterilmez.",
+        "kod": "Uygulamadaki 6 haneli kod",
+        "dogrula": "Doğrulayın ve açın",
+        "tamam": "İki adımlı doğrulama açıldı.",
+        "hata": "Kod doğrulanamadı. Lütfen yeniden deneyin."
+      },
+      "yonetici": {
+        "baslik": "Yönetici onayı",
+        "aciklama": "Yönetim paneli için oturumun passkey ile açılmış olması ve bu oturumda iki adımlı doğrulama kodunun onaylanması gerekir. Onay bir saat geçerlidir.",
+        "passkeyGerekli": "Bu oturum passkey ile açılmadı. Çıkış yapıp passkey ile giriş yapın.",
+        "totpGerekli": "Önce iki adımlı doğrulamayı açın.",
+        "onayli": "Bu oturum için yönetici onayı geçerli.",
+        "kod": "Doğrulama kodu",
+        "onayla": "Onaylayın",
+        "tamam": "Yönetici onayı verildi.",
+        "hata": "Kod doğrulanamadı. Lütfen yeniden deneyin."
+      }
     }
   },
   "bildirim": {
@@ -134,6 +290,27 @@
     "kayitHata": "Hesap oluşturulamadı. Bilgileri kontrol edip yeniden deneyin.",
     "bekleyin": "Gönderiliyor",
     "kayitBaglanti": "Hesabınız yok mu? Hesap oluşturun.",
-    "girisBaglanti": "Hesabınız var mı? Giriş yapın."
+    "girisBaglanti": "Hesabınız var mı? Giriş yapın.",
+    "riza": "{kosullar} okudum ve kabul ediyorum. {aydinlatma} okudum.",
+    "rizaKosullar": "Kullanım koşullarını",
+    "rizaAydinlatma": "Aydınlatma metnini",
+    "rizaGerekli": "Devam etmek için kullanım koşullarını kabul etmeniz gerekir.",
+    "rizaKayitHata": "Hesabınız oluşturuldu ancak onayınız kaydedilemedi. Hesabım sayfasında yeniden onaylayabilirsiniz.",
+    "parolaUnuttum": "Parolanızı mı unuttunuz?",
+    "kodlaDevam": "Parola yerine tek kullanımlık kod isteyin",
+    "parolaylaDevam": "Parolayla devam edin",
+    "kod": "Tek kullanımlık kod",
+    "kodIpucu": "Adresinize gönderdiğimiz 6 haneli kod. 10 dakika geçerlidir.",
+    "kodGonderildi": "Kodu gönderdik. Gelen kutunuzu kontrol edin; kod 10 dakika geçerlidir.",
+    "kodDugme": "Kodu doğrulayın",
+    "kodHata": "Kod hatalı veya süresi dolmuş.",
+    "passkeyDugme": "Passkey ile devam edin",
+    "passkeyHata": "Passkey doğrulaması tamamlanamadı.",
+    "digerYollar": "Diğer yollar",
+    "ikinciAdimBaslik": "İki adımlı doğrulama",
+    "ikinciAdimAciklama": "Doğrulama uygulamanızdaki 6 haneli kodu girin.",
+    "totpKod": "Doğrulama kodu",
+    "totpDugme": "Doğrulayın",
+    "totpHata": "Kod doğrulanamadı."
   }
 }
