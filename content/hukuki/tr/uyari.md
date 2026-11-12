@@ -4,13 +4,13 @@ slug: uyari
 route: /hukuki/uyari
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
-> Unvan, MERSİS, sicil ve adres 20 Ekim 2026'da onaylandı (docs/kararlar.md). İletişim bilgileri 23 Ekim 2026'da güncellendi (kaynak kulular.com.tr). Vergi dairesi, VKN ve KEP Tarık'tan bekleniyor.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026.
+> Unvan, MERSİS, sicil ve adres 20 Ekim 2026'da onaylandı (docs/kararlar.md). İletişim bilgileri 23 Ekim 2026'da güncellendi (kaynak kulular.com.tr). Vergi dairesi, VKN ve KEP Tarık'tan bekleniyor. Barındırma satırı ADR-0030 ve ADR-0033'e göre yazıldı. Marka durumu satırı künye zorunluluğu olmadığı için çıkarıldı; marka başvurusu docs/kvkk/yukumlulukler.md listesinde izlenir.
 
 ## Künye
 
@@ -25,7 +25,7 @@ status: taslak
 | E-posta | teknoloji@kulular.com |
 | Telefon | +90 505 781 48 46 |
 | Alan adı | kazuist.com |
-| Barındırma | Türkiye'de veri merkezi bulunan sağlayıcı: {{BARINDIRMA_SAGLAYICI}} |
+| Barındırma | Hetzner Online GmbH (Almanya); sunucular Avrupa Birliği içindeki bir Hetzner veri merkezindedir |
 
 ## Hukuki uyarı
 
@@ -36,5 +36,9 @@ bir büroyu tanıtmaz ve yönlendirme yapmaz.
 Mevzuat ve kararların güncelliği için her zaman resmî kaynağı (Resmî Gazete, mevzuat.gov.tr ve ilgili mahkemenin
 yayını) kontrol edin. Kazuist sayfaları resmî kaynağa bağlantı verir.
 
-Kazuist'in yazılımı, tasarımı ve özgün içerikleri Kulular Bilişim Teknolojileri Ltd. Şti.'ne aittir.
-Kazuist adının marka başvurusu {{MARKA_DURUMU}}.
+Kazuist'in yazılımı, tasarımı ve özgün içerikleri Kulular Bilişim Teknolojileri Ltd. Şti.'ne aittir. Resmî
+metinler (mevzuat ve yargı kararları) 5846 sayılı Fikir ve Sanat Eserleri Kanunu m.31 kapsamındadır; Kazuist bu
+metinler üzerinde hak iddia etmez.
+
+Kişisel verilerin işlenmesi için [aydınlatma metni](/hukuki/aydinlatma) ve
+[gizlilik politikası](/hukuki/gizlilik) sayfalarına bakın.

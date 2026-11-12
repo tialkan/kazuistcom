@@ -4,26 +4,30 @@ slug: kosullar
 route: /hukuki/kosullar
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 consent_kind: kullanim_kosullari
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Turkuaz Kampüs çıkarıldı (ADR-0031), ücretsiz
+> özellikler ve kredi ADR-0029'a göre yazıldı, yaş beyanı kayıt ekranındaki koşul onayına bağlandı.
 
-Dayanak: 6098 sayılı Türk Borçlar Kanunu (genel işlem koşulları) ve 6502 sayılı Tüketicinin Korunması
-Hakkında Kanun (m.48 mesafeli sözleşmeler, m.52 abonelik).
+Dayanak: 6098 sayılı Türk Borçlar Kanunu (genel işlem koşulları), 6502 sayılı Tüketicinin Korunması
+Hakkında Kanun (m.48 mesafeli sözleşmeler, m.52 abonelik) ve 6563 sayılı Elektronik Ticaretin Düzenlenmesi
+Hakkında Kanun (m.3 bilgi verme yükümlülüğü).
 
 ## 1. Taraflar ve kapsam
 
 Bu koşullar Kulular Bilişim Teknolojileri Ltd. Şti. ("Kazuist") ile kazuist.com ve Kazuist iOS uygulamasını
-kullanan kişi ("Kullanıcı") arasındadır. Ücretli alımlarda ayrıca mesafeli satış ve abonelik sözleşmesi uygulanır.
+kullanan kişi ("Kullanıcı") arasındadır. Kredi satın alımlarında ayrıca ön bilgilendirme formu ve mesafeli satış
+sözleşmesi uygulanır.
 
 ## 2. Hizmet
 
 Kazuist; yargı kararları, mevzuat ve akademik kaynaklarda arama, kaynaklı özet, atıf ağı, rehberler, yazma
-araçları, öğrenme oyunları ve Turkuaz Kampüs akademik paylaşım alanı sunar.
+araçları (tez ve makale şablonu, yazma koçu Kalemcik, kısaltmalar cetveli), pratik çalışmalar ve yazım kuralları
+ile iz denetleyicisi sunar. Kazuist'te kullanıcıların birbirleriyle içerik paylaştığı bir alan yoktur.
 
 ## 3. Mesleki sınır
 
@@ -33,22 +37,25 @@ danışmanız gerekir. Kazuist belirli bir avukata veya büroya yönlendirme yap
 
 ## 4. Hesap
 
-18 yaşını doldurmuş olmanız gerekir; kayıtta yaşınızı beyan edersiniz (varsayılan karar, Tarık itiraz etmezse geçerli). Hesap bilgilerinizin
-güvenliğinden siz sorumlusunuz. edu.tr doğrulamasıyla verilen öğrenci hakkı yılda bir yenilenir.
+Kazuist 18 yaşını doldurmuş kişiler içindir. Hesap açarken bu koşulları kabul ederek 18 yaşını doldurduğunuzu
+beyan edersiniz. Hesap bilgilerinizin güvenliğinden siz sorumlusunuz. edu.tr doğrulamasıyla verilen öğrenci hakkı
+yılda bir yenilenir. Hesap açmadan arama yapabilir ve kaynakları okuyabilirsiniz; özet, kaydetme ve satın alma
+hesap gerektirir.
 
-## 5. Ücretsiz plan, BYOK ve krediler
+## 5. Ücretsiz kullanım, kendi anahtarınız ve krediler
 
-YZ gerektirmeyen özellikler ücretsiz planda makul sınırla açıktır. YZ işlemleri günlük ücretsiz hak, kendi
-anahtarınız (BYOK, adil kullanım sınırıyla) veya kredi ile çalışır. Kredi kuralları:
-[İade, iptal ve kredi kuralları](/hukuki/iade-ve-kredi). Kazuist kötüye kullanımı önlemek için günlük kredi
-tavanı, eşzamanlı işlem sınırı ve hız sınırı uygular.
+Kazuist'in bütün özellikleri ücretsizdir; ücretli özellik katmanı yoktur. Yapay zekâ işlemleri üç yoldan çalışır:
+günlük ücretsiz hak, kendi sağlayıcı anahtarınız (BYOK; sağlayıcının kullanım bedeli size aittir, adil kullanım
+sınırı uygulanır) veya satın aldığınız platform kredisi. Kredi yalnız platformun yapay zekâ işlemleri için
+kullanılır, özellik açmaz. Kredi kuralları: [İade, iptal ve kredi kuralları](/hukuki/iade-ve-kredi). Kazuist kötüye
+kullanımı önlemek için günlük kredi tavanı, eşzamanlı işlem sınırı ve hız sınırı uygular; bu sınırlar ücretli bir
+özellik kilidi değildir.
 
 ## 6. Kabul edilemez kullanım
 
 - Hizmeti otomatik araçlarla toplu içerik çekmek, tersine mühendislik veya güvenlik denetimini atlatmak için kullanmak.
 - Anonimleştirilmiş metinden kişiyi yeniden tanımlamaya çalışmak.
-- Başkasının kişisel verisini, özel nitelikli verisini veya gizli belgesini izinsiz yüklemek.
-- Kampüs'te [topluluk kurallarına](/hukuki/topluluk) aykırı paylaşım.
+- Başkasının kişisel verisini, özel nitelikli verisini veya gizli belgesini izinsiz yüklemek ya da sorguya yazmak.
 - Hizmetin YZ bileşenini kural dışı içerik üretmeye zorlamak.
 
 ## 7. Fikri haklar
@@ -60,8 +67,7 @@ Makalelerde künye, özet ve bağlantı verilir; tam metin yalnız açık erişi
 CSL projesinin lisansıyla (CC BY-SA) kullanılır.
 
 Yüklediğiniz ve yazdığınız içerik sizindir. Kazuist'e yalnız hizmeti sunmak için gereken, sınırlı, devredilemez
-bir kullanım izni verirsiniz. Kampüs'te herkese açık paylaştığınız içerik, paylaşım ayarınıza göre diğer
-kullanıcılarca görüntülenebilir.
+bir kullanım izni verirsiniz.
 
 ## 8. Sorumluluk
 

@@ -1,3 +1,35 @@
+## 12 Kasım 2026, hukuk-uyum: P5 metinler, KVKK envanteri, protokoller, Midjourney değerlendirmesi
+
+review.md P5 ve ADR-0034 ek görevi. Yalnız `content/hukuki/**`, `docs/kvkk/**`, `docs/protokol/**`, `docs/ip/**`,
+orkestranın verdiği `docs/hukuk/**` ve istek dosyası değişti; kod, sözleşme ve şema değişmedi. Bütün metinler
+`status: taslak`; yayım kararı verilmedi.
+- Metinler (sürüm 2026-11-12.1): barındırma Hetzner AB'ye göre (uyari, aydinlatma, gizlilik); Kampüs çıktı (aydinlatma,
+  kosullar, kaldirma; topluluk "uygulanmaz" notuna indi); ADR-0029 (kosullar 5, iade-ve-kredi 6, on-bilgilendirme,
+  mesafeli-satis); koda göre düzeltmeler: kodda olmayan virüs taraması ve koyu tema iddiası çıktı, localStorage
+  anahtarları (pratik, rehber) çerez politikasına girdi, kaldırma ve hesapsız KVKK başvurusu e-posta yoluna çekildi,
+  18 yaş beyanı koşul onayına bağlandı. on-bilgilendirme'ye 6563 m.3/1 bilgileri eklendi, `IOS_SURUM` çıktı.
+  abonelik `consent_kind` v1.1 değerine (abonelik_sozlesmesi) çekildi. Ürünle eşleşme tablosu `content/hukuki/README.md`.
+- Birincil kaynaktan okunanlar (12 Kasım): KVKK m.5, 6, 9, 10, 11, 13, 14, 16 (mevzuat.gov.tr); Yurt Dışına Aktarım
+  Yönetmeliği RG 10/7/2024, 32598 m.14-16 (resmigazete.gov.tr); Kurul'un dört standart sözleşmesi ve bildirim modülü
+  (kvkk.gov.tr); VERBİS istisna eşikleri (kvkk.gov.tr/Icerik/8388); 6563 m.2, 3, 4; FSEK m.1/B, 4, 6, 8, 15, 16, 18,
+  21, 31, 48-58, ek m.8; TTK m.82; VUK m.253; Ticari İletiler Yön. RG 30998 değişikliği; Hetzner veri koruma ve sertifika
+  sayfaları. Kapanan işaretler: gizlilik saklama süresi, protokol README FSEK ek m.8, denge testi FSEK m.31.
+- `docs/kvkk/envanter.md` (29 satır, önerilen saklama süreleriyle), `aktarim.md` (Hetzner Standart Sözleşme 2 ve risk),
+  `yukumlulukler.md` (ETBİS, VERBİS, İYS, e-Arşiv ve diğerleri), `app-privacy-taslak.md`, `denge-testi.md` (T4, T5).
+- Protokol yazıları: altısı da 2026-11-12; "Türkiye'deki sunucularımızda anonimleştirilir" cümlesi çıktı (T4'e bağlı
+  işaret), FSEK m.31 ve ek m.8 çerçevesi, 0,5 istek/sn, onaylı adres ve e-posta.
+- `docs/hukuk/midjourney-telif.md`: Midjourney koşulları 403 döndü, aşılmadı, "doğrulanmadı"; FSEK m.1/B, 8, 18, 52, 55,
+  56 üzerinden seçenek B riskleri, uygulama kuralları, çizer sözleşmesi madde listesi. `docs/ip/arka-plan-kaydi.md`
+  görsel varlık tablosu.
+- Önemli bulgu: Hetzner'ın sayfası bireysel sözleşme imzalamadığını söylüyor; KVKK Standart Sözleşme 2 iki tarafın
+  imzasını istiyor. İmza alınamazsa ADR-0033 ön koşul 1 karşılanamaz (aktarim.md "Hetzner: durum ve risk").
+- Önemli bulgu: ödeme adımı `pdf` ve `pdf_fields` ön bilgisini şart koşuyor, on-yuz ayrıştırıcısı liste okuyamıyor;
+  bu yüzden ödeme adımı hiçbir ortamda hukuki metin gösteremiyor. İstek: `docs/istekler/hukuk-uyum-p5-tutarlilik.md`.
+- Doğrulanmayan: bu oturumda kabuk aracı yoktu; `pnpm test`, `pnpm check:text`, `pnpm build` çalıştırılmadı, dal
+  itilmedi ve PR açılmadı. Ön bilgi alanları ve yer tutucu adları test beklentilerine göre elle denetlendi.
+- Kesin sonraki adım: orkestra testleri çalıştırıp dalı iter ve PR açar; ardından on-yuz madde 1, Tarık'ın Hetzner'a
+  Standart Sözleşme 2 sorusu.
+
 ## 12 Kasım 2026, casuist: arama dizini, embed.chunks tüketicisi (codex/p9-arama-dizini)
 
 review.md P9 madde 1 ve 8. Üretimde `chunks` tablosunu yazan bir tüketici yoktu; tam metin ve vektör araması boş

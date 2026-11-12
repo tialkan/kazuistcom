@@ -4,13 +4,17 @@ slug: on-bilgilendirme
 route: /hukuki/on-bilgilendirme
 lang: tr
 binding: true
-version: 2026-11-02.1
-date: 2026-11-02
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 consent_kind: on_bilgilendirme
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. 6563 sayılı Kanun m.3/1 bilgileri (sözleşmenin
+> kurulma adımları, veri girişi hataları, sözleşme metninin saklanması, gizlilik kuralları) eklendi; mevzuat.gov.tr
+> metninden 12 Kasım 2026'da okundu. iOS sürüm alanı çıkarıldı: bu form yalnız web satışında kullanılır, iOS
+> satın alımları Apple üzerinden yürür. Ön bilgiye `pdf` ve `pdf_fields` alanları on-yuz ön bilgi ayrıştırıcısı
+> liste okuyabildiğinde eklenecek (docs/istekler/hukuk-uyum-p5-tutarlilik.md).
 
 Gösterim kuralları (odeme ajanı için): Bu form ödeme yükümlülüğü altına girmeden hemen önce, en az 12 punto
 eşdeğerinde ve okunaklı gösterilir (Mesafeli Sözleşmeler Yön. m.6). "Ön bilgilendirme formunu okudum ve
@@ -25,21 +29,36 @@ E-posta: teknoloji@kulular.com. KEP: {{KEP}}.
 
 ## 2. Hizmetin temel nitelikleri
 
-Ürün: {{URUN_ADI}} ({{URUN_TURU}}: kredi paketi veya abonelik). İçerik: {{URUN_ACIKLAMASI}}; paket için
-{{KREDI}} kredi, abonelik için her ay {{AYLIK_KREDI}} kredi yüklemesi ve plan özellikleri. Hizmet
-elektronik ortamda kazuist.com ve iOS uygulaması üzerinden sunulur.
+Ürün: {{URUN_ADI}} ({{URUN_TURU}}). İçerik: {{URUN_ACIKLAMASI}} Paket için {{KREDI}} kredi; daha önce başlatılmış
+bir abonelikte her ay {{AYLIK_KREDI}} kredi yüklemesi. Kredi yalnız Kazuist'in yapay zekâ işlemlerinde kullanılır;
+Kazuist'in bütün özellikleri kredisiz de ücretsiz açıktır. Hizmet elektronik ortamda kazuist.com üzerinden sunulur.
 
 ## 3. Fiyat
 
-Toplam bedel (KDV dahil): {{TUTAR_TL}} TL. Kupon indirimi: {{INDIRIM}}. Abonelikte bu bedel her
-{{ODEME_DONEMI}} tahsil edilir. Ek ücret yoktur.
+Toplam bedel (KDV dahil): {{TUTAR_TL}} TL. Kupon indirimi: {{INDIRIM}}. Ödeme dönemi: {{ODEME_DONEMI}}.
+Ek ücret yoktur.
 
 ## 4. Ödeme ve ifa
 
 Ödeme iyzico ödeme formuyla (3D Secure) banka kartı veya kredi kartıyla alınır; kart bilgisi Kazuist'e gelmez.
 Krediler ödeme doğrulandıktan sonra hesabınıza anında yüklenir.
 
-## 5. Cayma hakkı
+## 5. Sözleşmenin kurulması ve kayıtlar
+
+1. Ödeme sayfasında seçtiğiniz ürünü ve toplam bedeli görürsünüz.
+2. Bu formu ve mesafeli satış sözleşmesini okuyup onay kutularını işaretlersiniz.
+3. iyzico ödeme formunda kart bilgilerinizi girer, bankanızın 3D Secure doğrulamasını tamamlarsınız.
+4. Ödeme sunucumuzca doğrulanınca sipariş teyit edilir ve onayladığınız metinler e-postanıza gönderilir.
+
+Veri girişi hataları: ödemeyi başlatmadan önce ürün ve tutarı bu sayfada görürsünüz; yanlışsa sayfadan çıkıp
+ürünü yeniden seçebilirsiniz. Kart bilgilerindeki hatalar iyzico formunda düzeltilir.
+
+Sözleşme metni: onayladığınız form ve sözleşme sipariş anındaki hâliyle saklanır ve PDF olarak e-postanıza
+gönderilir. Bir kopyasını teknoloji@kulular.com adresinden isteyebilirsiniz. Kişisel verileriniz
+[aydınlatma metnine](https://kazuist.com/hukuki/aydinlatma) ve
+[gizlilik politikasına](https://kazuist.com/hukuki/gizlilik) göre işlenir.
+
+## 6. Cayma hakkı
 
 Hizmet sözleşmelerinde cayma süresi sözleşmenin kurulduğu günden itibaren 14 gündür (Mesafeli Sözleşmeler
 Yön. m.9). Elektronik ortamda anında ifa edilen hizmetlerde ve tüketicinin onayıyla cayma süresi içinde
@@ -50,16 +69,16 @@ kullanımıyla ifa başlar ve cayma hakkınız sona erer. Bunu ayrı kutuyla ona
 
 [ ] "Kredi kullanmaya başladığımda hizmetin ifasının başlayacağını ve cayma hakkımı kaybedeceğimi kabul ediyorum." (consent_kind: cayma_istisnasi)
 
-Cayma bildirimi: hesap sayfasındaki iade talebi bağlantısı veya teknoloji@kulular.com. İade, aynı ödeme aracına,
+Cayma bildirimi: hesabınızda kayıtlı e-posta adresinizden teknoloji@kulular.com adresine yazmanız yeterlidir. İade, aynı ödeme aracına,
 tek seferde ve masrafsız olarak, cayma bildiriminin bize ulaştığı tarihten itibaren 14 gün içinde yapılır
 (Mesafeli Sözleşmeler Yön. m.12/3 ve 12/4, RG 23/8/2022, 31932 ile değişik).
 
-## 6. Abonelik ve fesih
+## 7. Abonelik
 
-Abonelik belirsiz sürelidir; hesap sayfasından tek adımda fesih edilir. Kurallar:
+Kazuist yeni abonelik satmaz. Daha önce başlatılmış bir abonelik hesap sayfasından tek adımda feshedilir. Kurallar:
 [İade, iptal ve kredi kuralları](https://kazuist.com/hukuki/iade-ve-kredi).
 
-## 7. Şikâyet ve uyuşmazlık
+## 8. Şikâyet ve uyuşmazlık
 
 Şikâyetler teknoloji@kulular.com adresine iletilebilir. Değeri yürürlükteki parasal sınırın altındaki uyuşmazlıklarda
 tüketici hakem heyetine başvuru zorunludur (6502 sayılı Kanun m.68/1); sınırın üzerindeki uyuşmazlıklarda
@@ -67,6 +86,7 @@ tüketici mahkemesi görevlidir (m.73) ve dava açılmadan önce arabulucuya ba�
 (m.73/A). Parasal sınır her yıl yeniden değerlenir; güncel tutar Ticaret Bakanlığı duyurusundan izlenir. Tüketici hakem heyetine başvuru
 e-Devlet kapısı üzerinden Tüketici Bilgi Sistemi (TÜBİS) ile de yapılabilir.
 
-## 8. Teknik
+## 9. Teknik
 
-Hizmetin çalışması için güncel bir tarayıcı veya iOS {{IOS_SURUM}} ve üzeri gerekir.
+Hizmetin çalışması için güncel bir web tarayıcısı gerekir. Kazuist iOS uygulamasından yapılan satın alımlar Apple
+üzerinden yürür ve bu formun konusu değildir.
