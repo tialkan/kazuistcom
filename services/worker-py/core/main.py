@@ -95,6 +95,8 @@ def build_handlers(rt: Any, connect: Connect, ner: Any = None) -> Dict[JobType, 
 
     handlers: Dict[JobType, Handler] = dict(make_handlers(rt))
     handlers[JobType.ANON_RUN] = make_anon_handler(connect, ner)
+    from nlp.job import make_embed_handler  # casuist: embed.chunks (ADR-0026)
+    handlers[JobType.EMBED_CHUNKS] = make_embed_handler(connect)
     return handlers
 
 

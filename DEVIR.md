@@ -1,3 +1,42 @@
+## 12 Kasım 2026, casuist: arama dizini, embed.chunks tüketicisi (codex/p9-arama-dizini)
+
+review.md P9 madde 1 ve 8. Üretimde `chunks` tablosunu yazan bir tüketici yoktu; tam metin ve vektör araması boş
+kalıyordu. Yeni bağımlılık yok (ONNX yolu mevcut `ner-runtime` ekstrasını kullanır); `packages/contracts` ve
+`packages/db` değişmedi, şema değişikliği gerekmedi. İstekler: `docs/istekler/casuist-p9-arama-dizini.md`.
+- `services/worker-py/nlp/`: `job.py` (`embed.chunks` işleyicisi, katı `{recordId}` yükü), `store.py` (ADR-0026
+  tüketici kuralı: `masked_text` ve `md5` okunur, gömme işlem dışında yapılır, yazma işleminde kayıt `FOR SHARE`
+  kilitlenir, özet aynıysa eski parçalar silinip yenileri yazılır, değiştiyse iş `StaleMaskedText` ile düşer ve
+  yeniden deneme yeni metni okur; `masked_text` NULL ya da kayıt yoksa hiçbir şey yazılmaz). Ham `records.text`
+  hiçbir sorguda yok. `jobs.result` yalnız sayılar ve model kimliği taşır; loglar yalnız sınıf adı ve neden kodu.
+- `chunk.py`: `packages/casuist/src/chunk.ts` birebir aktarımı (UTF-16 kod birimi ofsetleri, ECMAScript boşluk
+  kümesi, kısaltma kuralı). Ortak altın dosya `packages/casuist/fixtures/parcalar.json` (75 fikstür kaydı, 202
+  parça ve 8 uç örnek) hem TS (`test/chunk-parity.test.ts`) hem Python testinde denetlenir. Ek olarak 6000 rastgele
+  metinle TS ve Python çıktısı yerelde karşılaştırıldı: 0 fark.
+- `embedder.py`: tek arayüz arkasında plan 5.3'teki üç aday (BGE-M3, multilingual-e5-large, Qwen3-Embedding-0.6B),
+  ONNX Runtime ile CPU'da, model `KAZUIST_EMBED_DIR/<anahtar>` altından. eval/embed ölçümü yapılmadığı için
+  varsayılan kapalıdır; anahtar yoksa, model, çalışma zamanı ya da 1024 boyut tutmazsa worker durmaz, vektörsüz
+  yazar ve nedeni loglar. Model kimliği `<anahtar>@<revizyon7>`, web tarafındaki `KAZUIST_EMBED_MODEL` ile aynı
+  olmalı. Dış sağlayıcıya hiçbir çağrı yok.
+- `reconcile.py`: `python -m nlp.reconcile` ADR-0026 uzlaştırma işi; parçası olmayan ya da yapılandırılmış modelin
+  vektörünü taşımayan servis edilebilir kayıtları, etkin işi yoksa kuyruğa atar. Zamanlayıcı altyapi isteğinde.
+- Kayıt: `services/worker-py/core/main.py` `build_handlers` içine yalnız iki satır (orkestra izniyle; dosya
+  veri-toplamanın). `tests/test_main.py` (mimar) kayıtlı iş kümesini sabitleyen tek satıra `EMBED_CHUNKS` eklendi,
+  aksi halde CI kırılıyordu.
+- `seedCorpus` paket kökünden çıktı; yeni giriş `@kazuist/casuist/testing` (yalnız test ve yerel). `./fixture`
+  seçilmedi, çünkü üretim kodu (`ara/_sunucu/baglam.ts`) fikstür kipinde onu dinamik yüklüyor. Çağıranlar
+  (`ara/_sunucu/sql.test.ts`, `kaydettiklerim/_sunucu/kutuphane.test.ts`) güncellendi; `test/entries.test.ts`
+  kökün `seedCorpus` dışa aktarmadığını denetler.
+- Doğrulama: worker-py 235 geçti 3 atlandı (CI ile aynı); `uv run pytest nlp/tests` 44 geçti 7 atlandı; numpy ve
+  gerçek PostgreSQL 18 ile 51/51. PostgreSQL 18 ve pgvector üzerinde 7 göçle uçtan uca: 75 fikstür kaydı yalnız
+  `masked_text` ile eklendi (tetikleyici 75 iş açtı), üretim kaydıyla (`build_handlers`) çalışan worker 75 işi
+  bitirdi, 202 parça yazıldı (hepsinde `tsv`, vektör 0), ham metin parçalarda yok, `sqlBackend` araması sonuç ve
+  pasaj döndürdü, `degraded: ['vektor']`; Python parçaları 75 kaydın hepsinde `chunkText` ile aynı. casuist 107
+  test, tüm Node testleri, typecheck, lint, check:text ve build geçti.
+- Ölçülmedi: arama kalitesi gerçek corpus ve gerçek gömme modeliyle (P9 madde 9); hiçbir aday modelle
+  çalıştırılmadı, ONNX yolu yalnız küçük yapay bir grafikle yerelde denendi.
+- Açık: `pyproject.toml` `testpaths` içine `nlp/tests` (orkestra); sorgu gömmesi HTTP servisi; eval/embed seti ve
+  ölçümü; uzlaştırma zamanlayıcısı ve model birimi (altyapi); `.env.example` değişkenleri (mimar).
+
 ## 12 Kasım 2026, orkestra: yayın öncesi tam denetim ve review.md (codex/yayin-oncesi-denetim)
 
 Üç salt okunur ajan (ön yüz, işçiler ve paketler, altyapı ve belgeler) ve yerel typecheck, lint, test, build ile `main`

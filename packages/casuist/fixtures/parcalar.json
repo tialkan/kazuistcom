@@ -1,0 +1,364 @@
+{
+  "aciklama": "chunkText sınırları (UTF-16 birimi, [başlangıç, bitiş)). packages/casuist/test/chunk-parity.test.ts üretir; services/worker-py/nlp/tests/test_chunk.py aynı sınırları bekler.",
+  "kayitlar": {
+    "deb247eb-4308-5dca-b79a-3e5cd4f60f9c": [[0, 255]],
+    "95e53b75-27de-50a9-b3e1-724d6c2e0d89": [[0, 255]],
+    "db1f73ae-a82b-58cc-b914-8f214d499949": [
+      [0, 1089],
+      [1090, 1493]
+    ],
+    "3f22d7b5-176c-5d6c-a423-158d411c7bc3": [[0, 476]],
+    "987cd9d0-b60a-590f-8f5a-6ac4583b6ac5": [[0, 987]],
+    "cfdf5071-993a-550f-a394-2588be3a14f5": [
+      [0, 1199],
+      [1200, 1891]
+    ],
+    "86900d53-0aee-5867-b317-a124fe18b829": [[0, 535]],
+    "1998ba1b-6e7e-56b1-99f5-9f54b081ab58": [[0, 395]],
+    "ca72b986-43ed-5da3-be39-2890c90aed5e": [
+      [0, 701],
+      [702, 1671],
+      [1672, 2871],
+      [2872, 4063],
+      [4064, 5204],
+      [5205, 5284]
+    ],
+    "5171c49e-cb14-5218-9ce2-658442a1389d": [[0, 406]],
+    "544fd8e0-3b86-5434-9f6d-9083bb756d29": [[0, 971]],
+    "54f9c779-37eb-5c64-a8fe-2c51941aa227": [[0, 1198]],
+    "3bb53730-5e1f-5ecc-aade-246ea74ee604": [[0, 734]],
+    "21809602-a15f-5894-ab85-6c6d48a591ff": [[0, 447]],
+    "48c21e20-8fdf-5c2c-912e-7996e49b687b": [
+      [0, 1177],
+      [1178, 1478]
+    ],
+    "c6faf03e-cee2-5365-abf7-07245534d943": [
+      [0, 1173],
+      [1174, 1258]
+    ],
+    "e2f2f5c8-ba86-54f0-8175-cc52496cc4e8": [[0, 312]],
+    "14d6b815-26cf-5788-afca-2ba0b9629ad0": [
+      [0, 1108],
+      [1109, 1625]
+    ],
+    "f6846ca6-7728-5198-a645-7c75ae40897f": [[0, 332]],
+    "ef377864-fd5c-51dc-86b2-1909338a78d1": [[0, 727]],
+    "1bf10c61-4594-56d8-bb70-d75ca06419b3": [
+      [0, 892],
+      [893, 1707],
+      [1708, 2892],
+      [2893, 4044],
+      [4045, 5151],
+      [5152, 6128]
+    ],
+    "cd862d71-915e-5865-91c2-1dd19e5c0d31": [
+      [0, 1192],
+      [1193, 1617]
+    ],
+    "d7dc8186-9f55-5a1d-8bd1-3dc3456108da": [[0, 1140]],
+    "fc4409b1-6bc8-515f-9518-8611e945122d": [
+      [0, 512],
+      [513, 1523]
+    ],
+    "b4de1fc3-7ad3-52f1-88b5-a8cb0a13c03d": [
+      [0, 520],
+      [521, 1720],
+      [1721, 2101]
+    ],
+    "5d63b227-52e8-5e5f-9b89-86472a0d6521": [[0, 287]],
+    "f283c167-6de4-5c4d-9ed9-e81677afb029": [
+      [0, 1148],
+      [1149, 1887],
+      [1888, 2996],
+      [2997, 3788]
+    ],
+    "4f45b7c6-c512-586c-98c0-b26b0227954a": [
+      [0, 1155],
+      [1156, 2085]
+    ],
+    "2f305448-1520-5064-8fe0-a38ed0c9b5ec": [[0, 352]],
+    "b2413e50-7219-5077-b6da-de408954ac6a": [[0, 449]],
+    "72a351f4-335c-5874-a562-8f0966445283": [
+      [0, 86],
+      [87, 1285],
+      [1286, 1647],
+      [1648, 2803],
+      [2804, 3210]
+    ],
+    "d6902573-5600-5a82-b36c-3e633722c5ae": [[0, 197]],
+    "428d4fc2-692c-597c-8a1a-16d20351a147": [
+      [0, 1066],
+      [1067, 1486]
+    ],
+    "fd09d4f1-8c48-549d-ac39-1c68b2bfdedb": [[0, 245]],
+    "f3a654fb-061a-54bf-b522-535d81c79bce": [
+      [0, 265],
+      [266, 279]
+    ],
+    "fae51fae-c4e5-5153-9449-a3aa0251caaa": [[0, 213]],
+    "22471a96-f91c-57e7-88c3-40fd0283f328": [
+      [0, 368],
+      [369, 412]
+    ],
+    "537b8ad6-4ee8-5425-9873-89aac8e2c94e": [[0, 270]],
+    "cd8d64da-073e-5fdb-a11a-a6f31a193584": [[0, 199]],
+    "53d48c3c-4290-537a-a934-3cde483c16eb": [
+      [0, 1195],
+      [1196, 1535]
+    ],
+    "74c7e497-1bca-502c-9d46-f043e8ba038b": [[0, 352]],
+    "cadab52f-c634-5e70-9c24-f811561e1f35": [[0, 391]],
+    "ba8fdfca-8d23-5dcc-8d92-6dce0594d592": [[0, 348]],
+    "49ec45fb-b6e3-57b7-af2e-4e5307893f5c": [[0, 224]],
+    "d9edd1ac-000d-5b3b-8527-6f488e2afbcf": [
+      [0, 223],
+      [224, 248]
+    ],
+    "32c5b33b-c7c5-5348-acfd-2a48782e38b9": [[0, 192]],
+    "9955fe48-98b8-5262-8756-15e324494ac4": [
+      [0, 400],
+      [401, 438]
+    ],
+    "c00c2828-064f-58eb-b9bf-a147afabdd57": [[0, 434]],
+    "b0b9a04d-bfa9-56fe-9234-d01f3d5b5959": [
+      [0, 567],
+      [568, 590]
+    ],
+    "4baad460-125f-5a07-8611-9251ceb0995d": [[0, 153]],
+    "51a9d6ca-a71e-5c7a-9812-94a506457d0a": [
+      [0, 642],
+      [643, 677]
+    ],
+    "42d3be4c-4d56-54f3-b1ab-0515e630787a": [[0, 370]],
+    "a7cfa3be-b996-57ba-ac2f-dc05af739d64": [
+      [0, 406],
+      [407, 436]
+    ],
+    "a1d4e519-9cab-59ec-836c-a174885cff1c": [[0, 382]],
+    "b65ea9d5-4e74-588d-a594-1b68985744cb": [[0, 260]],
+    "755a637b-50e9-585d-9748-ba037d9a20b2": [
+      [0, 958],
+      [959, 972]
+    ],
+    "8ed2cdc8-066e-5203-8fec-c18d8553a0da": [[0, 511]],
+    "f49782ce-7539-5bce-b34e-3109c8f6c9dc": [
+      [0, 432],
+      [433, 445]
+    ],
+    "94369593-667a-506a-9f2d-635c79ddba6e": [[0, 372]],
+    "2b9e8ab5-635b-5380-bc13-8ea657fe73fd": [[0, 189]],
+    "b8a7d0af-c4ff-5c7b-b4c3-e81baa66119a": [[0, 333]],
+    "1e631500-e91a-548d-8e26-773901f94146": [
+      [0, 1194],
+      [1195, 1359]
+    ],
+    "ded93001-f335-5a9b-bdab-80f0a5fef26e": [
+      [0, 1128],
+      [1129, 1471]
+    ],
+    "1c210e2a-b565-5c34-8259-ae0159485b55": [
+      [0, 992],
+      [993, 2164],
+      [2165, 2397]
+    ],
+    "eb024d63-85de-5738-9cfd-38de12b415bf": [[0, 1034]],
+    "8b391725-a550-57ac-9f7c-e5c67b898458": [
+      [0, 213],
+      [214, 1398],
+      [1399, 2299],
+      [2300, 3491],
+      [3492, 4495],
+      [4496, 5126],
+      [5127, 6287],
+      [6288, 7368],
+      [7369, 8555],
+      [8556, 9232]
+    ],
+    "4a507e3e-bcaf-5ad4-a6a4-1e740005f558": [
+      [0, 189],
+      [190, 1384],
+      [1385, 1875],
+      [1876, 3072],
+      [3073, 4050],
+      [4051, 5238],
+      [5239, 6293],
+      [6294, 7487],
+      [7488, 7918]
+    ],
+    "e8170f3b-6bd9-51a7-adf4-57115df6ebc9": [
+      [0, 570],
+      [571, 948],
+      [949, 1268],
+      [1269, 1629],
+      [1630, 2825],
+      [2826, 3925],
+      [3926, 4584],
+      [4585, 5618],
+      [5619, 6719],
+      [6720, 7887],
+      [7888, 9025],
+      [9026, 9947],
+      [9948, 10212],
+      [10213, 10337]
+    ],
+    "6f1765eb-fa26-5f4a-9628-bc40e6769cba": [
+      [0, 492],
+      [493, 1681],
+      [1682, 2865],
+      [2866, 3818],
+      [3819, 4690],
+      [4691, 5837],
+      [5838, 6878],
+      [6879, 7163],
+      [7164, 8313],
+      [8314, 9431],
+      [9432, 10468],
+      [10469, 11664],
+      [11665, 12698],
+      [12699, 13487]
+    ],
+    "d3be4eab-be3e-5063-b045-b722825ee544": [
+      [0, 346],
+      [347, 599],
+      [600, 1322],
+      [1323, 2017],
+      [2018, 2432],
+      [2433, 2911],
+      [2912, 3293],
+      [3294, 3522],
+      [3523, 3853],
+      [3854, 4073],
+      [4074, 4433],
+      [4434, 4852],
+      [4853, 5095],
+      [5096, 5491],
+      [5492, 5712],
+      [5713, 6066],
+      [6067, 6429],
+      [6430, 7566],
+      [7567, 7823],
+      [7824, 8195],
+      [8196, 8525],
+      [8526, 9586],
+      [9587, 10406],
+      [10407, 10867],
+      [10868, 11139],
+      [11140, 11481],
+      [11482, 11928],
+      [11929, 12417],
+      [12418, 13165]
+    ],
+    "c563f64d-74d7-5c42-a10b-bd82b696a285": [
+      [0, 83],
+      [84, 1268],
+      [1269, 2173],
+      [2174, 2759]
+    ],
+    "470b146f-2475-5602-99e9-39ea65e8bfe3": [
+      [0, 943],
+      [944, 2100],
+      [2101, 3299],
+      [3300, 4445],
+      [4446, 5535],
+      [5536, 5872]
+    ],
+    "8ddb73b0-ff75-524b-9acc-28f8bca94ea7": [
+      [0, 863],
+      [864, 1233]
+    ],
+    "3de9c4d3-793c-5e9d-a389-66449c333038": [
+      [0, 334],
+      [335, 543]
+    ],
+    "93ff1944-7c63-5efd-900e-9dffa234e2b5": [
+      [0, 252],
+      [253, 519],
+      [520, 852],
+      [853, 1182],
+      [1183, 1385]
+    ]
+  },
+  "ornekler": [
+    {
+      "ad": "kisaltmalar",
+      "metin": "Davacı vekili KVKK m. 11 uyarınca başvurdu. Yargıtay 4. HD E. 2021/1 K. 2022/2 sayılı kararına bkz. Dosya vd. Ayrıca T.C. Anayasası m.20 ve örn. Kurul kararı ile ör. Danıştay görüşü, syf. 12 ve no. 5 anıldı. Sonuç: Talep reddedildi. Gerekçe; Kanun açıktır! Neden? Çünkü (1) bent uygulanır. Karar “Kesin” olarak verildi: 2024 yılında. Ancak sonraki cümle küçük harfle başlar. son.",
+      "max": 120,
+      "min": 30,
+      "parcalar": [
+        [0, 55],
+        [56, 174],
+        [175, 289],
+        [290, 379]
+      ]
+    },
+    {
+      "ad": "kisa-paragraflar",
+      "metin": "Madde 1. Kısa bir hüküm.\nMadde 2. Kısa bir hüküm.\nMadde 3. Kısa bir hüküm.\nMadde 4. Kısa bir hüküm.\nMadde 5. Kısa bir hüküm.\nMadde 6. Kısa bir hüküm.\nMadde 7. Kısa bir hüküm.\nMadde 8. Kısa bir hüküm.\nMadde 9. Kısa bir hüküm.\nMadde 10. Kısa bir hüküm.\nMadde 11. Kısa bir hüküm.\nMadde 12. Kısa bir hüküm.\nMadde 13. Kısa bir hüküm.\nMadde 14. Kısa bir hüküm.",
+      "max": 300,
+      "parcalar": [
+        [0, 224],
+        [225, 354]
+      ]
+    },
+    {
+      "ad": "bosluksuz-uzun",
+      "metin": "Giriş cümlesi.\nabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğhabcçdefgğh\nSon.",
+      "max": 150,
+      "min": 20,
+      "parcalar": [
+        [0, 14],
+        [15, 165],
+        [165, 315],
+        [315, 415],
+        [416, 420]
+      ]
+    },
+    {
+      "ad": "bmp-disi",
+      "metin": "Önce 𝐀. Sonra 𠀀 geldi. Kısa cümle burada. Kısa cümle burada. Kısa cümle burada. Kısa cümle burada. Kısa cümle burada. Kısa cümle burada. Kısa cümle burada. Kısa cümle burada. 𝐀𝐁 yazıldı. Bir. 𝐂ki üç. x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 x𠀀 son.",
+      "max": 90,
+      "min": 25,
+      "parcalar": [
+        [0, 81],
+        [82, 157],
+        [158, 244],
+        [245, 329]
+      ]
+    },
+    {
+      "ad": "bosluk-turleri",
+      "metin": "\t  Birinci paragraf sekmeyle başlar.\r\n İkinci paragraf bölünmez boşluklu.\r\n\r\n　Üçüncü. Dördüncü cümle\tsekmeli. Beşinci cümle. Altıncı. Yedinci.   \n   \nUzun bir cümle daha geliyor. Uzun bir cümle daha geliyor. Uzun bir cümle daha geliyor. Uzun bir cümle daha geliyor. Uzun bir cümle daha geliyor. Uzun bir cümle daha geliyor.  son satır",
+      "max": 80,
+      "min": 10,
+      "parcalar": [
+        [3, 36],
+        [39, 73],
+        [78, 142],
+        [150, 207],
+        [208, 265],
+        [266, 334]
+      ]
+    },
+    {
+      "ad": "pencere-siniri",
+      "metin": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk bir. İki mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm üç: Dört (beş) \"Altı\" 7 sekiz.",
+      "max": 60,
+      "min": 5,
+      "parcalar": [
+        [0, 55],
+        [56, 109],
+        [110, 136]
+      ]
+    },
+    {
+      "ad": "bos",
+      "metin": "",
+      "parcalar": []
+    },
+    {
+      "ad": "yalniz-bosluk",
+      "metin": " \n\t\n  ",
+      "parcalar": []
+    }
+  ]
+}
