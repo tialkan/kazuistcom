@@ -38,6 +38,19 @@ sunucu, staging'siz, tek seferde yayın) ve ADR-0034 (görsel varlık üretimi) 
 bekliyor". ADR-0034 hangi seçenekle sonuçlanırsa sonuçlansın görsel varlıkların aracı, istemi ve çizeni bu kayda yazılır.
 ADR-0001 (kaynaklı özet ve kaynak bağlama) ve ADR-0006 (PostgreSQL içinde hibrit getirme) Eurostars WP4'ün
 (retrieval, grounding, provenance) arka plan IP'si bakımından temel kayıtlardır.
+Güncelleme 2026-11-12 (hukuk-uyum): ADR-0034 dosyasındaki onay kaydına göre Tarık İsmet Alkan 12 Kasım 2026'da
+seçenek B'yi seçti; ADR-0033 dosyasında durum hâlâ "Önerildi", tek seferde ve staging'siz yayın kararı review.md
+0. bölümde Tarık'a atfen kayıtlıdır.
+
+## Görsel varlıklar (ADR-0034 seçenek B)
+
+Ürüne giren görsel varlıklar insan elinden çıkar; Midjourney yalnız taslak ve brifing içindir. Telif ve koşul
+değerlendirmesi: `docs/hukuk/midjourney-telif.md`. Her varlık teslim edildiğinde bu tabloya bir satır eklenir; istem
+ve ara dosya ayrıntısı `docs/tasarim/gorsel-istemleri.md`'dedir.
+
+| Varlık | Son dosyayı çizen | Hak devri (sözleşme tarihi, FSEK m.52) | Taslakta kullanılan araç ve koşul sürümü | Teslim tarihi ve commit |
+|---|---|---|---|---|
+| (henüz teslim yok) | | | | |
 
 ## Güncelleme kuralı
 

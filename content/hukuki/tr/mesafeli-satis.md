@@ -4,13 +4,15 @@ slug: mesafeli-satis
 route: /hukuki/mesafeli-satis
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 consent_kind: mesafeli_sozlesme
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Ön bilgilendirme formunun madde numaraları
+> değiştiği için madde 9 atfı güncellendi; Kazuist'in ücretsiz özellikleri ve kredi kapsamı (ADR-0029) madde 4'e
+> eklendi.
 
 Dayanak: 6502 sayılı Tüketicinin Korunması Hakkında Kanun m.48 (güncel metin mevzuat.gov.tr'den okundu) ve Mesafeli
 Sözleşmeler Yönetmeliği (RG 27/11/2014, 29188).
@@ -22,7 +24,7 @@ Alıcı: {{ALICI_AD}}, {{ALICI_EPOSTA}} ("Kullanıcı").
 
 ## Madde 2. Konu
 
-Kullanıcının kazuist.com veya iOS uygulaması üzerinden {{SIPARIS_TARIHI}} tarihinde siparişini verdiği
+Kullanıcının kazuist.com üzerinden {{SIPARIS_TARIHI}} tarihinde siparişini verdiği
 {{URUN_ADI}} hizmetinin satışı ve ifasıdır. Ön bilgilendirme formu bu sözleşmenin ayrılmaz parçasıdır.
 
 ## Madde 3. Bedel ve ödeme
@@ -33,8 +35,8 @@ e-posta adresinize gönderilir.
 ## Madde 4. İfa
 
 Kredi paketi: krediler ödeme doğrulandıktan sonra hesaba yüklenir; satın alınan kredinin süresi dolmaz.
-Kredi devredilemez, nakde çevrilmez ve yalnız Kazuist hizmetlerinde kullanılır. YZ işlemlerinin kredi
-karşılığı işlemden önce gösterilir.
+Kredi devredilemez, nakde çevrilmez ve yalnız Kazuist'in yapay zekâ işlemlerinde kullanılır; Kazuist'in
+özellikleri kredisiz de ücretsiz açıktır. YZ işlemlerinin kredi karşılığı işlemden önce gösterilir.
 
 ## Madde 5. Cayma hakkı ve istisnası
 
@@ -58,7 +60,7 @@ Hizmeti tanıtıldığı şekilde sunmak; teknik hata nedeniyle tamamlanmayan ve
 
 ## Madde 9. Uyuşmazlık
 
-Tüketici hakem heyetleri ve tüketici mahkemeleri yetkilidir (ön bilgilendirme formu madde 7).
+Tüketici hakem heyetleri ve tüketici mahkemeleri yetkilidir (ön bilgilendirme formu madde 8).
 
 ## Madde 10. Yürürlük
 

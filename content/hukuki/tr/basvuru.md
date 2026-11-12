@@ -4,21 +4,21 @@ slug: basvuru
 route: /hukuki/basvuru
 lang: tr
 binding: true
-version: 2026-10-23.1
-date: 2026-10-23
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 23 Ekim 2026.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Hesapsız başvuru için sitede ayrı bir form olmadığı
+> yazıldı; alanlar e-posta veya yazılı başvuruda kullanılır. Açık yer tutucu: KEP.
 
 Dayanak: KVKK m.11 ve m.13; Veri Sorumlusuna Başvuru Usul ve Esasları Hakkında Tebliğ (RG 10/3/2018, 30356), başvuru usulü
-Tebliğ m.5. Aynı form hesap içinde /hesap/kvkk
-adresinde de bulunur.
+Tebliğ m.5. Hesabınız varsa aynı başvuruyu /hesap/kvkk adresinden yapabilirsiniz.
 
 ## Başvuru yolları
 
 - Hesabınız varsa: /hesap/kvkk (kimliğiniz oturumla doğrulanır).
-- Hesabınız yoksa (Tebliğ m.5/1): bu form, daha önce bize bildirdiğiniz ve sistemimizde kayıtlı e-posta adresinizden
+- Hesabınız yoksa (Tebliğ m.5/1): aşağıdaki alanları içeren başvurunuzu, daha önce bize bildirdiğiniz ve sistemimizde kayıtlı e-posta adresinizden
   teknoloji@kulular.com adresine, güvenli elektronik imza veya mobil imzayla, KEP adresimize ({{KEP}}) ya da
   yazılı olarak Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara adresine.
 

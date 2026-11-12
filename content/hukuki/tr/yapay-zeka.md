@@ -4,12 +4,14 @@ slug: yapay-zeka
 route: /hukuki/yapay-zeka
 lang: tr
 binding: true
-version: 2026-11-02.1
-date: 2026-11-02
+version: 2026-11-12.1
+date: 2026-11-12
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 2 Kasım 2026. Mevcut sayfanın güncellenmiş hâlidir.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Mevcut sayfanın güncellenmiş hâlidir. BYOK arayüzü
+> henüz yoktur (review.md P8 madde 4); BYOK satırları o arayüz yayına girdiğinde geçerlidir ve yayın onayından
+> önce arayüzle karşılaştırılır.
 
 ## 1. Kazuist'te yapay zekânın rolü
 
@@ -28,8 +30,8 @@ dayandığı kaynak pasajına bağlanır. Kazuist kişiye özgü hukuki mütalaa
 Her modda, sorgu ve sizin metniniz dışarı çıkmadan önce kimlik numarası, telefon, e-posta, IBAN gibi
 tanımlayıcılar ve kişi adları [KİŞİ-1], [TELEFON] gibi etiketlere çevrilir. Eşleme yalnız istek süresince
 bellekte tutulur. Kararlar ise yayından önce anonimleştirilmiştir. Maskeleme otomatik bir işlemdir ve
-yüzde yüz başarı garantisi yoktur; özel nitelikli kişisel verilerinizi (sağlık, ceza kaydı vb.) sorgu
-olarak yazmamanızı rica ederiz.
+hata yapabilir; özel nitelikli kişisel verilerinizi (sağlık, ceza kaydı vb.) sorgu olarak yazmamanızı rica
+ederiz. Yazma araçlarında kılavuzdan kural çıkarma da aynı maskelemeden geçer.
 
 ## 4. Sağlayıcılar ve modlar
 
