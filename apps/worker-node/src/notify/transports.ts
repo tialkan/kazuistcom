@@ -49,15 +49,49 @@ export interface VapidConfig {
   privateKey: string;
 }
 
-export function vapidTransport(cfg: VapidConfig): WebPushTransport {
+/** Upper bound of one push request; a hanging provider must not hold the worker (billing jobs share it). */
+export const PUSH_TIMEOUT_MS = 10_000;
+
+/** Rejects when `p` has not settled within `ms`; `onTimeout` releases the underlying resource. */
+export function withDeadline<T>(
+  p: Promise<T>,
+  ms: number,
+  label: string,
+  onTimeout?: () => void,
+): Promise<T> {
+  let timer: NodeJS.Timeout | undefined;
+  const deadline = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      onTimeout?.();
+      const err = new Error(`${label} timed out after ${ms} ms`);
+      err.name = 'PushTimeoutError';
+      reject(err);
+    }, ms);
+  });
+  return Promise.race([p, deadline]).finally(() => clearTimeout(timer));
+}
+
+type SendNotification = typeof webpush.sendNotification;
+
+export function vapidTransport(
+  cfg: VapidConfig,
+  sendNotification: SendNotification = webpush.sendNotification.bind(webpush),
+  timeoutMs = PUSH_TIMEOUT_MS,
+): WebPushTransport {
   return {
     async send(sub: WebPushSubscription, m: Message) {
       try {
-        await webpush.sendNotification(sub, JSON.stringify(m), {
-          vapidDetails: cfg,
-          TTL: 24 * 3600,
-          urgency: 'normal',
-        });
+        // `timeout` is the socket timeout of web-push; the deadline also bounds a slow trickle.
+        await withDeadline(
+          sendNotification(sub, JSON.stringify(m), {
+            vapidDetails: cfg,
+            TTL: 24 * 3600,
+            urgency: 'normal',
+            timeout: timeoutMs,
+          }),
+          timeoutMs,
+          'web-push',
+        );
         return 'ok';
       } catch (err) {
         const code = (err as { statusCode?: number }).statusCode;
@@ -89,8 +123,36 @@ export function apnsJwt(cfg: ApnsConfig, nowSec: number): string {
   return `${header}.${claims}.${b64url(sig)}`;
 }
 
-/** Token based APNs over HTTP/2. */
-export function apnsTransport(cfg: ApnsConfig): ApnsTransport {
+/**
+ * Outcome of an APNs response. Only 410 (token no longer active) or a body reason of BadDeviceToken or
+ * Unregistered removes the device; any other 400 (BadTopic, PayloadTooLarge and so on) is our error and
+ * must not delete every registration (Apple: Handling notification responses from APNs).
+ */
+export function apnsOutcome(status: number, body: string): 'ok' | 'gone' | 'error' {
+  if (status === 200) return 'ok';
+  if (status === 410) return 'gone';
+  let reason: unknown;
+  try {
+    reason = (JSON.parse(body) as { reason?: unknown }).reason;
+  } catch {
+    reason = undefined;
+  }
+  return reason === 'BadDeviceToken' || reason === 'Unregistered' ? 'gone' : 'error';
+}
+
+export interface ApnsOptions {
+  timeoutMs?: number;
+  /** Tests point this at a local HTTP/2 server; production uses Apple's hosts. */
+  origin?: (environment: 'production' | 'sandbox') => string;
+}
+
+const appleOrigin = (environment: 'production' | 'sandbox') =>
+  environment === 'production' ? 'https://api.push.apple.com' : 'https://api.sandbox.push.apple.com';
+
+/** Token based APNs over HTTP/2, one connection per send, closed on every path. */
+export function apnsTransport(cfg: ApnsConfig, opts: ApnsOptions = {}): ApnsTransport {
+  const timeoutMs = opts.timeoutMs ?? PUSH_TIMEOUT_MS;
+  const origin = opts.origin ?? appleOrigin;
   let cached: { token: string; at: number } | undefined;
   const token = () => {
     const now = Math.floor(Date.now() / 1000);
@@ -99,14 +161,12 @@ export function apnsTransport(cfg: ApnsConfig): ApnsTransport {
   };
   return {
     send(deviceToken, environment, m) {
-      const host =
-        environment === 'production' ? 'https://api.push.apple.com' : 'https://api.sandbox.push.apple.com';
-      return new Promise((resolve, reject) => {
-        const client = connect(host);
+      const client = connect(origin(environment));
+      const result = new Promise<'ok' | 'gone'>((resolve, reject) => {
         client.on('error', reject);
         const req = client.request({
           ':method': 'POST',
-          ':path': `/3/device/${deviceToken}`,
+          ':path': `/3/device/${encodeURIComponent(deviceToken)}`,
           authorization: `bearer ${token()}`,
           'apns-topic': cfg.bundleId,
           'apns-push-type': 'alert',
@@ -114,15 +174,21 @@ export function apnsTransport(cfg: ApnsConfig): ApnsTransport {
         });
         req.setEncoding('utf8');
         let status = 0;
+        let body = '';
         req.on('response', (h) => {
           status = Number(h[':status']);
         });
-        req.on('data', () => undefined);
+        req.on('data', (chunk: string) => {
+          if (body.length < 4096) body += chunk;
+        });
+        req.on('error', reject);
         req.on('end', () => {
-          client.close();
-          if (status === 200) resolve('ok');
-          else if (status === 410 || status === 400) resolve('gone');
-          else reject(new Error(`apns ${status}`));
+          const outcome = apnsOutcome(status, body);
+          if (outcome === 'error') {
+            const err = new Error(`apns ${status}`);
+            err.name = 'ApnsError';
+            reject(err);
+          } else resolve(outcome);
         });
         req.end(
           JSON.stringify({
@@ -130,6 +196,9 @@ export function apnsTransport(cfg: ApnsConfig): ApnsTransport {
             path: m.path,
           }),
         );
+      });
+      return withDeadline(result, timeoutMs, 'apns', () => client.destroy()).finally(() => {
+        if (!client.closed && !client.destroyed) client.close();
       });
     },
   };

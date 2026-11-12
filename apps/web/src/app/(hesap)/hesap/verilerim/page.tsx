@@ -1,19 +1,18 @@
 import type { Metadata } from 'next';
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
-
-import styles from './verilerim.module.css';
+import { requirePageSession } from '@/server/auth/page-session';
+import { AltSayfa } from '../../_bilesen/AltSayfa';
 import { AccountDeletion } from './silme';
 
 const s = tr.sayfa.veri;
 
 export const metadata: Metadata = { title: s.baslik, robots: { index: false } };
 
-/** The app shell renders the single <main>; module pages open a section (on-yuz note). */
-export default function VerilerimPage() {
+/** KVKK m.11 data export (JSON, CSV) and account deletion. */
+export default async function VerilerimPage() {
+  await requirePageSession('/hesap/verilerim');
   return (
-    <section className={styles.page}>
-      <h1>{s.baslik}</h1>
-      <p>{s.aciklama}</p>
+    <AltSayfa baslik={s.baslik} aciklama={s.aciklama}>
       <ul>
         <li>
           <a href="/api/v1/me/export?format=json">{s.json}</a>
@@ -23,6 +22,6 @@ export default function VerilerimPage() {
         </li>
       </ul>
       <AccountDeletion />
-    </section>
+    </AltSayfa>
   );
 }
