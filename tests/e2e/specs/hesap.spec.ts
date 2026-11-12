@@ -85,6 +85,8 @@ test.describe('account UI flow', () => {
       .getByLabel(/parola/i)
       .first()
       .fill(password);
+    // Registration requires the terms and privacy notice consent box (P7).
+    await page.getByRole('checkbox').check();
     await page.getByRole('button', { name: /kayıt|hesap oluştur|devam/i }).click();
     await expect.poll(async () => (await page.request.get('/api/v1/me')).status()).toBe(200);
   });

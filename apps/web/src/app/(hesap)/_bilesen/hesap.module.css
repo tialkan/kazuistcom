@@ -1,0 +1,228 @@
+/* Account pages (/giris, /kayit, /parola-sifirla, /hesap/**). Layout comes from the shell's .sayfa. */
+
+.dar {
+  max-width: 34rem;
+}
+
+.form {
+  margin-bottom: var(--kz-space-6);
+}
+
+.alt-bag {
+  margin-top: var(--kz-space-6);
+}
+
+.eylemler {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--kz-space-3);
+  margin-top: var(--kz-space-4);
+}
+
+.secim {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--kz-space-3);
+  min-height: 44px;
+  padding: var(--kz-space-2) 0;
+  cursor: pointer;
+}
+
+.secim input {
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0.15rem 0 0;
+  accent-color: var(--kz-color-accent);
+}
+
+.secim a {
+  text-underline-offset: 0.2em;
+}
+
+.grup {
+  margin: 0 0 var(--kz-space-4);
+  padding: 0;
+  border: 0;
+}
+
+.grup legend {
+  margin-bottom: var(--kz-space-2);
+  padding: 0;
+  font-weight: 600;
+}
+
+.secenekler {
+  display: grid;
+  gap: 0;
+}
+
+@media (min-width: 48rem) {
+  .secenekler--iki {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--kz-space-6);
+  }
+}
+
+.select {
+  min-height: 44px;
+  width: 100%;
+  padding: var(--kz-space-2) var(--kz-space-3);
+  border: 1.5px solid var(--kz-color-text-muted);
+  border-radius: var(--kz-radius-sm);
+  background: var(--kz-color-surface);
+  color: var(--kz-color-text);
+  font: inherit;
+}
+
+.etiket {
+  display: block;
+  margin-bottom: var(--kz-space-1);
+  font-weight: 600;
+}
+
+.durum {
+  margin: var(--kz-space-2) 0;
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: 3px solid var(--kz-color-success);
+  background: var(--kz-color-surface);
+}
+
+.hata {
+  margin: var(--kz-space-2) 0;
+  padding: var(--kz-space-3) var(--kz-space-4);
+  border-left: 3px solid var(--kz-color-danger);
+  background: var(--kz-color-surface);
+  font-weight: 600;
+}
+
+.kutu {
+  margin: 0 0 var(--kz-space-8);
+  padding: var(--kz-space-6);
+  border: 1px solid var(--kz-color-border);
+  border-radius: var(--kz-radius-md);
+  background: var(--kz-color-surface);
+}
+
+.kutu > h2 {
+  margin-top: 0;
+  font-size: var(--kz-text-xl);
+}
+
+.kutu--uyari {
+  border-color: var(--kz-color-warning);
+  border-left-width: 4px;
+}
+
+.ozet {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) 1fr;
+  gap: var(--kz-space-2) var(--kz-space-6);
+  margin: 0 0 var(--kz-space-6);
+}
+
+.ozet dt {
+  font-weight: 600;
+}
+
+.ozet dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.bolumler {
+  display: grid;
+  gap: var(--kz-space-3);
+  margin: 0 0 var(--kz-space-8);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .bolumler {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 80rem) {
+  .bolumler {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.bolumBag {
+  display: block;
+  height: 100%;
+  padding: var(--kz-space-4) var(--kz-space-6);
+  border: 1px solid var(--kz-color-border);
+  border-radius: var(--kz-radius-md);
+  background: var(--kz-color-surface);
+  color: var(--kz-color-text);
+  text-decoration: none;
+}
+
+.bolumBag:hover {
+  border-color: var(--kz-color-text);
+}
+
+.bolumBag strong {
+  display: block;
+  margin-bottom: var(--kz-space-1);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.bolumBag span {
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-sm);
+}
+
+.liste {
+  margin: 0 0 var(--kz-space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.liste li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--kz-space-2);
+  padding: var(--kz-space-2) 0;
+  border-bottom: 1px solid var(--kz-color-border);
+}
+
+.soluk {
+  color: var(--kz-color-text-muted);
+  font-size: var(--kz-text-sm);
+}
+
+.kodlar {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: var(--kz-space-2);
+  margin: 0 0 var(--kz-space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.anahtar {
+  overflow-wrap: anywhere;
+}
+
+.geri {
+  margin: 0 0 var(--kz-space-4);
+}
+
+.secim :is(input):focus-visible,
+.select:focus-visible,
+.bolumBag:focus-visible {
+  outline: 2px solid var(--kz-color-focus);
+  outline-offset: 3px;
+}
+
+.alt {
+  padding-bottom: var(--kz-space-12);
+}

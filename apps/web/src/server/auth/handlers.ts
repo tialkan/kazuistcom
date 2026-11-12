@@ -253,7 +253,12 @@ export const adminLedgerPost = notWired(AdminLedgerAdjustmentInput);
 export const adminReportsGet = notWired(null);
 
 /** Paths under /api/auth that send an e-mail code get the stricter per IP rule. */
-const codePaths = ['/email-otp/send-verification-otp', '/forget-password/email-otp', '/sign-up/email'];
+const codePaths = [
+  '/email-otp/send-verification-otp',
+  '/email-otp/request-password-reset',
+  '/forget-password/email-otp',
+  '/sign-up/email',
+];
 
 /** Better Auth handler behind the shared limiter. */
 export async function authHandler(req: Request): Promise<Response> {
