@@ -60,6 +60,8 @@ export async function isOlustur(
       payload: { userId, kind },
       status: 'running',
       attempts: 1,
+      // The web process runs this job itself; a stale-lock sweep must bury it (dead), not requeue it.
+      maxAttempts: 1,
       lockedBy: 'web',
       lockedAt: new Date(),
       dedupeKey: dedupe,

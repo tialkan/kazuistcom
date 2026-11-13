@@ -15,7 +15,6 @@ import { isQuietHour } from '../../notify/quiet-hours.ts';
 import { refIdCoz, refIdOlustur, renderKalemcikNotice } from '../bildirim.ts';
 import {
   createKalemcikDailyHandler,
-  enqueueKalemcikDailySql,
   gunFarki,
   gunlukCalistir,
   gunlukHedef,
@@ -403,7 +402,20 @@ describe('daily schedule and handler', () => {
     t = new Date('2026-11-07T21:30:00Z'); // 00.30 on the 8th
     await tick();
     expect((await pg.query(`select 1 from jobs where type = 'kalemcik.daily'`)).rows).toHaveLength(2);
-    expect(enqueueKalemcikDailySql).toContain('ON CONFLICT DO NOTHING');
+  });
+  it('does not queue a finished day again after a restart (new tick, same day, job already done)', async () => {
+    const t = new Date('2026-11-09T05:30:00Z');
+    await kalemcikTick(pg, () => t)();
+    await pg.query(
+      `update jobs set status = 'done' where type = 'kalemcik.daily' and dedupe_key = 'kalemcik.daily:2026-11-09'`,
+    );
+    await kalemcikTick(pg, () => t)(); // a fresh closure models the restarted process
+    const { rows } = await pg.query<{ run_after: Date; status: string }>(
+      `select run_after, status from jobs where type = 'kalemcik.daily' and dedupe_key = 'kalemcik.daily:2026-11-09'`,
+    );
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.status).toBe('done');
+    expect(new Date(rows[0]?.run_after as Date).toISOString()).toBe('2026-11-09T05:00:00.000Z');
   });
   it('runs as a job handler and returns counts only', async () => {
     const p = await proje(u1, { deadline: '2026-11-14' });
