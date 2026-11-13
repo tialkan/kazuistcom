@@ -9,7 +9,9 @@ import { robotsYonergesi, siteKoku, type SeoEnv } from './ortam.ts';
  *
  * The canonical is relative ('./'): Next resolves it against metadataBase and the page path, so every
  * page points at its own address without a query string. There is no hreflang (ADR-0032).
- * OpenGraph images are not set yet; the request is docs/istekler/seo-p6-og-gorseli.md.
+ * The share image is not listed here: app/opengraph-image.tsx is a file convention route, so Next adds
+ * og:image and twitter:image to every page that does not set its own `openGraph` (see the note above),
+ * and the large preview card is declared to match.
  */
 export function temelMetadata(env: SeoEnv = process.env): Metadata {
   const marka = ortak().marka;
@@ -19,6 +21,6 @@ export function temelMetadata(env: SeoEnv = process.env): Metadata {
     robots: robotsYonergesi(env),
     alternates: { canonical: './' },
     openGraph: { type: 'website', siteName: marka, locale: 'tr_TR' },
-    twitter: { card: 'summary' },
+    twitter: { card: 'summary_large_image' },
   };
 }

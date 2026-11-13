@@ -5,7 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 import { ortak } from '@kazuist/i18n';
 import { HedefimBagi } from './HedefimBagi.tsx';
 import { basHarf, hedefimGorunumu } from './oturum.ts';
-import { acikModuller, moduller } from './rotalar.ts';
+import * as rotalar from './rotalar.ts';
+import { moduller } from './rotalar.ts';
 
 vi.mock('next/navigation', () => ({ usePathname: () => '/yazma/sablonlar' }));
 
@@ -66,8 +67,10 @@ describe('Hedefim slot', () => {
 });
 
 describe('module tabs without a "coming soon" state (ADR-0033)', () => {
-  it('treats every module as open; there is no separate list', () => {
-    expect([...acikModuller]).toEqual(moduller.map((m) => m.href));
+  it('keeps no separate open-module list: `moduller` is the only source', () => {
+    expect(rotalar).not.toHaveProperty('acikModuller');
+    expect(rotalar).not.toHaveProperty('modulAcik');
+    expect(moduller.map((m) => m.href)).toContain('/ara');
   });
 
   it('links every tab and marks the current section', async () => {
