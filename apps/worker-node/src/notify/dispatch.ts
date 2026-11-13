@@ -1,11 +1,12 @@
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
-import type { ClaimedJob } from '@kazuist/db/jobs';
+import { deliveredTargetsSql, enqueueJob, recordDeliverySql, type ClaimedJob } from '@kazuist/db/jobs';
 import type { SqlClient } from '../queue.ts';
 import { renderBillingNotice } from '../billing/notice-text.ts';
 import { renderKalemcikNotice } from '../kalemcik/bildirim.ts';
 import { deliverLegalDocuments } from './legal-delivery.ts';
 import { channelAllows, commercialAllowed, type Prefs } from './prefs.ts';
 import { isQuietHour, nextSendTime } from './quiet-hours.ts';
+import { targetHash, targetKeyFromEnv } from './target-hash.ts';
 import {
   isCommercial,
   NotifyPayload,
@@ -36,13 +37,26 @@ export interface NotifyDeps {
   appUrl: string;
   /** Tests can inject the same licensed font without a runtime asset path. */
   legalPdfFontBytes?: Uint8Array;
+  /**
+   * HMAC key for push target hashes in notification_deliveries (notifyTargetKey). Default: derived from
+   * BETTER_AUTH_SECRET. Without a key push targets are sent best effort and not recorded.
+   */
+  targetKey?: Uint8Array;
 }
+
+/** The claimed job a dispatch runs for; its id keys the delivery record (ADR-0035). */
+export type NotifyJob = Pick<ClaimedJob, 'id' | 'attempts' | 'max_attempts'>;
 
 export interface DispatchResult {
   status: 'sent' | 'deferred' | 'skipped';
   reason?: string;
   sent: Channel[];
   runAfter?: string;
+}
+
+/** A push target failed while others were delivered; the retry sends only what is not recorded yet. */
+export class PushDeliveryError extends Error {
+  override name = 'PushDeliveryError';
 }
 
 const paths: Record<NotificationType, string> = {
@@ -78,8 +92,27 @@ const asPrefs = (row: { email: unknown; web_push: unknown; apns: unknown } | und
   apns: (row?.apns ?? {}) as Prefs['apns'],
 });
 
-/** Deliver one notify.send job: preferences, commercial gate, quiet hours, channels. */
-export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<DispatchResult> {
+/** Target hash of e-mail in notification_deliveries (one address per user). */
+const EMAIL_TARGET = 'email';
+const deliveryKey = (channel: Channel, hash: string) => `${channel}:${hash}`;
+
+/** Dedupe key of the job that a quiet hour deferral creates, so a retried deferral queues it once. */
+export const deferKey = (jobId: string) => `notify.send:defer:${jobId}`;
+
+/**
+ * Deliver one notify.send job: preferences, commercial gate, quiet hours, channels.
+ *
+ * With a job (the queue handler always passes one) every delivery is recorded in notification_deliveries right
+ * after it succeeded and skipped on a retry of the same job: e-mail as target 'email', a push target as the HMAC
+ * of its endpoint or device token. A failing push target then fails the job so the retry sends only the missing
+ * targets; on the last attempt the job completes as push_partial. Without a job (direct calls) nothing is
+ * recorded and a push failure after a delivery completes as push_partial.
+ */
+export async function dispatch(
+  deps: NotifyDeps,
+  rawPayload: unknown,
+  job?: NotifyJob,
+): Promise<DispatchResult> {
   const payload = NotifyPayload.parse(rawPayload);
   const now = deps.now?.() ?? new Date();
   // A contract cannot complete by falling back to a generic notification or a push transport.
@@ -91,6 +124,7 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
     const orderId = payload.refId.slice('sozlesme:'.length);
     if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId))
       throw new Error('Invalid contract order reference');
+    // Contract PDFs keep their own delivery record (order_legal_document_deliveries).
     const result = await deliverLegalDocuments({
       db: deps.db,
       orderId,
@@ -124,12 +158,25 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
     if (!commercialAllowed(gate)) return { status: 'skipped', reason: 'commercial_not_allowed', sent: [] };
   }
 
-  if (isQuietHour(now) && !quietHourExempt.includes(payload.type)) {
-    const runAfter = nextSendTime(now);
-    await deps.db.query(`insert into jobs (type, payload, run_after) values ('notify.send', $1::jsonb, $2)`, [
-      JSON.stringify(payload),
-      runAfter.toISOString(),
+  // Targets an earlier attempt of this job already delivered. Lock ownership (ADR-0035) runs attempts one at a
+  // time, so one read per attempt is enough.
+  const delivered = new Set<string>();
+  if (job) {
+    const { rows } = await deps.db.query<{ channel: Channel; target_hash: string }>(deliveredTargetsSql, [
+      job.id,
     ]);
+    for (const r of rows) delivered.add(deliveryKey(r.channel, r.target_hash));
+  }
+
+  // A retry that already delivered something finishes now: a deferred job would start a new delivery record.
+  if (isQuietHour(now) && !quietHourExempt.includes(payload.type) && delivered.size === 0) {
+    const runAfter = nextSendTime(now);
+    await enqueueJob(
+      deps.db,
+      'notify.send',
+      payload,
+      job ? { once: true, dedupeKey: deferKey(job.id), runAfter } : { runAfter },
+    );
     return { status: 'deferred', reason: 'quiet_hours', sent: [], runAfter: runAfter.toISOString() };
   }
 
@@ -144,17 +191,28 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
   // External push providers receive only generic text, never billing details (plan 5.5).
   const pushMessage = render(payload.type);
   const sent: Channel[] = [];
+  const markSent = (c: Channel) => {
+    if (!sent.includes(c)) sent.push(c);
+  };
+  const record = async (c: Channel, hash: string) => {
+    if (job) await deps.db.query(recordDeliverySql, [job.id, c, hash]);
+  };
 
   if (deps.email && wanted('email')) {
-    const commercial = isCommercial(payload.type);
-    const footer = commercial ? tr.bildirim.ret : tr.bildirim.altBilgi;
-    await deps.email.send({
-      to: user.email,
-      subject: m.title,
-      text: `${m.body}\n\n${deps.appUrl}${m.path}\n\n${footer}`,
-      listUnsubscribe: commercial ? `${deps.appUrl}/hesap/bildirimler` : undefined,
-    });
-    sent.push('email');
+    if (delivered.has(deliveryKey('email', EMAIL_TARGET))) {
+      markSent('email');
+    } else {
+      const commercial = isCommercial(payload.type);
+      const footer = commercial ? tr.bildirim.ret : tr.bildirim.altBilgi;
+      await deps.email.send({
+        to: user.email,
+        subject: m.title,
+        text: `${m.body}\n\n${deps.appUrl}${m.path}\n\n${footer}`,
+        listUnsubscribe: commercial ? `${deps.appUrl}/hesap/bildirimler` : undefined,
+      });
+      await record('email', EMAIL_TARGET);
+      markSent('email');
+    }
   }
 
   const { rows: subs } = await deps.db.query<{
@@ -166,31 +224,41 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
   }>('select id, channel, endpoint, keys, environment from push_subscriptions where user_id = $1', [
     payload.userId,
   ]);
+  const key = deps.targetKey ?? targetKeyFromEnv();
+  // Push targets are recorded only with a job and a key; otherwise a retry could repeat them.
+  const tracked = job !== undefined && key !== undefined;
   /*
-   * Push is best effort once anything was delivered: a failing subscription is logged (error class only)
-   * and the next one is tried, so a retry of this job never sends the e-mail or an earlier push again.
-   * Only when nothing at all went out does the job fail and retry. Per channel idempotency across
-   * retries needs a delivery table (docs/istekler/kimlik-p7-bildirim-idempotency.md).
+   * A failing subscription is logged (error class only) and the next one is tried. Recorded targets are never
+   * sent twice, so a tracked failure fails the job and the retry delivers only the missing targets.
    */
   let pushFailures = 0;
+  const { webPush, apns } = deps;
   for (const s of subs) {
+    let send: (() => Promise<'ok' | 'gone'>) | undefined;
+    let channel: Channel | undefined;
+    if (s.channel === 'web_push' && webPush && wanted('web_push')) {
+      channel = 'web_push';
+      send = () =>
+        webPush.send({ endpoint: s.endpoint, keys: s.keys as { p256dh: string; auth: string } }, pushMessage);
+    } else if (s.channel === 'apns' && apns && wanted('apns')) {
+      channel = 'apns';
+      send = () =>
+        apns.send(s.endpoint, s.environment === 'production' ? 'production' : 'sandbox', pushMessage);
+    }
+    if (!channel || !send) continue;
+    const hash = tracked ? targetHash(key, s.endpoint) : undefined;
+    if (hash && delivered.has(deliveryKey(channel, hash))) {
+      markSent(channel);
+      continue;
+    }
     try {
-      let r: 'ok' | 'gone' | undefined;
-      if (s.channel === 'web_push' && deps.webPush && wanted('web_push')) {
-        r = await deps.webPush.send(
-          { endpoint: s.endpoint, keys: s.keys as { p256dh: string; auth: string } },
-          pushMessage,
-        );
-        if (r === 'ok' && !sent.includes('web_push')) sent.push('web_push');
-      } else if (s.channel === 'apns' && deps.apns && wanted('apns')) {
-        r = await deps.apns.send(
-          s.endpoint,
-          s.environment === 'production' ? 'production' : 'sandbox',
-          pushMessage,
-        );
-        if (r === 'ok' && !sent.includes('apns')) sent.push('apns');
+      const r = await send();
+      if (r === 'ok') {
+        if (hash) await record(channel, hash);
+        markSent(channel);
+      } else {
+        await deps.db.query('delete from push_subscriptions where id = $1', [s.id]);
       }
-      if (r === 'gone') await deps.db.query('delete from push_subscriptions where id = $1', [s.id]);
     } catch (err) {
       pushFailures++;
       console.error(
@@ -204,7 +272,9 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
       );
     }
   }
-  if (!sent.length && pushFailures) throw new Error('notify: every push delivery failed');
+  if (pushFailures && !sent.length) throw new PushDeliveryError('notify: every push delivery failed');
+  if (pushFailures && tracked && job.attempts < job.max_attempts)
+    throw new PushDeliveryError('notify: some push deliveries failed, retrying the missing targets');
   return sent.length
     ? { status: 'sent', sent, ...(pushFailures ? { reason: 'push_partial' } : {}) }
     : { status: 'skipped', reason: 'no_channel', sent };
@@ -212,5 +282,5 @@ export async function dispatch(deps: NotifyDeps, rawPayload: unknown): Promise<D
 
 /** JobHandler for the consumer in queue.ts: `{ 'notify.send': createNotifyHandler(deps) }`. */
 export function createNotifyHandler(deps: NotifyDeps) {
-  return (job: ClaimedJob) => dispatch(deps, job.payload);
+  return (job: ClaimedJob) => dispatch(deps, job.payload, job);
 }
