@@ -8,19 +8,21 @@ version: 2026-11-12.1
 date: 2026-11-12
 status: taslak
 consent_kind: on_bilgilendirme
+pdf: true
+pdf_fields: [AYLIK_KREDI, INDIRIM, KREDI, ODEME_DONEMI, TUTAR_TL, URUN_ACIKLAMASI, URUN_ADI, URUN_TURU]
 ---
 
 > TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. 6563 sayılı Kanun m.3/1 bilgileri (sözleşmenin
 > kurulma adımları, veri girişi hataları, sözleşme metninin saklanması, gizlilik kuralları) eklendi; mevzuat.gov.tr
 > metninden 12 Kasım 2026'da okundu. iOS sürüm alanı çıkarıldı: bu form yalnız web satışında kullanılır, iOS
-> satın alımları Apple üzerinden yürür. Ön bilgiye `pdf` ve `pdf_fields` alanları on-yuz ön bilgi ayrıştırıcısı
-> liste okuyabildiğinde eklenecek (docs/istekler/hukuk-uyum-p5-tutarlilik.md).
+> satın alımları Apple üzerinden yürür. Ön bilgiye `pdf` ve `pdf_fields` alanları eklendi; on-yuz ön bilgi
+> ayrıştırıcısı listeyi okuyor (docs/istekler/hukuk-uyum-p5-tutarlilik.md madde 1).
 
 Gösterim kuralları (odeme ajanı için): Bu form ödeme yükümlülüğü altına girmeden hemen önce, en az 12 punto
 eşdeğerinde ve okunaklı gösterilir (Mesafeli Sözleşmeler Yön. m.6). "Ön bilgilendirme formunu okudum ve
 onaylıyorum" kutusu işaretlenmeden ödeme düğmesi açılmaz; teyit sağlanmazsa sözleşme kurulmamış sayılır
-(m.7). Form ve sözleşme PDF olarak e-postayla kalıcı veri saklayıcısında gönderilir. `{{...}}` alanları
-sipariş anında sunucu tarafından doldurulur.
+(m.7). Form ve sözleşme PDF olarak e-postayla kalıcı veri saklayıcısında gönderilir. Ön bilgideki
+`pdf_fields` alanları sipariş anında sunucu tarafından doldurulur.
 
 ## 1. Satıcı
 

@@ -38,11 +38,12 @@ Sözleşmeleri Yön. m.5). Yapı kuralları:
   - tr/mesafeli-satis.md: ALICI_AD, ALICI_EPOSTA, SIPARIS_TARIHI, TUTAR_TL, URUN_ADI
   - tr/abonelik.md: ALICI_AD, ALICI_EPOSTA, AYLIK_INDIRIM_TL, AYLIK_KREDI, AYLIK_LISTE_FIYATI_TL, DONEM_BASLANGIC, DONEM_BITIS, ODEME_DONEMI, PLAN_ADI, SOZLESME_TARIHI, TUTAR_TL, YILLIK_TUTAR_TL
   Şirket alanlarından henüz bilinmeyenler ({{KEP}}) yayın kapısında kapanır.
-- Ön bilgide `pdf: true` ve `pdf_fields` alanları henüz yok. Sözleşme (`LegalFrontMatter`) bu alanları kabul ediyor
-  ve ödeme adımı (`legal-presentation.ts`, `createLegalSnapshot`) onları şart koşuyor; ancak on-yuz ön bilgi
-  ayrıştırıcısı (`apps/web/src/app/(kabuk)/_hukuki/md.ts` `onBilgi`) YAML listesi okuyamadığı için alan eklenirse
-  bütün hukuki sayfaların derlemesi kırılır. Ayrıştırıcı düzelince bu üç dosyaya yukarıdaki listeler eklenir
-  (docs/istekler/hukuk-uyum-p5-tutarlilik.md madde 1). O zamana kadar ödeme adımı hukuki metin göstermez ve ödeme açılmaz.
+- Ön bilgide `pdf: true` ve `pdf_fields: [A, B, C]` (YAML akış dizisi) yukarıdaki listelerle tanımlıdır. on-yuz ön
+  bilgi ayrıştırıcısı (`apps/web/src/app/(kabuk)/_hukuki/md.ts` `onBilgi`) listeyi okur; ödeme adımı
+  (`legal-presentation.ts`, `createLegalSnapshot`) bu alanları şart koşar (docs/istekler/hukuk-uyum-p5-tutarlilik.md
+  madde 1). Metinler `taslak` durumundayken ve `{{KEP}}` açıkken ödeme adımı yine hukuki metin göstermez.
+- Gövdede `pdf_fields` dışında `{{` ile başlayan hiçbir ifade (örnek gösterimi dahil) bulunmaz; yayın kapısı onu açık
+  yer tutucu sayar.
 - Bağlantılar tam adresle (https://kazuist.com/...) yazılır; PDF'te tıklanmadan okunabilir.
 - Ön bilgiden sonraki ilk alıntı bloğu (TASLAK notu) ve on-bilgilendirme'deki "Gösterim kuralları" paragrafı
   PDF'e girmez; PDF'in başına metin sürümü (version) ve sipariş kimliği yazılır, consents kaydıyla eşleşir.
@@ -51,8 +52,6 @@ Sözleşmeleri Yön. m.5). Yapı kuralları:
 ## Dosyalar
 
 - tr/: bağlayıcı Türkçe metinler (plan 11 tablosu)
-- tr/topluluk.md: Turkuaz Kampüs kapsamdan çıktığı için (ADR-0031) yalnız yer tutucu nottur; alt bilgi bağlantısı
-  ve e2e listesi kaldırılınca silinir.
 
 Kazuist yalnız Türkçedir (ADR-0032). İngilizce bilgilendirme sürümleri ve /legal/* adresleri kaldırıldı; yükleyici
 `lang: tr` dışındaki metni reddeder, `alternate` (hreflang eşi) alanı kullanılmaz.
@@ -83,4 +82,4 @@ yayından önce ilgili paketle gelir; o paket gelmezse metin değişir.
 | Analitik etkin değil | cerezler 1, gizlilik 1 | kodda Umami SDK'sı yok | Doğrulandı |
 | Veri tabanı internete kapalı | gizlilik 2 | ADR-0033 karar 2 | Ön koşul (review.md P2) |
 | Koyu tema | (çıkarıldı) | plan 12 madde 2 | Metinden çıkarıldı |
-| Ödeme adımında hukuki metin gösterimi | on-bilgilendirme, mesafeli-satis | legal-presentation.ts `pdf` şartı | Ön koşul: ön bilgi ayrıştırıcısı düzelmeli |
+| Ödeme adımında hukuki metin gösterimi | on-bilgilendirme, mesafeli-satis | legal-presentation.ts `pdf` şartı; _hukuki/test/odeme-gosterimi.test.tsx | Ayrıştırıcı düzeldi, alanlar eklendi; yayın onayı ve {{KEP}} bekleniyor |

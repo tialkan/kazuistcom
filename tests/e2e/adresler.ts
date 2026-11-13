@@ -60,7 +60,6 @@ export const HUKUKI_TR: readonly string[] = [
   'kosullar',
   'mesafeli-satis',
   'on-bilgilendirme',
-  'topluluk',
   'uyari',
   'yapay-zeka',
 ];
