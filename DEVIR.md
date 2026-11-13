@@ -26,6 +26,27 @@ yeni bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
   `pnpm build`.
 - Açık: yönlendirme madde 3 (`planlandi` uçlar: bildirim tercihleri, Web Push ve APNs kayıt uçları) ve madde 4
   (atıf kuyruğu editör ekranı) bu PR'da yapılmadı.
+## 13 Kasım 2026, yazma: sözleşme v1.5 yazma maddeleri (yazma/v1-5-yazma-maddeleri)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` "yazma" bölümünün 1 ve 2. maddeleri; 3. madde (rota dosyalarında
+sözleşme şemaları) ve 4. madde bu PR'da yapılmadı.
+- `apps/worker-node/src/kalemcik/gunluk.ts` `kalemcikTick`: `enqueueKalemcikDailySql` kalktı;
+  `enqueueJob(db, 'kalemcik.daily', {}, { once: true, dedupeKey: 'kalemcik.daily:' + gun, runAfter: gunBasi08(gun) })`
+  (`gunBasi08` İstanbul 08.00, `+03:00`). Yeniden başlatılan süreç bitmiş günü yeniden kuyruğa koymaz (`done` satırı
+  için test var). `KUYRUK_SQL` (`notify.send`) değişmedi: koşullu UPDATE korur.
+- `apps/web/src/app/yazma/_sunucu/kurallar.ts` `isOlustur`: `rules.extract` satırına `maxAttempts: 1`; bayat kilit
+  temizliği artık satırı `dead` yapar. `api.test.ts` satırın `max_attempts = 1` olduğunu sınar.
+- Kalemcik "nötr ton" sorusu cevaplandı: ayrı yüz gerekmez (`docs/istekler/yazma-kalemcik-notr-ton.md`); plan 12/8
+  metninin düzeltilmesi mimar ve orkestraya bırakıldı.
+- Doğrulama: `pnpm typecheck`, `lint`, `test` (worker-node 103, web 628), `build` geçti.
+## 13 Kasım 2026, seo: küçük işler (codex/seo-kucuk-isler)
+
+Yeni bağımlılık yok; contracts ve db değişmedi. `twitter.card` `summary_large_image` (OG görseli `app/opengraph-image.tsx`'ten gelir;
+`docs/istekler/seo-p6-og-gorseli.md` kapandı). `acikModuller` ve `modulAcik` silindi; `(seo)/_seo/adresler.ts`, `rehberler/_bilesen/metin.ts`,
+`rehberler/kontrol-listesi/page.tsx`, ilgili testler, `apps/web/test/seo.test.ts` ve `kabuk.test.tsx` `moduller`e geçti
+(`docs/istekler/on-yuz-acik-modul-listesi.md` kapandı). Sahiplik dışı dokunuş: `rotalar.ts` ve `kabuk.test.tsx` (on-yuz),
+`rehberler/**` (icerik), `apps/web/test/seo.test.ts` (orkestra); görevlendirme orkestradan.
+
 ## 12 Kasım 2026, mimar: sözleşme v1.5, P1 adım A (codex/p1-sozlesme-v1-5)
 
 review.md P1 madde 4, 5 (doğrulama), 6 (ekleme) ve 8; plan `docs/istekler/mimar-p1-sozlesme-temizligi.md` adım A.

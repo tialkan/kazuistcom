@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { EtikKutusu } from '../_bilesen/EtikKutusu.tsx';
 import { KontrolListesi, type MaddeGorunumu } from '../_bilesen/KontrolListesi.tsx';
 import { RehberUst, SabitNotlar } from '../_bilesen/Ortak.tsx';
-import { baglantiAcik, tr } from '../_bilesen/metin.ts';
+import { tr } from '../_bilesen/metin.ts';
 import { kontrol } from '../_veri/rehberler.ts';
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export default function KontrolListesiSayfasi() {
     etiket: tr.kontrol.etiket[m.etiket],
     metin: m.metin,
     kural: m.kural ? { no: m.kural, href: kuralBaglantisi(m.kural) } : null,
-    baglanti: m.baglanti && baglantiAcik(m.baglanti.href) ? m.baglanti : null,
+    baglanti: m.baglanti ?? null,
   }));
   return (
     <div className="sayfa">

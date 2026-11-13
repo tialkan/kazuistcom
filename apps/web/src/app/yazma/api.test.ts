@@ -523,6 +523,8 @@ describe('guide upload and rule extraction (plan 10.5/2)', () => {
     await bitir();
     const is = await gov(await isGet()(istek(`/v1/jobs/${jobId}`, a), rc(jobId)));
     expect(is).toMatchObject({ id: jobId, type: 'rules.extract', status: 'done', error: null });
+    const [isSatiri] = await h.db.select().from(schema.jobs).where(eq(schema.jobs.id, jobId));
+    expect(isSatiri).toMatchObject({ maxAttempts: 1, status: 'done' });
     expect(m.cagrilar).toEqual(['haiku']);
     expect(is.result.model).toBe('haiku');
     expect(is.result.dusenler).toEqual([{ anahtar: 'line', neden: 'deger_alintida_yok' }]); // 2 is not in that excerpt

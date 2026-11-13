@@ -19,3 +19,11 @@ Kimden: seo (dal codex/p6-seo). Kime: on-yuz (görsel ve tasarım sistemi) ve or
 - `temelMetadata` içine `openGraph.images: [{ url: '/og/varsayilan.png', width: 1200, height: 630, alt }]`; `metadataBase` mutlak adresi üretir.
 - Sayfa kendi `openGraph` anahtarını yazarsa bütün anahtarı değiştirir; görselin yinelenmesi gerektiği sayfa sahiplerine bildirilir.
 - Doğrulama: `curl -s https://kazuist.com/ | grep -o 'og:image[^>]*'` ve Facebook/LinkedIn paylaşım denetleyicisi (Tarık hesapla).
+
+## Sonuç (kapatıldı)
+
+Karşılandı. Görsel `apps/web/src/app/opengraph-image.tsx` (dosya kuralı yolu, tipografik kart, ADR-0034 seçenek B) ile
+üretilir; Next her sayfaya `og:image` ve `twitter:image` ekler, bu yüzden `openGraph.images` ayrıca yazılmadı (ikinci
+bir görsel çıkardı) ve `public/og/varsayilan.png` oluşturulmadı. `twitter.card` `summary_large_image` yapıldı
+(`apps/web/src/app/(seo)/_seo/metadata.ts`, `apps/web/test/seo.test.ts` sınar). İsteğe bağlı `rehberler.png` yapılmadı;
+gerekirse yeni istek açılır.
