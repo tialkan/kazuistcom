@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { acikModuller } from '../src/app/(kabuk)/_kabuk/rotalar.ts';
+import { moduller } from '../src/app/(kabuk)/_kabuk/rotalar.ts';
 import { sayfaDosyasi, siteHaritasiDisiModuller } from '../src/app/(seo)/_seo/adresler.ts';
 import {
   aramaBotlari,
@@ -91,10 +91,15 @@ describe('site metadata', () => {
     expect(m.alternates).not.toHaveProperty('languages');
   });
 
-  it('declares Turkish OpenGraph without an image until the image request is met', () => {
-    const og = temelMetadata(uretim).openGraph as Record<string, unknown>;
-    expect(og).toMatchObject({ type: 'website', siteName: 'Kazuist', locale: 'tr_TR' });
-    expect(og).not.toHaveProperty('images');
+  it('declares Turkish OpenGraph and the large Twitter card; the image comes from app/opengraph-image.tsx', () => {
+    const m = temelMetadata(uretim);
+    expect(m.openGraph).toMatchObject({ type: 'website', siteName: 'Kazuist', locale: 'tr_TR' });
+    // the image is a file convention route, so the metadata must not list a second one
+    expect(m.openGraph).not.toHaveProperty('images');
+    expect(m.twitter).toMatchObject({ card: 'summary_large_image' });
+    expect(
+      readFileSync(fileURLToPath(new URL('../src/app/opengraph-image.tsx', import.meta.url)), 'utf8'),
+    ).toContain('export default');
   });
 
   it('uses the configured origin in staging and localhost without APP_URL', () => {
@@ -209,7 +214,7 @@ describe('sitemap', () => {
   });
 
   it('follows rotalar.ts: every open module root is listed unless it is explicitly excluded', () => {
-    for (const href of acikModuller) {
+    for (const { href } of moduller) {
       if (siteHaritasiDisiModuller.has(href)) expect(yollar, href).not.toContain(href);
       else expect(yollar, href).toContain(href);
     }
