@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { ortak } from '@kazuist/i18n';
 import tr from '@kazuist/i18n/tr/rehberler.json';
-import { modulAcik } from '../(kabuk)/_kabuk/rotalar.ts';
+import { moduller } from '../(kabuk)/_kabuk/rotalar.ts';
 import { adimGorunumu } from './_bilesen/metin.ts';
 import { AdimListesi } from './_bilesen/AdimListesi.tsx';
 import { makale } from './_veri/rehberler.ts';
@@ -40,7 +40,7 @@ describe('every guide page', () => {
     it(`${yol}: links only to open modules and no long dash`, () => {
       const m = html(<Sayfa />);
       for (const href of m.match(/href="\/(ara|yazma|pratik|atif-agi)"/g) ?? []) {
-        expect(modulAcik(href.slice(6, -1))).toBe(true);
+        expect(moduller.map((modul) => modul.href)).toContain(href.slice(6, -1));
       }
       expect(m).not.toContain(String.fromCharCode(0x2014));
     });
@@ -61,12 +61,12 @@ describe('article guide', () => {
     expect(m).toContain('0 / 12 adım tamamlandı');
   });
 
-  it('shows the source search button only when /ara is open', () => {
+  it('always shows the source search button, since /ara is a module of the shell', () => {
     const adim = makale.adimlar.find((a) => a.kaynakTuru);
     if (!adim) throw new Error('no search step');
     const g = adimGorunumu(adim, 1);
-    // the button is built exactly when /ara is in acikModuller
-    expect(g.araEtiket === null).toBe(!modulAcik('/ara'));
+    expect(moduller.map((m) => m.href)).toContain('/ara');
+    expect(g.araEtiket).toBe(tr.adim.ara[adim.kaynakTuru as keyof typeof tr.adim.ara]);
     const acik = html(<AdimListesi liste="makale" adimlar={[{ ...g, araEtiket: tr.adim.ara.mevzuat }]} />);
     expect(acik).toContain('href="/ara"');
   });

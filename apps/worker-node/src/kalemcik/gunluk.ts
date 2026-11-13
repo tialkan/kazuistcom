@@ -1,5 +1,5 @@
 import { NotifyPayload } from '@kazuist/contracts';
-import type { ClaimedJob } from '@kazuist/db/jobs';
+import { enqueueJob, type ClaimedJob } from '@kazuist/db/jobs';
 import type { JobHandler, SqlClient } from '../queue.ts';
 import { refIdOlustur, type BildirimTuru } from './bildirim.ts';
 import { icerik, varyant, type Hitap } from './icerik.ts';
@@ -202,20 +202,25 @@ export function createKalemcikDailyHandler(deps: GunlukBagimliliklar): JobHandle
   return (job: ClaimedJob) => gunlukCalistir(deps, job.payload);
 }
 
-/** One kalemcik.daily job per Istanbul day (the partial unique index drops a repeat while one is queued or running). */
-export const enqueueKalemcikDailySql = `
-INSERT INTO jobs (type, payload, dedupe_key, run_after)
-VALUES ('kalemcik.daily', '{}'::jsonb, 'kalemcik.daily:' || $1::text,
-        ($1::text::date + time '08:00') AT TIME ZONE 'Europe/Istanbul')
-ON CONFLICT DO NOTHING`;
+/** 08:00 Istanbul (UTC+3 all year) of the given Istanbul day (YYYY-MM-DD). */
+export const gunBasi08 = (gun: string): Date => new Date(`${gun}T08:00:00+03:00`);
 
-/** Tick for the runner (same shape as dailyBillingTick): enqueues at most once per Istanbul day per process. */
+/**
+ * Tick for the runner (same shape as dailyBillingTick): enqueues one kalemcik.daily job per Istanbul day. The
+ * once-queue helper (ADR-0035 4.5) remembers the day in the jobs table in any state, so a restarted process does
+ * not queue a finished day again; the in-memory day only saves a query.
+ */
 export function kalemcikTick(db: SqlClient, now: () => Date = () => new Date()): () => Promise<void> {
   let son = '';
   return async () => {
     const bugun = istanbulGunu(now());
     if (bugun === son) return;
-    await db.query(enqueueKalemcikDailySql, [bugun]);
+    await enqueueJob(
+      db,
+      'kalemcik.daily',
+      {},
+      { once: true, dedupeKey: `kalemcik.daily:${bugun}`, runAfter: gunBasi08(bugun) },
+    );
     son = bugun;
   };
 }

@@ -20,6 +20,54 @@ docs/istekler/hukuk-uyum-p5-tutarlilik.md madde 1 ve 2.
   e2e 99/99; 16 sayfa 375/768/1440 axe 0, taşma 0 (`docs/tasarim/ekran/hukuki-*`, `ana-sayfa-*`, `axe-sonuc.json`).
 - Açık: odeme `DOC_FIELDS['on-bilgilendirme']` içinde `IOS_SURUM` (istek madde 4); `apps/web/test/seo.test.ts`
   taslak listesinde `topluluk` zararsız kaldı (orkestra).
+## 13 Kasım 2026, kimlik: bildirim teslim kaydı ve step-up sözleşme şeması (sözleşme v1.5)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` kimlik madde 1 ve 2. Sözleşme, şema ve migration değişmedi;
+yeni bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
+- `apps/worker-node/src/notify/dispatch.ts`: kuyruk işleyicisi iş kimliğini `dispatch(deps, payload, job)`'a verir.
+  Her denemenin başında `deliveredTargetsSql`, her başarılı teslimden hemen sonra `recordDeliverySql`; e-posta
+  hedefi `'email'`, push hedefi uç noktanın ya da APNs jetonunun HMAC-SHA256'sı (64 küçük harf onaltılık, ham değer
+  yazılmaz). Kayıtlı hedef aynı işin yeniden denemesinde gönderilmez. Bir push hatası artık işi
+  `PushDeliveryError` ile düşürür ve yeniden deneme yalnız eksik hedefleri gönderir; son denemede iş
+  `push_partial` ile biter. Hiçbir şey gitmediyse iş eskisi gibi hata verir.
+- Sessiz saat ertelemesi ham `insert into jobs` yerine `enqueueJob(db, 'notify.send', payload, { once: true,
+  dedupeKey: 'notify.send:defer:<iş>', runAfter })`: ertelemenin kendisi yeniden denenirse ikinci iş açılmaz. Bir
+  şeyi zaten teslim etmiş bir yeniden deneme ertelenmez (yeni iş yeni teslim kaydı açardı), kalan hedefleri hemen
+  gönderir.
+- `apps/worker-node/src/notify/target-hash.ts`: anahtar `BETTER_AUTH_SECRET`'tan HKDF-SHA256 (bilgi etiketi
+  `notification-target`); `NotifyDeps.targetKey` ile verilebilir, verilmezse ortamdan türetilir (`main.ts`
+  değişmedi). Anahtar yoksa push en iyi çabayla gönderilir ve kaydedilmez; e-posta yine kaydedilir.
+- `apps/web/src/server/auth/handlers.ts` `stepUpConfirm`: `EduVerificationConfirm` yerine sözleşmedeki
+  `StepUpConfirmInput`; rota `apps/web/src/app/api/auth/step-up/confirm/route.ts` zaten sözleşmedeki
+  `/auth/step-up/confirm` yolundaydı.
+- Test: `apps/worker-node/src/notify/__tests__/idempotency.test.ts` (PGlite, migration 0007 dahil): özet biçimi,
+  ham değerin tabloya yazılmaması, aynı işin ikinci çalışmasında sıfır teslim, push hatasında yalnız eksik hedefin
+  yeniden gönderimi, son denemede `push_partial`, anahtarsız durum, ertelemenin tek iş açması, teslim etmiş
+  denemenin ertelenmemesi ve gerçek tüketiciyle (`createConsumer`) uçtan uca yeniden deneme.
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm test` (worker-node 112, web 628, tümü geçti),
+  `pnpm build`.
+- Açık: yönlendirme madde 3 (`planlandi` uçlar: bildirim tercihleri, Web Push ve APNs kayıt uçları) ve madde 4
+  (atıf kuyruğu editör ekranı) bu PR'da yapılmadı.
+## 13 Kasım 2026, yazma: sözleşme v1.5 yazma maddeleri (yazma/v1-5-yazma-maddeleri)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` "yazma" bölümünün 1 ve 2. maddeleri; 3. madde (rota dosyalarında
+sözleşme şemaları) ve 4. madde bu PR'da yapılmadı.
+- `apps/worker-node/src/kalemcik/gunluk.ts` `kalemcikTick`: `enqueueKalemcikDailySql` kalktı;
+  `enqueueJob(db, 'kalemcik.daily', {}, { once: true, dedupeKey: 'kalemcik.daily:' + gun, runAfter: gunBasi08(gun) })`
+  (`gunBasi08` İstanbul 08.00, `+03:00`). Yeniden başlatılan süreç bitmiş günü yeniden kuyruğa koymaz (`done` satırı
+  için test var). `KUYRUK_SQL` (`notify.send`) değişmedi: koşullu UPDATE korur.
+- `apps/web/src/app/yazma/_sunucu/kurallar.ts` `isOlustur`: `rules.extract` satırına `maxAttempts: 1`; bayat kilit
+  temizliği artık satırı `dead` yapar. `api.test.ts` satırın `max_attempts = 1` olduğunu sınar.
+- Kalemcik "nötr ton" sorusu cevaplandı: ayrı yüz gerekmez (`docs/istekler/yazma-kalemcik-notr-ton.md`); plan 12/8
+  metninin düzeltilmesi mimar ve orkestraya bırakıldı.
+- Doğrulama: `pnpm typecheck`, `lint`, `test` (worker-node 103, web 628), `build` geçti.
+## 13 Kasım 2026, seo: küçük işler (codex/seo-kucuk-isler)
+
+Yeni bağımlılık yok; contracts ve db değişmedi. `twitter.card` `summary_large_image` (OG görseli `app/opengraph-image.tsx`'ten gelir;
+`docs/istekler/seo-p6-og-gorseli.md` kapandı). `acikModuller` ve `modulAcik` silindi; `(seo)/_seo/adresler.ts`, `rehberler/_bilesen/metin.ts`,
+`rehberler/kontrol-listesi/page.tsx`, ilgili testler, `apps/web/test/seo.test.ts` ve `kabuk.test.tsx` `moduller`e geçti
+(`docs/istekler/on-yuz-acik-modul-listesi.md` kapandı). Sahiplik dışı dokunuş: `rotalar.ts` ve `kabuk.test.tsx` (on-yuz),
+`rehberler/**` (icerik), `apps/web/test/seo.test.ts` (orkestra); görevlendirme orkestradan.
 
 ## 12 Kasım 2026, mimar: sözleşme v1.5, P1 adım A (codex/p1-sozlesme-v1-5)
 

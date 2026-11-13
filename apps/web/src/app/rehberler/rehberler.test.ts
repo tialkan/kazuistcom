@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { maddeler } from '../tespit/_veri/ayristir.ts';
 import { kuralSeti } from '../tespit/_veri/kurallar.ts';
-import { acikModuller, modulAcik } from '../(kabuk)/_kabuk/rotalar.ts';
+import { moduller } from '../(kabuk)/_kabuk/rotalar.ts';
 import { bosDepo, depoyuOku, isaretle, sayi, yuzde, depoAnahtari } from './_alan/ilerleme.ts';
 import { ichBaglantilar, tezSchema } from './_alan/sema.ts';
 import { etik, gecerliIdler, kontrol, makale, tez, zoteroEndnote } from './_veri/rehberler.ts';
@@ -177,8 +177,9 @@ describe('guide progress (FR-34), stored apart for article, thesis and checklist
 });
 
 describe('module registration', () => {
-  it('opens /rehberler in the shell and leaves the other routes as they were', () => {
-    expect(modulAcik('/rehberler')).toBe(true);
-    expect(acikModuller.has('/pratik')).toBe(true);
+  it('lists /rehberler in the shell and leaves the other routes as they were', () => {
+    const adresler = moduller.map((m) => m.href);
+    expect(adresler).toContain('/rehberler');
+    expect(adresler).toContain('/pratik');
   });
 });

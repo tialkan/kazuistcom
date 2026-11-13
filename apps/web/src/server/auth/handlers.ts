@@ -14,6 +14,7 @@ import {
   MePatch,
   MeDeleteInput,
   ReviewQueueName,
+  StepUpConfirmInput,
   TakedownRequestInput,
   TargetProfessionInput,
 } from '@kazuist/contracts';
@@ -174,7 +175,7 @@ export const professionsGet = withPublic(rules.publicIp, async () =>
 export const stepUpConfirm = withAuth(
   { roles: ['editor', 'yonetici'], rate: rules.stepUpUser },
   async (req, p, ctx) => {
-    const body = EduVerificationConfirm.safeParse(await readJson(req));
+    const body = StepUpConfirmInput.safeParse(await readJson(req));
     if (!body.success) return apiError('bad_request');
     if (
       !(await hasPasskeySession(ctx.db, p.sessionId, p.userId)) ||
