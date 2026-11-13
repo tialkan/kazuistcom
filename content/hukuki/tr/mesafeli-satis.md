@@ -8,6 +8,8 @@ version: 2026-11-12.1
 date: 2026-11-12
 status: taslak
 consent_kind: mesafeli_sozlesme
+pdf: true
+pdf_fields: [ALICI_AD, ALICI_EPOSTA, SIPARIS_TARIHI, TUTAR_TL, URUN_ADI]
 ---
 
 > TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Ön bilgilendirme formunun madde numaraları

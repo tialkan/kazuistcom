@@ -1,3 +1,26 @@
+## 13 Kasım 2026, on-yuz: hukuki ön bilgi listeleri ve topluluk belgesinin kaldırılması (on-yuz/p5-hukuki-on-bilgi)
+
+docs/istekler/hukuk-uyum-p5-tutarlilik.md madde 1 ve 2.
+- `apps/web/src/app/(kabuk)/_hukuki/md.ts` `onBilgi` YAML akış dizisini (`pdf_fields: [A, B]`, tırnaklı öğe, boş
+  `[]`) ve blok dizisini (`key:` ardından `- A`) okur; iç içe dizi ve köşeli parantezli başlık dize kalır. Test her
+  hukuki metnin ön bilgisini `yaml` paketinin sonucuyla karşılaştırır.
+- Sahiplik dışı (istek gereği aynı PR, hukuk-uyum): `on-bilgilendirme.md`, `mesafeli-satis.md`, `abonelik.md` ön
+  bilgisine istekteki listelerle `pdf: true` ve `pdf_fields`; sürüm değişmedi (gövde değişmedi). on-bilgilendirme
+  "Gösterim kuralları" notundaki `{{...}}` yayın kapısında açık yer tutucu sayılıyordu ve metin hiç yayımlanamazdı;
+  "Ön bilgideki `pdf_fields` alanları" diye yazıldı. content/hukuki/README.md buna göre güncellendi.
+- `_hukuki/test/odeme-gosterimi.test.tsx`: gerçek dosyalar ve ledger `orderFields` ile; taslakken ödeme adımı kapalı,
+  yalnız `status: yayinda` ve `{{KEP}}` doldurulunca `buildCheckoutLegalPresentation` iki metni doldurur, `CheckoutStep`
+  alıcı ve ürünle gösterir, `createLegalSnapshot` (paket ve yıllık abonelik) geçer. Metinlerle ödeme arasında yalnız
+  yayın onayı ve KEP kaldı.
+- Topluluk (ADR-0031): `content/hukuki/tr/topluluk.md` silindi; `rotalar.ts` `hukukiBelgeler`, `ortak.json`
+  `hukuki.belge.topluluk`, `tests/e2e/adresler.ts` `HUKUKI_TR` (kalite-guvenlik, istek gereği) çıkarıldı.
+  `hukuki/[belge]/page.tsx` bilinmeyen ve kaldırılan slug için 404 verir (sayfa dinamik olduğundan
+  `dynamicParams = false` tek başına engellemiyordu; `/hukuki/yok` 200 "hazırlanıyor" dönüyordu).
+- Doğrulama: typecheck, lint, check:text, `pnpm test` (web 644), build; yerel üretimde `/hukuki/topluluk` 404,
+  e2e 99/99; 16 sayfa 375/768/1440 axe 0, taşma 0 (`docs/tasarim/ekran/hukuki-*`, `ana-sayfa-*`, `axe-sonuc.json`).
+- Açık: odeme `DOC_FIELDS['on-bilgilendirme']` içinde `IOS_SURUM` (istek madde 4); `apps/web/test/seo.test.ts`
+  taslak listesinde `topluluk` zararsız kaldı (orkestra).
+
 ## 12 Kasım 2026, mimar: sözleşme v1.5, P1 adım A (codex/p1-sozlesme-v1-5)
 
 review.md P1 madde 4, 5 (doğrulama), 6 (ekleme) ve 8; plan `docs/istekler/mimar-p1-sozlesme-temizligi.md` adım A.

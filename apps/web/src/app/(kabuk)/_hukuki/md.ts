@@ -142,15 +142,62 @@ export function ayristir(md: string): Blok[] {
   return bloklar;
 }
 
-/** Flat YAML front matter (key: value per line, # comments). Enough for LegalFrontMatter; validated by zod. */
-export function onBilgi(yaml: string): Record<string, string | boolean> {
-  const out: Record<string, string | boolean> = {};
+export type OnBilgiDeger = string | boolean | string[];
+
+const tirnaksiz = (v: string) => (/^(['"]).*\1$/.test(v) ? v.slice(1, -1) : v);
+
+/**
+ * Flow sequence `[A, B, "C"]` as a list of strings, or null when `v` is not one. Items are plain or quoted
+ * scalars; nested sequences and mappings are not part of the legal front matter and stay unparsed (null).
+ */
+function akisDizisi(v: string): string[] | null {
+  const m = /^\[(.*)\]$/.exec(v);
+  if (!m) return null;
+  const ic = (m[1] ?? '').trim();
+  if (!ic) return [];
+  if (/[[\]{}]/.test(ic)) return null;
+  const ogeler = ic.split(',').map((x) => tirnaksiz(x.trim()));
+  return ogeler.some((x) => !x) ? null : ogeler;
+}
+
+/**
+ * YAML front matter subset used by content/hukuki: `key: value` per line, # comments, booleans, quoted
+ * strings, and lists either as a flow sequence (`pdf_fields: [A, B]`) or as a block sequence (`key:` followed
+ * by indented `- A` lines). Enough for LegalFrontMatter; the result is validated by zod, so an unknown shape
+ * fails there rather than being guessed here.
+ */
+export function onBilgi(yaml: string): Record<string, OnBilgiDeger> {
+  const out: Record<string, OnBilgiDeger> = {};
+  let blokAnahtar: string | null = null;
   for (const raw of yaml.split('\n')) {
-    const line = raw.replace(/\s+#.*$/, '').trimEnd();
+    const line = raw
+      .replace(/\s+#.*$/, '')
+      .replace(/^#.*$/, '')
+      .trimEnd();
+    if (!line.trim()) continue;
+    const oge = /^\s*-\s+(.*)$/.exec(line);
+    if (oge && blokAnahtar) {
+      const liste = out[blokAnahtar];
+      const deger = tirnaksiz((oge[1] ?? '').trim());
+      out[blokAnahtar] = Array.isArray(liste) ? [...liste, deger] : [deger];
+      continue;
+    }
+    blokAnahtar = null;
     const m = /^([a-z_]+):\s*(.*)$/.exec(line);
     if (!m?.[1]) continue;
-    let v = (m[2] ?? '').trim();
-    if (/^(['"]).*\1$/.test(v)) v = v.slice(1, -1);
+    const ham = (m[2] ?? '').trim();
+    if (!ham) {
+      // `key:` alone may open a block sequence; without items it stays an empty string (zod rejects it).
+      blokAnahtar = m[1];
+      out[m[1]] = '';
+      continue;
+    }
+    const dizi = akisDizisi(ham);
+    if (dizi) {
+      out[m[1]] = dizi;
+      continue;
+    }
+    const v = tirnaksiz(ham);
     out[m[1]] = v === 'true' ? true : v === 'false' ? false : v;
   }
   return out;
