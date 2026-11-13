@@ -1,3 +1,31 @@
+## 13 Kasım 2026, kimlik: bildirim teslim kaydı ve step-up sözleşme şeması (sözleşme v1.5)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` kimlik madde 1 ve 2. Sözleşme, şema ve migration değişmedi;
+yeni bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
+- `apps/worker-node/src/notify/dispatch.ts`: kuyruk işleyicisi iş kimliğini `dispatch(deps, payload, job)`'a verir.
+  Her denemenin başında `deliveredTargetsSql`, her başarılı teslimden hemen sonra `recordDeliverySql`; e-posta
+  hedefi `'email'`, push hedefi uç noktanın ya da APNs jetonunun HMAC-SHA256'sı (64 küçük harf onaltılık, ham değer
+  yazılmaz). Kayıtlı hedef aynı işin yeniden denemesinde gönderilmez. Bir push hatası artık işi
+  `PushDeliveryError` ile düşürür ve yeniden deneme yalnız eksik hedefleri gönderir; son denemede iş
+  `push_partial` ile biter. Hiçbir şey gitmediyse iş eskisi gibi hata verir.
+- Sessiz saat ertelemesi ham `insert into jobs` yerine `enqueueJob(db, 'notify.send', payload, { once: true,
+  dedupeKey: 'notify.send:defer:<iş>', runAfter })`: ertelemenin kendisi yeniden denenirse ikinci iş açılmaz. Bir
+  şeyi zaten teslim etmiş bir yeniden deneme ertelenmez (yeni iş yeni teslim kaydı açardı), kalan hedefleri hemen
+  gönderir.
+- `apps/worker-node/src/notify/target-hash.ts`: anahtar `BETTER_AUTH_SECRET`'tan HKDF-SHA256 (bilgi etiketi
+  `notification-target`); `NotifyDeps.targetKey` ile verilebilir, verilmezse ortamdan türetilir (`main.ts`
+  değişmedi). Anahtar yoksa push en iyi çabayla gönderilir ve kaydedilmez; e-posta yine kaydedilir.
+- `apps/web/src/server/auth/handlers.ts` `stepUpConfirm`: `EduVerificationConfirm` yerine sözleşmedeki
+  `StepUpConfirmInput`; rota `apps/web/src/app/api/auth/step-up/confirm/route.ts` zaten sözleşmedeki
+  `/auth/step-up/confirm` yolundaydı.
+- Test: `apps/worker-node/src/notify/__tests__/idempotency.test.ts` (PGlite, migration 0007 dahil): özet biçimi,
+  ham değerin tabloya yazılmaması, aynı işin ikinci çalışmasında sıfır teslim, push hatasında yalnız eksik hedefin
+  yeniden gönderimi, son denemede `push_partial`, anahtarsız durum, ertelemenin tek iş açması, teslim etmiş
+  denemenin ertelenmemesi ve gerçek tüketiciyle (`createConsumer`) uçtan uca yeniden deneme.
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm test` (worker-node 112, web 628, tümü geçti),
+  `pnpm build`.
+- Açık: yönlendirme madde 3 (`planlandi` uçlar: bildirim tercihleri, Web Push ve APNs kayıt uçları) ve madde 4
+  (atıf kuyruğu editör ekranı) bu PR'da yapılmadı.
 ## 12 Kasım 2026, mimar: sözleşme v1.5, P1 adım A (codex/p1-sozlesme-v1-5)
 
 review.md P1 madde 4, 5 (doğrulama), 6 (ekleme) ve 8; plan `docs/istekler/mimar-p1-sozlesme-temizligi.md` adım A.
