@@ -19,3 +19,13 @@
    `oturum?: KabukOturumu | null` alır; verilmezse Hedefim alanı oturumu kendisi okur. Kök layout değişmeden
    çalışır; layout oturumu başka bir amaçla zaten okursa `<Kabuk oturum={...}>` ile verebilir.
 6. Aciliyet: düşük; derleme ve davranış etkilenmiyor.
+
+## Sonuç (kapatıldı)
+
+Üç çağıran `moduller`e geçti ve `acikModuller` ile `modulAcik` `rotalar.ts`ten silindi (dal `codex/seo-kucuk-isler`):
+- seo: `adresler.ts` `moduller.map((m) => m.href)` kullanır; `modulAltSayfalari` süzgeci kalktı.
+- icerik: `metin.ts` `baglantiAcik` ve `aramaAcik` kaldırıldı (her zaman doğruydu); `adimGorunumu` ve
+  `kontrol-listesi/page.tsx` bağlantıyı ve arama etiketini doğrudan verir. `rehberler.test.ts`, `sayfalar.test.tsx` `moduller` ile sınar.
+- orkestra: `apps/web/test/seo.test.ts` döngüsü `moduller` üzerinden; `kabuk.test.tsx` dışa aktarımların artık
+  olmadığını sınar.
+- Kalan: kök `review.md` 67-69, 145 ve P3 madde 1 notları orkestranın; "yakında düzeneği" cümleleri geçersizdir.

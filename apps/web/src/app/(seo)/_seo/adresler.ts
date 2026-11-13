@@ -1,21 +1,20 @@
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { hukukiMetin, hukukiMetinler, gosterimKipi } from '../../(kabuk)/_hukuki/yukle.ts';
-import { hukukiBelgeler, modulAcik, acikModuller } from '../../(kabuk)/_kabuk/rotalar.ts';
+import { hukukiBelgeler, moduller } from '../../(kabuk)/_kabuk/rotalar.ts';
 import { casuistSayfalari, trSayfalari } from '../../(casuist)/_bilesen/veri.ts';
 
 /** One sitemap entry; `lastModified` is set only when a real change date is known (wt.111). */
 export type Adres = { yol: string; lastModified?: Date };
 
 /**
- * Open modules whose root page stays out of the sitemap: /kaydettiklerim is a signed-in, per user
- * page (noindex). Every other open module root is listed, so the sitemap follows rotalar.ts.
+ * Modules whose root page stays out of the sitemap: /kaydettiklerim is a signed-in, per user
+ * page (noindex). Every other module root is listed, so the sitemap follows rotalar.ts.
  */
 export const siteHaritasiDisiModuller: ReadonlySet<string> = new Set(['/kaydettiklerim']);
 
 /**
- * Public sub pages of open modules. A sub page is listed only while its module is open, so closing a
- * module in rotalar.ts removes its pages. Personal or interactive pages (pratik/bugun, pratik/editor,
+ * Public sub pages of the modules in rotalar.ts (every module is open, ADR-0033). Personal or interactive pages (pratik/bugun, pratik/editor,
  * pratik/hmgs/deneme) are left out; data driven pages (journal profiles, decks) join the segmented
  * sitemaps of Dalga 2.
  */
@@ -58,8 +57,11 @@ export function hukukiAdresler(): Adres[] {
  * /eski (noindex, Ek H row 23), the 301 sources /tr/hukuki/* (Ek H rows 18-22) or account pages.
  */
 export function siteHaritasiAdresleri(): Adres[] {
-  const modulKokleri = [...acikModuller].filter((h) => !siteHaritasiDisiModuller.has(h)).sort();
-  const modulAlt = modulAltSayfalari.filter((s) => modulAcik(s.modul)).map((s) => s.yol);
+  const modulKokleri = moduller
+    .map((m) => m.href)
+    .filter((h) => !siteHaritasiDisiModuller.has(h))
+    .sort();
+  const modulAlt = modulAltSayfalari.map((s) => s.yol);
   const casuist = ['/tr', ...trSayfalari.map((s) => `/tr/${s}`)];
   const yollar = [...genelSayfalar, ...modulKokleri, ...modulAlt, ...casuist].map((yol): Adres => ({ yol }));
   // The legal documents follow their index page.
