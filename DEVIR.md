@@ -1,3 +1,21 @@
+## 14 Kasım 2026, yazma: rota şemaları sözleşmeden, Kalemcik sakin yüz, zip bombası testi (yazma/rota-sozlesme-sakin-yuz)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` yazma madde 3 ve `docs/istekler/yazma-kalemcik-notr-ton.md` kararı.
+`packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+- `apps/web/src/app/yazma/_sunucu/uclar.ts` ve `projeler.ts`: yerel zod şemaları kalktı. `WritingProjectInput`,
+  `WritingProgressInput`, `WritingSettings`, `AbbreviationsInput` JSON gövdelerini, `TemplateRulesUpload`,
+  `TemplateCheckUpload`, `DocxCountUpload` çok parçalı gövdeleri doğrular. Sözleşme yalnız biçimi söyler (proje
+  alanlarının hepsi isteğe bağlı); sunucu, sözleşme şeması geçtikten sonra eskisi gibi şunları ister: yeni projede
+  başlık, tür ve hedef zorunlu; başlık ve not kırpılır, boş başlık olmaz, hedef en çok 2 milyon kelime.
+- Davranış değişikliği (testle gösterildi): kılavuz yüklemede `institutionName` 200 karakterden uzunsa artık 400
+  (eskiden kırpılıyordu); sözleşme `max 200` diyor. `kind` yoksa `tez`. `rules` parçası metin değilse 400.
+- Kalemcik: yükleniyor ve proje yok durumlarında `SakinKoc` (`dusunceli` yüzü, ton etiketi ve mesaj satırı yok;
+  yüklenirken ekran okuyucuya "Yükleniyor"). `packages/i18n/tr/kalemcik.json` `kalemcik.yukleniyor` eklendi.
+- `cekirdek.test.ts` zip bombası: 70 MB sıkıştırma yerine bildirilen boyutu 70 MB yazılmış küçük arşiv (aynı sınır,
+  sınırın altındaki gerçek boyutuyla okunabildiği de sınanır) ve 61 MB gerçek bomba (seviye 1, açık 60 sn zaman aşımı).
+- Test: `yazma/api.test.ts` yeni blok, `kalemcik/kalemcik.test.tsx`. Doğrulama: typecheck, lint, tam `pnpm test` iki kez
+  (web 637 geçti), build; 375/768/1440 axe 0 (yükleniyor ve proje yok).
+
 ## 13 Kasım 2026, kimlik: bildirim teslim kaydı ve step-up sözleşme şeması (sözleşme v1.5)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` kimlik madde 1 ve 2. Sözleşme, şema ve migration değişmedi;
