@@ -1,3 +1,24 @@
+## 14 Kasım 2026, casuist: reddedilen atıf kenarları sayılmaz (sözleşme v1.5, casuist/v1-5-reddedilen-kenarlar)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` casuist maddesi. Sözleşme, şema ve migration değişmedi; yeni
+bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
+- `packages/casuist/src/sql.ts`: `records()` içindeki `cited_by` alt sorgusu tek bir sabitten (`COUNTED_EDGE`)
+  gelir: `NOT e.rejected AND ((e.confirmed AND e.confidence > 0) OR e.confidence >= 0.90::real)`. Ret v1.5'te
+  `rejected` ile işaretlenir; `confidence > 0` eski ret biçimini (`confirmed = true, confidence = 0`) yazıcılar
+  geçene kadar dışarıda tutar. casuist yollarında `citation_edges` ya da `work_citations` okuyan başka sorgu yok.
+- Eşik düzeltmesi: `confidence` `real`; çıplak `0.90` float8 olarak karşılaştırıldığı için `0.9::real`
+  (0.8999999761...) eşiğin altında kalıyordu ve güveni tam yayın eşiğinde (`citations/scoring.py`
+  `PUBLISH_MIN = 0.90`) olan kenar sayılmıyordu. Eşik `0.90::real` ile karşılaştırılır; atif-agi'nin parametreli
+  sorgusu (`$2` `real` olarak çıkarsanır, PGlite'ta denendi) zaten böyle davranıyordu; atıf ağı ekranı ile önem
+  puanı artık eşikte aynı kenarları sayar.
+- Test: `apps/web/src/app/ara/_sunucu/sql.test.ts` (PGlite, migration 0007 dahil) yedi kenarla sayımı sınar
+  (0.99 ve 0.90 sayılır, onaylı 0.6 sayılır, onaysız 0.6 sayılmaz, `rejected` yüksek güveni ve onayı ezer, eski
+  ret biçimi sayılmaz), sonra sayılan bir kenarı `rejected` yapıp sayının düştüğünü görür. `NOT e.rejected`
+  geçici olarak kaldırılınca test 3 yerine 5 bulup kırıldı; `::real` olmadan 3 yerine 2 bulup kırıldı.
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm test` (casuist 107, web 645/1 skip,
+  worker-node 113, tümü geçti), `pnpm build`.
+- Açık: `/v1/records/{id}/versions` `planlandi` (bu PR'da yazılmadı). Doktrin kayıtlarının önem puanı hâlâ
+  `openalex_cited_by`'dan gelir; `work_citations` sayımı istenirse ayrı iş.
 ## 14 Kasım 2026, odeme: sözleşme v1.5 temizliği ve ön bilgilendirme alanları (odeme/v1-5-temizlik)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` odeme maddesi 1 ve `docs/istekler/hukuk-uyum-p5-tutarlilik.md`

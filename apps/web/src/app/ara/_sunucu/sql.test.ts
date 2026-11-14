@@ -98,6 +98,42 @@ describe('sqlBackend over PostgreSQL (turkish tsvector, chunks, citation count)'
     expect(rec?.citedByCount).toBe(1);
   });
 
+  it('never counts rejected edges and keeps the confidence threshold (ADR-0035)', async () => {
+    const target = fixtureRecords().filter((r) => r.type === 'karar')[2]!;
+    const from = fixtureRecords()
+      .filter((r) => r.id !== target.id)
+      .slice(0, 7);
+    expect(from).toHaveLength(7);
+    // [confidence, confirmed, rejected, counted]
+    const edges: [number, boolean, boolean, boolean][] = [
+      [0.99, false, false, true], // extractor at least 0.90
+      [0.9, false, false, true], // threshold is inclusive
+      [0.6, true, false, true], // editor confirmed
+      [0.6, false, false, false], // unconfirmed and below 0.90
+      [0.99, false, true, false], // rejected outweighs high confidence
+      [0.8, true, true, false], // rejected outweighs confirmation
+      [0, true, false, false], // pre-v1.5 rejection form, not yet marked rejected
+    ];
+    for (const [i, [confidence, confirmed, rejected]] of edges.entries()) {
+      await pg.query(
+        `INSERT INTO citation_edges
+           (from_record_id, to_record_id, to_raw, kind, confidence, confirmed, rejected, extractor)
+         VALUES ($1, $2, 'red', 'atif', $3, $4, $5, 'test')`,
+        [from[i]!.id, target.id, confidence, confirmed, rejected],
+      );
+    }
+    const [rec] = await sqlBackend(db).records([target.id]);
+    expect(rec?.citedByCount).toBe(edges.filter((e) => e[3]).length);
+    expect(rec?.citedByCount).toBe(3);
+    // An editor rejecting a counted edge removes it from the count.
+    await pg.query(
+      `UPDATE citation_edges SET rejected = true WHERE from_record_id = $1 AND to_record_id = $2`,
+      [from[0]!.id, target.id],
+    );
+    const [after] = await sqlBackend(db).records([target.id]);
+    expect(after?.citedByCount).toBe(2);
+  });
+
   it('vector leg uses the HNSW cosine operator and keeps one hit per record', async () => {
     const r = fixtureRecords()[0]!;
     const v = Array.from({ length: 1024 }, (_, i) => (i === 0 ? 1 : 0));
