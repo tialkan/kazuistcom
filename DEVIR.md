@@ -1,3 +1,28 @@
+## 14 Kasım 2026, mimar: sözleşme 1.5.1, yazma projesi gövdeleri ve iki belge düzeltmesi (mimar/v1-5-1-yazma-proje-girdisi)
+
+Orkestra isteği. Şema ve migration değişmedi; yeni bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
+- Sözleşme 1.5.1 (ADR-0035 sonuna not): `createWritingProject` artık `WritingProjectCreateInput` alır (`title`
+  kırpılır ve 1-300, `kind` `tez|makale|odev`, `targetWords` 0-2.000.000 tam sayı zorunlu; `deadline` isteğe bağlı).
+  `updateWritingProject` `WritingProjectInput` ile kalır; şema `WritingProjectCreateInput.partial()` oldu (aynı
+  sınırlar, `deadline: null` reddedilir). Önceden sözleşme POST'ta hiçbir alanı zorunlu tutmuyordu, sunucu ise üçünü
+  istiyordu. Sürüm `openapi.yaml`, `CONTRACT_VERSION` ve `packages/contracts/package.json`'da 1.5.1; `packages/db`
+  1.5.0'da kaldı. `src/generated/api.ts` yeniden üretildi.
+- Yazma yolunda tek dokunuş (orkestra isteğiyle): `apps/web/src/app/yazma/_sunucu/uclar.ts` `projelerPost` ve
+  `projePatch` sözleşme şemalarını kullanır; `projeler.ts` içindeki yerel `ProjeGirdisi`, `ProjeGuncelleme` ve
+  `projeTurleri` kalktı. `api.test.ts`'e eksik zorunlu alan, üst sınır ve PATCH kuralları için test eklendi.
+- `packages/contracts/test/writing-projects.test.ts`: zorunlu alanlar, kırpma, sınırlar, kısmi PATCH ve OpenAPI ile
+  zod sınırlarının eşitliği. OpenAPI'de `maximum` elle değiştirilince test kırıldı (denendi, geri alındı).
+- Belgeler: `docs/istekler/atif-agi-sema.md` kuyruk bölümündeki eski ret kuralı `rejected = true` olarak düzeltildi,
+  okuma kuralına `NOT rejected` notu eklendi. Plan 12 madde 8 ve Ek A icerik satırı "dört ton ve veri olmayan anlarda
+  sakin yüz" oldu; review.md P4 tablosuna not; `yazma-kalemcik-notr-ton.md`'ye Sonuç; v1.5 yönlendirme belgesinin yazma
+  madde 3'üne ilerleme notu.
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm test` (contracts 152, web 646 ve 1 atlanan,
+  worker-node 113, db 54, ledger 174, casuist 107), `pnpm build`, Redocly lint, i18n denetimi ve enjeksiyon seti
+  geçti; `check:generated` commit'ten sonra temiz.
+- Açık: `.claude/agents/icerik.md` hâlâ "beş ton" diyor (ajan tanımı; Tarık onayıyla düzeltilir).
+  `docs/tasarim/gorsel-istemleri.md` 4.7'deki "açık soru" notu artık cevaplı (orkestra yolu). Yazma'nın kalan yerel
+  şemaları (`IlerlemeGirdisi`, `HitapGirdisi`, şablon ve kısaltma gövdeleri) yönlendirme belgesindeki gibi açık.
+
 ## 14 Kasım 2026, casuist: reddedilen atıf kenarları sayılmaz (sözleşme v1.5, casuist/v1-5-reddedilen-kenarlar)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` casuist maddesi. Sözleşme, şema ve migration değişmedi; yeni

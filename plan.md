@@ -818,7 +818,7 @@ webtasarim.md'nin tamamı bağlayıcıdır. Kazuist'e özgü kararlar (parantez 
 5. Belirteçler tek dosyada (`packages/ui/tokens.css`): renk, boşluk, tipografi ölçeği, köşe, gölge (wt.12). Her öğe aynı köşe ve gölgeyi taşımaz (wt.31).
 6. Yasaklar: mor-mavi gradyan, cam efekti, neon, "ikon, başlık, iki satır" üçlü kart düzeni, ortada dev başlık ve iki düğme kalıbı, emoji süsü, sahte sayaç ve sahte sohbet balonu, açılır pencere (wt.27-30, wt.44-46).
 7. Görseller: YZ ile üretilmiş görsel yok (wt.32). Meslek avatarları, Kalemcik ve kart piktogramları tek çizerden, tek çizgi diliyle (wt.19). Çizer işi teslim edene kadar yalın yer tutucular kullanılır. YZ (Midjourney) yalnız taslak ve brifing aşamasında kullanılabilir; ürüne YZ çıktısı girmez (ADR-0034, seçenek B).
-8. Kalemcik: yüz ifadeli kalem karakteri; beş ruh hâli (iyi gidiyor, son 7 gün, yazılmadı, hedefe ulaşıldı, nötr); suçlayıcı veya baskıcı dil yok.
+8. Kalemcik: yüz ifadeli kalem karakteri; dört ton (iyi gidiyor, son 7 gün, yazılmadı, hedefe ulaşıldı) ve ilerleme verisi olmayan anlarda (proje yok, özet yükleniyor ya da yok) sakin yüz; nötr ayrı bir ton ya da beşinci yüz değildir, sakin yüz `dusunceli` çizimidir ve mesaj gösterilmez (`docs/istekler/yazma-kalemcik-notr-ton.md`); suçlayıcı veya baskıcı dil yok.
 9. Mikro metin: başlıklar fiil ve nesne taşır (wt.38); her iddia somut (wt.37); yasak kelimeler wt.35 ve ürün listesi (`content/yasak-ifadeler.txt`: "kesin cevap", "%100 doğru", "avukatınız", "hukuki danışmanlık sunar" ve benzerleri). Uzun çizgi yok; CI yakalar.
 10. Türkçe büyük harf `toLocaleUpperCase('tr-TR')` ile; kaynak ve kurum adları otomatik küçültülmez (wt.115e dersi).
 11. Tasarlanmış durumlar: boş, hata, yükleniyor, 404, bakım, çekimser özet, kredi yetersiz, çevrimdışı (iOS).
@@ -1428,7 +1428,7 @@ permissionMode: acceptEdits
 color: yellow
 ---
 Rolün içeriktir. SRS bölüm 5 ve 7'yi, plan.md 10.4, 10.6/4, 12/8-10'u ve webtasarim.md bölüm 3'ü oku.
-Dalga 2: docs/kaynak'taki rehber Word belgesinin MDX'e aktarımı (marka Kazuist; metin kuralları); 14 maddelik kontrol listesi; YÖK yönergesindeki altı ihlal türü ve hukuktan örneklerle etik kutusu; Zotero ve EndNote içerikleri; content/kalemcik.yaml (beş ton, emoji yok, suçlayıcı dil yok); content/yasak-ifadeler.txt; content/kisaltmalar.yaml; kart taslak hattı (anonim kaynaktan Sonnet 5.5 taslağı, editör kuyruğuna); HMGS hedef izleme tablosu; SSS, nasıl çalışır ve /bot sayfaları. Zamana bağlı ifadeleri (henüz, günümüzde, yıl) WebCLAIMrobot listesine çıkar.
+Dalga 2: docs/kaynak'taki rehber Word belgesinin MDX'e aktarımı (marka Kazuist; metin kuralları); 14 maddelik kontrol listesi; YÖK yönergesindeki altı ihlal türü ve hukuktan örneklerle etik kutusu; Zotero ve EndNote içerikleri; content/kalemcik.yaml (dört ton, veri olmayan anlarda mesaj yok, emoji yok, suçlayıcı dil yok); content/yasak-ifadeler.txt; content/kisaltmalar.yaml; kart taslak hattı (anonim kaynaktan Sonnet 5.5 taslağı, editör kuyruğuna); HMGS hedef izleme tablosu; SSS, nasıl çalışır ve /bot sayfaları. Zamana bağlı ifadeleri (henüz, günümüzde, yıl) WebCLAIMrobot listesine çıkar.
 Bitti: içerik yasak ifade ve uzun çizgi testinden geçti; editör kuyruğu çalışıyor.
 ```
 

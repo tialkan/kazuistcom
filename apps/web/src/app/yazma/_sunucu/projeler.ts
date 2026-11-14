@@ -1,21 +1,15 @@
 import { and, desc, eq, gte } from 'drizzle-orm';
 import { z } from 'zod';
+import type { WritingProjectCreateInput, WritingProjectInput } from '@kazuist/contracts';
 import { schema, type Db } from '@/server/auth/db.ts';
 
 /**
  * Writing projects, daily progress and the reminder rows that Kalemcik's daily job reads (plan 10.5/6, SRS
- * FR-45..56). Every query is scoped to the signed in user; another user's id answers like a missing one.
+ * FR-45..56). Every query is scoped to the signed in user; another user's id answers like a missing one. Project
+ * bodies are validated with the contract schemas (WritingProjectCreateInput for POST, WritingProjectInput for PATCH;
+ * contract v1.5.1) in uclar.ts.
  */
 
-export const projeTurleri = ['tez', 'makale', 'odev'] as const;
-
-export const ProjeGirdisi = z.strictObject({
-  title: z.string().trim().min(1).max(300),
-  kind: z.enum(projeTurleri),
-  targetWords: z.number().int().min(0).max(2_000_000),
-  deadline: z.iso.date().optional(),
-});
-export const ProjeGuncelleme = ProjeGirdisi.partial();
 export const IlerlemeGirdisi = z.strictObject({
   words: z.number().int().min(0).max(100_000),
   note: z.string().trim().max(1000).optional(),
@@ -136,7 +130,7 @@ async function hatirlatmalariKur(
 export async function projeOlustur(
   db: Db,
   userId: string,
-  g: z.infer<typeof ProjeGirdisi>,
+  g: WritingProjectCreateInput,
   simdi: Date,
 ): Promise<Proje> {
   const [r] = await db
@@ -158,7 +152,7 @@ export async function projeGuncelle(
   db: Db,
   userId: string,
   id: string,
-  g: z.infer<typeof ProjeGuncelleme>,
+  g: WritingProjectInput,
   simdi: Date,
 ): Promise<Proje | null> {
   const set: Partial<typeof schema.writingProjects.$inferInsert> = {};

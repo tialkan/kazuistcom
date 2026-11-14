@@ -35,3 +35,11 @@ da mimar yapar. Düzeltme yapılmazsa da bu belge geçerli yorumdur: beşinci ru
 ## Aciliyet
 
 Çizer işini bekletmez; çizer yalnız dört yüz çizer.
+
+## Sonuç (mimar, 14 Kasım 2026)
+
+Kabul. Plan 12 madde 8 "dört ton (iyi gidiyor, son 7 gün, yazılmadı, hedefe ulaşıldı) ve ilerleme verisi olmayan
+anlarda sakin yüz" olarak düzeltildi; sakin yüz `dusunceli` çizimidir, mesaj gösterilmez. Ek A icerik satırındaki
+"beş ton" da "dört ton" yapıldı. review.md P4 tablosuna not düşüldü. Sözleşme ve şema değişmedi (ton değerleri
+`content/kalemcik.yaml`'dadır). `.claude/agents/icerik.md` hâlâ "beş ton" diyor; ajan tanımı yapılandırma dosyası
+olduğu için Tarık'ın onayıyla ayrıca düzeltilir.

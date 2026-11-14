@@ -28,7 +28,8 @@ tamamlar.
 3. Rota dosyaları yerel zod yerine sözleşme şemalarını içe aktarsın: `TemplateCheckUpload` (`rules` metni),
    `WritingSettings` (`ayarlar`), `TemplateRulesUpload` (`kind` v1.5'te sözleşmede), `WritingProjectInput`,
    `WritingProgressInput`, `DocxCountUpload`, `AbbreviationsInput`. Sözleşme testi yerel şemanın sözleşmeden
-   ayrışmasını görmez.
+   ayrışmasını görmez. 14 Kasım 2026 (sözleşme 1.5.1, ADR-0035 notu): proje uçları yapıldı; POST
+   `WritingProjectCreateInput`, PATCH `WritingProjectInput` kullanır. Kalanlar açık.
 4. `/v1/templates/docx` `x-kazuist-uygulama: planlandi` taşıyor; işleyici yazılınca ek sözleşmeden kaldırılır (mimar,
    istekle). `ayarlar` yol adı ADR-0036'da konuşulur.
 

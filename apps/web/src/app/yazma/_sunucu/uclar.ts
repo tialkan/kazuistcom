@@ -1,7 +1,7 @@
 import tr from '@kazuist/i18n/tr/yazma.json' with { type: 'json' };
 import { after } from 'next/server';
 import { z } from 'zod';
-import type { ErrorCode } from '@kazuist/contracts';
+import { WritingProjectCreateInput, WritingProjectInput, type ErrorCode } from '@kazuist/contracts';
 import { withAuth, withPublic } from '@/server/auth/guard.ts';
 import { apiError, json, rateLimited, readJson } from '@/server/auth/http.ts';
 import type { RateRule } from '@/server/auth/rate-limit.ts';
@@ -23,8 +23,6 @@ import { cikarmayiCalistir, isOlustur, isiBitir, isiGetir, kayitGetir, kayitSil 
 import {
   HitapGirdisi,
   IlerlemeGirdisi,
-  ProjeGirdisi,
-  ProjeGuncelleme,
   hitapOku,
   hitapYaz,
   ilerlemeKaydet,
@@ -132,7 +130,7 @@ export const projelerGet = (_b = varsayilan) =>
 
 export const projelerPost = (b = varsayilan) =>
   withAuth({ rate: hizlar.genel }, async (req, p, ctx) => {
-    const g = ProjeGirdisi.safeParse(await readJson(req));
+    const g = WritingProjectCreateInput.safeParse(await readJson(req));
     if (!g.success) return apiError('bad_request');
     return json(await projeOlustur(ctx.db, p.userId, g.data, b.now()), 201);
   });
@@ -147,7 +145,7 @@ export const projeGet = (b = varsayilan) =>
 export const projePatch = (b = varsayilan) =>
   withAuth({ rate: hizlar.genel }, async (req, p, ctx, params) => {
     const id = kimlikli(params);
-    const g = ProjeGuncelleme.safeParse(await readJson(req));
+    const g = WritingProjectInput.safeParse(await readJson(req));
     if (!id) return apiError('not_found');
     if (!g.success) return apiError('bad_request');
     const r = await projeGuncelle(ctx.db, p.userId, id, g.data, b.now());
