@@ -1,12 +1,12 @@
 """Persistence for citations.extract. SQL only; the schema belongs to packages/db.
 
-Existing tables (packages/db/src/schema/corpus.ts): records, citation_edges, review_queue, works.
-Requested additions (docs/istekler/atif-agi-sema.md), used only when `doctrine=True`:
-  works.work_key text unique, work_citations(from_record_id, work_id, pages, confidence, confirmed, extractor).
+Tables (packages/db/src/schema/corpus.ts, contract v1.5, ADR-0035): records, citation_edges, review_queue, works
+(work_key unique) and work_citations; the last two are used only when `doctrine=True`.
 
-Editor decision convention until a `rejected` column exists: a confirmed edge has confirmed = true; a rejected
-edge keeps its row with confirmed = true and confidence = 0, so re-extraction does not bring it back and the
-serving query (confirmed or confidence >= 0.90, and confidence > 0) hides it.
+Editor decision convention: a confirmed edge has confirmed = true; a rejected edge has rejected = true (the editor
+writes it, nothing here does). A rejected row keeps existing, so re-extraction neither updates nor prunes it and it
+does not come back; the serving queries (apps/web/src/app/atif-agi/_sunucu/sql.ts) add NOT rejected. Rows rejected
+before v1.5 (confirmed = true, confidence = 0) were marked rejected by migration 0007.
 """
 
 from __future__ import annotations
@@ -54,12 +54,12 @@ INSERT INTO citation_edges (from_record_id, to_record_id, to_raw, kind, confiden
 VALUES (%(src)s, %(to)s, %(to_raw)s, 'atif'::citation_edge_kind, %(conf)s, false, %(extractor)s)
 ON CONFLICT (from_record_id, to_raw, kind) DO UPDATE
   SET to_record_id = excluded.to_record_id, confidence = excluded.confidence, extractor = excluded.extractor
-  WHERE citation_edges.confirmed = false
+  WHERE citation_edges.confirmed = false AND NOT citation_edges.rejected
 RETURNING id
 """
-# Edges this run no longer finds are removed unless an editor touched them.
+# Edges this run no longer finds are removed unless an editor touched them (confirmed or rejected).
 PRUNE_EDGES_SQL = """
-DELETE FROM citation_edges WHERE from_record_id = %(src)s AND confirmed = false AND to_raw <> ALL(%(keep)s)
+DELETE FROM citation_edges WHERE from_record_id = %(src)s AND confirmed = false AND NOT rejected AND to_raw <> ALL(%(keep)s)
 """
 CLOSE_QUEUE_SQL = """
 UPDATE review_queue SET decision = 'superseded', decided_at = now()
@@ -81,11 +81,11 @@ INSERT INTO work_citations (from_record_id, work_id, pages, confidence, confirme
 VALUES (%(src)s, %(work)s, %(pages)s::jsonb, %(conf)s, false, %(extractor)s)
 ON CONFLICT (from_record_id, work_id) DO UPDATE
   SET pages = excluded.pages, confidence = excluded.confidence, extractor = excluded.extractor
-  WHERE work_citations.confirmed = false
+  WHERE work_citations.confirmed = false AND NOT work_citations.rejected
 RETURNING id
 """
 PRUNE_WORK_CITATIONS_SQL = """
-DELETE FROM work_citations WHERE from_record_id = %(src)s AND confirmed = false AND work_id <> ALL(%(keep)s::uuid[])
+DELETE FROM work_citations WHERE from_record_id = %(src)s AND confirmed = false AND NOT rejected AND work_id <> ALL(%(keep)s::uuid[])
 """
 
 
