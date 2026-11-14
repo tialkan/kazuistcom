@@ -21,6 +21,16 @@ export interface SqlPool extends SqlClient {
  */
 const SERVABLE = 'r.masked_text IS NOT NULL AND r.hidden_at IS NULL';
 
+/**
+ * Citation edges that count toward cited_by (importance weight, plan 7.2/5; Öncü label, SRS 3.3). An editor
+ * rejection never counts: `rejected` is the v1.5 marker (ADR-0035, mimar-yonlendirme-3 casuist madde);
+ * `confidence > 0` keeps the pre-v1.5 form (`confirmed = true, confidence = 0`) out until every writer has moved
+ * to `rejected`. Otherwise an edge counts when an editor confirmed it or the extractor is at least 0.90 confident
+ * (PUBLISH_MIN of services/worker-py/citations/scoring.py). confidence is `real`: a bare 0.90 literal compares as
+ * float8 and 0.9::real (0.8999999761...) falls below it, so the threshold is cast to real to stay inclusive.
+ */
+const COUNTED_EDGE = 'NOT e.rejected AND ((e.confirmed AND e.confidence > 0) OR e.confidence >= 0.90::real)';
+
 const RECORD_COLUMNS = `r.id, r.type, r.title, r.court, r.chamber, r.esas_no, r.karar_no,
   to_char(r.decision_date, 'YYYY-MM-DD') AS decision_date, r.authority_class, r.status, r.jurisdiction,
   r.norm_refs, to_char(r.valid_from, 'YYYY-MM-DD') AS valid_from, to_char(r.valid_to, 'YYYY-MM-DD') AS valid_to,
@@ -143,7 +153,7 @@ export interface SqlBackendOptions {
 
 /**
  * PostgreSQL backend over packages/db tables: records (title_tsv), chunks (tsv, embedding halfvec(1024) with
- * the HNSW cosine index), citation_edges for the incoming citation count.
+ * the HNSW cosine index), citation_edges for the incoming citation count (rejected edges excluded).
  */
 export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBackend {
   const efSearch = Math.max(40, Math.min(1000, opts.efSearch ?? 200));
@@ -152,8 +162,7 @@ export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBac
     if (!ids.length) return [];
     const { rows } = await db.query<RecordRow>(
       `SELECT ${RECORD_COLUMNS},
-        (SELECT count(*) FROM citation_edges e WHERE e.to_record_id = r.id
-          AND ((e.confirmed AND e.confidence > 0) OR e.confidence >= 0.90)) AS cited_by
+        (SELECT count(*) FROM citation_edges e WHERE e.to_record_id = r.id AND ${COUNTED_EDGE}) AS cited_by
        FROM records r WHERE r.id = ANY($1::uuid[]) AND ${SERVABLE}`,
       [ids],
     );
