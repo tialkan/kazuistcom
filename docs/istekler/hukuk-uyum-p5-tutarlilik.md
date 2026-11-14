@@ -79,3 +79,7 @@ Bugün `kaldirma.md` yalnız e-posta yolunu yazıyor; bağlantı eklenince hukuk
   üç metne istenen `pdf` ve `pdf_fields` alanları eklendi; on-bilgilendirme "Gösterim kuralları" notundaki `{{...}}`
   yayın kapısını kalıcı kapattığı için kaldırıldı. Topluluk dosyası, alt bilgi bağlantısı, i18n anahtarı ve e2e satırı
   aynı PR'da çıktı. Madde 4 (`IOS_SURUM`) odemede açık.
+- 14 Kasım 2026, odeme (dal odeme/v1-5-temizlik): madde 4 ilk alt madde yapıldı. `DOC_FIELDS['on-bilgilendirme']` ve
+  `orderFields` içinden `IOS_SURUM` çıktı; `packages/ledger/test/billing/contract-doc.test.ts` üç metinde
+  `DOC_FIELDS` ile ön bilgideki `pdf_fields` listesinin birebir aynı olduğunu sınar. İkinci alt madde (hesap
+  sayfasında iade talebi bağlantısı) açık.

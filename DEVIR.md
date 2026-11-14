@@ -19,6 +19,25 @@ bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
   worker-node 113, tümü geçti), `pnpm build`.
 - Açık: `/v1/records/{id}/versions` `planlandi` (bu PR'da yazılmadı). Doktrin kayıtlarının önem puanı hâlâ
   `openalex_cited_by`'dan gelir; `work_citations` sayımı istenirse ayrı iş.
+## 14 Kasım 2026, odeme: sözleşme v1.5 temizliği ve ön bilgilendirme alanları (odeme/v1-5-temizlik)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` odeme maddesi 1 ve `docs/istekler/hukuk-uyum-p5-tutarlilik.md`
+madde 4 (ilk alt madde). Sözleşme, şema, migration ve bağımlılık değişmedi.
+- `apps/worker-node/src/billing/jobs.ts`: çağrılmayan `enqueueDailyBillingSql` kaldırıldı (testi yoktu, depoda başka
+  kullanan yok). Günlük zamanlama `src/handlers.ts` `dailyBillingTick` içinde zaten `enqueueJob(..., { once: true,
+  dedupeKey: '<tür>:<UTC gün>' })` ile; `test/runner.test.ts` "does not queue a finished day again after a restart"
+  `done` satırından sonra yeniden kuyruğa almadığını sınıyor.
+- `packages/ledger/src/billing/contract-doc.ts`: `DOC_FIELDS['on-bilgilendirme']` ve `orderFields` içinden
+  `IOS_SURUM` çıktı (metin 2026-11-12.1 sürümünde bu alan yok).
+- `packages/ledger/test/billing/contract-doc.test.ts`: üç sipariş metninin ön bilgisi `LegalFrontMatter` ile okunur;
+  `DOC_FIELDS[slug]` ön bilgideki `pdf_fields` ile birebir aynı, her alan gövdede yer tutucu ve gövdedeki her sipariş
+  yer tutucusu (şirket alanları `KEP`, `TELEFON` dışında) listede. `orderFields` paket ve tarihsel yıllık plan için
+  bütün alanları doldurur; ön bilgilendirme formunda açık kalan tek alan `KEP`. Eski liste ile iki test kırılıyor
+  (elle denendi).
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm test` (ledger 174, worker-node 113, web 644 ve
+  1 atlanan), `pnpm build` geçti.
+- Açık: hukuk-uyum isteği madde 4 ikinci alt madde (hesap sayfasında iade talebi bağlantısı, review.md P8 madde 3)
+  bu PR'da yapılmadı; hesap sayfası kimliğin yoludur, bağlantı eklenince hukuk-uyum metni günceller.
 
 ## 13 Kasım 2026, on-yuz: hukuki ön bilgi listeleri ve topluluk belgesinin kaldırılması (on-yuz/p5-hukuki-on-bilgi)
 
