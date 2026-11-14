@@ -9,11 +9,14 @@ import type { Order } from './store.ts';
 
 export type LegalDocSlug = 'on-bilgilendirme' | 'mesafeli-satis' | 'abonelik';
 
+/**
+ * Order fields of each text; equal to the `pdf_fields` of content/hukuki/tr/<slug>.md (test/billing/
+ * contract-doc.test.ts). hukuk-uyum owns the texts, so a field added or removed there is changed here too.
+ */
 export const DOC_FIELDS: Record<LegalDocSlug, readonly string[]> = {
   'on-bilgilendirme': [
     'AYLIK_KREDI',
     'INDIRIM',
-    'IOS_SURUM',
     'KREDI',
     'ODEME_DONEMI',
     'TUTAR_TL',
@@ -88,7 +91,6 @@ export function orderFields(p: {
     AYLIK_KREDI: String(product?.monthlyCredits ?? 0),
     ODEME_DONEMI: product?.kind === 'abonelik' ? (yearly ? 'Yıllık' : 'Aylık') : 'Tek seferlik',
     INDIRIM: list > p.order.amountKurus ? `${tl(list - p.order.amountKurus)} TL` : 'Yok',
-    IOS_SURUM: 'Web',
     AYLIK_LISTE_FIYATI_TL: tl(monthlyList),
     AYLIK_INDIRIM_TL: yearly && monthlyList ? tl(Math.max(0, monthlyList - Math.floor(list / 12))) : tl(0),
     YILLIK_TUTAR_TL: yearly ? tl(list) : tl(0),

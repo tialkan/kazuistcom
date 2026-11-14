@@ -16,6 +16,69 @@
 - Test: `yazma/api.test.ts` yeni blok, `kalemcik/kalemcik.test.tsx`. Doğrulama: typecheck, lint, tam `pnpm test` iki kez
   (web 637 geçti), build; 375/768/1440 axe 0 (yükleniyor ve proje yok).
 
+## 14 Kasım 2026, casuist: reddedilen atıf kenarları sayılmaz (sözleşme v1.5, casuist/v1-5-reddedilen-kenarlar)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` casuist maddesi. Sözleşme, şema ve migration değişmedi; yeni
+bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
+- `packages/casuist/src/sql.ts`: `records()` içindeki `cited_by` alt sorgusu tek bir sabitten (`COUNTED_EDGE`)
+  gelir: `NOT e.rejected AND ((e.confirmed AND e.confidence > 0) OR e.confidence >= 0.90::real)`. Ret v1.5'te
+  `rejected` ile işaretlenir; `confidence > 0` eski ret biçimini (`confirmed = true, confidence = 0`) yazıcılar
+  geçene kadar dışarıda tutar. casuist yollarında `citation_edges` ya da `work_citations` okuyan başka sorgu yok.
+- Eşik düzeltmesi: `confidence` `real`; çıplak `0.90` float8 olarak karşılaştırıldığı için `0.9::real`
+  (0.8999999761...) eşiğin altında kalıyordu ve güveni tam yayın eşiğinde (`citations/scoring.py`
+  `PUBLISH_MIN = 0.90`) olan kenar sayılmıyordu. Eşik `0.90::real` ile karşılaştırılır; atif-agi'nin parametreli
+  sorgusu (`$2` `real` olarak çıkarsanır, PGlite'ta denendi) zaten böyle davranıyordu; atıf ağı ekranı ile önem
+  puanı artık eşikte aynı kenarları sayar.
+- Test: `apps/web/src/app/ara/_sunucu/sql.test.ts` (PGlite, migration 0007 dahil) yedi kenarla sayımı sınar
+  (0.99 ve 0.90 sayılır, onaylı 0.6 sayılır, onaysız 0.6 sayılmaz, `rejected` yüksek güveni ve onayı ezer, eski
+  ret biçimi sayılmaz), sonra sayılan bir kenarı `rejected` yapıp sayının düştüğünü görür. `NOT e.rejected`
+  geçici olarak kaldırılınca test 3 yerine 5 bulup kırıldı; `::real` olmadan 3 yerine 2 bulup kırıldı.
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm test` (casuist 107, web 645/1 skip,
+  worker-node 113, tümü geçti), `pnpm build`.
+- Açık: `/v1/records/{id}/versions` `planlandi` (bu PR'da yazılmadı). Doktrin kayıtlarının önem puanı hâlâ
+  `openalex_cited_by`'dan gelir; `work_citations` sayımı istenirse ayrı iş.
+## 14 Kasım 2026, odeme: sözleşme v1.5 temizliği ve ön bilgilendirme alanları (odeme/v1-5-temizlik)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` odeme maddesi 1 ve `docs/istekler/hukuk-uyum-p5-tutarlilik.md`
+madde 4 (ilk alt madde). Sözleşme, şema, migration ve bağımlılık değişmedi.
+- `apps/worker-node/src/billing/jobs.ts`: çağrılmayan `enqueueDailyBillingSql` kaldırıldı (testi yoktu, depoda başka
+  kullanan yok). Günlük zamanlama `src/handlers.ts` `dailyBillingTick` içinde zaten `enqueueJob(..., { once: true,
+  dedupeKey: '<tür>:<UTC gün>' })` ile; `test/runner.test.ts` "does not queue a finished day again after a restart"
+  `done` satırından sonra yeniden kuyruğa almadığını sınıyor.
+- `packages/ledger/src/billing/contract-doc.ts`: `DOC_FIELDS['on-bilgilendirme']` ve `orderFields` içinden
+  `IOS_SURUM` çıktı (metin 2026-11-12.1 sürümünde bu alan yok).
+- `packages/ledger/test/billing/contract-doc.test.ts`: üç sipariş metninin ön bilgisi `LegalFrontMatter` ile okunur;
+  `DOC_FIELDS[slug]` ön bilgideki `pdf_fields` ile birebir aynı, her alan gövdede yer tutucu ve gövdedeki her sipariş
+  yer tutucusu (şirket alanları `KEP`, `TELEFON` dışında) listede. `orderFields` paket ve tarihsel yıllık plan için
+  bütün alanları doldurur; ön bilgilendirme formunda açık kalan tek alan `KEP`. Eski liste ile iki test kırılıyor
+  (elle denendi).
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm test` (ledger 174, worker-node 113, web 644 ve
+  1 atlanan), `pnpm build` geçti.
+- Açık: hukuk-uyum isteği madde 4 ikinci alt madde (hesap sayfasında iade talebi bağlantısı, review.md P8 madde 3)
+  bu PR'da yapılmadı; hesap sayfası kimliğin yoludur, bağlantı eklenince hukuk-uyum metni günceller.
+
+## 13 Kasım 2026, on-yuz: hukuki ön bilgi listeleri ve topluluk belgesinin kaldırılması (on-yuz/p5-hukuki-on-bilgi)
+
+docs/istekler/hukuk-uyum-p5-tutarlilik.md madde 1 ve 2.
+- `apps/web/src/app/(kabuk)/_hukuki/md.ts` `onBilgi` YAML akış dizisini (`pdf_fields: [A, B]`, tırnaklı öğe, boş
+  `[]`) ve blok dizisini (`key:` ardından `- A`) okur; iç içe dizi ve köşeli parantezli başlık dize kalır. Test her
+  hukuki metnin ön bilgisini `yaml` paketinin sonucuyla karşılaştırır.
+- Sahiplik dışı (istek gereği aynı PR, hukuk-uyum): `on-bilgilendirme.md`, `mesafeli-satis.md`, `abonelik.md` ön
+  bilgisine istekteki listelerle `pdf: true` ve `pdf_fields`; sürüm değişmedi (gövde değişmedi). on-bilgilendirme
+  "Gösterim kuralları" notundaki `{{...}}` yayın kapısında açık yer tutucu sayılıyordu ve metin hiç yayımlanamazdı;
+  "Ön bilgideki `pdf_fields` alanları" diye yazıldı. content/hukuki/README.md buna göre güncellendi.
+- `_hukuki/test/odeme-gosterimi.test.tsx`: gerçek dosyalar ve ledger `orderFields` ile; taslakken ödeme adımı kapalı,
+  yalnız `status: yayinda` ve `{{KEP}}` doldurulunca `buildCheckoutLegalPresentation` iki metni doldurur, `CheckoutStep`
+  alıcı ve ürünle gösterir, `createLegalSnapshot` (paket ve yıllık abonelik) geçer. Metinlerle ödeme arasında yalnız
+  yayın onayı ve KEP kaldı.
+- Topluluk (ADR-0031): `content/hukuki/tr/topluluk.md` silindi; `rotalar.ts` `hukukiBelgeler`, `ortak.json`
+  `hukuki.belge.topluluk`, `tests/e2e/adresler.ts` `HUKUKI_TR` (kalite-guvenlik, istek gereği) çıkarıldı.
+  `hukuki/[belge]/page.tsx` bilinmeyen ve kaldırılan slug için 404 verir (sayfa dinamik olduğundan
+  `dynamicParams = false` tek başına engellemiyordu; `/hukuki/yok` 200 "hazırlanıyor" dönüyordu).
+- Doğrulama: typecheck, lint, check:text, `pnpm test` (web 644), build; yerel üretimde `/hukuki/topluluk` 404,
+  e2e 99/99; 16 sayfa 375/768/1440 axe 0, taşma 0 (`docs/tasarim/ekran/hukuki-*`, `ana-sayfa-*`, `axe-sonuc.json`).
+- Açık: odeme `DOC_FIELDS['on-bilgilendirme']` içinde `IOS_SURUM` (istek madde 4); `apps/web/test/seo.test.ts`
+  taslak listesinde `topluluk` zararsız kaldı (orkestra).
 ## 13 Kasım 2026, kimlik: bildirim teslim kaydı ve step-up sözleşme şeması (sözleşme v1.5)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` kimlik madde 1 ve 2. Sözleşme, şema ve migration değişmedi;
