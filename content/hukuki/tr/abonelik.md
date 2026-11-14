@@ -8,6 +8,8 @@ version: 2026-11-12.1
 date: 2026-11-12
 status: taslak
 consent_kind: abonelik_sozlesmesi
+pdf: true
+pdf_fields: [ALICI_AD, ALICI_EPOSTA, AYLIK_INDIRIM_TL, AYLIK_KREDI, AYLIK_LISTE_FIYATI_TL, DONEM_BASLANGIC, DONEM_BITIS, ODEME_DONEMI, PLAN_ADI, SOZLESME_TARIHI, TUTAR_TL, YILLIK_TUTAR_TL]
 ---
 
 > TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. ADR-0029 uyarınca yeni abonelik satışı kapalıdır;

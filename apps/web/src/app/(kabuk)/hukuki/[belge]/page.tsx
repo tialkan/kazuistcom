@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { ortak } from '@kazuist/i18n';
 import { BosDurum } from '@kazuist/ui';
 import { CasuistSayfa } from '../../../(casuist)/_bilesen/CasuistSayfa.tsx';
@@ -17,6 +18,11 @@ export const generateStaticParams = () => {
     .map((m) => m.fm.slug);
   return [...new Set<string>([...hukukiBelgeler, ...icerik])].map((belge) => ({ belge }));
 };
+/**
+ * The page is rendered on demand (the shell reads the session), so `dynamicParams = false` alone does not
+ * stop an unknown or removed slug (for example the former /hukuki/topluluk, ADR-0031): it is a 404.
+ */
+const bilinenMi = (belge: string) => generateStaticParams().some((p) => p.belge === belge);
 
 const arsivAnahtari = (b: string): CasuistAnahtari | null =>
   `hukuki/${b}` in casuistSayfalari ? (`hukuki/${b}` as CasuistAnahtari) : null;
@@ -49,6 +55,7 @@ export async function generateMetadata({
   params: Promise<{ belge: string }>;
 }): Promise<Metadata> {
   const { belge } = await params;
+  if (!bilinenMi(belge)) notFound();
   const g = gosterim(belge);
   const noindex = g.tur === 'hazirlaniyor' || (g.tur === 'metin' && g.taslak);
   return {
@@ -59,6 +66,7 @@ export async function generateMetadata({
 
 export default async function HukukiBelgeSayfasi({ params }: { params: Promise<{ belge: string }> }) {
   const { belge } = await params;
+  if (!bilinenMi(belge)) notFound();
   const g = gosterim(belge);
   const m = hukukiMetin('tr', belge);
   if (g.tur === 'metin' && m) return <HukukiGovde metin={m} taslak={g.taslak} />;

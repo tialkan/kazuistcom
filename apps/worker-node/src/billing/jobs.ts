@@ -1,7 +1,9 @@
 /**
  * Billing jobs (plan 9.2/3, 9.2/5): billing.monthly_grant and billing.reconcile. The handlers are
  * idempotent: grants use ledger idempotency keys and reconciliation only reads and reports.
- * Registration in src/main.ts is done by the orchestrator (shared file).
+ * Registration in src/main.ts is done by the orchestrator (shared file). The daily schedule is
+ * src/handlers.ts dailyBillingTick, which enqueues through the contract helper enqueueJob(..., { once: true })
+ * (ADR-0035); this module has no SQL producer of its own.
  */
 import type { ReconcileResult } from '@kazuist/ledger/billing';
 import type { JobHandler } from '../queue.ts';
@@ -40,9 +42,3 @@ export function billingHandlers(
     },
   };
 }
-
-/** Enqueue one job per type and day; the partial unique index on (type, dedupe_key) drops repeats. */
-export const enqueueDailyBillingSql = `
-INSERT INTO jobs (type, payload, dedupe_key)
-VALUES ($1::job_type, $2::jsonb, $1 || ':' || $3)
-ON CONFLICT DO NOTHING`;

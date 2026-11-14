@@ -26,7 +26,6 @@ export const hukukiBelgeler = [
   'kosullar',
   'iade-ve-kredi',
   'erisilebilirlik',
-  'topluluk',
   'kaldirma',
   'basvuru',
 ] as const satisfies readonly (keyof OrtakSozluk['hukuki']['belge'])[];
