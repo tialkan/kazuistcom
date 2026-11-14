@@ -93,8 +93,7 @@ bir veri tabanında sınanır (`packages/db/test/migration-0007.test.ts`).
   (ADR-0036 ile kalkar). `packages/contracts/test/rotalar.test.ts` bunu, ekli bir yolun işleyicisi gelince ekin
   kaldırılmasını ve her işleyicinin sözleşmede olmasını sınar.
 - `planlandi`: `/v1/guides/{id}/progress` (icerik); `/v1/hmgs/exams`, `/v1/hmgs/exams/{id}/attempts`,
-  `/v1/hmgs/report`, `/v1/reviews` (pratik); `/v1/notifications/preferences`, `/v1/push/apns-tokens`,
-  `/v1/push/web-subscriptions` (kimlik); `/v1/records/{id}/versions` (casuist); `/v1/templates/docx` (yazma);
+  `/v1/hmgs/report`, `/v1/reviews` (pratik); `/v1/records/{id}/versions` (casuist); `/v1/templates/docx` (yazma);
   `/v1/webhooks/appstore` (odeme ve ios).
 - `kaldirilacak`: 11 `/v1/kampus/*` yolu (ADR-0031).
 - Sözleşmeye eklenen dört uç (şekilleri bugünkü rota dosyalarından okundu): `POST /v1/templates/check`
@@ -189,3 +188,6 @@ ve DEVIR.md'dedir.
 - Sözleşme dışı bir yük işleyiciye ulaşmaz; şema eklenmeden yeni bir iş türü tüketilemez.
 - OpenAPI ile rotalar arasındaki fark testle görünür; yeni uç sözleşmesiz eklenemez.
 - Açık: ADR-0036 (kaldırıcı adım), Tarık onayı ve `live.fetch` kapsam kararı.
+
+Not (14 Kasım 2026): `/v1/notifications/preferences`, `/v1/push/web-subscriptions` ve `/v1/push/apns-tokens`
+işleyicileri kimlik tarafından yazıldı (PR #91); `planlandi` ekleri kaldırıldı.
