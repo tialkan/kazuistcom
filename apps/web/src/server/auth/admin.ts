@@ -3,14 +3,16 @@ import { and, asc, desc, eq, ilike, isNull } from 'drizzle-orm';
 import type { z } from 'zod';
 import { getMe, type Me } from './account.ts';
 import { writeAudit } from './audit.ts';
+import { applyCitationDecision } from './citation-queue.ts';
 import type { AuthContext } from './context.ts';
 import { schema } from './db.ts';
 import { decideTakedown } from './takedown.ts';
 
 /**
  * Admin panel back end (plan 10.9). Authorisation lives in guard.ts (staff role, passkey session, TOTP
- * second step). Queue decisions with a side effect owned by kimlik (takedowns, kvkk-requests) are applied
- * here; other queues only record the decision, their module owners apply it from review_queue.
+ * second step). Queue decisions with a side effect are applied here: takedowns and kvkk-requests (kimlik) and
+ * citations (the edge's confirmed or rejected flag, citation-queue.ts); other queues only record the decision,
+ * their module owners apply it from review_queue.
  */
 export interface ReviewItem {
   id: string;
@@ -50,7 +52,7 @@ export async function decideQueueItem(
   queue: ReviewQueueName,
   itemId: string,
   input: z.infer<typeof AdminQueueDecisionInput>,
-): Promise<'ok' | 'not_found'> {
+): Promise<'ok' | 'not_found' | 'unsupported'> {
   const [item] = await ctx.db
     .select()
     .from(schema.reviewQueueItems)
@@ -63,6 +65,7 @@ export async function decideQueueItem(
     );
   if (!item) return 'not_found';
   const now = ctx.now();
+  if (queue === 'citations') return decideCitation(ctx, actorId, item, input, now);
   let close = true;
   if (queue === 'takedowns') {
     if (!item.subjectId) return 'not_found';
@@ -103,6 +106,40 @@ export async function decideQueueItem(
     subjectId: item.id,
     reason: input.note ?? null,
     diff: { queue, closed: close, patchPaths: input.patch?.changes?.map((c) => c.path) ?? [] },
+  });
+  return 'ok';
+}
+
+/**
+ * Citations: the item is closed and the edge flag written in one transaction; a second decision on the same item
+ * (two editors at once) finds it closed and gets not_found. duzelt has no defined edit for an edge and is refused.
+ */
+async function decideCitation(
+  ctx: AuthContext,
+  actorId: string,
+  item: typeof schema.reviewQueueItems.$inferSelect,
+  input: z.infer<typeof AdminQueueDecisionInput>,
+  now: Date,
+): Promise<'ok' | 'not_found' | 'unsupported'> {
+  const decision = input.decision;
+  if (decision === 'duzelt') return 'unsupported';
+  const r = await ctx.db.transaction(async (tx) => {
+    const closed = await tx
+      .update(schema.reviewQueueItems)
+      .set({ decision, decidedBy: actorId, decidedAt: now })
+      .where(and(eq(schema.reviewQueueItems.id, item.id), isNull(schema.reviewQueueItems.decision)))
+      .returning({ id: schema.reviewQueueItems.id });
+    if (!closed.length) return null;
+    return applyCitationDecision(tx, item, decision);
+  });
+  if (!r) return 'not_found';
+  await writeAudit(ctx.db, ctx.config.secret, {
+    actorId,
+    action: `admin.queue.${decision}`,
+    subjectType: 'review_queue',
+    subjectId: item.id,
+    reason: input.note ?? null,
+    diff: { queue: 'citations', closed: true, kind: r.kind, edgeId: item.subjectId, applied: r.applied },
   });
   return 'ok';
 }

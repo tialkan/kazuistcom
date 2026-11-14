@@ -216,6 +216,34 @@
   margin: 0 0 var(--kz-space-4);
 }
 
+/* Channel checkboxes of one notification type (/hesap/bildirimler). */
+.kanallar {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--kz-space-6);
+}
+
+/* Citation queue items (/hesap/yonetim/atif-kuyrugu). */
+.aday {
+  margin: 0 0 var(--kz-space-6);
+  padding: var(--kz-space-4) var(--kz-space-6);
+  border: 1px solid var(--kz-color-border);
+  border-radius: var(--kz-radius-md);
+  background: var(--kz-color-surface);
+}
+
+.aday > h2 {
+  margin-top: 0;
+  font-size: var(--kz-text-lg);
+}
+
+.baglam {
+  margin: 0 0 var(--kz-space-4);
+  padding: var(--kz-space-2) var(--kz-space-4);
+  border-left: 3px solid var(--kz-color-border);
+  overflow-wrap: anywhere;
+}
+
 .secim :is(input):focus-visible,
 .select:focus-visible,
 .bolumBag:focus-visible {

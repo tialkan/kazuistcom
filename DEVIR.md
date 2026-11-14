@@ -1,3 +1,51 @@
+## 14 Kasım 2026, kimlik: atıf kuyruğu kararları, bildirim ve push uçları, iade bağlantısı (kimlik/v1-5-atif-bildirim-iade)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` kimlik madde 3 ve 4; `hukuk-uyum-p5-tutarlilik.md` madde 4 ikinci
+alt madde (review.md P8 madde 3). Sözleşme, şema, migration ve bağımlılık değişmedi. Canlı veri tabanına hiçbir şey
+uygulanmadı.
+- Atıf kuyruğu: yeni uç yok; sözleşmedeki `POST /v1/admin/queues/{queue}/{itemId}/decision` `citations` kuyruğunda
+  artık kenarı yazar (`server/auth/citation-queue.ts`, `admin.ts` `decideCitation`). `onay` `confirmed = true,
+  rejected = false`; `ret` `rejected = true, confirmed = false`, `confidence` korunur (eski `confidence = 0` biçimi
+  yazılmaz). `payload.kind` `karar` ise `citation_edges`, `doktrin` ise `work_citations`; kenar yalnız
+  `from_record_id = payload.recordId` ise güncellenir. Kuyruk satırının kapanması ve kenar yazımı tek işlem; ikinci
+  karar 404; `duzelt` bu kuyrukta 400. Denetim kaydı `admin.queue.<karar>`, fark: tür, kenar kimliği, `applied`.
+  Yetki mevcut yönetim kapısı: editör ya da yönetici, passkey oturumu, oturumda TOTP onayı.
+- Editör ekranı `/hesap/yonetim/atif-kuyrugu` (noindex): aynı kapı (`account-view.ts` `staffReady`); personel
+  olmayana 404, onaysız personele güvenlik sayfası bağlantısı. Aday başına tür, aday karar ya da eser, atıf yapan
+  kararın başlığı ve numaraları, güven, gerekçe kodları, maskeli bağlam, isteğe bağlı not, Onaylayın ve Reddedin.
+  `/hesap` personel için "Yönetim" bölümünü gösterir.
+- Uçlar (sözleşmede `planlandi` idi): `GET`/`PUT /v1/notifications/preferences` (kanal haritası o kanalı değiştirir,
+  gönderilmeyen kanal saklı kalır; zorunlu e-posta türleri `odeme`, `fesih_teyidi` haritadan düşer, işçinin listesiyle
+  test eşitliği), `POST /v1/push/web-subscriptions` (yalnız tarayıcı push servislerinin https uç noktaları ve RFC 8291
+  anahtar uzunlukları: işçi bu adrese POST attığı için SSRF koruması), `POST /v1/push/apns-tokens`. Aynı cihaz başka
+  hesapta kayıtlıysa çağırana taşınır; kanal başına en çok 10 cihaz; yeni hız kuralı `pushUser` (saatte 20). Hepsi
+  sözleşme zod şemasıyla, kullanıcı kimliği yalnız oturumdan; denetim kaydında kanal adı, uç nokta ya da jeton yok.
+- `/hesap/bildirimler`: dört üretilen tür (teslim hatırlatması, Kalemcik, ödeme, fesih) için e-posta, tarayıcı ve
+  iPhone kutuları; zorunlu e-posta kutuları işaretli ve kapalı; sessiz saat notu (22.00-08.00, `quiet-hours.ts`).
+  Ayrı "Kampanya ve duyurular" kutusu `acik_riza_pazarlama` onayını `acik-riza.md` sürümüyle yazar, ardından
+  e-posta `kampanya` tercihini aynı değere çeker. Kutu metni `acik-riza.md` madde 2 ile kelimesi kelimesine aynı
+  (test). Tarayıcıda Web Push aboneliği başlatan kod (service worker, VAPID açık anahtarı) bu PR'da yok.
+- `/hesap/iade` ve `/hesap` üzerinde "İade talebi" bağlantısı: kural, kayıtlı e-posta, `teknoloji@kulular.com`'a
+  konulu e-posta bağlantısı (`kunye.ts`), iade kuralları bağlantısı. Uygulama içi sipariş bazında talep için sipariş
+  listesi gerekiyor: `docs/istekler/kimlik-iade-siparis-listesi.md` (odeme).
+- İstekler: `kimlik-v1-5-planlandi-ekleri.md` (mimar: `openapi.yaml` 1787, 1816, 1842. satırlardaki
+  `x-kazuist-uygulama: planlandi` kalkmalı; kalkana kadar `packages/contracts/test/rotalar.test.ts` "a marked path
+  has no handler" bu üç yolla kırmızı), `kimlik-atif-ret-yazimi.md` (atif-agi: `store.py` upsert ve budama
+  `NOT rejected` almalı, yoksa reddedilen aday yeniden kuyruğa döner; `atif-agi/_sunucu/sql.ts` `NOT rejected`).
+- Testler: `server/auth/__tests__/atif-kuyrugu.test.ts` (10: yetki 401/403/403, onay, ret, doktrin, çift karar,
+  duzelt, yanlış kuyruk, başka kayda işaret eden sahte satır kenara dokunmaz, ekran okuma modeli, ekran kapısı),
+  `bildirim-uclari.test.ts` (13: tercih PUT anlamı, geçersiz gövde, IDOR, SSRF listesi, anahtar uzunluğu, taşıma,
+  10 cihaz sınırı, 429, ticari onay metni ve okuma modeli), `idor-rate.test.ts` misafir listesine dört yeni uç,
+  yönetim listesine atıf kuyruğu. Ret yazımı geçici olarak eski biçime çevrilince 3 test kırıldı (elle denendi).
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, `pnpm build` temiz; `pnpm -r --no-bail test`: web 672
+  (1 atlanan), worker-node 113, contracts 146/147 (tek kırmızı yukarıdaki ek; üç satır yerelde geçici silinince
+  147/147, dosya geri alındı), diğer paketler yeşil. Yerel üretim derlemesi, PostgreSQL 18 ve migration'larla
+  `/hesap`, `/hesap/bildirimler`, `/hesap/iade`, `/hesap/yonetim/atif-kuyrugu` (onaylı ve onaysız editör) 375/768/1440:
+  axe (WCAG 2.0/2.1 A ve AA) ihlal 0, yatay taşma 0; kullanıcıya editör ekranı 404. Playwright ile tercih kaydı,
+  ticari onay (consents satırı ve `kampanya: true`), bir onay ve bir ret (kenar `true,false,0.82`, eser atfı
+  `false,true,0.71`, iki denetim satırı) uçtan uca geçti. Ekran görüntüleri review.md T11 kararı beklendiği için depoya
+  konmadı. Gerçek passkey töreni ve gerçek push teslimi denenmedi.
+
 ## 14 Kasım 2026, casuist: reddedilen atıf kenarları sayılmaz (sözleşme v1.5, casuist/v1-5-reddedilen-kenarlar)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` casuist maddesi. Sözleşme, şema ve migration değişmedi; yeni
