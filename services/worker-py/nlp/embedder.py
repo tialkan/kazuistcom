@@ -1,9 +1,11 @@
 """Passage and query embeddings for the chunks table (plan 5.3 and 7.2/3, ADR-0006).
 
 Plan: the model runs on our own server with ONNX Runtime on CPU and is one of three candidates chosen by the
-eval/embed measurement (nDCG@10 and CPU latency). No candidate has been measured or chosen yet, so nothing is
+eval/embed measurement (nDCG@10 and CPU latency). The three were measured on 2026-11-14
+(eval/embed/raporlar/dalga-2-embed.md) and ADR-0037 proposes one of them; until that ADR is approved nothing is
 configured by default and the worker writes chunks without vectors; search then reports the vector leg as
-degraded and still answers from the full text and identity legs.
+degraded and still answers from the full text and identity legs. eval/embed/hazirla.py builds a model folder
+from the pinned upstream revision and nlp.model_check verifies it at install time.
 
 Configuration (all optional):
   KAZUIST_EMBED_BACKEND    one CANDIDATES key; unset or "none" disables vectors
@@ -64,25 +66,44 @@ class NullEmbedder:
 
 @dataclass(frozen=True)
 class EmbedCandidate:
-    """How a candidate turns token states into one vector and which prefixes it expects (model cards)."""
+    """How a candidate turns token states into one vector and which prefixes it expects (model cards).
+
+    revision pins the upstream Hugging Face commit that eval/embed measured; license is the SPDX id read from
+    that revision's model card (cardData.license and the README front matter)."""
 
     hf_id: str
     pooling: str  # "cls", "mean" or "last" (last non padding token)
     query_prefix: str = ""
     passage_prefix: str = ""
     max_tokens: int = 512
+    revision: str = ""
+    license: str = ""
 
 
-# plan 5.3 candidates; all three produce 1024 dimensional vectors. Prefixes follow each model card and must be
-# re-checked against the exact revision when eval/embed picks the winner.
+# plan 5.3 candidates; all three produce 1024 dimensional vectors. Prefixes follow each model card at the pinned
+# revision (read 2026-11-14): BGE-M3 needs no instruction, e5 needs "query: "/"passage: ", Qwen3 wants a one line
+# English task instruction on the query side only. Chunks are at most 1200 characters (chunk.py), which stays
+# under 512 XLM-R tokens; Qwen3's byte level tokenizer needs more tokens for Turkish, hence 1024 there.
 CANDIDATES: Dict[str, EmbedCandidate] = {
-    "bge-m3": EmbedCandidate("BAAI/bge-m3", "cls"),
-    "multilingual-e5-large": EmbedCandidate("intfloat/multilingual-e5-large", "mean", "query: ", "passage: "),
+    "bge-m3": EmbedCandidate(
+        "BAAI/bge-m3", "cls", revision="5617a9f61b028005a4858fdac845db406aefb181", license="mit"
+    ),
+    "multilingual-e5-large": EmbedCandidate(
+        "intfloat/multilingual-e5-large",
+        "mean",
+        "query: ",
+        "passage: ",
+        revision="3d7cfbdacd47fdda877c5cd8a79fbcc4f2a574f3",
+        license="mit",
+    ),
     "qwen3-embedding-0.6b": EmbedCandidate(
         "Qwen/Qwen3-Embedding-0.6B",
         "last",
         "Instruct: Given a Turkish legal question, retrieve passages of legislation and court decisions that "
         "answer it\nQuery:",
+        max_tokens=1024,
+        revision="97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
+        license="apache-2.0",
     ),
 }
 
@@ -129,9 +150,17 @@ def pool(hidden: Any, mask: Any, how: str) -> Any:
 
 
 class OnnxEmbedder:
-    """A candidate exported to ONNX, run on CPU. session and tokenizer may be injected (tests)."""
+    """A candidate exported to ONNX, run on CPU. session and tokenizer may be injected (tests).
 
-    batch_size = 16
+    One text per run by default. eval/embed (2026-11-14, ADR-0037) found that int8 dynamic quantization scales
+    activations over the whole batch, so a batched passage vector depends on its batch mates (cosine down to
+    0.986 against the same text alone), and that batching did not speed up CPU inference (bge-m3 int8: 12.3
+    passages/s at 16, 15.9 at 1; fp32: 9.1 and 9.3). With one text per run a passage vector is reproducible and
+    is computed exactly like a query vector. When batch_size is raised, texts are grouped by token length and a
+    batch holds at most max_batch_tokens padded tokens, which bounds activation memory on the 8 GB server."""
+
+    batch_size = 1
+    max_batch_tokens = 4096
 
     def __init__(self, candidate: EmbedCandidate, name: str, session: Any, tokenizer: Any):
         self.candidate = candidate
@@ -167,9 +196,12 @@ class OnnxEmbedder:
         return cls(CANDIDATES[key], f"{key}@{_revision(model_dir)}", session, tok)
 
     def _batch(self, texts: Sequence[str]) -> List[List[float]]:
+        """One batch in input order, no prefix (eval/embed parity checks)."""
+        return self._run(self._tok.encode_batch(list(texts)))
+
+    def _run(self, encs: Sequence[Any]) -> List[List[float]]:
         import numpy as np  # type: ignore
 
-        encs = self._tok.encode_batch(list(texts))
         width = max(1, max(len(e.ids) for e in encs))
         ids = np.full((len(encs), width), self._pad, dtype=np.int64)
         mask = np.zeros((len(encs), width), dtype=np.int64)
@@ -191,12 +223,26 @@ class OnnxEmbedder:
             vec = pool(outs[self._outputs[0]], mask, self.candidate.pooling)
         return vec.astype(float).tolist()
 
+    def batches(self, lengths: Sequence[int]) -> List[List[int]]:
+        """Input indices grouped into batches: shortest first, at most batch_size rows and at most
+        max_batch_tokens padded tokens per batch (a single longer text still gets its own batch)."""
+        order = sorted(range(len(lengths)), key=lambda i: (lengths[i], i))
+        out: List[List[int]] = []
+        for i in order:
+            width = max(1, lengths[i])  # ascending order: the newest item is the widest
+            if out and len(out[-1]) < self.batch_size and (len(out[-1]) + 1) * width <= self.max_batch_tokens:
+                out[-1].append(i)
+            else:
+                out.append([i])
+        return out
+
     def embed(self, texts: Sequence[str], kind: str) -> List[List[float]]:
         prefix = self.candidate.query_prefix if kind == "query" else self.candidate.passage_prefix
-        out: List[List[float]] = []
-        items = [prefix + t for t in texts]
-        for i in range(0, len(items), self.batch_size):
-            out.extend(self._batch(items[i : i + self.batch_size]))
+        encs = self._tok.encode_batch([prefix + t for t in texts]) if texts else []
+        out: List[List[float]] = [[] for _ in encs]
+        for group in self.batches([len(e.ids) for e in encs]):
+            for i, vec in zip(group, self._run([encs[i] for i in group]), strict=True):
+                out[i] = vec
         return out
 
 

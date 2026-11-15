@@ -181,6 +181,7 @@ def test_onnx_embedder_prefixes_pads_batches_and_normalises() -> None:
     sess = FakeSession(["input_ids", "attention_mask", "token_type_ids"], ["last_hidden_state"])
     tok = FakeTokenizer()
     emb = OnnxEmbedder(CANDIDATES["multilingual-e5-large"], "multilingual-e5-large@local", sess, tok)
+    emb.batch_size = 16
     texts = [f"metin {i}" * (i % 3 + 1) for i in range(20)]
     vecs = emb.embed(texts, "passage")
     assert len(vecs) == 20 and all(len(v) == EMBED_DIMENSIONS for v in vecs)
@@ -195,6 +196,61 @@ def test_onnx_embedder_prefixes_pads_batches_and_normalises() -> None:
     emb.embed(["soru"], "query")
     assert tok.inputs[-1] == "query: soru"
     assert np.asarray(vecs).dtype == np.float64
+
+
+def test_one_text_per_run_by_default() -> None:
+    pytest.importorskip("numpy")
+    sess = FakeSession(["input_ids", "attention_mask"], ["last_hidden_state"])
+    emb = OnnxEmbedder(CANDIDATES["bge-m3"], "bge-m3@local", sess, FakeTokenizer())
+    emb.embed(["a", "bb", "ccc"], "passage")
+    assert [f["input_ids"].shape[0] for f in sess.feeds] == [1, 1, 1]
+    assert all(int(f["attention_mask"].min()) == 1 for f in sess.feeds)  # no padding at all
+
+
+def test_batches_sort_by_length_and_respect_the_token_cap() -> None:
+    sess = FakeSession(["input_ids", "attention_mask"], ["last_hidden_state"])
+    emb = OnnxEmbedder(CANDIDATES["bge-m3"], "bge-m3@local", sess, FakeTokenizer())
+    emb.batch_size, emb.max_batch_tokens = 3, 10
+    groups = emb.batches([5, 1, 4, 2, 9, 3, 12])
+    assert sorted(i for g in groups for i in g) == list(range(7))
+    assert groups == [[1, 3, 5], [2, 0], [4], [6]]  # lengths [1,2,3], [4,5], [9], [12] (alone, over the cap)
+    assert emb.batches([]) == []
+
+
+class LengthTokenizer(FakeTokenizer):
+    """Token count equals the number of words, so the expected order is easy to read."""
+
+    def encode_batch(self, texts: List[str]) -> List[Any]:
+        self.inputs.extend(texts)
+        return [SimpleNamespace(ids=list(range(2, 2 + len(t.split())))) for t in texts]
+
+
+class EchoSession(FakeSession):
+    """Puts each row's real token count into its first dimension, so outputs can be traced to inputs."""
+
+    def run(self, _names: Any, feeds: Dict[str, Any]) -> List[Any]:
+        import numpy as np
+
+        self.feeds.append(feeds)
+        b, t = feeds["input_ids"].shape
+        out = np.zeros((b, t, EMBED_DIMENSIONS))
+        out[:, 0, 0] = feeds["attention_mask"].sum(axis=1)
+        out[:, 0, 1] = 1.0
+        return [out]
+
+
+def test_sorted_batching_returns_vectors_in_input_order() -> None:
+    np = pytest.importorskip("numpy")
+    sess = EchoSession(["input_ids", "attention_mask"], ["last_hidden_state"])
+    emb = OnnxEmbedder(CANDIDATES["bge-m3"], "bge-m3@local", sess, LengthTokenizer())
+    emb.batch_size = 2
+    texts = ["a b c d e", "a", "a b c", "a b"]
+    vecs = np.asarray(emb.embed(texts, "passage"))
+    # cls pooling, normalised: first two dims are (n, 1) / sqrt(n^2 + 1) with n the row's token count.
+    want = [n / math.sqrt(n * n + 1) for n in (5, 1, 3, 2)]
+    assert np.allclose(vecs[:, 0], want)
+    assert [f["input_ids"].shape for f in sess.feeds] == [(2, 2), (2, 5)]  # [1, 2] then [3, 5] tokens
+    assert emb.embed([], "passage") == []
 
 
 def test_onnx_embedder_uses_a_pooled_output_and_position_ids_when_declared() -> None:
