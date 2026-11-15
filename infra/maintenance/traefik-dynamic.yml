@@ -1,6 +1,6 @@
 # Traefik dynamic configuration for the maintenance page (FR-105, plan 14.4/5).
 # Coolify: Servers -> <server> -> Proxy -> Dynamic Configurations -> add this file (name: kazuist-maintenance.yaml).
-# Replace HOST below with staging.kazuist.com or kazuist.com per environment.
+# Replace HOST below with the web domain: the closed rehearsal subdomain, then kazuist.com (ADR-0033).
 #
 # 1. "kazuist-maintenance" middleware: when web answers 502/503/504 (or a dependency is down during deploy),
 #    Traefik serves the static page instead of its raw error page. Attach it to the web router with the
@@ -31,5 +31,6 @@ http:
     kazuist-maintenance:
       loadBalancer:
         servers:
-          # Container name of the maintenance service in Coolify, on the shared "coolify" network.
+          # container_name of the maintenance service in infra/docker-compose.prod.yml; Traefik shares the stack
+          # network with it because web has a domain. Check: docker exec coolify-proxy wget -qO- http://kazuist-maintenance:8080/healthz
           - url: http://kazuist-maintenance:8080

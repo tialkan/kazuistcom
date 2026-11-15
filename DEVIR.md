@@ -1,3 +1,52 @@
+## 15 Kasım 2026, altyapi: tek sunucu üretimi, GHCR imajları, sunucu dışı yedek ve geri yükleme testi (altyapi/tek-sunucu-uretim)
+
+Orkestra görevi (review.md P2, ADR-0033): hedef tek Hetzner x86 sunucusu (8 vCPU, 16 GB; CX43 ya da CPX42, henüz
+alınmadı), Coolify, Cloudflare DNS only, ödemesiz ve BYOK ile yayın. Sunucu olmadığı için hiçbir sunucu, DNS ya da
+Coolify işlemi yapılmadı; her şey CI'da gerçek Docker ile sınandı. `packages/contracts` ve `packages/db` değişmedi;
+yeni npm ya da Python bağımlılığı yok. Sunucu tarafında restic resmî imajı (0.19.1, BSD-2-Clause, özetle sabit)
+kullanılır.
+- CI (`.github/workflows/ci.yml`): imajlar `docker/build-push-action@v7` ile `linux/amd64` ve GHA katman önbelleğiyle
+  derlenir; PR'da yalnız derleme ve test. Yeni `publish` işi yalnız main push'unda ve node, python, gitleaks, docker
+  yeşilse beş imajı GHCR'ye iter (`ghcr.io/tialkan/kazuist-{web,worker-node,migrate,worker-py,maintenance}`, etiket
+  sha ve `main`), itilen imajın root olmadığını ve revision etiketini denetler. `BUILT_AT` commit zamanıdır (aynı
+  commit aynı katmanlar), `APP_VERSION` `apps/web/package.json`'dan. main koşuları artık yarıda iptal edilmez.
+- `infra/docker-compose.prod.yml`: Coolify Docker Compose kaynağı; bellek sınırları (takas dahil) postgres 6g,
+  worker-py 3g, web 1g, worker-node 512m, migrate 512m, valkey 256m, bakım 64m; sağlık denetimleri; migrate kapısı
+  (`service_completed_successfully`); `ports:` yok; `pgdata` birimi; `/srv/kazuist/raw-store` bind;
+  `/srv/kazuist/models/{ner,embed}` salt okunur; uygulamalar root değil, `cap_drop: ALL`, `no-new-privileges`;
+  zorunlu değişkenler `${X:?}`. Web'e on-yuz'un `KAZUIST_MODULLER` (PR 103, isteğe bağlı) ve bütün hizmetlere tek
+  zorunlu `KAZUIST_ENV` verilir (worker-py imaj öntanımı production olduğu için provada `staging` açıkça girilir).
+  CI aynı dosyayı CI imajlarıyla ayağa kaldırır; sağlık, sınırlar, port yokluğu, uid, ham arşiv yazımı, model
+  klasörünün salt okunurluğu, `/api/version` commit'i ve worker-py iç API'sine erişimi denetler.
+- CI'daki yığın sınaması gerçek bir hata buldu: boş `KAZUIST_POLL_SECONDS` worker-py'yi `float('')` ile düşürüyor
+  (`core/main.py`, veri-toplama). Değişken compose dosyasından çıkarıldı, diğer isteğe bağlı değişkenlerin boşu
+  tanımsız saydığı kontrol edildi; istek `docs/istekler/altyapi-worker-py-bos-degisken.md`.
+- worker-py: ham arşiv `/data/raw-store` (`KAZUIST_RAW_DIR`), imajda `app` sahipli.
+- `/api/health`: `S3_ENDPOINT` ve `S3_BUCKET` kritik listeden çıktı (okuyan kod yok); test ve CI S3'süz 200'ü sınar.
+  `.env.example` için mimara istek: `docs/istekler/altyapi-env-example-tek-sunucu.md`.
+- `.dockerignore`: `apps/web/**/_kanit` (yaklaşık 29 MB), `infra/backup`, compose dosyaları, `review.md`; CI imajların
+  içinde arar.
+- `infra/backup/`: `backup.sh` (pg_dump özel biçim, `pg_restore --list` denetimi, roller, ham arşiv, Coolify `.env`
+  ve yedekleri; saklama 4 son, 7 gün, 4 hafta, 6 ay; pazar prune ve %5 veri denetimi; başarı ve hata ping'i),
+  `restore-test.sh` (geçici, ağsız PostgreSQL'e `pg_restore --single-transaction`, migration, uzantı, defter dengesi,
+  satır sayıları canlıyla yan yana, isteğe bağlı `db-smoke.sql` ve doğruluk sorgusu, ham arşivden 50 dosya sha256,
+  süreler, her durumda temizlik), `disk-check.sh` (disk, inode, yedek yaşı), systemd zamanlayıcıları (6 saatte bir;
+  RPO 6 saat). CI: işaret satırı, yedek, geri yükleme, işaretin varlığı, yanlış sorgunun testi düşürmesi, kapsayıcısız
+  yedeğin hata vermesi.
+- CI docker işine `KAZUIST_IT_DATABASE_URL="$DATABASE_URL" pnpm --filter @kazuist/worker-node exec vitest run
+  src/account` eklendi.
+- Runbook: yeni `docs/runbook/ilk-kurulum.md` (Hetzner Firewall, SSH, ufw, takas, Coolify kurulumu ve tünel, klasörler,
+  GHCR girişi, Coolify kaynağı, değersiz değişken tablosu, ilk dağıtım, kapalı prova `KAZUIST_ENV=staging`, yayın
+  günü); `coolify.md`, `dagitim.md` (elle terfi, dış kabul testleri), `geri-alma.md` (sha ile geri dönüş),
+  `yedek.md` (restic, felaket kurtarma), `izleme.md` (yalnız dış izleme ve kalp atışı; GlitchTip, Uptime Kuma, Umami
+  bu sunucuda yok), `dns-yedek.md` (geçici prova alt alanı), `vps-secimi.md` (CX43 ve CPX42, 15 Kasım okuması)
+  yeniden yazıldı.
+
+Açık: sunucu siparişi; Storage Box; GHCR okuma token'ı ya da paketleri açık yapma kararı; dış izleme servisi seçimi;
+sunucuda ilk geri yükleme testi ve raporu; kapalı prova alt alanı için DNS onayı; Coolify'ın `container_name` ve
+`exclude_from_hc` davranışının kurulum günü doğrulanması; arm64 derlemesi (yalnız Arm sunucu seçilirse); sürekli WAL
+arşivi (RPO 6 saatten kısa istenirse); hukuk-uyum için yedeklerde silinen hesap verisinin 6 aya kadar kalması.
+
 ## 15 Kasım 2026, on-yuz: dar çekirdekli yayın bayrağı, hata ve yükleme sayfaları, bağlantı denetimi (on-yuz/dar-cekirdek-yayin)
 
 Orkestra görevi (Tarık kararı): ilk yayın dar çekirdek; onaylı içeriği olmayan modül üretimde görünmez.

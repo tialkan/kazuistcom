@@ -8,6 +8,7 @@
 **/.venv
 **/__pycache__
 **/.pytest_cache
+**/.raw-store
 .git
 .github
 .claude
@@ -21,5 +22,12 @@ docs
 eval
 plan.md
 DEVIR.md
+review.md
 apps/ios
 tests
+# Screenshot and check evidence next to the pages (about 29 MB of PNG); never imported by the build.
+apps/web/**/_kanit
+# Server side operations (backup, systemd units, production compose); no image copies them.
+infra/backup
+infra/docker-compose.*.yml
+infra/lighthouse

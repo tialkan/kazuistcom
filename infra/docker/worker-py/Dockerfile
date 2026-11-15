@@ -37,7 +37,12 @@ WORKDIR /srv/services/worker-py
 COPY --from=build /opt/venv /opt/venv
 COPY --from=build --chown=app:app /src ./
 COPY --chown=app:app docs/kaynaklar /srv/docs/kaynaklar
-ENV KAZUIST_RAW_DIR=/srv/services/worker-py/.raw-store KAZUIST_SOURCES_DIR=/srv/docs/kaynaklar
+# Raw archive (core/runtime.py, LocalObjectStore under KAZUIST_RAW_DIR) lives outside the code tree so that it can be
+# a persistent volume: infra/docker-compose.prod.yml bind mounts /srv/kazuist/raw-store here and the backup job
+# (infra/backup/backup.sh) archives that host folder. The folder is created owned by app, so a named volume mounted
+# here also starts writable. /models/* are only mount points; the models come from read-only host folders.
+RUN mkdir -p /data/raw-store /models/ner /models/embed && chown app:app /data/raw-store
+ENV KAZUIST_RAW_DIR=/data/raw-store KAZUIST_SOURCES_DIR=/srv/docs/kaynaklar
 ENV KAZUIST_ENV=production KAZUIST_NER_DIR=/models/ner KAZUIST_EMBED_DIR=/models/embed \
     HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 USER app

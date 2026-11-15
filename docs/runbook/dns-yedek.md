@@ -33,12 +33,12 @@ DNS kaydı oluşturma için ayrı ve geçici bir `DNS Edit` token'ı gerekir; o,
 
 - Geçiş öncesi A ve CNAME kayıtlarının JSON yedeği alınır (bu betik).
 - MX, SPF, DKIM, DMARC ve e-posta alt alanları (`mail`, `autoconfig`, `autodiscover`) değiştirilmez; DNS only kalır.
-- `staging` ve uygulama kayıtları DNS only (K-04).
+- Uygulama ve geçici prova kayıtları DNS only (K-04).
 - Geri dönüş: yedekteki önceki değerler elle yazılır (`geri-alma.md`).
 
 ## Token olmadan: panelden elle (Tarık)
 
-Cloudflare API token'ı şimdilik yok; aynı yedek ve staging kaydı panelden şöyle yapılır.
+Cloudflare API token'ı şimdilik yok; aynı yedek ve kayıtlar panelden şöyle yapılır.
 
 ### DNS yedeği
 
@@ -48,10 +48,21 @@ Cloudflare API token'ı şimdilik yok; aynı yedek ve staging kaydı panelden ş
    `docs/runbook/dns-yedek-<YYYY-AA-GG>.zone` adıyla bana iletin (kayıtlar gizli değildir).
 4. Aynı sayfanın ekran görüntüsünü (Proxy status sütunu görünür olacak şekilde) ekleyin; dosyada proxied bilgisi yoktur.
 
-### staging kaydı (VPS-1 IP'si belli olunca, onayınızla)
+### Kapalı prova kaydı (sunucu IP'si belli olunca, onayınızla)
 
-1. DNS > Records > Add record.
-2. Type `A`, Name `staging`, IPv4 address `<VPS-1 IP>`, Proxy status kapalı (gri bulut, "DNS only"), TTL Auto.
-3. Save. MX, SPF, DKIM, DMARC ve e-posta kayıtlarına dokunmayın.
-4. Doğrulama (ajan yapar): `dig +short staging.kazuist.com @1.1.1.1` VPS-1 IP'sini döndürmeli.
-5. Geri alma: aynı kaydı Delete; önceki durum yedek dosyasındadır.
+ADR-0033 staging sunucusunu kaldırdı; kapalı prova üretim sunucusunda, geçici bir alt alanla yapılır.
+
+1. Önce yukarıdaki DNS yedeği alınır ve depoya eklenir.
+2. DNS > Records > Add record: Type `A`, Name `prova` (ya da onayladığınız başka bir ad), IPv4 address `<sunucu IP>`,
+   Proxy status kapalı (gri bulut, "DNS only"), TTL Auto. Save. MX, SPF, DKIM, DMARC ve e-posta kayıtlarına
+   dokunmayın.
+3. Doğrulama (ajan yapar): `dig +short prova.kazuist.com @1.1.1.1` sunucu IP'sini döndürmeli; sertifika Traefik ve
+   Let's Encrypt ile alınır (80 portu açık olmalı).
+4. Prova bitince ve yayın günü kayıt silinir (Delete); önceki durum yedek dosyasındadır.
+
+### Yayın günü kaydı (onayınızla)
+
+1. DNS yedeği yeniden alınır (önceki `kazuist.com` A ve CNAME değerleri dosyada).
+2. `kazuist.com` A kaydı sunucu IP'sine, DNS only; `www` için A ya da CNAME (kanonik alana yönlendirme uygulamadadır).
+3. Doğrulama: `dig +short kazuist.com @1.1.1.1`, `dagitim.md` "Dış kabul testleri".
+4. Geri alma: yedekteki önceki değerler elle yazılır (`geri-alma.md`).
