@@ -2,7 +2,15 @@ import { readFileSync } from 'node:fs';
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
 import { and, eq } from 'drizzle-orm';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { mandatoryEmailTypes as workerMandatory } from '../../../../../worker-node/src/notify/types.ts';
+
+/** Read as text: importing worker-node source would pull its dependencies into the web type check and image. */
+const workerTypes = readFileSync(
+  new URL('../../../../../worker-node/src/notify/types.ts', import.meta.url),
+  'utf8',
+);
+const workerMandatory = [
+  ...(/mandatoryEmailTypes[^=]*=\s*\[([^\]]*)\]/.exec(workerTypes)?.[1] ?? '').matchAll(/'([^']+)'/g),
+].map((m) => m[1]);
 import { marketingConsent } from '../account-view.ts';
 import { schema } from '../db.ts';
 import {
