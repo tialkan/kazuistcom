@@ -4,15 +4,17 @@ slug: mesafeli-satis
 route: /hukuki/mesafeli-satis
 lang: tr
 binding: true
-version: 2026-11-12.1
-date: 2026-11-12
+version: 2026-11-15.1
+date: 2026-11-15
 status: taslak
 consent_kind: mesafeli_sozlesme
 pdf: true
 pdf_fields: [ALICI_AD, ALICI_EPOSTA, SIPARIS_TARIHI, TUTAR_TL, URUN_ADI]
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Ön bilgilendirme formunun madde numaraları
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 15 Kasım 2026. Kredi satışı ilk yayında kapalıdır (ADR-0038,
+> apps/web/src/server/billing/acik.ts `odemeAcik`): bu sözleşme satış açılana kadar kurulmaz ve yayımlanmaz; satış
+> açılmadan önce yeniden onaya sunulur. Sözleşme gövdesi bu sürümde değişmedi. Ön bilgilendirme formunun madde numaraları
 > değiştiği için madde 9 atfı güncellendi; Kazuist'in ücretsiz özellikleri ve kredi kapsamı (ADR-0029) madde 4'e
 > eklendi.
 

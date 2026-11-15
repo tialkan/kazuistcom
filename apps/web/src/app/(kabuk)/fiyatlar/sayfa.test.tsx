@@ -88,6 +88,16 @@ describe('/fiyatlar platform AI state', () => {
     expect(html()).toContain(byok.teklif.girisByok);
   });
 
+  it('the visible intro speaks about credits in every state (e2e sayfalar.spec reads the first "kredi")', () => {
+    for (const on of [true, false])
+      for (const open of [true, false]) {
+        sales(open);
+        platformAi(on);
+        const giris = /<p class="sayfa-ust__giris">([^<]*)<\/p>/.exec(html())?.[1] ?? '';
+        expect(giris, `platform ${on}, sales ${open}`).toMatch(/kredi/i);
+      }
+  });
+
   it('only the free plan row changes; BYOK and credit rows stay as in plan 4.2', () => {
     for (const platformYz of [true, false])
       for (const satisAcik of [true, false]) {

@@ -106,8 +106,8 @@
     "fiyatlar": "Kullanım seçeneklerine bakın"
   },
   "teklif": {
-    "giris": "Tüm özellikler ücretsizdir. Platformun günlük YZ hakkını kullanabilir veya kendi sağlayıcı anahtarınızla (BYOK) çalışabilirsiniz. BYOK kullanım bedelini kendi sağlayıcınıza ödersiniz.",
-    "girisByok": "Tüm özellikler ücretsizdir. Kaynaklı özet gibi YZ işlemlerini şu anda kendi sağlayıcı anahtarınızla (BYOK) kullanabilirsiniz; kullanım bedelini kendi sağlayıcınıza ödersiniz.",
+    "giris": "Tüm özellikler ücretsizdir. Platformun günlük YZ hakkını kullanabilir veya kendi sağlayıcı anahtarınızla (BYOK) çalışabilirsiniz; BYOK kullanım bedelini kendi sağlayıcınıza ödersiniz. Kredi satışı henüz açılmadı.",
+    "girisByok": "Tüm özellikler ücretsizdir. Kaynaklı özet gibi YZ işlemlerini şu anda kendi sağlayıcı anahtarınızla (BYOK) kullanabilirsiniz; kullanım bedelini kendi sağlayıcınıza ödersiniz. Platform kredisi gerekmez.",
     "ucretsizKrediByok": "Günlük ücretsiz özet hakkı şu anda sunulmuyor; kaynaklı özeti kendi anahtarınızla (BYOK) çıkarabilirsiniz.",
     "ucretsizOzellikByok": "Tüm özellikler; YZ işlemleri şimdilik kendi anahtarınızla (BYOK)"
   }

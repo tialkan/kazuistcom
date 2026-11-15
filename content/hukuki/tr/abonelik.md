@@ -4,15 +4,16 @@ slug: abonelik
 route: /hukuki/abonelik
 lang: tr
 binding: true
-version: 2026-11-12.1
-date: 2026-11-12
+version: 2026-11-15.1
+date: 2026-11-15
 status: taslak
 consent_kind: abonelik_sozlesmesi
 pdf: true
 pdf_fields: [ALICI_AD, ALICI_EPOSTA, AYLIK_INDIRIM_TL, AYLIK_KREDI, AYLIK_LISTE_FIYATI_TL, DONEM_BASLANGIC, DONEM_BITIS, ODEME_DONEMI, PLAN_ADI, SOZLESME_TARIHI, TUTAR_TL, YILLIK_TUTAR_TL]
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. ADR-0029 uyarınca yeni abonelik satışı kapalıdır;
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 15 Kasım 2026. İlk yayında kredi satışı da kapalıdır (ADR-0038,
+> apps/web/src/server/billing/acik.ts `odemeAcik`); gövde bu sürümde değişmedi. ADR-0029 uyarınca yeni abonelik satışı kapalıdır;
 > bu metin yalnız daha önce başlatılmış abonelikler için tutulur. Ön bilgide `consent_kind` sözleşme v1.1 değerine
 > (abonelik_sozlesmesi) çekildi; ön bilgilendirme formunun madde numarası değiştiği için madde 7 atfı güncellendi.
 
