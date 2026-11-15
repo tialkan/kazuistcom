@@ -1,4 +1,22 @@
-# Türkiye VPS sağlayıcı seçimi
+# Sunucu seçimi
+
+## Güncel karar (15 Kasım 2026): tek Hetzner x86 sunucusu
+
+ADR-0030 sağlayıcıyı Hetzner Cloud (AB konumu), ADR-0033 düzeni tek sunucu yaptı. Hedef 8 vCPU ve 16 GB RAM, x86;
+sunucu henüz alınmadı, seçim ve ödeme Tarık'ındır. Hetzner'ın resmî sayfalarından 15 Kasım 2026'da okunan değerler
+(KDV hariç; sipariş günü yeniden okunur):
+
+| Plan | Sayfa | vCPU | RAM | NVMe | Trafik (AB) | Aylık üst sınır | Konum | Not |
+|---|---|---|---|---|---|---|---|---|
+| CX43 | https://www.hetzner.com/cloud/cost-optimized | 8 (Intel ya da AMD, paylaşımlı) | 16 GB | 160 GB | 20 TB | 16,49 EUR'dan başlayan | NBG1, HEL1 (sayfanın başka bölümü FSN de sayıyor) | Okunduğu anda "currently unavailable" |
+| CPX42 | https://www.hetzner.com/cloud/regular-performance | 8 (AMD, paylaşımlı) | 16 GB | 320 GB | 20 TB | NBG1 69,99 EUR, HEL1 59,49 EUR | NBG1, HEL1 | Stokta görünüyordu |
+
+Bellek bütçesi (`infra/docker-compose.prod.yml`): postgres 6 GB, worker-py 3 GB, web 1 GB, worker-node 512 MB,
+valkey 256 MB, bakım 64 MB; kalan yaklaşık 4 GB işletim sistemi, Coolify ve Traefik içindir. Disk: CX43'ün 160 GB'ı
+başlangıç için yeterli, corpus ve vektör dizini büyüdükçe CPX42'nin 320 GB'ı rahatlık sağlar. Konum ADR-0030 madde 2'ye
+göre Almanya (NBG1 ya da FSN1), yedek seçenek Helsinki. Aşağıdaki Türkiye araştırması tarihsel kayıttır.
+
+## Türkiye VPS sağlayıcı araştırması (tarihsel, ADR-0030 ile kapandı)
 
 Ölçütler (plan 5.5): Türkiye'de kurulu şirket ve Türkiye'de veri merkezi; KVM; özel ağ; anlık görüntü; DDoS koruması; IPv4; Türkçe sözleşme ve veri işleme eki; ISO 27001; Coolify'ın desteklediği Ubuntu LTS. Hedef boyutlar: VPS-1 8 vCPU / 32 GB / 300 GB NVMe; VPS-2 8 vCPU / 64 GB / 1 TB NVMe.
 

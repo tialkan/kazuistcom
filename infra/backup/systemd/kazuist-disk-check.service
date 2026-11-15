@@ -1,0 +1,6 @@
+[Unit]
+Description=Kazuist disk, inode and backup age heartbeat
+
+[Service]
+Type=oneshot
+ExecStart=/opt/kazuist/infra/backup/disk-check.sh

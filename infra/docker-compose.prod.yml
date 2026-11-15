@@ -1,0 +1,365 @@
+# Kazuist production stack on one server (ADR-0033): Coolify "Docker Compose" resource, Git source, this file.
+# Every application image is built and tested in GitHub Actions and pulled from GHCR (.github/workflows/ci.yml,
+# job "publish"); nothing is built on the server. Runbook: docs/runbook/ilk-kurulum.md and coolify.md.
+#
+# Images: ${KAZUIST_IMAGE_PREFIX}-<name>:${KAZUIST_IMAGE_TAG}. Production pins KAZUIST_IMAGE_TAG to a full commit
+# sha that is green on main; "main" follows the latest green main. CI runs this file with locally built images
+# (KAZUIST_IMAGE_PREFIX=kazuist, KAZUIST_IMAGE_TAG=ci, KAZUIST_PULL_POLICY=never).
+#
+# Variables written as ${NAME:?} are required: Coolify refuses to deploy while they are empty. ${NAME:-} are
+# optional; empty keeps the feature off (for example empty IYZICO_* is the payments-off launch mode). Values live
+# only in Coolify (Environment Variables, "Is Secret"); never here.
+#
+# Memory budget for a 16 GB host (hard limits, swap included): postgres 6g, worker-py 3g, web 1g, worker-node 512m,
+# migrate 512m (one shot), valkey 256m, maintenance 64m. About 4 GB stay for the OS page cache, Docker, Coolify and
+# its Traefik proxy. No port is published: Traefik reaches web over the stack network, PostgreSQL and Valkey are
+# reachable only from this network.
+#
+# Host folders (create before the first deploy, docs/runbook/ilk-kurulum.md):
+#   /srv/kazuist/raw-store      worker-py raw archive, owner 10001:10001, backed up off server (infra/backup)
+#   /srv/kazuist/models/ner     anonymiser NER models, root owned, read only in the container
+#   /srv/kazuist/models/embed   embedding model (ADR-0037), root owned, read only in the container
+# PostgreSQL data stays in the named volume "pgdata"; the backup job dumps it with pg_dump.
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg18-trixie
+    restart: unless-stopped
+    labels:
+      kazuist.service: postgres
+    environment:
+      POSTGRES_DB: kazuist
+      POSTGRES_USER: kazuist
+      # Hex only (openssl rand -hex 32): it is embedded in DATABASE_URL below without escaping.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+    # Sized for the 6 GB limit: shared buffers a quarter of it, the rest is per connection and maintenance memory.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=1536MB
+      - -c
+      - effective_cache_size=4GB
+      - -c
+      - maintenance_work_mem=512MB
+      - -c
+      - work_mem=16MB
+      - -c
+      - max_connections=100
+      - -c
+      - max_wal_size=2GB
+      - -c
+      - random_page_cost=1.1
+      - -c
+      - log_min_duration_statement=1000
+    volumes:
+      - pgdata:/var/lib/postgresql
+    shm_size: 1g
+    mem_limit: 6g
+    memswap_limit: 6g
+    stop_grace_period: 60s
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U kazuist -d kazuist']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+
+  valkey:
+    image: valkey/valkey:9.0.6-alpine
+    restart: unless-stopped
+    labels:
+      kazuist.service: valkey
+    environment:
+      VALKEY_PASSWORD: ${VALKEY_PASSWORD:?}
+    # Rate limit counters only (apps/web/src/server/auth/context.ts); no persistence, so no fork for snapshots
+    # inside the 256 MB limit. A restart resets the counters, nothing else is lost. The first argument stays
+    # valkey-server so that the image entrypoint drops root and runs as the valkey user.
+    command:
+      - valkey-server
+      - --requirepass
+      - ${VALKEY_PASSWORD:?}
+      - --save
+      - ''
+      - --appendonly
+      - 'no'
+      - --maxmemory
+      - 192mb
+      - --maxmemory-policy
+      - allkeys-lru
+    mem_limit: 256m
+    memswap_limit: 256m
+    healthcheck:
+      test: ['CMD-SHELL', 'valkey-cli -a "$$VALKEY_PASSWORD" --no-auth-warning ping | grep -q PONG']
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+
+  # One shot migration (plan 14.4/3). The applications start only after it exits 0; on failure the deployment
+  # stops before the running web and workers are replaced.
+  migrate:
+    image: ${KAZUIST_IMAGE_PREFIX:-ghcr.io/tialkan/kazuist}-migrate:${KAZUIST_IMAGE_TAG:-main}
+    pull_policy: ${KAZUIST_PULL_POLICY:-always}
+    restart: 'no'
+    exclude_from_hc: true
+    labels:
+      kazuist.service: migrate
+    environment:
+      DATABASE_URL: postgres://kazuist:${POSTGRES_PASSWORD:?}@postgres:5432/kazuist
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 512m
+    memswap_limit: 512m
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+
+  web:
+    image: ${KAZUIST_IMAGE_PREFIX:-ghcr.io/tialkan/kazuist}-web:${KAZUIST_IMAGE_TAG:-main}
+    pull_policy: ${KAZUIST_PULL_POLICY:-always}
+    restart: unless-stopped
+    labels:
+      kazuist.service: web
+    # Coolify: Domains > web > https://<host>:3000 (the proxy routes to container port 3000).
+    expose:
+      - '3000'
+    environment:
+      NODE_ENV: production
+      # "staging" during the closed rehearsal (ADR-0033 madde 1), "production" from launch day. One required
+      # variable feeds web, worker-node and worker-py, so no service falls back to an image default (worker-py's
+      # image defaults to production).
+      KAZUIST_ENV: ${KAZUIST_ENV:?}
+      # Optional, empty by default; read by apps/web/src/app/(kabuk)/_kabuk/yayin.ts (on-yuz, PR 103).
+      KAZUIST_MODULLER: ${KAZUIST_MODULLER:-}
+      APP_URL: ${APP_URL:?}
+      BETTER_AUTH_URL: ${APP_URL:?}
+      DATABASE_URL: postgres://kazuist:${POSTGRES_PASSWORD:?}@postgres:5432/kazuist
+      VALKEY_URL: redis://:${VALKEY_PASSWORD:?}@valkey:6379
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?}
+      BYOK_SIGNING_SECRET: ${BYOK_SIGNING_SECRET:?}
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?}
+      # Coolify's Traefik is the only proxy (Cloudflare DNS only, ADR-0004).
+      TRUSTED_PROXY_COUNT: '1'
+      AUTH_TRUSTED_ORIGINS: ${AUTH_TRUSTED_ORIGINS:-}
+      ACCOUNT_PURGE_GRACE_DAYS: ${ACCOUNT_PURGE_GRACE_DAYS:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      APPLE_CLIENT_ID: ${APPLE_CLIENT_ID:-}
+      APPLE_CLIENT_SECRET: ${APPLE_CLIENT_SECRET:-}
+      APPLE_APP_BUNDLE_IDENTIFIER: ${APPLE_APP_BUNDLE_IDENTIFIER:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AI_DAILY_BUDGET_TRY: ${AI_DAILY_BUDGET_TRY:-}
+      KAZUIST_ARAMA_AGIRLIK: ${KAZUIST_ARAMA_AGIRLIK:-}
+      KAZUIST_EMBED_URL: ${KAZUIST_EMBED_URL:-}
+      KAZUIST_EMBED_MODEL: ${KAZUIST_EMBED_MODEL:-}
+      KAZUIST_EMBED_DIM: ${KAZUIST_EMBED_DIM:-}
+      KAZUIST_EMBED_ESIK: ${KAZUIST_EMBED_ESIK:-}
+      YAZMA_YZ: ${YAZMA_YZ:-}
+      PRATIK_ONIZLEME: ${PRATIK_ONIZLEME:-}
+      IYZICO_API_KEY: ${IYZICO_API_KEY:-}
+      IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY:-}
+      IYZICO_MERCHANT_ID: ${IYZICO_MERCHANT_ID:-}
+      IYZICO_BASE_URL: ${IYZICO_BASE_URL:-}
+      MAIL_SMTP_URL: ${MAIL_SMTP_URL:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      WORKER_PY_URL: http://worker-py:8001
+      KAZUIST_INTERNAL_TOKEN: ${KAZUIST_INTERNAL_TOKEN:?}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+    mem_limit: 1g
+    memswap_limit: 1g
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+
+  worker-node:
+    image: ${KAZUIST_IMAGE_PREFIX:-ghcr.io/tialkan/kazuist}-worker-node:${KAZUIST_IMAGE_TAG:-main}
+    pull_policy: ${KAZUIST_PULL_POLICY:-always}
+    restart: unless-stopped
+    labels:
+      kazuist.service: worker-node
+    environment:
+      NODE_ENV: production
+      KAZUIST_ENV: ${KAZUIST_ENV:?}
+      APP_URL: ${APP_URL:?}
+      BETTER_AUTH_URL: ${APP_URL:?}
+      DATABASE_URL: postgres://kazuist:${POSTGRES_PASSWORD:?}@postgres:5432/kazuist
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?}
+      IYZICO_API_KEY: ${IYZICO_API_KEY:-}
+      IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY:-}
+      IYZICO_MERCHANT_ID: ${IYZICO_MERCHANT_ID:-}
+      IYZICO_BASE_URL: ${IYZICO_BASE_URL:-}
+      MAIL_SMTP_URL: ${MAIL_SMTP_URL:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_SUBJECT: ${VAPID_SUBJECT:-}
+      APNS_KEY_ID: ${APNS_KEY_ID:-}
+      APNS_TEAM_ID: ${APNS_TEAM_ID:-}
+      APNS_PRIVATE_KEY: ${APNS_PRIVATE_KEY:-}
+      APNS_BUNDLE_ID: ${APNS_BUNDLE_ID:-}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    mem_limit: 512m
+    memswap_limit: 512m
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    stop_grace_period: 30s
+    # The worker has no HTTP port; the check proves the database it consumes jobs from is reachable with its own
+    # credentials. A crashed worker exits and restart: unless-stopped brings it back.
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "const c=new (require('pg').Client)({connectionString:process.env.DATABASE_URL});c.connect().then(()=>c.query('select 1')).then(()=>process.exit(0),()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+
+  worker-py:
+    image: ${KAZUIST_IMAGE_PREFIX:-ghcr.io/tialkan/kazuist}-worker-py:${KAZUIST_IMAGE_TAG:-main}
+    pull_policy: ${KAZUIST_PULL_POLICY:-always}
+    restart: unless-stopped
+    labels:
+      kazuist.service: worker-py
+    expose:
+      - '8001'
+    environment:
+      KAZUIST_ENV: ${KAZUIST_ENV:?}
+      DATABASE_URL: postgres://kazuist:${POSTGRES_PASSWORD:?}@postgres:5432/kazuist
+      KAZUIST_RAW_DIR: /data/raw-store
+      KAZUIST_NER_DIR: /models/ner
+      KAZUIST_EMBED_DIR: /models/embed
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+      # Internal API for web (apps/web/src/app/yazma/_sunucu/denetim.ts); only on the stack network.
+      KAZUIST_INTERNAL_TOKEN: ${KAZUIST_INTERNAL_TOKEN:?}
+      KAZUIST_INTERNAL_HOST: 0.0.0.0
+      KAZUIST_INTERNAL_PORT: '8001'
+      KAZUIST_POLL_SECONDS: ${KAZUIST_POLL_SECONDS:-}
+      KAZUIST_NER_BACKEND: ${KAZUIST_NER_BACKEND:-}
+      KAZUIST_NER_THREADS: ${KAZUIST_NER_THREADS:-}
+      KAZUIST_NER_QUANTIZED: ${KAZUIST_NER_QUANTIZED:-}
+      KAZUIST_EMBED_BACKEND: ${KAZUIST_EMBED_BACKEND:-}
+      KAZUIST_EMBED_THREADS: ${KAZUIST_EMBED_THREADS:-}
+      KAZUIST_EMBED_QUANTIZED: ${KAZUIST_EMBED_QUANTIZED:-}
+      KAZUIST_SOURCE_MEVZUAT: ${KAZUIST_SOURCE_MEVZUAT:-}
+      KAZUIST_SOURCE_RESMI_GAZETE: ${KAZUIST_SOURCE_RESMI_GAZETE:-}
+      KAZUIST_SOURCE_KVKK: ${KAZUIST_SOURCE_KVKK:-}
+      KAZUIST_SOURCE_REKABET: ${KAZUIST_SOURCE_REKABET:-}
+      KAZUIST_SOURCE_OPENALEX: ${KAZUIST_SOURCE_OPENALEX:-}
+      KAZUIST_SOURCE_CROSSREF: ${KAZUIST_SOURCE_CROSSREF:-}
+      KAZUIST_SOURCE_EURLEX: ${KAZUIST_SOURCE_EURLEX:-}
+      OPENALEX_API_KEY: ${OPENALEX_API_KEY:-}
+      KAZUIST_CITATIONS_SCOPE: ${KAZUIST_CITATIONS_SCOPE:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    volumes:
+      - type: bind
+        source: /srv/kazuist/raw-store
+        target: /data/raw-store
+      - type: bind
+        source: /srv/kazuist/models/ner
+        target: /models/ner
+        read_only: true
+      - type: bind
+        source: /srv/kazuist/models/embed
+        target: /models/embed
+        read_only: true
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    mem_limit: 3g
+    memswap_limit: 3g
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3).status == 200 else 1)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+
+  # Static maintenance page (FR-105). Traefik reaches it by container name from the dynamic configuration
+  # infra/maintenance/traefik-dynamic.yml; it never gets a domain of its own.
+  maintenance:
+    image: ${KAZUIST_IMAGE_PREFIX:-ghcr.io/tialkan/kazuist}-maintenance:${KAZUIST_IMAGE_TAG:-main}
+    pull_policy: ${KAZUIST_PULL_POLICY:-always}
+    container_name: kazuist-maintenance
+    restart: unless-stopped
+    labels:
+      kazuist.service: maintenance
+    expose:
+      - '8080'
+    mem_limit: 64m
+    memswap_limit: 64m
+    cap_drop: [ALL]
+    security_opt: ['no-new-privileges:true']
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '-O', '/dev/null', 'http://127.0.0.1:8080/healthz']
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '5'
+
+volumes:
+  pgdata:

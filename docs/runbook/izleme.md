@@ -1,49 +1,64 @@
 # İzleme
 
-Kaynak: plan.md 14.7, siteyarat.md 19, webtasarim.md 150-154a. Tüm araçlar kendi sunucumuzda (aktarım yok, plan 5.5). Bildirimler yalnız durum değişince gönderilir.
+Kaynak: plan.md 14.7, siteyarat.md 19, webtasarim.md 150-154a, ADR-0033 ("dış erişilebilirlik denetimi aynı sunucuda
+çalışmaz"). Bildirimler yalnız durum değişince gönderilir.
 
-## Araçlar
+## Neyin nerede çalıştığı
 
-| Araç | Görev | Kurulum |
+| Araç | Yer | Neden |
 |---|---|---|
-| GlitchTip | Hata izleme (Sentry uyumlu SDK) | Coolify > Service > GlitchTip şablonu, VPS-1, alan `glitchtip.kazuist.com` (yalnız yönetici IP'leri) |
-| Uptime Kuma | Dışarıdan uç kontrolü, TLS süresi, push monitörleri | Coolify şablonu, alan `durum.kazuist.com` (panel yönetici IP'leri) |
-| Umami | Çerezsiz analitik; yalnız anlamlı olaylar | Coolify şablonu; KVKK kapısı WebKVKKrobot ile |
+| Dış uç izleme (HTTP, anahtar kelime, TLS süresi) | Sunucunun dışında: barındırılan bir izleme servisi ya da başka bir makinedeki Uptime Kuma | İzlenen sunucu kendi kesintisini bildiremez |
+| Kalp atışı (heartbeat) monitörleri: yedek, disk | Aynı dış servis | Ping gelmezse de uyarır; sunucu tamamen giderse fark edilir |
+| Coolify dağıtım bildirimleri | Coolify (sunucuda), e-posta | Başarısız dağıtım |
+| Konteyner sağlığı | Docker healthcheck (`infra/docker-compose.prod.yml`) | Sağlıksız web Traefik'ten düşer, bakım sayfası döner |
+| GlitchTip, Uptime Kuma, Umami | Bu sunucuda çalışmaz | Bellek bütçesi uygulamaya ayrıldı (`coolify.md`); hata izleme SDK'sı ve Umami betiği kodda henüz yok |
 
-İmaj sürümleri kurulum günü şablondan okunur ve buraya yazılır. Hata olaylarında kişisel veri ve istem içeriği gönderilmez (SDK `beforeSend` ile süzülür; ilgili ajanların işi).
+Dış servisi Tarık seçer. Gerekenler: 60 saniyelik HTTP denetimi ve anahtar kelime, TLS bitiş uyarısı, başarı ve hata
+adresi ayrı olan kalp atışı monitörü (süre ve tolerans ayarlı), e-posta bildirimi, AB'de barındırma tercih edilir.
+Servise yalnız adres ve durum gider; kişisel veri, istek gövdesi ve token gitmez. Seçilen servisin adı, konumu ve
+sözleşmesi aktarım envanterine yazılır (hukuk-uyum; teknik veri olsa da kayıt tutulur).
 
 ## Monitörler
 
 | Kontrol | Yöntem | Eşik |
 |---|---|---|
-| `/api/health` | Uptime Kuma HTTP, 60 sn | 2 ardışık başarısızlık |
-| `/api/version` | HTTP anahtar kelime, dağıtım sonrası | beklenen commit |
-| HTTP kodları ve süre | Uptime Kuma, Traefik erişim logu | 5xx oranı %1, p95 2 sn |
-| TLS süresi | Uptime Kuma sertifika uyarısı | 14 gün |
+| `https://kazuist.com/api/health` | HTTP 60 sn, anahtar kelime `"ok"` | 2 ardışık başarısızlık |
+| `https://kazuist.com/api/version` | HTTP anahtar kelime, terfi sonrası elle | beklenen commit |
+| `https://kazuist.com/` | HTTP 60 sn, 200 | 2 ardışık başarısızlık |
+| TLS süresi | Dış servisin sertifika uyarısı | 14 gün |
 | Alan adı süresi | Takvim | 24.02.2027'den 60 gün önce |
-| Disk ve inode | Push monitör: cron betiği `df` | %80 |
-| RAM ve swap | Push monitör | RAM %90, swap kullanımı 15 dk |
-| Restart sayısı | `docker inspect -f '{{.RestartCount}}'` push | 1 saatte 3 |
-| Yedek yaşı | pgBackRest `info --output=json` push | tam veya fark 26 saat, WAL 15 dk |
-| Dağıtım hataları | Coolify bildirimleri (Settings > Notifications, e-posta) | her başarısızlık |
-| Kaynak bağlayıcı sağlığı | worker-py metrikleri (veri-toplama) | bağlayıcı başına |
+| Yedek | Kalp atışı: `KAZUIST_BACKUP_PING_OK_URL` her başarılı çalışmada, `..._FAIL_URL` hatada (`infra/backup/backup.sh`) | süre 6 saat, tolerans 2 saat |
+| Disk, inode, yedek yaşı | Kalp atışı: `infra/backup/disk-check.sh` 5 dakikada bir; disk ya da inode %80, son başarılı yedek 8 saatten eski ise hata adresi | süre 5 dk, tolerans 10 dk |
+| Dağıtım hataları | Coolify > Settings > Notifications > Email | her başarısızlık |
+| Kaynak bağlayıcı sağlığı | worker-py logları (veri-toplama) | bağlayıcı başına |
 | YZ harcaması | ai-gateway sayaçları | günlük tavanın %80'i |
 
-## Disk %80 push betiği (VPS-1 ve VPS-2)
+Kapalı provada 443 yalnız yönetici IP'lerine açık olduğu için dış HTTP monitörleri yayın günü açılır; kalp atışları
+ilk günden çalışır (giden istek).
 
-`/etc/cron.d/kazuist-disk` her 5 dakikada `df --output=pcent,ipcent /` okur; ikisi de 80'in altındaysa Uptime Kuma push URL'sine `status=up`, değilse `status=down&msg=disk` gönderir. Push URL Uptime Kuma'dan alınır ve sunucuda `/etc/kazuist/push.env` dosyasında (600) durur; depoya girmez.
+RAM ve yeniden başlama sayısı: `docker stats --no-stream`, `docker inspect -f '{{.RestartCount}}' <konteyner>`
+haftalık elle; bellek sınırına çarpan konteyner `docker inspect -f '{{.State.OOMKilled}}'` ile görülür.
 
-## Yedek yaşı push betiği (VPS-2)
+## Kurulum
 
-`pgbackrest --stanza=kazuist info --output=json` içinden son yedeğin `timestamp.stop` değeri ve `archive.max` okunur; sınır aşılırsa push `down`. Betik ve cron dosyası kurulum PR'ında `infra/scripts/` altına eklenir.
+1. Dış serviste beş monitör: `/api/health`, `/`, TLS, yedek kalp atışı, disk kalp atışı.
+2. Kalp atışı adreslerini `/etc/kazuist/backup.env` dosyasına yazın (`KAZUIST_BACKUP_PING_OK_URL`,
+   `KAZUIST_BACKUP_PING_FAIL_URL`, `KAZUIST_DISK_PING_OK_URL`, `KAZUIST_DISK_PING_FAIL_URL`); adresler gizli tutulur,
+   depoya girmez.
+3. Deneme: `systemctl start kazuist-disk-check.service && journalctl -u kazuist-disk-check -n 3`; servis panelinde
+   ping görünmeli. Hata yolunu denemek için bir kez `KAZUIST_DISK_LIMIT_PCT=1 /opt/kazuist/infra/backup/disk-check.sh`
+   (uyarı gelmeli, sonra normal çalıştırma ile düzelir).
 
 ## Bakım takvimi
 
-- Haftalık: başarısız dağıtım ve restart kontrolü.
-- Aylık: güvenlik güncellemeleri, disk ve yedek kontrolü, bağımlılık taraması.
-- Üç aylık: geri yükleme testi (`yedek.md`), API token ve erişim denetimi.
+- Haftalık: başarısız dağıtım, yeniden başlama ve OOM kontrolü.
+- Aylık: güvenlik güncellemeleri (`unattended-upgrades` logu), disk ve yedek kontrolü, `git -C /opt/kazuist pull`,
+  bağımlılık taraması.
+- Üç aylık: geri yükleme testi (`yedek.md`), API token ve erişim denetimi (GHCR okuma token'ının süresi).
 - Yıllık: alan adı, sunucu, depolama ve sertifika yenileme.
 
 ## Disk dolunca
 
-İlk bakılacak: `df -h /`, `docker system df`. Güvenli temizlik: `docker builder prune -af`, `docker image prune -f`. Volume'lara dokunulmaz.
+İlk bakılacak: `df -h /`, `docker system df`, `du -sh /srv/kazuist/* /var/lib/docker/volumes/*`. Güvenli temizlik:
+`docker image prune -f`. Volume'lara dokunulmaz. Kalıcı çözüm disk büyütme ya da Hetzner Volume'dur; veri kaybı
+riski olduğu için Tarık onayıyla ve öncesinde yedekle.

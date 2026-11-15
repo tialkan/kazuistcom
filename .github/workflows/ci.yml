@@ -10,7 +10,9 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # A newer push cancels an older PR run; on main every run finishes, so the published "main" tag never stops
+  # halfway between images.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   node:
@@ -97,9 +99,11 @@ jobs:
 
   docker:
     # Real PostgreSQL 18 + pgvector, Valkey, S3 and Mailpit from infra/docker-compose.dev.yml on the runner;
-    # migrations through the one-shot migrate image, DB smoke test, and the three app images (no push).
+    # migrations through the one-shot migrate image, DB smoke test, the app images (linux/amd64, built here and
+    # never pushed; the "publish" job pushes the same builds from the layer cache after every job is green), the
+    # production compose file with these images, and the off-server backup with a restore test.
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       COMPOSE_FILE: infra/docker-compose.dev.yml
     steps:
@@ -127,9 +131,25 @@ jobs:
           done
           docker compose --env-file .env logs s3 | tail -50
           exit 1
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
+      - name: Image metadata (commit, commit time, version)
+        id: meta
+        run: |
+          echo "commit=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          # Commit time, not wall clock: the same commit builds byte-identical layers, so "publish" hits the cache.
+          echo "built_at=$(git log -1 --format=%cI "$GITHUB_SHA")" >> "$GITHUB_OUTPUT"
+          echo "version=$(node -p "require('./apps/web/package.json').version")" >> "$GITHUB_OUTPUT"
       - name: Build migrate image
-        run: docker build -f infra/docker/worker-node/Dockerfile --target migrate -t kazuist-migrate:ci .
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: infra/docker/worker-node/Dockerfile
+          target: migrate
+          platforms: linux/amd64
+          load: true
+          tags: kazuist-migrate:ci
+          cache-from: type=gha,scope=migrate
+          cache-to: type=gha,mode=max,scope=migrate
       - name: Migrate (one-shot image, real PostgreSQL)
         run: |
           set -a; . ./.env; set +a
@@ -148,17 +168,61 @@ jobs:
           docker compose --env-file .env exec -T postgres
           psql -U kazuist -d kazuist -v ON_ERROR_STOP=1 -f - < infra/scripts/db-smoke.sql
       - name: Build web image
-        run: >
-          docker build -f infra/docker/web/Dockerfile -t kazuist-web:ci
-          --build-arg GIT_COMMIT=${{ github.sha }}
-          --build-arg BUILT_AT=$(date -u +%Y-%m-%dT%H:%M:%SZ) .
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: infra/docker/web/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: kazuist-web:ci
+          build-args: |
+            GIT_COMMIT=${{ steps.meta.outputs.commit }}
+            BUILT_AT=${{ steps.meta.outputs.built_at }}
+            APP_VERSION=${{ steps.meta.outputs.version }}
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,mode=max,scope=web
       - name: Build worker-node image
-        run: docker build -f infra/docker/worker-node/Dockerfile -t kazuist-worker-node:ci .
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: infra/docker/worker-node/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: kazuist-worker-node:ci
+          build-args: GIT_COMMIT=${{ steps.meta.outputs.commit }}
+          cache-from: type=gha,scope=worker-node
+          cache-to: type=gha,mode=max,scope=worker-node
       - name: Build worker-py image
-        run: docker build -f infra/docker/worker-py/Dockerfile -t kazuist-worker-py:ci .
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: infra/docker/worker-py/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: kazuist-worker-py:ci
+          build-args: GIT_COMMIT=${{ steps.meta.outputs.commit }}
+          cache-from: type=gha,scope=worker-py
+          cache-to: type=gha,mode=max,scope=worker-py
+      - name: Build maintenance image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: infra/maintenance/Dockerfile
+          platforms: linux/amd64
+          load: true
+          tags: kazuist-maintenance:ci
+          cache-from: type=gha,scope=maintenance
+          cache-to: type=gha,mode=max,scope=maintenance
+      - name: Build context excludes screenshot evidence and server-side files
+        run: |
+          # .dockerignore must keep apps/web/**/_kanit (about 29 MB of PNG) and infra/backup out of every image.
+          for img in kazuist-web:ci kazuist-worker-node:ci kazuist-worker-py:ci; do
+            if docker run --rm --entrypoint sh "$img" -c 'find / -xdev \( -name _kanit -o -path "*/infra/backup" \) 2>/dev/null | grep -q .'; then
+              echo "$img contains _kanit or infra/backup"; exit 1
+            fi
+          done
       - name: Maintenance page image returns 503 with the page
         run: |
-          docker build -f infra/maintenance/Dockerfile -t kazuist-maintenance:ci .
           docker run -d --name maint -p 127.0.0.1:8080:8080 kazuist-maintenance:ci
           sleep 2
           code=$(curl -s -o page.html -w '%{http_code}' http://127.0.0.1:8080/herhangi)
@@ -202,8 +266,7 @@ jobs:
             echo "BETTER_AUTH_SECRET=$(openssl rand -hex 32)"
             echo "BETTER_AUTH_URL=http://localhost:3000"
             echo "BYOK_SIGNING_SECRET=$(openssl rand -hex 32)"
-            echo "S3_ENDPOINT=http://127.0.0.1:9000"
-            echo "S3_BUCKET=kazuist-ci"
+            # No S3_ENDPOINT or S3_BUCKET: /api/health must be 200 without them while no code uses S3.
             # No reverse proxy in front of the container in CI: the client IP is x-real-ip.
             echo "TRUSTED_PROXY_COUNT=0"
             # Random placeholders against the iyzico sandbox so billing routes are configured; no real key.
@@ -271,12 +334,16 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: pnpm
-      - name: web health-deps test against the real services
+      - name: web health-deps test against the real services (installs web and worker-node)
         run: |
-          pnpm install --frozen-lockfile --filter "@kazuist/web..."
+          pnpm install --frozen-lockfile --filter "@kazuist/web..." --filter "@kazuist/worker-node..."
           set -a; . ./app.env; set +a
           KAZUIST_IT_DATABASE_URL="$DATABASE_URL" KAZUIST_IT_VALKEY_URL="$VALKEY_URL" \
             pnpm --filter @kazuist/web exec vitest run test/health-deps.test.ts
+      - name: worker-node account purge against the real PostgreSQL
+        run: |
+          set -a; . ./app.env; set +a
+          KAZUIST_IT_DATABASE_URL="$DATABASE_URL" pnpm --filter @kazuist/worker-node exec vitest run src/account
       - name: Install Playwright suites (tests/e2e, tests/security)
         run: |
           pnpm --dir tests/e2e install --ignore-workspace --frozen-lockfile
@@ -297,6 +364,121 @@ jobs:
         run: |
           export CHROME_PATH="$(command -v google-chrome || command -v google-chrome-stable)"
           npx --yes "@lhci/cli@${LHCI_VERSION}" autorun --config=infra/lighthouse/lighthouserc.json
+      - name: Production compose (infra/docker-compose.prod.yml) starts healthy with the CI images
+        env:
+          P: docker compose -p kazuist-prod -f prod-compose.yml --env-file prod.env
+        run: |
+          sudo install -d -o 10001 -g 10001 /srv/kazuist/raw-store
+          sudo install -d -o root -g root -m 755 /srv/kazuist/models/ner /srv/kazuist/models/embed
+          {
+            echo "KAZUIST_IMAGE_PREFIX=kazuist"
+            echo "KAZUIST_IMAGE_TAG=ci"
+            echo "KAZUIST_PULL_POLICY=never"
+            echo "KAZUIST_ENV=staging"
+            echo "APP_URL=http://localhost:3000"
+            echo "POSTGRES_PASSWORD=$(openssl rand -hex 24)"
+            echo "VALKEY_PASSWORD=$(openssl rand -hex 24)"
+            echo "BETTER_AUTH_SECRET=$(openssl rand -hex 32)"
+            echo "BYOK_SIGNING_SECRET=$(openssl rand -hex 32)"
+            echo "PII_ENCRYPTION_KEY=$(openssl rand -base64 32)"
+            echo "KAZUIST_INTERNAL_TOKEN=$(openssl rand -hex 32)"
+          } > prod.env
+          # exclude_from_hc is a Coolify key that docker compose does not know.
+          sed '/exclude_from_hc/d' infra/docker-compose.prod.yml > prod-compose.yml
+          $P config --quiet
+          # Required variables are enforced: without POSTGRES_PASSWORD the file must not render.
+          grep -v '^POSTGRES_PASSWORD=' prod.env > prod-missing.env
+          if docker compose -p x -f prod-compose.yml --env-file prod-missing.env config --quiet 2>/dev/null; then
+            echo "missing required variable was accepted"; exit 1
+          fi
+          $P up -d
+          ok=""
+          for i in $(seq 1 60); do
+            states=""
+            healthy=0
+            for svc in postgres valkey web worker-node worker-py maintenance; do
+              c=$($P ps -q "$svc")
+              st=$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$c" 2>/dev/null || echo none)
+              states="$states $svc=$st"
+              if [ "$st" = "healthy" ]; then healthy=$((healthy + 1)); fi
+            done
+            echo "$states"
+            if [ "$healthy" = "6" ]; then ok=1; break; fi
+            sleep 5
+          done
+          $P ps -a
+          test -n "$ok"
+          test "$(docker inspect -f '{{.State.ExitCode}}' "$($P ps -aq migrate)")" = "0"
+      - name: Production compose limits, ports, volumes and version
+        env:
+          P: docker compose -p kazuist-prod -f prod-compose.yml --env-file prod.env
+        run: |
+          check_mem() {
+            got=$(docker inspect -f '{{.HostConfig.Memory}} {{.HostConfig.MemorySwap}}' "$($P ps -q "$1")")
+            echo "$1 memory/swap $got"
+            test "$got" = "$2 $2"
+          }
+          check_mem postgres $((6 * 1024 * 1024 * 1024))
+          check_mem worker-py $((3 * 1024 * 1024 * 1024))
+          check_mem web $((1024 * 1024 * 1024))
+          check_mem worker-node $((512 * 1024 * 1024))
+          check_mem valkey $((256 * 1024 * 1024))
+          # Nothing is published on the host; Traefik reaches web over the stack network.
+          for svc in postgres valkey web worker-node worker-py maintenance; do
+            ports=$(docker inspect -f '{{json .HostConfig.PortBindings}}' "$($P ps -q "$svc")")
+            echo "$svc port bindings $ports"
+            if echo "$ports" | grep -q HostPort; then exit 1; fi
+          done
+          # App containers run as non-root with every capability dropped.
+          for svc in web worker-node worker-py maintenance; do
+            c=$($P ps -q "$svc")
+            uid=$(docker exec "$c" id -u)
+            echo "$svc uid=$uid capdrop=$(docker inspect -f '{{.HostConfig.CapDrop}}' "$c")"
+            test "$uid" != "0"
+          done
+          # Raw store is the host folder and writable by worker-py; model folders are read only.
+          $P exec -T worker-py python -c "import os; os.makedirs('/data/raw-store/ci', exist_ok=True); open('/data/raw-store/ci/kanit.txt', 'w').write('ci raw store')"
+          sudo test -f /srv/kazuist/raw-store/ci/kanit.txt
+          if $P exec -T worker-py python -c "open('/models/ner/x', 'w')" 2>/dev/null; then
+            echo "/models/ner is writable"; exit 1
+          fi
+          # web serves this commit; health is 200 through its own probes without any S3 variable.
+          $P exec -T web node -e "fetch('http://127.0.0.1:3000/api/version').then(r=>r.text()).then(t=>{console.log(t);process.exit(t.includes(process.argv[1])?0:1)})" "$GITHUB_SHA"
+          $P exec -T web node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>{console.log('health', r.status);process.exit(r.status===200?0:1)})"
+          # web reaches the worker-py internal API by service name (any HTTP answer proves the route).
+          $P exec -T web node -e "fetch('http://worker-py:8001/').then(r=>console.log('worker-py internal HTTP', r.status),e=>{console.error(e.cause?.code||e.message);process.exit(1)})"
+      - name: Off-server backup and restore test (infra/backup, local restic repository)
+        env:
+          P: docker compose -p kazuist-prod -f prod-compose.yml --env-file prod.env
+        run: |
+          marker="ci-$(openssl rand -hex 8)"
+          $P exec -T postgres psql -U kazuist -d kazuist -v ON_ERROR_STOP=1 -q \
+            -c "CREATE TABLE ci_restore_marker (v text); INSERT INTO ci_restore_marker VALUES ('$marker')"
+          openssl rand -hex 32 > "$RUNNER_TEMP/restic-password"
+          B=(sudo env RESTIC_REPOSITORY="$RUNNER_TEMP/restic-repo" RESTIC_PASSWORD_FILE="$RUNNER_TEMP/restic-password"
+             KAZUIST_BACKUP_ENV=/nonexistent)
+          "${B[@]}" infra/backup/backup.sh init
+          "${B[@]}" infra/backup/backup.sh 2>&1 | tee backup.log
+          grep -q '"msg":"done"' backup.log
+          # No silent empty backup: a label without a running container must fail.
+          if "${B[@]}" KAZUIST_PG_LABEL=kazuist.service=yok infra/backup/backup.sh 2>/dev/null; then
+            echo "backup without a postgres container succeeded"; exit 1
+          fi
+          "${B[@]}" infra/backup/backup.sh snapshots
+          "${B[@]}" KAZUIST_RESTORE_SMOKE_SQL="$PWD/infra/scripts/db-smoke.sql" \
+            KAZUIST_RESTORE_CHECK_SQL="SELECT EXISTS (SELECT 1 FROM ci_restore_marker WHERE v = '$marker')" \
+            infra/backup/restore-test.sh 2>&1 | tee restore.log
+          grep -q '"msg":"done"' restore.log
+          grep -q '"compared":[1-9]' restore.log
+          # The check query is not vacuous: a value that was never written must fail the restore test.
+          if "${B[@]}" KAZUIST_RESTORE_CHECK_SQL="SELECT EXISTS (SELECT 1 FROM ci_restore_marker WHERE v = 'yok')" \
+            infra/backup/restore-test.sh 2>/dev/null; then
+            echo "restore test passed a false check"; exit 1
+          fi
+          "${B[@]}" KAZUIST_DISK_LIMIT_PCT=100 infra/backup/disk-check.sh
+          # Nothing restored is left behind.
+          test -z "$(sudo find /var/tmp -maxdepth 1 -name 'kazuist-restore.*')"
+          test -z "$(docker ps -aq --filter label=kazuist.service=restore-test)"
       - name: Playwright and Lighthouse reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -313,6 +495,89 @@ jobs:
         run: |
           docker compose --env-file .env logs --tail 100
           for c in web worker-node worker-py; do docker logs $c 2>&1 | tail -40 || true; done
+          if [ -f prod.env ]; then
+            docker compose -p kazuist-prod -f prod-compose.yml --env-file prod.env ps -a || true
+            docker compose -p kazuist-prod -f prod-compose.yml --env-file prod.env logs --tail 60 || true
+          fi
       - name: Tear down
         if: always()
-        run: docker compose --env-file .env down -v
+        run: |
+          docker compose --env-file .env down -v
+          if [ -f prod.env ]; then docker compose -p kazuist-prod -f prod-compose.yml --env-file prod.env down -v; fi
+
+  publish:
+    # Pushes the images to GHCR only for a push to main and only after node, python, gitleaks and docker are green.
+    # Same Dockerfiles, build arguments and layer cache as the docker job, so the pushed image is the tested build.
+    # Tags: the full commit sha (what production pins) and "main". Coolify pulls; the server never builds.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [node, python, gitleaks, docker]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: web
+            file: infra/docker/web/Dockerfile
+            target: ''
+          - name: worker-node
+            file: infra/docker/worker-node/Dockerfile
+            target: ''
+          - name: migrate
+            file: infra/docker/worker-node/Dockerfile
+            target: migrate
+          - name: worker-py
+            file: infra/docker/worker-py/Dockerfile
+            target: ''
+          - name: maintenance
+            file: infra/maintenance/Dockerfile
+            target: ''
+    steps:
+      - uses: actions/checkout@v5
+      - name: Image metadata (registry path, commit, commit time, version)
+        id: meta
+        run: |
+          echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/kazuist-${{ matrix.name }}" >> "$GITHUB_OUTPUT"
+          echo "commit=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          echo "built_at=$(git log -1 --format=%cI "$GITHUB_SHA")" >> "$GITHUB_OUTPUT"
+          echo "version=$(node -p "require('./apps/web/package.json').version")" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push ${{ matrix.name }}
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ${{ matrix.file }}
+          target: ${{ matrix.target }}
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.commit }}
+            ${{ steps.meta.outputs.image }}:main
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ steps.meta.outputs.commit }}
+            org.opencontainers.image.created=${{ steps.meta.outputs.built_at }}
+            org.opencontainers.image.version=${{ steps.meta.outputs.version }}
+            org.opencontainers.image.licenses=Apache-2.0
+          build-args: |
+            GIT_COMMIT=${{ steps.meta.outputs.commit }}
+            BUILT_AT=${{ steps.meta.outputs.built_at }}
+            APP_VERSION=${{ steps.meta.outputs.version }}
+          cache-from: type=gha,scope=${{ matrix.name }}
+      - name: Pushed image runs as non-root and carries the commit
+        run: |
+          ref="${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.commit }}"
+          docker pull -q "$ref"
+          u=$(docker image inspect -f '{{.Config.User}}' "$ref")
+          rev=$(docker image inspect -f '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$ref")
+          echo "$ref user=$u revision=$rev"
+          test -n "$u" && test "$u" != "root" && test "$u" != "0"
+          test "$rev" = "$GITHUB_SHA"

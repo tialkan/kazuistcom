@@ -27,6 +27,12 @@ describe('/api/health', () => {
     expect((await checkHealth(allEnv, { database: down, valkey: up })).status).toBe(503);
     expect((await checkHealth(allEnv, { database: up, valkey: down })).status).toBe(503);
   });
+  it('does not require object storage variables while no code uses S3', async () => {
+    expect(criticalEnv).not.toContain('S3_ENDPOINT');
+    expect(criticalEnv).not.toContain('S3_BUCKET');
+    const withoutS3 = { ...allEnv, S3_ENDPOINT: undefined, S3_BUCKET: undefined };
+    expect((await checkHealth(withoutS3, { database: up, valkey: up })).status).toBe(200);
+  });
   it('route uses registered probes', async () => {
     for (const k of criticalEnv) vi.stubEnv(k, 'set');
     setHealthDeps({ database: up, valkey: up });
