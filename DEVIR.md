@@ -39,6 +39,159 @@ Bağımsız denetimin dört kimlik bulgusu. Sözleşme, şema, migration ve bağ
   yatay taşma 0; kullanıcıya iki ekran 404; ekrandan geçici gizleme `gecici_gizlendi` ve `hidden_at` yazdı. Ekran
   görüntüleri review.md T11 kararı beklendiği için depoya konmadı. Gerçek passkey töreni, gerçek Google ve SMTP
   denenmedi.
+## 15 Kasım 2026, altyapi: main denetimi düzeltmeleri (altyapi/denetim-duzeltmeleri)
+
+Bağımsız main denetiminin beş maddesi (#118, e229c70 üstünde). Yeni log satırları `@kazuist/log` ile (ADR-0039). Sözleşme, şema, migration ve bağımlılık değişmedi.
+- `infra/docker-compose.prod.yml` worker-py: `KAZUIST_SCHEDULER`, `KAZUIST_SCHEDULER_DRY_RUN`,
+  `KAZUIST_SCHEDULE_TICK_SECONDS` (öntanım 600, `float("")` zamanlayıcıyı düşürürdü), `KAZUIST_POLL_SECONDS` (öntanım
+  5; `core/main.py` artık boşu öntanım sayıyor) ve eksik üç kaynak anahtarı `KAZUIST_SOURCE_AYM/YARGITAY/DANISTAY`
+  (toplam 10). `infra/scripts/compose-env-check.py` CI'da işlenmiş compose JSON'una bakar: web, worker-node ve
+  worker-py kodunun okuduğu her `KAZUIST_*` geçiyor mu, kaynak anahtarları `docs/kaynaklar` ile birebir mi
+  (eski dosyada 7 eksik buluyor). Bilerek geçmeyenler gerekçesiyle betikte.
+- Valkey: `allkeys-lru` ve kalıcılıksız yapı nonce ve para sayaçlarını sessizce silebiliyordu. Şimdi `noeviction`
+  (dolunca yazma hata verir, istek kapalı düşer; `volatile-lru` tam da bu TTL'li anahtarları silerdi), AOF
+  `everysec` adlandırılmış `valkeydata` biriminde, RDB kapalı, bellek 256m'den 384m'ye (AOF yeniden yazım fork'u).
+  CI: politika, AOF ve yeniden başlatma sonrası TTL'li anahtarın kalması denetlenir.
+- `/api/health`: `MAIL_SMTP_URL` kritik değişken (yoksa 503, eksik adlar yalnız logda ve bir kez). SMTP
+  ulaşılabilirliği `deps.ts` `cachedPing` ile nodemailer `verify` (başarı 5 dk, hata 1 dk önbellek); ulaşılamazsa
+  200 `{"status":"degraded"}`: 503 Traefik'in web'i trafikten çıkarmasına ve bütün sitenin bakım sayfasına
+  düşmesine yol açardı, Uptime Kuma `"ok"` anahtar kelimesiyle yine uyarır. Compose'ta `MAIL_SMTP_URL` web ve
+  worker-node için `:?`. CI: Mailpit ile 200 ok, değişkensiz 503 (adsız gövde), kapalı portla 200 degraded.
+- `tests/e2e/adresler.ts` (kalite-guvenlik yolu): `ANA_SAYFALAR`'a `/ara`, `/yazma`, `/tespit`, `/rehberler`,
+  `/kaydettiklerim`, `/hesap/yz-anahtari`. `infra/lighthouse/lighthouserc.json`: 7 sayfa, erişilebilirlik 0,95 ve
+  SEO 0,9 hata eşiği (plan 1412), `is-crawlable` atlanır (CI sunucusu bilerek noindex). İlk CI turunda
+  `/hukuki/aydinlatma` SEO 0,88 aldı (meta açıklaması yok, `hukuki/[belge]/page.tsx` `generateMetadata`); sayfa
+  listeden çıkarıldı, eşik gevşetilmedi, istek `docs/istekler/on-yuz-hukuki-meta-aciklama.md`.
+- `apps/worker-node/src/runner.ts` (orkestra yolu): LISTEN istemcisinin `error`/`end` dinleyicisi yoktu, bağlantı
+  koptuğunda işlenmemiş `error` süreci düşürüyordu. `pgListen` kırık istemciyi yok eder, 1 sn'den 30 sn'ye ikiye
+  katlanan beklemeyle yeniden LISTEN eder, sonra her kanalı bir kez bildirir (kopukken kaçan NOTIFY'lar). İlk bağlantı
+  hatası yine fırlatır. `test/listen.test.ts` sahte havuzla ve CI'da gerçek PostgreSQL'de `pg_terminate_backend` ile.
+- Runbook: `ilk-kurulum.md` (10 kaynak, zamanlayıcı, `MAIL_SMTP_URL` zorunlu), `izleme.md` (sağlık yanıtları, Valkey
+  belleği), `coolify.md`, `yedek.md`, `vps-secimi.md`.
+- Kimlik için not: web'in `smtpMailer`'ı `MAIL_FROM`'u okumuyor (sabit gönderen); worker-node okuyor.
+
+## 15 Kasım 2026, yz-gecidi: teklif metni sunucu yapılandırmasına bağlı, tavan uyarısı, USD/TL kuru (yz-gecidi/platform-yz-yapilandirma)
+
+Bağımsız denetim bulgusu: `OPENROUTER_API_KEY` boşken /fiyatlar ve `byok.json` `satisKapali.metin` günlük ücretsiz hak ve
+50 promosyon kredisi vaat ediyor, platform özeti 503 dönüyordu. Sözleşme, şema, migration ve bağımlılık değişmedi.
+- `packages/ai-gateway/src/config.ts` (yeni, `@kazuist/ai-gateway/config`): `platformAiAvailable(env)` bir platform
+  anahtarı ve pozitif `AI_DAILY_BUDGET_TRY` birlikteyse doğru; `usdTryRate(env)` `AI_USD_TRY_RATE`'i okur (boş 50,
+  1-1000 arası noktalı ondalık, geçersizse 50 ve `invalid` işareti). `gateway.ts` `USD_TL` sabiti kalktı,
+  `GatewayDeps.usdTryRate` (sınır dışı değer kurulumda `RangeError`).
+- `gecit.ts`: platform anahtarları yalnız `platformAiAvailable` doğruyken gateway'e verilir (önceden tavan boşsa
+  1.000 TL varsayılanıyla harcanıyordu), anahtar var tavan yoksa adı yazan tek uyarı; `SummaryDeps.platformAcik`;
+  `ozet.ts` platform kipini arama ve sayaçtan önce 503 ve `byok.ozet.platformKapali` ile reddeder.
+- Teklif: `/fiyatlar` (`fiyatlar.ts` `gorunenPlanlar`, `promosyonVar`) platform kapalıyken Ücretsiz satırında ve
+  girişte BYOK'u, ödeme kapalıyken promosyon cümlesini ve 90 gün kuralını göstermez; plan 4.2 tablosu (`planlar`)
+  aynı, test plan.md'yle eşleşir. `/ara` özet alanı (`OzetAlani` `platformYz` prop) anahtarsız ve platform kapalıyken
+  "Kendi anahtarınızı ekleyin" düğmesiyle /hesap/yz-anahtari'ya yönlendirir, platform çağrısı yapmaz; 402 ve 503'te
+  sunucunun mesajı ve BYOK bağlantısı. `/odeme` ve `/hesap/yz-anahtari` (`ByokAyarlari` `platformYz`) da günlük hak
+  vaat etmez. Tarayıcıya yalnız bir boolean gider; ortam değeri gitmez.
+- Tavan uyarısı (plan 8.7/2): `BudgetGuard` kancası `PlatformCapAlert`; `crossed` tavanı geçen harcamada günde bir ve
+  örnekler arasında tek (atomik sayaç), `refused` süreç başına günde bir. `gecit.ts` `platformCapAlert` stderr'e JSON
+  satırı (`event: platform_tavan`, gün, harcama, tavan) `@kazuist/log` `logEvent` ile yazar (ADR-0039, #117 ile
+  birleştirildi; yapılandırma uyarıları da `logEvent('warn', ...)`) ve `buildSummaryDeps({ onPlatformCap })` ikinci
+  alıcı alır. Personel bildirimi sözleşme değişikliği ister: `docs/istekler/yz-gecidi-platform-tavan-uyarisi.md`.
+- Belgeler: `.env.example`, `infra/docker-compose.prod.yml` (`AI_USD_TRY_RATE` geçişi), `docs/runbook/ilk-kurulum.md`,
+  `packages/ai-gateway/SAGLAYICILAR.md`.
+- Sahiplik dışı dokunulan yollar (orkestra görevi gereği): on-yuz `(kabuk)/fiyatlar/**`, casuist `ara/**`, odeme
+  `(odeme)/odeme/page.tsx`, kimlik `(hesap)/**` iki dosya, mimar `.env.example`, altyapi compose ve runbook satırı.
+- Açık: `content/hukuki/tr/kosullar.md` ve `aydinlatma.md` günlük ücretsiz hakkı hizmet tanımı olarak anar
+  (hukuk-uyum); `yazma/_sunucu/yz.ts` `yzAcikMi` yalnız anahtara bakıyor, tavan yoksa gateway 503 verir (yazma);
+  platform kapalı ve ödeme açık durumda kredi satılabilir ama harcanamaz (odeme kararı).
+
+
+## 15 Kasım 2026, hukuk-uyum: hukuki metinler dar çekirdekli ilk yayına göre; Hetzner Standart Sözleşme 2 kontrol listesi
+
+ADR-0038 madde 8 (dar çekirdek), ADR-0030 (Hetzner, Almanya) ve yayındaki BYOK koduna göre. Sözleşme, şema ve kod
+değişmedi; yalnız `content/hukuki/**` ve `docs/kvkk/**` (ve bu iki paylaşılan dosya).
+- 12 metin `2026-11-15.1` (status yine `taslak`): kosullar, cerezler, erisilebilirlik, uyari, aydinlatma, gizlilik,
+  yapay-zeka, acik-riza, iade-ve-kredi, on-bilgilendirme, mesafeli-satis, abonelik. basvuru ve kaldirma değişmedi.
+- Gizli modüller: kosullar 2 hizmet tanımı yalnız Ara ve kaynaklı özet, Kaydettiklerim, Yazma (şablon, kısaltma),
+  Rehberler, /tespit; Kalemcik, Pratik, atıf ağı, "desteler" ve "oyunlar" çıktı; cerezler 2'den pratik anahtarları,
+  erisilebilirlik'ten atıf ağı tablo görünümü, aydinlatma 2'den yazma projeleri (yalnız Kalemcik yazıyor) çıktı.
+- BYOK (byok/settings.ts, client.ts, adapters/index.ts satır 145, byok.json): anahtar `kazuist.byok.v1`, varsayılan
+  sessionStorage, seçimle localStorage, tek depoda; anahtar Kazuist'e gitmez; maskeli paket tarayıcıdan doğrudan
+  OpenRouter'a, `data_collection: deny`, seçimle `zdr`; tarayıcıda `assertMasked`; verify `save: false`. Aktarma modu
+  arayüzde yok (OzetAlani.tsx yalnız platform); doğrudan Gemini yok, Gemini bölümü yapay-zeka'dan çıktı, acik-riza 3
+  ve 4 "şu anda kullanılmaz".
+- Ödeme kapalı (`odemeAcik`): kosullar 1 ve 5, aydinlatma 2-4, gizlilik 3, yapay-zeka 7 ve iade-ve-kredi girişi;
+  üç PDF metninde yalnız TASLAK notu değişti, gövde ve `pdf_fields` aynı.
+- Barındırma "Almanya"; aydinlatma 5 m.9/4-(c), Standart Sözleşme 2, beş iş günü ve "bildirilmeden kişisel veri
+  işlenmez" koşulu; [DOĞRULANACAK] işareti bilerek açık.
+- docs/kvkk: envanter satır 16, 17, 19 güncellendi, satır 30 BYOK eklendi; aktarim.md:46 "BYOK arayüzü henüz yok"
+  düzeltildi (istemci modu yayında, hukukçu değerlendirmesi işareti), aktarma modu, iyzico ve e-Arşiv satırları;
+  yukumlulukler.md ödeme kapalı yayına göre; app-privacy-taslak.md; yeni `hetzner-standart-sozlesme-bildirimi.md`
+  (Kurul'un Standart Sözleşme 2 PDF'i ve bildirim modülü kılavuzu okundu; Yönetmelik m.14 ve Kanun m.9/5, m.18/1-(d)
+  15 Kasım'da birincil kaynaktan).
+- Doğrulama: hukuk-uyum ajanında kabuk yok; `pnpm test`, `pnpm check:text`, `pnpm build` çalıştırılmadı. Elle:
+  U+2014 ve yasak ifade taraması temiz (Grep), iç içe liste yok (md.ts desteklemiyor), PDF metinlerinde
+  `pdf_fields` gövdede duruyor.
+- Açık: sunucu ucu `byok_aktarma`yı yz_aktarim onayıyla hâlâ kabul ediyor (casuist, yz-gecidi kararı); Hetzner'ın
+  imzalayıp imzalamayacağı; yer tutucular (VKN, vergi dairesi, KEP, yedek ve e-posta sağlayıcısı).
+
+
+## 15 Kasım 2026, mimar: sunucu logları tek temizleyiciden geçer, ADR-0039 (arch/shared-safe-error-log)
+
+Orkestra görevi: PR #115'in `apps/web/src/server/auth/log.ts` temizleyicisini ortak yere taşımak, apps/web ve
+apps/worker-node'daki bütün sunucu log çağrılarını ona bağlamak, ham `console.error(err)`'u CI'da yasaklamak ve
+edu_claims testini CI `docker` işinde gerçek PostgreSQL'e karşı çalıştırmak. Dal `origin/main` üstünde, PR #115 dalı
+(`kimlik/anon-onay-ve-log-temizligi`) içine birleştirildi; PR #115 önce ya da bununla birlikte birleşmeli.
+`packages/contracts` ve `packages/db` değişmedi; dış bağımlılık yok.
+- `packages/log` (yeni, `@kazuist/log`, mimarın, ADR ile değişir): `safeErrorFields`, `writeLog`, `logEvent`,
+  `logError`, `logWarn`, `logRequestError`, `serviceLog`. Alanlar tipte ilkel; çalışma anında nesneler düşer, metin 256
+  karakter, dizi 32 öge, e-posta biçimli parça `redacted`. Testler: `test/log.test.ts` (Drizzle biçimli hata, cause
+  zinciri, kanallar, `at`/`level` ezilmez, çalışma anı koruması) ve `test/lint-rule.test.ts` (depo ESLint yapılandırması
+  gerçek sunucu yollarında; kontrol denemesi: worker-node globu kaldırılınca 3 test kırmızı).
+- `eslint.config.mjs`: `apps/web/src`, `apps/worker-node/src` ve `packages/*/src` için `no-console` ve log çağrısında
+  `.message`, `.stack`, `.detail`, `.hint`, `.query`, `.params`, `.cause`, `.toString`, `String()`, `JSON.*()` yasağı.
+  Muaf: `packages/log/src`, testler, `apps/web/src/app/*/_veri/uret.ts`.
+- Bağlanan yerler: kimlik `auth.ts`, `guard.ts` (`internalError` artık `logRequestError('api', ...)`, hız sınırı uyarısı
+  `logEvent`), `page-session.ts`, `log.ts` (yalnız `betterAuthLog` kaldı, `logEvent` ile yazar); casuist `ara/page.tsx`,
+  `kaydettiklerim/page.tsx`, `ara/_sunucu/hiz.ts` (`logError(req, err)` imzası korunur, `logRequestError('casuist')`;
+  atif-agi API'si de bunu kullanır), `ara/_sunucu/gecit.ts` (yapılandırma hatası, defter uyarısı, YZ geçidi metrikleri
+  `sanitizeMetric` ile `logEvent`); yazma `kurallar.ts` ve `uclar.ts` (`logWarn`); on-yuz `(kabuk)/_kabuk/oturumYukle.ts`;
+  altyapi `server/deps.ts` (`pg.pool`, `valkey`); worker-node `main.ts`, `queue.ts`, `runner.ts` (`serviceLog`,
+  `safeErrorFields`; `QueueLog` ve `Log` artık `ServiceLog`), `notify/dispatch.ts` (`logError('notify')`). Ödeme
+  (`server/billing`, `(odeme)`, worker-node `billing`) ve kampus kalıntısı yolunda log çağrısı yoktu.
+- Satır biçimi değişiklikleri: YZ geçidi metrik satırına `at`, `level`; `pg.pool` ve `valkey` satırlarına `level`;
+  worker-node hata satırları SQLSTATE alanlarını taşıyabilir; Error olmayan değer `Unknown`. Diğer satırlar aynı
+  (var olan satır testleri değişmeden geçti).
+- CI: `docker` işine "web edu_claims ... against the real PostgreSQL" adımı (`KAZUIST_IT_DATABASE_URL`, worker-node
+  purge adımından sonra). Yerelde PostgreSQL 18.6 ve pgvector 0.8.7 geçici kümesinde çalıştırıldı: postgres arka ucu 5
+  test (iki bağlantılı yarış dahil), aynı veri tabanında ikinci çalıştırma da yeşil.
+- Belgeler: ADR-0039 (Önerildi), `docs/adr/README.md`, `docs/sahiplik.md` (`packages/log/**` mimarda, ortak dosya
+  notu), `docs/ip/arka-plan-kaydi.md`, `docs/ilerleme.md`.
+- Açık: CLAUDE.md "Güvenlik" bölümüne ADR-0039 satırı önerildi; CLAUDE.md bu dalda değişmedi (Tarık onayı).
+
+## 15 Kasım 2026, kimlik: anonimleştirme onayı anon.run kuyruğa alır, loglanan hatalar temizlenir (kimlik/anon-onay-ve-log-temizligi)
+
+Orkestra görevi: `docs/istekler/anonimlestirme-onay-ve-acik-kaynak.md` madde 3 (PR #114) ve Drizzle hata mesajlarının
+loglara girmemesi. PR #111 dalı (`kimlik/edu-claims-yeniden-goster`) bu dalın tabanına birleştirildi. `packages/contracts`
+ve `packages/db` değişmedi; yeni bağımlılık yok.
+- `apps/web/src/server/auth/admin.ts` `decideAnonymization`: `anonymization` kuyruğunda kalem tek işlemde kapanır
+  (`decision IS NULL` koşullu güncelleme); `onay` ve `subject_type = 'record'` ise aynı işlemde istek dosyasındaki SQL ile
+  `anon.run` eklenir (`payload = {recordId}`, `dedupe_key = anon:<recordId>`, kuyrukta veya çalışan iş eklemeyi yutar).
+  `ret` ve `duzelt` yalnız kararı yazar. İkinci karar `not_found` (404). Denetim satırı `admin.queue.<karar>`,
+  `diff = { queue, closed, recordId, jobQueued, patchPaths }`.
+- `apps/web/src/server/auth/log.ts` (yeni): `safeErrorFields(err)` hatanın yalnız sınıf adını ve `cause` zincirinden SQLSTATE,
+  `constraint`, `table`, `column` tanımlayıcılarını verir; `message`, `detail`, `hint`, `query`, `params` hiç okunmaz.
+  `logError(at, err, extra)` tek JSON satırı yazar. `betterAuthLog` Better Auth'un `logger.log`'u: yalnız warn ve error,
+  serbest metin mesaj ancak kısa ve sabit cümle görünümündeyse (rakam, tırnak, `@`, "query" yok) kalır, yoksa `redacted`.
+- Uygulandığı yerler: `auth.ts` (`logger: { log: betterAuthLog }`, `runHook`), `guard.ts` (`internalError`; `withAuth` ve
+  `withPublic` oturum çözümü, hız sınırı ve yönetici denetimini de `try` içine aldı, böylece çerçeveye ham hata gitmez),
+  `handlers.ts` (`authHandler` hataları `internalError`'a), `page-session.ts`.
+- Bulgu: Better Auth 1.7.11 yönlendiricisi yakalanmayan hatayı nesnesiyle, "column/relation/table" içeren hatanın
+  `message`'ını düz metin loglar; Drizzle mesajı sorgu parametrelerini (e-posta) taşır. Kontrol denemesinde `logger`
+  seçeneği kaldırılınca kayıt testi adresi logda buldu; seçenekle temiz.
+- Test `__tests__/admin-kvkk.test.ts` (anonimleştirme bloğu, 6 test): onaydan sonra `anon:<id>` anahtarlı tek `anon.run`,
+  ikinci onay 404, denetim satırı; kuyrukta bekleyen iş eklemeyi yutar; `done` iş yenisini engellemez; `ret`/`duzelt` iş
+  eklemez; kayıt dışı konu iş eklemez; personel olmayan 403. `__tests__/log-sanitizer.test.ts` (8 test): bütün `console`
+  kanalları yakalanırken PGlite tetikleyicileri e-postayı hem Postgres mesajına hem Drizzle parametresine koyar; Better
+  Auth kaydı, e-posta kodu girişi, edu.tr başlatma (500, `code: P0001`), kamuya açık kaldırma talebi ve `internalError`
+  çıktısında adres yok.
+- Dokunulmayan: kimlik dışındaki modüllerin log satırları (ödeme, casuist, yazma vb.) bu sanitizer'ı kullanmıyor;
+  `apps/worker-node` zaten yalnız hata sınıfını logluyor.
 
 ## 15 Kasım 2026, casuist: açık kaynak kurul adları dizin, embedding ve özet dışında (casuist/uye-adlari-dizin-disi)
 

@@ -32,6 +32,11 @@ export interface OzetAlaniProps {
   girisAdresi: string;
   /** Record ids of the result cards on this page, so a chip can jump to its card. */
   gorunenKayitlar: string[];
+  /**
+   * Server side platformAiAvailable(): the daily free allowance and credit summaries can run. When false the area
+   * offers BYOK as the way to a summary and never calls the platform endpoint. Only this boolean reaches the browser.
+   */
+  platformYz: boolean;
 }
 
 /** BYOK settings page (FR-84); the key itself never leaves this browser except towards OpenRouter. */
@@ -43,14 +48,26 @@ const HATA_KODLARI: Record<number, string> = {
   503: ozet.hata.saglayiciYok,
 };
 
+/** Platform answers after which the user's own key is the way on: allowance spent, or platform AI unavailable. */
+const BYOK_ONERILEN = new Set([402, 503]);
+
 /**
  * Sourced summary (plan 7.4, FR-16..21): streams POST /api/v1/answers and shows only validated sentences, each
  * with its sources in the margin (kenar şerhi) and its verbatim basis behind "Dayanağı göster". With a BYOK key
  * in this browser (plan 8.1, K-08) the same area runs the BYOK istemci protocol instead: the browser calls
  * OpenRouter directly with the user's key and no credit or daily allowance is used. Both modes send the page's
- * search filters (AnswerRequest.filters, PrepareRequest.filters).
+ * search filters (AnswerRequest.filters, PrepareRequest.filters). Without the platform AI (BYOK-only launch) and
+ * without a key in this browser the area points to the key settings instead of offering a summary that can only
+ * fail.
  */
-export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar }: OzetAlaniProps) {
+export function OzetAlani({
+  q,
+  filtreler,
+  girisVar,
+  girisAdresi,
+  gorunenKayitlar,
+  platformYz,
+}: OzetAlaniProps) {
   const [asama, setAsama] = useState<Asama>(girisVar ? 'bekliyor' : 'giris');
   const [cumleler, setCumleler] = useState<Cumle[]>([]);
   const [uyarilar, setUyarilar] = useState<Uyari[]>([]);
@@ -61,7 +78,7 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
   const [acik, setAcik] = useState<Record<number, boolean>>({});
   const [byok, setByok] = useState<ByokSettings | null>(null);
   const [byokCalisti, setByokCalisti] = useState(false);
-  const [hakBitti, setHakBitti] = useState(false);
+  const [byokOner, setByokOner] = useState(false);
   const [kaldirildi, setKaldirildi] = useState(false);
   const iptal = useRef<AbortController | null>(null);
 
@@ -92,7 +109,7 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
     setKredi(null);
     setHata('');
     setAcik({});
-    setHakBitti(false);
+    setByokOner(false);
     setKaldirildi(false);
     return ctl;
   }
@@ -130,6 +147,8 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
     const settings = readByokSettings(browserStorages());
     setByok(settings);
     if (settings) return baslatByok(settings);
+    // The key was removed in another tab and the platform cannot summarise: the guidance below is all there is.
+    if (!platformYz) return;
     const ctl = sifirla();
     setByokCalisti(false);
     const filters = setFilters(filtreler);
@@ -147,9 +166,15 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
       }
       if (!res.ok || !res.body) {
         const j = (await res.json().catch(() => null)) as { message?: string } | null;
-        setHata(HATA_KODLARI[res.status] ?? j?.message ?? ozet.hata.genel);
-        // The daily allowance is used up and there are no credits: BYOK keeps the summary free (K-09).
-        setHakBitti(res.status === 402);
+        // 503 carries the server's reason (platform AI off, or a provider outage); the others use local texts.
+        setHata(
+          (res.status === 503 ? j?.message : undefined) ??
+            HATA_KODLARI[res.status] ??
+            j?.message ??
+            ozet.hata.genel,
+        );
+        // Allowance used up without credits, or no platform AI right now: BYOK keeps the summary going (K-09).
+        setByokOner(BYOK_ONERILEN.has(res.status));
         setAsama('hata');
         return;
       }
@@ -222,7 +247,7 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
                 <a href={BYOK_AYARLARI}>{byokMetin.ozet.ayarlar}</a>
               </p>
             </>
-          ) : (
+          ) : platformYz ? (
             <>
               <p className={styles.ozetNot}>{ozet.aktarim}</p>
               <p className={styles.ozetNot}>{ozet.kredi}</p>
@@ -230,10 +255,18 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
                 {byokMetin.ozet.kendiAnahtar} <a href={BYOK_AYARLARI}>{byokMetin.ozet.kendiAnahtarBag}</a>
               </p>
             </>
+          ) : (
+            <p className={styles.ozetNot} data-testid="ozet-yalniz-byok">
+              {byokMetin.ozet.yalnizByok}
+            </p>
           )}
-          <Dugme onClick={baslat} disabled={asama === 'akiyor'}>
-            {asama === 'bitti' || asama === 'hata' ? ozet.yeniden : ozet.dugme}
-          </Dugme>
+          {byok || platformYz ? (
+            <Dugme onClick={baslat} disabled={asama === 'akiyor'}>
+              {asama === 'bitti' || asama === 'hata' ? ozet.yeniden : ozet.dugme}
+            </Dugme>
+          ) : (
+            <Dugme href={BYOK_AYARLARI}>{byokMetin.ozet.kendiAnahtarBag}</Dugme>
+          )}
         </>
       )}
       <p className={styles.ozetDurum} role="status" aria-live="polite">
@@ -242,7 +275,7 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
       {asama === 'hata' ? (
         <p className={styles.hataMetni} role="alert">
           {hata}
-          {hakBitti ? (
+          {byokOner ? (
             <>
               {' '}
               {byokMetin.ozet.hakBitti} <a href={BYOK_AYARLARI}>{byokMetin.ozet.kendiAnahtarBag}</a>

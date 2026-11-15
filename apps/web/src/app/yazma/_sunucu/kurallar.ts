@@ -1,3 +1,4 @@
+import { logWarn } from '@kazuist/log';
 import { and, eq, sql } from 'drizzle-orm';
 import { schema, type Db } from '@/server/auth/db.ts';
 import {
@@ -157,14 +158,7 @@ export async function cikarmayiCalistir(db: Db, g: CikarmaGirdisi): Promise<void
   } catch (e) {
     const kod: HataKodu =
       e instanceof YuklemeHatasi ? e.kod : e instanceof KuralCikarmaHatasi ? e.kod : 'model';
-    console.error(
-      JSON.stringify({
-        at: 'rules.extract',
-        level: 'warn',
-        error: e instanceof Error ? e.name : 'Unknown',
-        kod,
-      }),
-    );
+    logWarn('rules.extract', e, { kod });
     await isiBitir(db, g.jobId, 'failed', null, kod);
   }
 }

@@ -274,6 +274,8 @@ jobs:
             echo "IYZICO_API_KEY=ci-$(openssl rand -hex 12)"
             echo "IYZICO_SECRET_KEY=ci-$(openssl rand -hex 12)"
             echo "IYZICO_MERCHANT_ID=ci"
+            # Mailpit from infra/docker-compose.dev.yml; MAIL_SMTP_URL is critical for /api/health (plan 14.6).
+            echo "MAIL_SMTP_URL=smtp://127.0.0.1:1025"
           } > app.env
       - name: web /api/version commit and /api/health 200 with dependencies up
         run: |
@@ -287,6 +289,27 @@ jobs:
           code=$(curl -s -o health.json -w '%{http_code}' http://127.0.0.1:3000/api/health)
           echo "health HTTP $code $(cat health.json)"
           test "$code" = "200"
+          # Mailpit answers the SMTP probe, so the body is ok, not degraded.
+          grep -q '"status":"ok"' health.json
+      - name: /api/health 503 without MAIL_SMTP_URL, 200 degraded when the SMTP server is unreachable
+        run: |
+          probe() {
+            docker run -d --name "$1" --network host --env-file app.env -e PORT="$2" "${@:3}" kazuist-web:ci > /dev/null
+            for i in $(seq 1 30); do
+              code=$(curl -s -o "$1.json" -w '%{http_code}' --max-time 10 "http://127.0.0.1:$2/api/health" || true)
+              [ "$code" != "000" ] && break
+              sleep 2
+            done
+            echo "$1: health HTTP $code $(cat "$1.json")"
+            docker rm -f "$1" > /dev/null
+          }
+          probe web-nomail 3101 -e MAIL_SMTP_URL=
+          test "$code" = "503"
+          # The variable name never leaves the server.
+          if grep -q MAIL web-nomail.json; then exit 1; fi
+          probe web-smtpdown 3102 -e MAIL_SMTP_URL=smtp://127.0.0.1:1
+          test "$code" = "200"
+          grep -q '"status":"degraded"' web-smtpdown.json
       - name: /api/health 503 when Valkey stops, 200 again when it returns
         run: |
           docker compose --env-file .env stop valkey
@@ -338,12 +361,21 @@ jobs:
         run: |
           pnpm install --frozen-lockfile --filter "@kazuist/web..." --filter "@kazuist/worker-node..."
           set -a; . ./app.env; set +a
-          KAZUIST_IT_DATABASE_URL="$DATABASE_URL" KAZUIST_IT_VALKEY_URL="$VALKEY_URL" \
+          KAZUIST_IT_DATABASE_URL="$DATABASE_URL" KAZUIST_IT_VALKEY_URL="$VALKEY_URL" KAZUIST_IT_SMTP_URL="$MAIL_SMTP_URL" \
             pnpm --filter @kazuist/web exec vitest run test/health-deps.test.ts
       - name: worker-node account purge against the real PostgreSQL
         run: |
           set -a; . ./app.env; set +a
           KAZUIST_IT_DATABASE_URL="$DATABASE_URL" pnpm --filter @kazuist/worker-node exec vitest run src/account
+      - name: web edu_claims (one account per edu.tr mailbox, two connection race) against the real PostgreSQL
+        run: |
+          set -a; . ./app.env; set +a
+          KAZUIST_IT_DATABASE_URL="$DATABASE_URL" \
+            pnpm --filter @kazuist/web exec vitest run src/server/auth/__tests__/edu-claims.test.ts
+      - name: worker-node LISTEN reconnects after its connection is killed (real PostgreSQL)
+        run: |
+          set -a; . ./app.env; set +a
+          KAZUIST_IT_DATABASE_URL="$DATABASE_URL" pnpm --filter @kazuist/worker-node exec vitest run test/listen.test.ts
       - name: Install Playwright suites (tests/e2e, tests/security)
         run: |
           pnpm --dir tests/e2e install --ignore-workspace --frozen-lockfile
@@ -357,10 +389,13 @@ jobs:
       - name: E2E smoke against the production image (tests/e2e)
         if: success() || failure()
         run: KAZUIST_E2E_BASE_URL=http://localhost:3000 pnpm --dir tests/e2e exec playwright test
-      - name: Lighthouse CI budgets (mobile, performance 90; /, /fiyatlar, /tr)
+      - name: Lighthouse CI budgets (mobile; performance 90, accessibility 95, SEO 90; core pages)
         if: success() || failure()
         env:
           LHCI_VERSION: 0.15.1
+        # is-crawlable is skipped (infra/lighthouse/lighthouserc.json): this server is not production, so every page
+        # carries noindex on purpose ((seo)/_seo/ortam.ts) and the audit would fail by design; the SEO tests cover
+        # the production directive. The remaining SEO audits count towards the 0.9 floor.
         run: |
           export CHROME_PATH="$(command -v google-chrome || command -v google-chrome-stable)"
           npx --yes "@lhci/cli@${LHCI_VERSION}" autorun --config=infra/lighthouse/lighthouserc.json
@@ -382,10 +417,16 @@ jobs:
             echo "BYOK_SIGNING_SECRET=$(openssl rand -hex 32)"
             echo "PII_ENCRYPTION_KEY=$(openssl rand -base64 32)"
             echo "KAZUIST_INTERNAL_TOKEN=$(openssl rand -hex 32)"
+            # Required by the file; no SMTP server on the stack network in CI, so the body reads degraded.
+            echo "MAIL_SMTP_URL=smtp://mail.invalid:25"
           } > prod.env
           # exclude_from_hc is a Coolify key that docker compose does not know.
           sed '/exclude_from_hc/d' infra/docker-compose.prod.yml > prod-compose.yml
           $P config --quiet
+          # Every KAZUIST_* variable the services read is passed, and the source switches match docs/kaynaklar.
+          $P config --format json > prod-compose.json
+          python3 infra/scripts/compose-env-check.py prod-compose.json
+          rm prod-compose.json
           # Required variables are enforced: without POSTGRES_PASSWORD the file must not render.
           grep -v '^POSTGRES_PASSWORD=' prod.env > prod-missing.env
           if docker compose -p x -f prod-compose.yml --env-file prod-missing.env config --quiet 2>/dev/null; then
@@ -422,7 +463,12 @@ jobs:
           check_mem worker-py $((3 * 1024 * 1024 * 1024))
           check_mem web $((1024 * 1024 * 1024))
           check_mem worker-node $((512 * 1024 * 1024))
-          check_mem valkey $((256 * 1024 * 1024))
+          check_mem valkey $((384 * 1024 * 1024))
+          # Valkey holds nonces and money counters: no eviction, append only file on its volume, survives a restart.
+          V() { $P exec -T valkey sh -c 'valkey-cli -a "$VALKEY_PASSWORD" --no-auth-warning "$@"' -- "$@"; }
+          test "$(V config get maxmemory-policy | tail -1)" = "noeviction"
+          test "$(V config get appendonly | tail -1)" = "yes"
+          docker volume inspect kazuist-prod_valkeydata > /dev/null
           # Nothing is published on the host; Traefik reaches web over the stack network.
           for svc in postgres valkey web worker-node worker-py maintenance; do
             ports=$(docker inspect -f '{{json .HostConfig.PortBindings}}' "$($P ps -q "$svc")")
@@ -442,11 +488,19 @@ jobs:
           if $P exec -T worker-py python -c "open('/models/ner/x', 'w')" 2>/dev/null; then
             echo "/models/ner is writable"; exit 1
           fi
-          # web serves this commit; health is 200 through its own probes without any S3 variable.
+          # web serves this commit; health is 200 through its own probes without any S3 variable (the body is
+          # degraded: prod.env points MAIL_SMTP_URL at a host that does not exist).
           $P exec -T web node -e "fetch('http://127.0.0.1:3000/api/version').then(r=>r.text()).then(t=>{console.log(t);process.exit(t.includes(process.argv[1])?0:1)})" "$GITHUB_SHA"
           $P exec -T web node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>{console.log('health', r.status);process.exit(r.status===200?0:1)})"
           # web reaches the worker-py internal API by service name (any HTTP answer proves the route).
           $P exec -T web node -e "fetch('http://worker-py:8001/').then(r=>console.log('worker-py internal HTTP', r.status),e=>{console.error(e.cause?.code||e.message);process.exit(1)})"
+          # A key written before a Valkey restart is still there with its TTL (AOF on the valkeydata volume).
+          V set ci:kalici 1 EX 600 > /dev/null
+          $P restart valkey
+          for i in $(seq 1 20); do V ping 2>/dev/null | grep -q PONG && break; sleep 1; done
+          test "$(V get ci:kalici)" = "1"
+          test "$(V ttl ci:kalici)" -gt 0
+          echo "valkey key survived the restart"
       - name: Off-server backup and restore test (infra/backup, local restic repository)
         env:
           P: docker compose -p kazuist-prod -f prod-compose.yml --env-file prod.env

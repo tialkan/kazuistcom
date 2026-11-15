@@ -4,29 +4,35 @@ slug: gizlilik
 route: /hukuki/gizlilik
 lang: tr
 binding: true
-version: 2026-11-12.1
-date: 2026-11-12
+version: 2026-11-15.1
+date: 2026-11-15
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Barındırma Hetzner'a (ADR-0030, ADR-0033) göre
-> düzeltildi; kodda olmayan virüs taraması iddiası çıkarıldı; mali kayıt saklama süresi TTK m.82 ve VUK m.253
-> metinlerinden (mevzuat.gov.tr, 12 Kasım 2026) yazıldı.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 15 Kasım 2026. Barındırma Almanya'daki Hetzner veri merkezine
+> (ADR-0030 madde 2, ADR-0033) göre yazıldı; kodda olmayan virüs taraması iddiası çıkarıldı; mali kayıt saklama
+> süresi TTK m.82 ve VUK m.253 metinlerinden (mevzuat.gov.tr, 12 Kasım 2026) yazıldı. Dar çekirdekli ilk yayına
+> göre (ADR-0038 madde 8) pratik ilerlemesi çıkarıldı, BYOK anahtarının tarayıcıda tutulması eklendi; kredi satışı
+> kapalı olduğu için satış kayıtlarının saklanması "satış açıldığında" diye yazıldı.
 
 Bu politika, Kazuist'in kişisel verileri nasıl koruduğunu anlatır. Yasal bilgilendirme
 [aydınlatma metnindedir](/hukuki/aydinlatma); bu sayfa onu tamamlar.
 
 ## 1. İlkeler
 
-- Kazuist'in uygulaması, veri tabanı ve dosya deposu Hetzner Online GmbH'nin Avrupa Birliği içindeki
-  (Almanya) veri merkezinde çalışır. Bu yurt dışı aktarımın dayanağı [aydınlatma metninin](/hukuki/aydinlatma)
-  5. bölümündedir.
+- Kazuist'in uygulaması, veri tabanı ve dosya deposu Hetzner Online GmbH'nin Almanya'daki veri merkezinde
+  çalışır. Bu yurt dışı aktarımın dayanağı [aydınlatma metninin](/hukuki/aydinlatma) 5. bölümündedir.
 - Reklam yoktur; verileriniz satılmaz ve reklam amacıyla paylaşılmaz.
 - Üçüncü taraf izleme betiği kullanılmaz. Analitik şu anda etkin değildir; etkinleştirilirse yalnız onayınızla
   ve kendi sunucumuzda çalışır.
-- Yapay zekâ sağlayıcısına (platform modunda OpenRouter, sıfır veri saklama koşuluyla) yalnız anonim veya maskelenmiş metin gider; içerik kayıtlara (log) yazılmaz,
-  yalnız işlem türü, model, token sayısı, süre ve maliyet gibi meta veri tutulur.
-- Bazı veriler yalnız tarayıcınızda kalır: pratik ilerlemesi, rehber işaretleri ve /tespit sayfasına
+- Yapay zekâ sağlayıcısına yalnız anonim veya maskelenmiş metin gider. Platform modunda istek Kazuist sunucusundan
+  OpenRouter'a, veri toplamayan ve sıfır veri saklama koşulunu sağlayan uç noktalara gider. İçerik kayıtlara (log)
+  yazılmaz; yalnız işlem türü, model, token sayısı, süre ve maliyet gibi meta veri tutulur.
+- Kendi OpenRouter anahtarınızı kullanırsanız anahtar yalnız tarayıcınızda tutulur: varsayılan olarak oturum
+  deposunda (sekmeyi kapatınca silinir), "Bu cihazda hatırla" seçeneğini seçerseniz tarayıcının yerel deposunda.
+  Anahtar Kazuist sunucusuna gönderilmez; maskelenmiş metin tarayıcınızdan doğrudan OpenRouter'a gider ve her
+  istekte veri toplayan sağlayıcılar dışarıda bırakılır.
+- Bazı veriler yalnız tarayıcınızda kalır: rehber işaretleri, kendi YZ anahtarınız ve /tespit sayfasına
   yapıştırdığınız metin sunucumuza gönderilmez. Ayrıntı: [Çerez politikası](/hukuki/cerezler).
 
 ## 2. Güvenlik
@@ -39,9 +45,10 @@ Kişisel veri ihlalinde ilgili kişilere ve Kişisel Verileri Koruma Kurulu'na e
 
 ## 3. Saklama ve silme
 
-Hesap verileri hesabınız açık olduğu sürece tutulur. Hesabınızı web veya iOS'tan silebilirsiniz; silme talebinden sonra 14 gün içinde vazgeçebilirsiniz, süre bitince hesap verileri silinir.
+Hesap verileri hesabınız açık olduğu sürece tutulur. Hesabınızı web'den (iOS uygulaması yayımlandığında iOS'tan da) silebilirsiniz; silme talebinden sonra 14 gün içinde vazgeçebilirsiniz, süre bitince hesap verileri silinir.
 
-Bazı kayıtlar kanuni süre boyunca saklanır:
+Bazı kayıtlar kanuni süre boyunca saklanır. Kredi satışı henüz açılmamıştır; aşağıdaki satış kayıtları satış
+açıldığında oluşur:
 
 - Mesafeli sözleşme kayıtları en az üç yıl (Mesafeli Sözleşmeler Yönetmeliği m.20/1).
 - Fatura ve ticari defterlere dayanak olan satış kayıtları, ilgili oldukları takvim yılının bitiminden itibaren
@@ -51,6 +58,10 @@ Bazı kayıtlar kanuni süre boyunca saklanır:
 Hesap silindiğinde onay, sipariş ve denetim kayıtlarında kimliğiniz yerine tek yönlü özet kalır.
 
 Kullanılmamış satın alınmış krediniz varsa silme ekranında uyarı ve iade talebi seçeneği gösterilir.
+
+Tarayıcınızda tutulan kendi YZ anahtarınızı "Kendi YZ anahtarınız" sayfasındaki (/hesap/yz-anahtari) "Anahtarı
+sil" düğmesiyle veya tarayıcı verilerinizi silerek kaldırabilirsiniz. Anahtar bizde olmadığı için hesabınızı
+silmek onu tarayıcınızdan kaldırmaz; OpenRouter hesabınızdaki anahtarı OpenRouter'da ayrıca iptal edebilirsiniz.
 
 ## 4. Verilerinizi indirme
 

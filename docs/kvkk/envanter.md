@@ -1,11 +1,20 @@
 # Kişisel veri işleme envanteri
 
-TASLAK, Tarık onayı bekliyor. Sürüm: 2026-11-12 (taslak 2, review.md P5). Uyum garantisi vermez.
+TASLAK, Tarık onayı bekliyor. Sürüm: 2026-11-15 (taslak 3, ADR-0038 dar çekirdekli ilk yayın). Uyum garantisi
+vermez.
 
 Bu envanter `packages/db/src/schema` tablolarından, `packages/ai-gateway`, `packages/ledger` ve `apps/web` içindeki
-gerçek veri akışından türetildi (kimlik, odeme ve yz-gecidi yolları 12 Kasım 2026 `main` üzerinde okundu); şablondan
+gerçek veri akışından türetildi (kimlik, odeme ve yz-gecidi yolları 12 Kasım 2026 `main` üzerinde okundu; BYOK,
+yayın modül kümesi ve ödeme anahtarı 15 Kasım 2026'da `packages/ai-gateway/src/byok`,
+`apps/web/src/app/(kabuk)/_kabuk/yayin.ts` ve `apps/web/src/server/billing/acik.ts` üzerinde okundu); şablondan
 değildir. Turkuaz Kampüs satırları ADR-0031 ile çıkarıldı; Kampüs tabloları şemada durur ama hiçbir yol onlara yazmaz
 (silinmeleri mimar planında: docs/istekler/mimar-p1-sozlesme-temizligi.md).
+
+İlk yayının kapsamı (ADR-0038 madde 8): Ara ve kaynaklı özet, Kaydettiklerim, Yazma (şablon ve kısaltma), Rehberler
+ve /tespit. Pratik, Kalemcik ve atıf ağı üretimde gösterilmez ve rotaları 404 döner; API uçları
+(`/api/v1/decks`, `/api/v1/citation-network`, `/api/v1/records/{id}/network`, `/api/v1/writing-projects`) çalışır
+durumda kalır. Kredi satışı kapalıdır (`odemeAcik` iyzico anahtarları yokken false): satış satırları (9, 10, 11, 13,
+14) tablo olarak durur, ilk yayında satış kaynaklı kayıt oluşmaz. iOS uygulaması depoda yoktur.
 
 Veri sorumlusu: Kulular Bilişim Teknolojileri Ltd. Şti. MERSİS 0591095454600001, Ankara Ticaret Sicili 550123,
 Kızılırmak Mah. 1450 Sk. Hayat Plaza No: 16 Çankaya / Ankara (onay 2026-10-20, docs/kararlar.md). KEP: [YER TUTUCU, Tarık'tan].
@@ -54,10 +63,10 @@ kesinleşir, ardından mimar `retention.sweep` iş türünü ekler.
 | 13 | Uygulama içi satın alma | iap_transactions (transaction_id, original_transaction_id, product_id, signed_payload) | iOS kredi | 5/2-c | Satış kayıtlarıyla aynı | Hetzner; Apple (kullanıcı ile Apple ilişkisi). iOS uygulaması depoda henüz yok |
 | 14 | Cüzdan ve defter | wallets, credit_lots, ledger_entries, ledger_transactions, reservations | Kredi bakiyesi | 5/2-c, 5/2-ç | Değiştirilemez defter; satış kayıtlarıyla aynı | Hetzner |
 | 15 | Kullanıcı içeriği (kitaplık) | library_items.note | Kaydettiklerim | 5/2-c | Hesap süresince | Hetzner |
-| 16 | Kullanıcı içeriği (yazma) | writing_projects (title, deadline, kelime sayıları), writing_logs.note, reminders; yüklenen kılavuz bellekte okunur, diske yazılmaz (yazma/_cekirdek/metin-cikarma.ts); çıkarılan kurallar ve alıntılar template_rules, template_rule_evidence | Yazma takibi, kılavuzdan şablon | 5/2-c | Hesap süresince | Hetzner; kural çıkarmada maskeli metin OpenRouter üzerinden YZ modeline (yazma/_sunucu/yz.ts) |
-| 17 | Kaynaklı özet sorusu | İstek gövdesi; veri tabanına yazılmaz, log yalnız meta veri (ai-gateway/src/observe.ts) | Kaynaklı özet | 5/2-c | İstek süresince | Maskeli metin OpenRouter üzerinden YZ modeline; BYOK istemci modunda kullanıcının sağlayıcısına |
+| 16 | Kullanıcı içeriği (yazma) | Yüklenen kılavuz bellekte okunur, diske yazılmaz (yazma/_cekirdek/metin-cikarma.ts); çıkarılan kurallar ve alıntılar template_rules, template_rule_evidence. writing_projects (title, deadline, kelime sayıları), writing_logs.note, reminders yalnız Kalemcik arayüzünden yazılır; Kalemcik ilk yayında gizli, `/api/v1/writing-projects` ucu çalışır durumda (ADR-0038 madde 8) | Kılavuzdan şablon; Kalemcik açılırsa yazma takibi | 5/2-c | Hesap süresince | Hetzner; kural çıkarmada maskeli metin OpenRouter üzerinden YZ modeline (yazma/_sunucu/yz.ts) |
+| 17 | Kaynaklı özet sorusu | İstek gövdesi; veri tabanına yazılmaz, log yalnız meta veri (ai-gateway/src/observe.ts). BYOK'ta `POST /v1/answers/prepare` gövdesi (soru, sağlayıcı, model, derinlik, süzgeçler; anahtar yok) ve `POST /v1/answers/verify` gövdesi (nonce, imza, özet cümleleri; `save: false`, ara/_sunucu/ozet.ts `savedId: null`) | Kaynaklı özet ve BYOK cümle doğrulaması | 5/2-c | İstek süresince; tek kullanımlık nonce 10 dakika | Platform: maskeli metin sunucudan OpenRouter üzerinden YZ modeline. BYOK: maskeli paket tarayıcıya döner, tarayıcı kendisi OpenRouter'a gönderir (satır 30) |
 | 18 | YZ kullanım meta verisi | Log satırı: requestId, işlem, mod, sağlayıcı, model, token, süre, maliyet, userHash, sonuç; provider_costs (kişiye bağlı değil) | Maliyet ve kötüye kullanım | 5/2-f | Log saklama süresi altyapıda belirlenir [DOĞRULANACAK: altyapi log döndürme ayarı] | Hetzner |
-| 19 | Pratik ve rehber ilerlemesi | Tarayıcı localStorage: kazuist.pratik.v1, kazuist.pratik.deneme.v1, kazuist.rehber.v1. Sunucuya gitmez | Aralıklı tekrar, rehber işaretleri | Veri sorumlusu işlemesi yok (cihazda) | Kullanıcı silene kadar | Yok. card_reviews, exam_attempts, guide_progress tablolarına bugün yazan kod yok |
+| 19 | Rehber ilerlemesi (Pratik açılırsa pratik ilerlemesi) | Tarayıcı localStorage: kazuist.rehber.v1. Pratik gizli olduğu için kazuist.pratik.v1 ve kazuist.pratik.deneme.v1 üretimde yazılmaz. Sunucuya gitmez | Rehber işaretleri | Veri sorumlusu işlemesi yok (cihazda) | Kullanıcı silene kadar | Yok. card_reviews, exam_attempts, guide_progress tablolarına bugün yazan kod yok |
 | 20 | /tespit metni | Yalnız tarayıcı belleği; ağ ve depolama yok (tespit.test.ts) | Yazım izi denetimi | İşleme yok | Sayfa kapanınca | Yok |
 | 21 | Kaldırma talebi | takedown_requests (requester_name, reason, rights_info, contact_email, target) | Telif ve kişisel veri kaldırma | 5/2-ç (m.13), 5/2-e | Sonuçlandıktan sonra üç yıl (öneri) | Hetzner; yönetim ekibi |
 | 22 | KVKK başvurusu | kvkk_requests (requester_name, nationality, identity_enc şifreli, address, contact_email, phone, detail, response_summary) | m.11 haklarının kullanımı | 5/2-ç | Sonuçlandıktan sonra üç yıl; identity_enc sonuçlanınca silinir (öneri) | Hetzner |
@@ -67,7 +76,8 @@ kesinleşir, ardından mimar `retention.sweep` iş türünü ekler.
 | 26 | Corpus içindeki üçüncü kişi verileri | records.text, chunks.text, anonymization_spans, sources_raw (ham arşiv) | Yargı kararlarına akademik erişim | 5/2-f (denge-testi.md) ve m.4/2 | Ham arşiv: yeniden anonimleştirme gerektikçe, en kısa süre [DOĞRULANACAK: veri-toplama ajanından süre]; anonim metin süresiz | Hetzner (T4 kararı açık: K-11 ham metnin Türkiye'de işlenmesini istiyor); yayın yalnız anonim metinle |
 | 27 | Analitik | Umami; kodda yok, etkin değil | Ürün ölçümü | 5/1 (etkinleştirilirse) | [DOĞRULANACAK: etkinleştirilirse Umami saklama ayarı] | Kendi sunucumuz |
 | 28 | Hata izleme | GlitchTip; kodda SDK yok, etkin değil | Hata ayıklama | 5/2-f | 90 gün (öneri) | Kendi sunucumuz |
-| 29 | Yedekler | Veri tabanı ve depo yedekleri | Kesinti ve kayıptan kurtarma | 5/2-f, 5/2-ç | altyapi yedek döngüsü (docs/runbook/yedek.md) | [DOĞRULANACAK: yedek deposu sağlayıcısı ve konumu, review.md T9] |
+| 29 | Yedekler | Veri tabanı ve depo yedekleri | Kesinti ve kayıptan kurtarma | 5/2-f, 5/2-ç | altyapi yedek döngüsü (docs/runbook/yedek.md) | [DOĞRULANACAK: yedek deposu sağlayıcısı ve konumu, review.md T9; runbook Hetzner Storage Box öneriyor, seçilirse Hetzner Standart Sözleşme 2 Ek I'e yazılır] |
+| 30 | BYOK anahtarı ve ayarı | Tarayıcı Web Storage anahtarı `kazuist.byok.v1`: sağlayıcı (yalnız openrouter), model kimliği, API anahtarı, zdr tercihi. Varsayılan sessionStorage; "Bu cihazda hatırla" ile localStorage; aynı anda tek depoda (byok/settings.ts `saveByokSettings`). Anahtar Kazuist'e gönderilmez; tarayıcı yalnız `https://openrouter.ai` adresine yollar (anahtar denetimi `GET /api/v1/key` ve özet çağrısı) | Kullanıcının kendi OpenRouter hesabıyla özet çıkarması | Veri sorumlusu işlemesi yok (cihazda; Kazuist anahtarı almaz) | Oturum deposunda sekme kapanana, yerel depoda kullanıcı silene kadar | Kullanıcının tarayıcısından OpenRouter, Inc. (ABD); istek `data_collection: deny`, seçimle `zdr: true` taşır (adapters/index.ts). Aktarım değerlendirmesi aktarim.md |
 
 ## Özel nitelikli veri
 

@@ -4,14 +4,17 @@ slug: kosullar
 route: /hukuki/kosullar
 lang: tr
 binding: true
-version: 2026-11-12.1
-date: 2026-11-12
+version: 2026-11-15.1
+date: 2026-11-15
 status: taslak
 consent_kind: kullanim_kosullari
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Turkuaz Kampüs çıkarıldı (ADR-0031), ücretsiz
-> özellikler ve kredi ADR-0029'a göre yazıldı, yaş beyanı kayıt ekranındaki koşul onayına bağlandı.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 15 Kasım 2026. Dar çekirdekli ilk yayına göre yazıldı (ADR-0038
+> madde 8, apps/web/src/app/(kabuk)/_kabuk/yayin.ts): Pratik, Kalemcik ve atıf ağı hizmet tanımından çıkarıldı;
+> kredi satışı ilk yayında kapalıdır (apps/web/src/server/billing/acik.ts); kendi anahtarınızla kullanım yalnız
+> OpenRouter ile ve tarayıcıdan yapılır (packages/ai-gateway/src/byok). Ertelenen bir modül açıldığında 2. madde
+> yeni sürümle güncellenir.
 
 Dayanak: 6098 sayılı Türk Borçlar Kanunu (genel işlem koşulları), 6502 sayılı Tüketicinin Korunması
 Hakkında Kanun (m.48 mesafeli sözleşmeler, m.52 abonelik) ve 6563 sayılı Elektronik Ticaretin Düzenlenmesi
@@ -19,15 +22,16 @@ Hakkında Kanun (m.3 bilgi verme yükümlülüğü).
 
 ## 1. Taraflar ve kapsam
 
-Bu koşullar Kulular Bilişim Teknolojileri Ltd. Şti. ("Kazuist") ile kazuist.com ve Kazuist iOS uygulamasını
-kullanan kişi ("Kullanıcı") arasındadır. Kredi satın alımlarında ayrıca ön bilgilendirme formu ve mesafeli satış
-sözleşmesi uygulanır.
+Bu koşullar Kulular Bilişim Teknolojileri Ltd. Şti. ("Kazuist") ile kazuist.com'u kullanan kişi ("Kullanıcı")
+arasındadır. Kazuist iOS uygulaması yayımlandığında bu koşullar onun için de geçerli olur. Kredi satışı henüz
+açılmamıştır; açıldığında satın alımlarda ayrıca ön bilgilendirme formu ve mesafeli satış sözleşmesi uygulanır.
 
 ## 2. Hizmet
 
-Kazuist; yargı kararları, mevzuat ve akademik kaynaklarda arama, kaynaklı özet, atıf ağı, rehberler, yazma
-araçları (tez ve makale şablonu, yazma koçu Kalemcik, kısaltmalar cetveli), pratik çalışmalar ve yazım kuralları
-ile iz denetleyicisi sunar. Kazuist'te kullanıcıların birbirleriyle içerik paylaştığı bir alan yoktur.
+Kazuist; yargı kararları, mevzuat ve akademik kaynaklarda arama ve kaynaklı özet, kaydettikleriniz
+(Kaydettiklerim), rehberler, yazma araçları (tez ve makale şablonu, kısaltmalar cetveli) ve yazım kuralları ile iz
+denetleyicisi (/tespit) sunar. Bu sayfada sayılmayan bir modül sunulmaz; yeni bir modül açıldığında bu madde
+güncellenir. Kazuist'te kullanıcıların birbirleriyle içerik paylaştığı bir alan yoktur.
 
 ## 3. Mesleki sınır
 
@@ -39,17 +43,23 @@ danışmanız gerekir. Kazuist belirli bir avukata veya büroya yönlendirme yap
 
 Kazuist 18 yaşını doldurmuş kişiler içindir. Hesap açarken bu koşulları kabul ederek 18 yaşını doldurduğunuzu
 beyan edersiniz. Hesap bilgilerinizin güvenliğinden siz sorumlusunuz. edu.tr doğrulamasıyla verilen öğrenci hakkı
-yılda bir yenilenir. Hesap açmadan arama yapabilir ve kaynakları okuyabilirsiniz; özet, kaydetme ve satın alma
-hesap gerektirir.
+yılda bir yenilenir. Hesap açmadan arama yapabilir ve kaynakları okuyabilirsiniz; kaynaklı özet ve kaydetme hesap
+gerektirir.
 
-## 5. Ücretsiz kullanım, kendi anahtarınız ve krediler
+## 5. Ücretsiz kullanım ve kendi anahtarınız
 
-Kazuist'in bütün özellikleri ücretsizdir; ücretli özellik katmanı yoktur. Yapay zekâ işlemleri üç yoldan çalışır:
-günlük ücretsiz hak, kendi sağlayıcı anahtarınız (BYOK; sağlayıcının kullanım bedeli size aittir, adil kullanım
-sınırı uygulanır) veya satın aldığınız platform kredisi. Kredi yalnız platformun yapay zekâ işlemleri için
-kullanılır, özellik açmaz. Kredi kuralları: [İade, iptal ve kredi kuralları](/hukuki/iade-ve-kredi). Kazuist kötüye
-kullanımı önlemek için günlük kredi tavanı, eşzamanlı işlem sınırı ve hız sınırı uygular; bu sınırlar ücretli bir
-özellik kilidi değildir.
+Kazuist'in sunulan bütün özellikleri ücretsizdir; ücretli özellik katmanı yoktur. Yapay zekâ işlemleri iki yoldan
+çalışır:
+
+1. Günlük ücretsiz hak.
+2. Kendi OpenRouter anahtarınız (BYOK). Anahtar yalnız tarayıcınızda tutulur ve Kazuist sunucusuna gönderilmez;
+   istek tarayıcınızdan doğrudan OpenRouter'a gider. OpenRouter'ın kullanım bedeli ve koşulları sizinle OpenRouter
+   arasındadır; bu işlemler için günlük ücretsiz hak düşmez. Ayrıntı: [Yapay zekâ politikası](/hukuki/yapay-zeka).
+
+Platform kredisi satışı henüz açılmamıştır. Açıldığında kredi yalnız platformun yapay zekâ işlemleri için
+kullanılır, özellik açmaz; kurallar [İade, iptal ve kredi kuralları](/hukuki/iade-ve-kredi) sayfasındadır. Kazuist
+kötüye kullanımı önlemek için günlük işlem tavanı, eşzamanlı işlem sınırı ve hız sınırı uygular; bu sınırlar
+ücretli bir özellik kilidi değildir.
 
 ## 6. Kabul edilemez kullanım
 
@@ -62,7 +72,7 @@ kullanımı önlemek için günlük kredi tavanı, eşzamanlı işlem sınırı 
 
 Resmî metinler (mevzuat, yargı kararları) FSEK m.31 uyarınca çoğaltılması ve yayılması serbesttir. Kurumların veri tabanları üzerindeki
 haklar (FSEK ek m.8) saklıdır. Kazuist'in yazılımı,
-tasarımı, derlemesi, anonimleştirilmiş veri tabanı ve özgün içerikleri (rehberler, desteler) Kulular'ındır.
+tasarımı, derlemesi, anonimleştirilmiş veri tabanı ve özgün içerikleri (örneğin rehberler) Kulular'ındır.
 Makalelerde künye, özet ve bağlantı verilir; tam metin yalnız açık erişimde gösterilir. Atıf stilleri
 CSL projesinin lisansıyla (CC BY-SA) kullanılır.
 

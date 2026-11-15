@@ -20,7 +20,7 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
 
 | Ajan | Sahip olduğu yollar |
 |---|---|
-| mimar | `packages/contracts/**`, `packages/db/**`, `docs/adr/**`, `docs/sahiplik.md`, `docs/istekler/README.md`, `CLAUDE.md`, `.claude/agents/**`, `scripts/check-text.mjs`, `.env.example` |
+| mimar | `packages/contracts/**`, `packages/db/**`, `packages/log/**`, `docs/adr/**`, `docs/sahiplik.md`, `docs/istekler/README.md`, `CLAUDE.md`, `.claude/agents/**`, `scripts/check-text.mjs`, `.env.example` |
 | altyapi | `infra/**`, `.github/workflows/**`, `**/Dockerfile`, `**/.dockerignore`, `docs/runbook/**` |
 | kimlik | `apps/web/src/server/auth/**`, `apps/web/src/app/(hesap)/**`, `apps/web/src/app/api/auth/**`, `packages/i18n/tr/hesap.json`, `apps/web/src/app/api/v1/{me,kvkk-requests,professions,notifications,push,takedown-requests,admin}/**`, `apps/worker-node/src/notify/**`, `apps/worker-node/src/account/**` |
 | yz-gecidi | `packages/ai-gateway/**`, `packages/i18n/tr/byok.json` |
@@ -65,3 +65,9 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
   on-yuz, `apps/web/src/app/{pratik,kalemcik,atif-agi}/layout.tsx` modül ajanları (pratik, yazma, atif-agi).
   `apps/web/src/server/security-headers.ts` listede olmadığı için orkestranındır (`connect-src` artık
   `https://openrouter.ai` içerir).
+- 2026-11-15, mimar (ADR-0039, PR #115 ardılı): yeni yol `packages/log/**` (`@kazuist/log`, sunucu log yazıcısı ve
+  hata temizleyicisi) mimara verildi; `packages/contracts` ve `packages/db` gibi ADR ile değişir. Orkestranın
+  görevlendirmesiyle bu PR ortak dosyalara da dokundu: `eslint.config.mjs` (sunucu kodunda `console` yasağı),
+  `apps/web/package.json`, `apps/worker-node/package.json`, `pnpm-lock.yaml` (paket bağlantısı),
+  `apps/worker-node/src/{main,runner,queue}.ts` ve `.github/workflows/ci.yml` (edu_claims gerçek PostgreSQL adımı).
+  Modül dosyalarındaki değişiklik yalnız log satırlarıdır.

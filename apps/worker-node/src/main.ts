@@ -1,3 +1,4 @@
+import { safeErrorFields, serviceLog } from '@kazuist/log';
 import pg from 'pg';
 import { billingDepsFromEnv } from './billing/deps.ts';
 import { noticeTick } from './billing/notices.ts';
@@ -16,10 +17,9 @@ import { pgListen, startWorker } from './runner.ts';
 /**
  * worker-node entry point (production: node dist/main.js after `pnpm build`; development: pnpm dev).
  * Registers notify.send and the billing jobs, listens on their channels and stops cleanly on SIGTERM.
- * Logs are JSON lines without personal data or connection strings.
+ * Logs are JSON lines without personal data or connection strings (@kazuist/log, ADR-0039).
  */
-const log = (msg: string, extra: Record<string, unknown> = {}) =>
-  console.log(JSON.stringify({ at: new Date().toISOString(), svc: 'worker-node', msg, ...extra }));
+const log = serviceLog('worker-node');
 
 const env = process.env;
 const url = env.DATABASE_URL;
@@ -28,7 +28,7 @@ if (!url) {
   process.exit(1);
 }
 const pool = new pg.Pool({ connectionString: url, max: 5 });
-pool.on('error', (err) => log('pool error', { error: err.name }));
+pool.on('error', (err) => log('pool error', safeErrorFields(err)));
 
 function notifyDeps(): NotifyDeps | undefined {
   if (!env.APP_URL) {
@@ -86,14 +86,15 @@ const consumer = createConsumer(pool, `worker-node-${process.pid}`, handlers);
 const worker = startWorker({
   db: pool,
   consumer,
-  listen: pgListen(pool),
+  // A dropped LISTEN connection reconnects with backoff (1 s doubling to 30 s); polling covers the gap.
+  listen: pgListen(pool, { log }),
   tick,
   log,
 });
 log('started', { types: consumer.types });
 worker.done.catch((err: unknown) => {
   // LISTEN could not be set up (database unreachable at start): exit so the platform restarts the worker.
-  log('worker failed', { error: err instanceof Error ? err.name : 'Error' });
+  log('worker failed', safeErrorFields(err));
   process.exit(1);
 });
 

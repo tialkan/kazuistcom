@@ -36,6 +36,7 @@ import {
   verifyBundle,
   type GatewayEvent,
 } from '@kazuist/ai-gateway';
+import byok from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
 import ozet from '@kazuist/i18n/tr/ozet.json' with { type: 'json' };
 import { and, desc, eq, gt, isNotNull } from 'drizzle-orm';
 import { withAuth, type Principal } from '@/server/auth/guard';
@@ -182,6 +183,10 @@ async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Res
 
   const deps = summaryDeps();
   if (deps instanceof Response) return deps;
+  // Platform AI not configured (no platform key or no AI_DAILY_BUDGET_TRY): nothing is searched, counted or sent;
+  // the message points to BYOK, which /ara offers up front in this state anyway.
+  if (body.mode === 'platform' && !deps.platformAcik)
+    return apiError('unavailable', byok.ozet.platformKapali);
   const now = deps.now();
   const requestId = `ozet:${keyedHash(deps.hashSecret, 'istek', `${p.userId}:${key}`)}`;
   const userHash = keyedHash(deps.hashSecret, 'kullanici', p.userId);

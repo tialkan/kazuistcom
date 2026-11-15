@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
+import { platformAiAvailable } from '@kazuist/ai-gateway/config';
 import { authorityClasses, recordTypes, SearchQuery, type RecordType } from '@kazuist/contracts';
 import ara from '@kazuist/i18n/tr/ara.json';
 import { BosDurum, Dugme, Etiket, FormAlani, HataDurumu } from '@kazuist/ui';
 import { formatNorm, type SearchResult } from '@kazuist/casuist';
+import { logError } from '@kazuist/log';
 import { araAdresi, doldur, donusAdresi, girisAdresi } from './_bilesen/metin.ts';
 import { KisitliArama } from './_bilesen/KisitliArama.tsx';
 import { OzetAlani } from './_bilesen/OzetAlani.tsx';
@@ -319,8 +321,7 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
   try {
     res = await runSearch({ ...parsed.data });
   } catch (e) {
-    if (!(e instanceof SearchUnavailable))
-      console.error(JSON.stringify({ at: 'ara', error: (e as Error)?.name }));
+    if (!(e instanceof SearchUnavailable)) logError('ara', e);
     return (
       <div className="sayfa">
         {ust}
@@ -360,6 +361,7 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
         girisVar={girisVar}
         girisAdresi={giris}
         gorunenKayitlar={res.items.map((r) => r.record.id)}
+        platformYz={platformAiAvailable()}
       />
       <section aria-labelledby="sonuc-baslik" className={styles.sonuclar}>
         <div className={styles.sonucUst}>

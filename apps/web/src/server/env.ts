@@ -13,6 +13,9 @@ export const criticalEnv = [
   'BETTER_AUTH_SECRET',
   'BETTER_AUTH_URL',
   'BYOK_SIGNING_SECRET',
+  // Sign in, e-mail verification, password reset and edu.tr codes are mailed synchronously and throw without a
+  // provider (server/auth/mailer.ts). Plan 14.6: no silent success, so a deployment without it is not healthy.
+  'MAIL_SMTP_URL',
 ] as const;
 
 export function missingEnv(env: Record<string, string | undefined> = process.env): string[] {

@@ -12,7 +12,7 @@ Tek Coolify kaynağı: Projects > kazuist > production > Docker Compose, Git kay
 | Hizmet | İmaj | Bellek sınırı | Sağlık | Birim |
 |---|---|---|---|---|
 | postgres | `pgvector/pgvector:0.8.7-pg18-trixie` | 6g | `pg_isready` | adlandırılmış birim `pgdata` |
-| valkey | `valkey/valkey:9.0.6-alpine` | 256m | `valkey-cli ping` (parolalı) | yok (kalıcılık kapalı) |
+| valkey | `valkey/valkey:9.0.6-alpine` | 384m | `valkey-cli ping` (parolalı) | adlandırılmış birim `valkeydata` (AOF, `noeviction`) |
 | migrate | `ghcr.io/tialkan/kazuist-migrate:<tag>` | 512m | çıkış kodu (`exclude_from_hc`) | yok |
 | web | `ghcr.io/tialkan/kazuist-web:<tag>` | 1g | `/api/health` | yok |
 | worker-node | `ghcr.io/tialkan/kazuist-worker-node:<tag>` | 512m | veritabanına `select 1` | yok |
@@ -66,7 +66,7 @@ gövdede "bakımda"; Coolify > Restart ile web döner, 200.
 ## Docker temizliği
 
 Servers > localhost > Docker Cleanup: kullanılmayan imajlar ve derleme önbelleği; volume temizliği kapalı. Elle:
-`docker image prune -f`. `docker volume prune` çalıştırılmaz (`pgdata` silinir).
+`docker image prune -f`. `docker volume prune` çalıştırılmaz (`pgdata` ve `valkeydata` silinir).
 
 ## Coolify API (isteğe bağlı)
 

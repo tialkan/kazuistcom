@@ -81,14 +81,43 @@ export interface Admission {
   rollback(): Promise<void>;
 }
 
+/**
+ * Operator alert for the daily platform ceiling (plan 8.7/2: free allowance and credit calls stop, BYOK goes on,
+ * the operator is told). Amounts and the day only; no user, IP or content.
+ */
+export interface PlatformCapAlert {
+  kind: 'platform_tavan';
+  /**
+   * 'crossed': this call's recorded spend took the day's total over the ceiling. The counter store adds atomically,
+   * so exactly one call per day crosses, across every instance; a staff notification keys on this.
+   * 'refused': a platform call was refused at the ceiling; reported once per day per process, so a restarted or
+   * second instance still says why it refuses without repeating the alert for every request.
+   */
+  trigger: 'crossed' | 'refused';
+  /** UTC day of the spend counter (YYYY-MM-DD). */
+  day: string;
+  spendTl: number;
+  capTl: number;
+}
+
 export class BudgetGuard {
   private readonly streams = new Map<string, number>();
+  private refusedAlertDay: string | null = null;
   constructor(
     private readonly store: CounterStore,
     private readonly cfg: BudgetConfig = DEFAULT_BUDGET,
     private readonly now: () => Date = () => new Date(),
-    private readonly onAlert: (kind: 'platform_tavan') => void = () => undefined,
+    private readonly onAlert: (alert: PlatformCapAlert) => void = () => undefined,
   ) {}
+
+  /** The alert hook must never break admission or spend recording. */
+  private alert(a: PlatformCapAlert): void {
+    try {
+      this.onAlert(a);
+    } catch {
+      // Swallowed on purpose; the refusal or the recorded spend stands either way.
+    }
+  }
 
   /**
    * Checks all limits, counts usage and holds one stream slot until release. Every limit is checked before
@@ -114,8 +143,18 @@ export class BudgetGuard {
     const ipCreditKey = `credits:ip:${input.ipHash}:${d}`;
     const userKey = `credits:user:${input.userHash}:${d}`;
     try {
-      if (input.platform && (await this.store.get(`spend:tl:${d}`)) >= this.cfg.platformDailyTlCap) {
-        this.onAlert('platform_tavan');
+      const spend = input.platform ? await this.store.get(`spend:tl:${d}`) : 0;
+      if (input.platform && spend >= this.cfg.platformDailyTlCap) {
+        if (this.refusedAlertDay !== d) {
+          this.refusedAlertDay = d;
+          this.alert({
+            kind: 'platform_tavan',
+            trigger: 'refused',
+            day: d,
+            spendTl: spend,
+            capTl: this.cfg.platformDailyTlCap,
+          });
+        }
         throw new BudgetError(free ? 'platform_tavan_ucretsiz_durdu' : 'platform_tavan_kredili_durdu');
       }
       if (free && (await this.store.get(ipFreeKey)) >= this.cfg.ipDailyFreeUses)
@@ -144,9 +183,13 @@ export class BudgetGuard {
     }
   }
 
-  /** Adds realised platform spend in kuruş-precision TL. */
+  /** Adds realised platform spend in kuruş-precision TL; the call that crosses the ceiling raises the alert. */
   async recordSpendTl(tl: number): Promise<void> {
-    await this.store.incrBy(`spend:tl:${dayKey(this.now())}`, tl, DAY);
+    const d = dayKey(this.now());
+    const total = await this.store.incrBy(`spend:tl:${d}`, tl, DAY);
+    const cap = this.cfg.platformDailyTlCap;
+    if (tl > 0 && total >= cap && total - tl < cap)
+      this.alert({ kind: 'platform_tavan', trigger: 'crossed', day: d, spendTl: total, capTl: cap });
   }
 }
 

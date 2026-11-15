@@ -4,14 +4,17 @@ slug: yapay-zeka
 route: /hukuki/yapay-zeka
 lang: tr
 binding: true
-version: 2026-11-12.1
-date: 2026-11-12
+version: 2026-11-15.1
+date: 2026-11-15
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Mevcut sayfanın güncellenmiş hâlidir. BYOK arayüzü
-> henüz yoktur (review.md P8 madde 4); BYOK satırları o arayüz yayına girdiğinde geçerlidir ve yayın onayından
-> önce arayüzle karşılaştırılır.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 15 Kasım 2026. Mevcut sayfanın güncellenmiş hâlidir. BYOK bölümü
+> yayındaki arayüze göre yazıldı (packages/ai-gateway/src/byok/settings.ts ve client.ts, adapters/index.ts
+> `data_collection: 'deny'`, packages/i18n/tr/byok.json): tarayıcıdan doğrudan çağrı yalnız OpenRouter ile çalışır.
+> Arayüz aktarma modunu (sunucu üzerinden BYOK) sunmadığı için o satır "sunulmuyor" diye yazıldı; doğrudan Gemini
+> anahtarı kabul edilmediği için Gemini ücretsiz katman bölümü çıkarıldı (geri gelirse docs/kvkk ve acik-riza madde
+> 4 ile birlikte). iOS uygulaması henüz yoktur. Kredi satışı ilk yayında kapalıdır (ADR-0038).
 
 ## 1. Kazuist'te yapay zekânın rolü
 
@@ -27,8 +30,8 @@ dayandığı kaynak pasajına bağlanır. Kazuist kişiye özgü hukuki mütalaa
 
 ## 3. Kişisel verilerin maskelenmesi
 
-Her modda, sorgu ve sizin metniniz dışarı çıkmadan önce kimlik numarası, telefon, e-posta, IBAN gibi
-tanımlayıcılar ve kişi adları [KİŞİ-1], [TELEFON] gibi etiketlere çevrilir. Eşleme yalnız istek süresince
+Her modda, sorgu ve sizin metniniz dışarı çıkmadan önce Kazuist sunucusunda kimlik numarası, telefon, e-posta, IBAN
+gibi tanımlayıcılar ve kişi adları [KİŞİ-1], [TELEFON] gibi etiketlere çevrilir. Eşleme yalnız istek süresince
 bellekte tutulur. Kararlar ise yayından önce anonimleştirilmiştir. Maskeleme otomatik bir işlemdir ve
 hata yapabilir; özel nitelikli kişisel verilerinizi (sağlık, ceza kaydı vb.) sorgu olarak yazmamanızı rica
 ederiz. Yazma araçlarında kılavuzdan kural çıkarma da aynı maskelemeden geçer.
@@ -37,11 +40,9 @@ ederiz. Yazma araçlarında kılavuzdan kural çıkarma da aynı maskelemeden ge
 
 | Mod | Kimin anahtarı | Metin nereye gider |
 |---|---|---|
-| Platform | Kazuist'in | Kazuist sunucusundan OpenRouter üzerinden modele (Claude Haiku ve Sonnet); yedek olarak doğrudan Anthropic'e. Yalnız maskeli metin |
-| Kendi anahtarınız (BYOK), istemci modu (varsayılan) | Sizin | Tarayıcınızdan veya iOS uygulamasından doğrudan seçtiğiniz sağlayıcıya. Kazuist imzalı ve maskeli istem paketini hazırlar, çağrıyı siz yaparsınız |
-| BYOK, aktarma modu | Sizin | Kazuist sunucusu üzerinden; anahtar yalnız istek belleğinde, saklanmaz ve kayda yazılmaz. Bu mod kullanılmadan önce size açıkça söylenir |
-
-Desteklenen sağlayıcılar: Anthropic (Claude), OpenRouter, OpenAI, Google Gemini.
+| Platform (günlük ücretsiz hak) | Kazuist'in | Kazuist sunucusundan OpenRouter üzerinden modele; yedek olarak doğrudan Anthropic'e. Yalnız maskeli metin |
+| Kendi anahtarınız (BYOK) | Sizin OpenRouter anahtarınız | Kazuist sunucusu soruyu ve kaynak pasajlarını maskeler ve tarayıcınıza imzalı bir paket olarak döner; tarayıcınız paketi sizin anahtarınızla doğrudan OpenRouter'a gönderir. Kazuist sunucusu OpenRouter'a bağlanmaz ve anahtarınızı görmez |
+| BYOK, sunucu üzerinden aktarma | Sizin | Şu anda sunulmuyor |
 
 Platform modunda istekler OpenRouter, Inc. (ABD) üzerinden modele iletilir (ADR-0025). Her istekte yalnız kullanıcı
 verisi toplamayan sağlayıcılar (`provider.data_collection: "deny"`) ve sıfır veri saklama politikası olan uç noktalar
@@ -54,40 +55,50 @@ Yedek olarak doğrudan Anthropic kullanıldığında, Anthropic'in gizlilik merk
 silinir; kullanım politikası ihlali olarak işaretlenen içerik 2 yıla kadar, güvenlik sınıflandırma puanları 7 yıla
 kadar tutulabilir (privacy.claude.com, 22 Ekim 2026'da okundu). Bu yüzden Kazuist kişisel veri göndermez.
 
-BYOK modunda sağlayıcıyla ilişki sizinle sağlayıcı arasındadır; sağlayıcının koşulları ve gizlilik
-politikası geçerlidir.
+### Kendi anahtarınızla (BYOK) nasıl çalışır
+
+1. Sorunuz ve sayfadaki arama süzgeçleri Kazuist sunucusuna gider; anahtarınız bu isteğe eklenmez. Sunucu en ilgili
+   kaynak pasajlarını seçer, soruyu ve pasajları maskeler ve on dakika geçerli, tek kullanımlık imzalı bir paket
+   döner. Bu adım için giriş yapmış olmanız gerekir.
+2. Tarayıcınız paketi göndermeden önce metinde kimlik numarası, telefon, e-posta, IBAN gibi bir tanımlayıcının
+   kalıp kalmadığını yeniden denetler; kalmışsa istek OpenRouter'a gönderilmez.
+3. Tarayıcınız maskelenmiş metni sizin anahtarınızla doğrudan OpenRouter'a gönderir. Her istekte veri toplayan
+   sağlayıcılar dışarıda bırakılır (`provider.data_collection: "deny"`). "Gizlilik öncelikli" seçeneğini
+   işaretlerseniz istek ayrıca yalnız sıfır veri saklama uç noktalarına yönlendirilir (`provider.zdr: true`); bazı
+   modeller o zaman kullanılamayabilir.
+4. Gelen her cümle gösterilmeden önce tarayıcınızda kaynağıyla karşılaştırılır, ardından Kazuist sunucusunda yeniden
+   doğrulanır. Doğrulama için özetin cümleleri sunucuya gider; kaydedilmez ve içerik kayda yazılmaz.
+5. Bu işlemler için platform kredisi veya günlük ücretsiz hak düşmez; kullanım bedelini OpenRouter'a siz ödersiniz.
+
+İstek tarayıcınızdan sizin OpenRouter hesabınızla yapıldığı için OpenRouter, IP adresinizi ve hesap bilgilerinizi
+görür. Bu ilişki sizinle OpenRouter arasındadır; OpenRouter'ın ve seçtiğiniz modeli sunan sağlayıcının koşulları ve
+gizlilik politikası geçerlidir. Kendi anahtarınızı şimdilik yalnız OpenRouter için kullanabilirsiniz; OpenRouter
+üzerinden Anthropic, OpenAI ve Google modellerine erişilebilir.
 
 ### Anahtarınızın saklanması
 
-Anahtar varsayılan olarak yalnız o oturum için tarayıcınızda tutulur. "Bu cihazda hatırla" seçeneği
-anahtarı tarayıcının kalıcı deposunda tutar; ortak kullanılan cihazda seçmeyin. iOS'ta anahtar Anahtar
-Zinciri'nde saklanır. Kazuist sunucusu 1.0'da anahtar saklamaz.
+Anahtar yalnız tarayıcınızda tutulur ve Kazuist sunucusuna gönderilmez. Varsayılan olarak yalnız o oturum için
+tarayıcının oturum deposunda (sessionStorage) kalır ve sekmeyi kapatınca silinir. "Bu cihazda hatırla" seçeneğini
+seçerseniz tarayıcının yerel deposunda (localStorage) kalır; o tarayıcıya erişen herkes onu kullanabilir, bu yüzden
+ortak kullanılan bir cihazda seçmeyin. Anahtar aynı anda yalnız bir depoda bulunur. "Anahtarı dene" düğmesi
+anahtarınızı tarayıcınızdan doğrudan OpenRouter'a sorar; yanıt saklanmaz. Anahtarı "Kendi YZ anahtarınız" sayfasından
+(/hesap/yz-anahtari) silebilirsiniz.
 
-### Google Gemini ücretsiz katman uyarısı
+Yalnız Kazuist için oluşturduğunuz ve harcama sınırı koyduğunuz ayrı bir anahtar kullanmanızı öneririz. OpenRouter,
+sınırı olmayan anahtarların tarayıcıda kullanılmamasını önerir; Kazuist böyle bir anahtarı denediğinizde sizi uyarır.
 
-Google'ın Gemini API koşullarına göre ücretsiz katmanda gönderilen içerik ve cevaplar Google'ın ürün
-geliştirmesinde kullanılabilir ve insan incelemesine girebilir; Google bu katmanda hassas, gizli veya
-kişisel bilgi gönderilmemesini istemektedir. Google, AEA, İsviçre ve Birleşik Krallık'taki kullanıcılara
-sunulan uygulamalarda yalnız ücretli hizmetin kullanılmasını ister ve bu bölgelerde ücretsiz kotaya da ücretli
-hizmetin veri kullanım koşullarını uygular (Gemini API Additional Terms of Service, ai.google.dev, son güncelleme
-28 Nisan 2026).
+### Ücretsiz model uyarısı
 
-Bu yüzden:
-
-1. Gemini anahtarı yalnız, anahtarın ücretli faturalandırmaya bağlı olduğunu beyan ederseniz kabul edilir;
-   ücretsiz katman anahtarı Kazuist'te kullanılamaz.
-2. Beyanın doğru olmaması hâlinde içeriğiniz Google'ın ücretsiz katman koşullarına tabi olabilir; beyan sizin sorumluluğunuzdadır.
-
-### OpenRouter (kendi anahtarınızla)
-
-Kendi OpenRouter anahtarınızla yapılan isteklerde de varsayılan olarak veri toplamayan sağlayıcılar seçilir
-(`provider.data_collection: "deny"`). "Gizlilik öncelikli" seçeneğinde ayrıca sıfır veri saklama koşulu
-istenir (`provider.zdr: true`).
+Adı `:free` ile biten ücretsiz OpenRouter modellerinde kullanım sınırları düşüktür ve sağlayıcı koşulları farklı
+olabilir. Kazuist veri toplayan sağlayıcıları dışarıda bıraktığı için ücretsiz modeller bazen yanıt vermeyebilir.
+Ücretsiz modellerle hassas veya yayımlanmamış metin göndermeyin.
 
 ## 5. Kayıt (log)
 
-İçerik kayda yazılmaz. Yalnız işlem türü, model, token sayısı, süre, maliyet ve kullanıcı kimliğinin tek
-yönlü özeti tutulur.
+İçerik kayda yazılmaz. Platform modundaki işlemlerde yalnız işlem türü, model, token sayısı, süre, maliyet ve
+kullanıcı kimliğinin tek yönlü özeti tutulur. Kendi anahtarınızla yapılan isteklerde OpenRouter'a giden çağrı
+Kazuist sunucusundan geçmez ve Kazuist bu çağrının maliyetini görmez; doğrulama için sunucuya gelen cümleler
+saklanmaz ve kayda yazılmaz.
 
 ## 6. Avrupa Birliği kullanıcıları için şeffaflık notu
 
@@ -100,5 +111,6 @@ Risk sınıflandırması kullanım amacına göre ayrıca değerlendirilir.
 
 ## 7. Krediler
 
-YZ işlemlerinin kredi karşılığı her ekranda gösterilir; 20 kredinin üstündeki işlemde onay istenir.
-Ayrıntı: [İade, iptal ve kredi kuralları](/hukuki/iade-ve-kredi).
+Kredi satışı henüz açılmamıştır; platform modundaki özet günlük ücretsiz hakla, BYOK modundaki özet kendi
+anahtarınızla çalışır. Kredi satışı açıldığında YZ işlemlerinin kredi karşılığı her ekranda gösterilir ve 20
+kredinin üstündeki işlemde onay istenir. Ayrıntı: [İade, iptal ve kredi kuralları](/hukuki/iade-ve-kredi).

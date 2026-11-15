@@ -4,14 +4,20 @@ slug: iade-ve-kredi
 route: /hukuki/iade-ve-kredi
 lang: tr
 binding: true
-version: 2026-11-12.1
-date: 2026-11-12
+version: 2026-11-15.1
+date: 2026-11-15
 status: taslak
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Bu metin plan 4.5'i birebir izler; dayanak
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 15 Kasım 2026. Bu metin plan 4.5'i birebir izler; dayanak
 > atıfları ayrıca doğrulanmıştır (aşağıdaki notlar). ADR-0029 uyarınca yeni abonelik satışı yapılmadığı 6. bölüme
-> yazıldı.
+> yazıldı. Kredi satışı ilk yayında kapalıdır (ADR-0038, apps/web/src/server/billing/acik.ts `odemeAcik`: iyzico
+> anahtarları yokken satın alma akışı sunulmaz); girişe bu durum yazıldı. Satış açılmadan önce metin yeniden onaya
+> sunulur.
+
+Kredi satışı henüz açılmamıştır; şu anda kredi satın alınamaz. Kazuist'in sunulan özelliklerini günlük ücretsiz
+hakla ve kendi OpenRouter anahtarınızla kullanabilirsiniz. Aşağıdaki satın alma, iade ve abonelik kuralları kredi
+satışı açıldığında uygulanır.
 
 ## 1. Krediler
 
@@ -70,7 +76,7 @@ başlatılmış bir abonelik varsa o aboneliğin hakları için geçerlidir.
 
 ## 8. iOS
 
-iOS'ta yapılan satın alımlarda faturalama, yenileme ve iade Apple sistemindedir. İptal: iPhone Ayarlar >
+iOS uygulaması yayımlandığında, iOS'ta yapılan satın alımlarda faturalama, yenileme ve iade Apple sistemindedir. İptal: iPhone Ayarlar >
 [adınız] > Abonelikler. İade talebi Apple'a yapılır.
 
 ## 9. Hesap silme

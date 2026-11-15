@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { platformAiAvailable } from '@kazuist/ai-gateway/config';
 import b from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
 import { AltSayfa } from '../../_bilesen/AltSayfa';
 import { ByokAyarlari } from '../../_bilesen/ByokAyarlari';
@@ -24,7 +25,7 @@ export default function YzAnahtariPage() {
           ))}
         </ol>
       </section>
-      <ByokAyarlari />
+      <ByokAyarlari platformYz={platformAiAvailable()} />
     </AltSayfa>
   );
 }
