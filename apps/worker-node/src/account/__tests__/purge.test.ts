@@ -64,12 +64,15 @@ describe('account.purge', () => {
     expect((await pg.query('select 1 from users where id = $1', [live])).rows).toHaveLength(1);
   });
 
-  it('anonymises in place when a kept record still references the user', async () => {
+  it('anonymises in place when a kept ledger record still references the user', async () => {
     const id = await user('fatura@example.invalid');
-    // review_queue.decided_by references users without ON DELETE; stands in for kept billing rows.
-    await pg.query(`insert into review_queue (queue, subject_type, decided_by) values ('cards', 'x', $1)`, [
-      id,
-    ]);
+    // A credit lot is a legally retained ledger row (append only), so the wallet and the users row stay.
+    const w = await one<{ id: string }>(`insert into wallets (user_id) values ($1) returning id`, [id]);
+    await pg.query(
+      `insert into credit_lots (wallet_id, source, original_credits, remaining_credits, expires_at, origin_ref)
+       values ($1, 'promosyon', 50, 50, now() + interval '30 days', $2)`,
+      [w.id, `kayit:${id}`],
+    );
     expect((await purgeAccount(deps(), { userId: id })).status).toBe('anonymised');
     const u = await one<{ email: string; name: string | null }>(
       'select email, name from users where id = $1',
@@ -78,6 +81,13 @@ describe('account.purge', () => {
     expect(u.email).toBe(`silindi-${id}@kazuist.invalid`);
     expect(u.name).toBeNull();
     expect((await pg.query('select 1 from profiles where user_id = $1', [id])).rows).toHaveLength(0);
+  });
+
+  it('deletes an empty wallet together with the user', async () => {
+    const id = await user('bos-cuzdan@example.invalid');
+    await pg.query(`insert into wallets (user_id) values ($1)`, [id]);
+    expect(await purgeAccount(deps(), { userId: id })).toEqual({ status: 'purged' });
+    expect((await pg.query('select 1 from wallets where user_id = $1', [id])).rows).toHaveLength(0);
   });
 
   it('rejects payloads with extra fields', async () => {

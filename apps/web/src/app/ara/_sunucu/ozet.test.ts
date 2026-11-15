@@ -10,6 +10,7 @@ import {
 } from '@kazuist/ai-gateway';
 import type { AnswerEvent, ByokProvider } from '@kazuist/contracts';
 import { api, createHarness, signUp, type Harness } from '@/server/auth/__tests__/harness';
+import { eq } from 'drizzle-orm';
 import { schema } from '@/server/auth/db';
 import { MemoryRateLimitStore, RateLimiter } from '@/server/auth/rate-limit';
 import { byokOzet, kazuistDeps } from '../_bilesen/byok.ts';
@@ -117,6 +118,8 @@ beforeAll(async () => {
   token = (await signUp('ozet@example.com')).token;
   const [u] = await h.db.select({ id: schema.users.id }).from(schema.users);
   userId = u!.id;
+  // The free allowance needs a verified e-mail (kimlik); the unverified case has its own test.
+  await h.db.update(schema.users).set({ emailVerified: true }).where(eq(schema.users.id, userId));
 }, 60_000);
 afterAll(() => {
   setSummaryDeps(undefined);
@@ -192,6 +195,13 @@ describe('POST /v1/answers', () => {
     // Still free: the three abstentions did not use the allowance.
     expect(ev.at(-1)).toMatchObject({ creditsCharged: 0 });
     expect(ledger.reservations.size).toBe(0);
+  });
+
+  it('gives no free summary to an account whose e-mail is not verified; it pays with credits', async () => {
+    const other = (await signUp('dogrulanmamis@example.com')).token;
+    const ev = await events(await post(answersPost, '/v1/answers', { q: 'KVKK m.11' }, other));
+    expect(ev.at(-1)).toMatchObject({ t: 'son', creditsCharged: 2 });
+    expect([...ledger.reservations.values()].map((r) => [r.state, r.charged])).toEqual([['consumed', 2]]);
   });
 
   it('gives edu.tr verified users five free summaries', async () => {
