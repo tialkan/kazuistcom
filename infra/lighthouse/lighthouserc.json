@@ -8,8 +8,7 @@
         "http://localhost:3000/ara",
         "http://localhost:3000/yazma",
         "http://localhost:3000/tespit",
-        "http://localhost:3000/rehberler",
-        "http://localhost:3000/hukuki/aydinlatma"
+        "http://localhost:3000/rehberler"
       ],
       "numberOfRuns": 3,
       "settings": {

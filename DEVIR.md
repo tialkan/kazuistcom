@@ -17,8 +17,10 @@ Bağımsız main denetiminin beş maddesi (#118, e229c70 üstünde). Yeni log sa
   düşmesine yol açardı, Uptime Kuma `"ok"` anahtar kelimesiyle yine uyarır. Compose'ta `MAIL_SMTP_URL` web ve
   worker-node için `:?`. CI: Mailpit ile 200 ok, değişkensiz 503 (adsız gövde), kapalı portla 200 degraded.
 - `tests/e2e/adresler.ts` (kalite-guvenlik yolu): `ANA_SAYFALAR`'a `/ara`, `/yazma`, `/tespit`, `/rehberler`,
-  `/kaydettiklerim`, `/hesap/yz-anahtari`. `infra/lighthouse/lighthouserc.json`: 8 sayfa, erişilebilirlik 0,95 ve
-  SEO 0,9 hata eşiği (plan 1412), `is-crawlable` atlanır (CI sunucusu bilerek noindex).
+  `/kaydettiklerim`, `/hesap/yz-anahtari`. `infra/lighthouse/lighthouserc.json`: 7 sayfa, erişilebilirlik 0,95 ve
+  SEO 0,9 hata eşiği (plan 1412), `is-crawlable` atlanır (CI sunucusu bilerek noindex). İlk CI turunda
+  `/hukuki/aydinlatma` SEO 0,88 aldı (meta açıklaması yok, `hukuki/[belge]/page.tsx` `generateMetadata`); sayfa
+  listeden çıkarıldı, eşik gevşetilmedi, istek `docs/istekler/on-yuz-hukuki-meta-aciklama.md`.
 - `apps/worker-node/src/runner.ts` (orkestra yolu): LISTEN istemcisinin `error`/`end` dinleyicisi yoktu, bağlantı
   koptuğunda işlenmemiş `error` süreci düşürüyordu. `pgListen` kırık istemciyi yok eder, 1 sn'den 30 sn'ye ikiye
   katlanan beklemeyle yeniden LISTEN eder, sonra her kanalı bir kez bildirir (kopukken kaçan NOTIFY'lar). İlk bağlantı
