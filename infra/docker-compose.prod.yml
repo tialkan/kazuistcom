@@ -7,7 +7,9 @@
 # (KAZUIST_IMAGE_PREFIX=kazuist, KAZUIST_IMAGE_TAG=ci, KAZUIST_PULL_POLICY=never).
 #
 # Variables written as ${NAME:?} are required: Coolify refuses to deploy while they are empty. ${NAME:-} are
-# optional; empty keeps the feature off (for example empty IYZICO_* is the payments-off launch mode). Values live
+# optional; empty keeps the feature off (for example empty IYZICO_* is the payments-off launch mode). Every optional
+# variable here was checked to treat "" like unset. KAZUIST_POLL_SECONDS is left out on purpose: core/main.py parses
+# float("") and the worker would crash-loop (docs/istekler/altyapi-worker-py-bos-degisken.md); its default 5 is used. Values live
 # only in Coolify (Environment Variables, "Is Secret"); never here.
 #
 # Memory budget for a 16 GB host (hard limits, swap included): postgres 6g, worker-py 3g, web 1g, worker-node 512m,
@@ -280,7 +282,6 @@ services:
       KAZUIST_INTERNAL_TOKEN: ${KAZUIST_INTERNAL_TOKEN:?}
       KAZUIST_INTERNAL_HOST: 0.0.0.0
       KAZUIST_INTERNAL_PORT: '8001'
-      KAZUIST_POLL_SECONDS: ${KAZUIST_POLL_SECONDS:-}
       KAZUIST_NER_BACKEND: ${KAZUIST_NER_BACKEND:-}
       KAZUIST_NER_THREADS: ${KAZUIST_NER_THREADS:-}
       KAZUIST_NER_QUANTIZED: ${KAZUIST_NER_QUANTIZED:-}

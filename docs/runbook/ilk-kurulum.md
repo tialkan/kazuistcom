@@ -179,12 +179,12 @@ yere kaydedilmez, Kulular parola yöneticisine yazılır.
 | `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_PRIVATE_KEY`, `APNS_BUNDLE_ID` | hayır | iOS bildirimleri | worker-node |
 | `KAZUIST_NER_BACKEND`, `KAZUIST_NER_THREADS`, `KAZUIST_NER_QUANTIZED` | hayır | model klasörü kurulunca (`dagitim.md`, "worker-py model birimleri") | worker-py |
 | `KAZUIST_EMBED_BACKEND`, `KAZUIST_EMBED_THREADS`, `KAZUIST_EMBED_QUANTIZED` | hayır | ADR-0037 koşullarıyla; 16 GB x86'da `THREADS=4` | worker-py |
-| `KAZUIST_SOURCE_*` (7), `OPENALEX_API_KEY`, `KAZUIST_CITATIONS_SCOPE`, `KAZUIST_POLL_SECONDS` | hayır | kaynak onayı (docs/kaynaklar) ve veri-toplama | worker-py |
+| `KAZUIST_SOURCE_*` (7), `OPENALEX_API_KEY`, `KAZUIST_CITATIONS_SCOPE` | hayır | kaynak onayı (docs/kaynaklar) ve veri-toplama | worker-py |
 
 Dosyada sabit olan ve panele girilmeyenler: `DATABASE_URL`, `VALKEY_URL`, `BETTER_AUTH_URL` (APP_URL),
 `TRUSTED_PROXY_COUNT=1`, `WORKER_PY_URL=http://worker-py:8001`, `KAZUIST_RAW_DIR=/data/raw-store`, model dizinleri,
 `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`. `S3_*` gerekmez (hiçbir kod okumuyor; `/api/health` artık istemiyor).
-Yerelde ve testte kullanılan `KAZUIST_ARAMA_KAYNAGI`, `KAZUIST_FIKSTUR_URETIMDE`, `KAZUIST_LIVE_SMOKE` sunucuya hiç
+`KAZUIST_POLL_SECONDS` dosyada yoktur: boş değer worker-py'yi düşürüyor, öntanım 5 saniye kullanılır. Yerelde ve testte kullanılan `KAZUIST_ARAMA_KAYNAGI`, `KAZUIST_FIKSTUR_URETIMDE`, `KAZUIST_LIVE_SMOKE` sunucuya hiç
 girilmez.
 
 ### Bakım sayfası (FR-105)
