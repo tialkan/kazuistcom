@@ -25,6 +25,7 @@
     "eduKullanimda": "Bu kurum e-posta adresi başka bir hesapta doğrulanmış. Her adres yalnız bir hesapta kullanılabilir.",
     "ikinciAdim": "Yönetim paneli için passkey ile giriş ve ikinci adım onayı gerekir.",
     "kaynak": "İstek kaynağı doğrulanamadı.",
+    "maskelemeBekliyor": "Yeniden maskeleme henüz tamamlanmadı ya da anonimleştirme incelemesi bekliyor. Kayıt gizli kalıyor.",
     "genel": "Bir sorun oluştu. Lütfen biraz sonra yeniden deneyin."
   },
   "meslekler": {

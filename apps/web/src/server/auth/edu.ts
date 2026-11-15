@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, isNotNull, sql } from 'drizzle-orm';
+import { and, desc, eq, gt, isNotNull } from 'drizzle-orm';
 import { writeAudit } from './audit.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';
@@ -35,26 +35,32 @@ export function normalizeEduEmail(email: string): string {
   return `${local}@${domain}`;
 }
 
-/** The same normalisation in SQL, for rows written before normalizeEduEmail existed. */
-const normalizedColumn = sql`regexp_replace(rtrim(lower(trim(${schema.eduVerifications.email})), '.'), '\\+[^@]*@', '@')`;
-
 /**
- * True when another account holds a verification of this mailbox. Every verified row counts, also one older than a
- * year: the owner renews on the same account. The rows go when that account is purged (account.purge).
+ * True when another account holds this mailbox. edu_claims (v1.6, ADR-0038) has one row per mailbox, written by the
+ * edu_verifications_claim trigger for every verified row (also one older than a year: the owner renews on the same
+ * account) and removed with the last verified row of the owner (account.purge). The migration back filled it.
  */
 async function claimedByOther(db: Db, userId: string, normalized: string): Promise<boolean> {
-  const rows = await db
-    .select({ id: schema.eduVerifications.id })
-    .from(schema.eduVerifications)
-    .where(
-      and(
-        isNotNull(schema.eduVerifications.verifiedAt),
-        sql`${schema.eduVerifications.userId} <> ${userId}`,
-        sql`${normalizedColumn} = ${normalized}`,
-      ),
-    )
+  const [row] = await db
+    .select({ userId: schema.eduClaims.userId })
+    .from(schema.eduClaims)
+    .where(eq(schema.eduClaims.email, normalized))
     .limit(1);
-  return rows.length > 0;
+  return !!row && row.userId !== userId;
+}
+
+/**
+ * The edu_verifications_claim trigger refuses a verified row for a mailbox of another account with SQLSTATE 23505 on
+ * edu_claims_pkey. node-postgres and PGlite put code and constraint on the error; Drizzle wraps it in cause.
+ */
+export function isEduClaimConflict(err: unknown): boolean {
+  let e: unknown = err;
+  for (let depth = 0; depth < 5 && e && typeof e === 'object'; depth++) {
+    const { code, constraint, cause } = e as { code?: unknown; constraint?: unknown; cause?: unknown };
+    if (code === '23505' && constraint === 'edu_claims_pkey') return true;
+    e = cause;
+  }
+  return false;
 }
 
 export function eduStillValid(verifiedAt: Date | null, now: Date): boolean {
@@ -124,22 +130,32 @@ export async function confirmEduVerification(
     return 'invalid';
   }
   const normalized = normalizeEduEmail(row.email);
-  const claimed = await db.transaction(async (tx) => {
-    // Serialise confirmations of one mailbox, so two accounts confirming at once cannot both succeed. Until a
-    // unique index exists (docs/istekler/kimlik-edu-tekil.md) this lock and the check are the guarantee.
-    await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${`edu:${normalized}`}, 0))`);
-    if (await claimedByOther(tx as unknown as Db, userId, normalized)) return true;
-    await tx
-      .update(schema.eduVerifications)
-      .set({ verifiedAt: now })
-      .where(eq(schema.eduVerifications.id, row.id));
-    await tx
-      .insert(schema.profiles)
-      .values({ userId, eduVerified: true })
-      .onConflictDoUpdate({ target: schema.profiles.userId, set: { eduVerified: true, updatedAt: now } });
-    await tx.insert(schema.userRoles).values({ userId, roleId: 'ogrenci_dogrulanmis' }).onConflictDoNothing();
-    return false;
-  });
+  // The check gives the common case its answer without a failed statement. The guarantee is the trigger: when
+  // another account verifies the mailbox between the check and the update (another confirmation, an admin tool, a
+  // script), the update fails with 23505 and the whole transaction, role and profile included, rolls back. Two
+  // confirmations at once serialise on the edu_claims primary key, so no advisory lock is needed.
+  let claimed: boolean;
+  try {
+    claimed = await db.transaction(async (tx) => {
+      if (await claimedByOther(tx as unknown as Db, userId, normalized)) return true;
+      await tx
+        .update(schema.eduVerifications)
+        .set({ verifiedAt: now })
+        .where(eq(schema.eduVerifications.id, row.id));
+      await tx
+        .insert(schema.profiles)
+        .values({ userId, eduVerified: true })
+        .onConflictDoUpdate({ target: schema.profiles.userId, set: { eduVerified: true, updatedAt: now } });
+      await tx
+        .insert(schema.userRoles)
+        .values({ userId, roleId: 'ogrenci_dogrulanmis' })
+        .onConflictDoNothing();
+      return false;
+    });
+  } catch (err) {
+    if (!isEduClaimConflict(err)) throw err;
+    claimed = true;
+  }
   if (claimed) {
     await writeAudit(db, secret, {
       actorId: userId,

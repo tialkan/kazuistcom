@@ -19,6 +19,7 @@ import {
   stepUpConfirm,
   takedownPost,
 } from '../handlers.ts';
+import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
 import { decryptPii, isValidTckn } from '../pii.ts';
 import { api, createHarness, params, signUp, type Harness } from './harness.ts';
 
@@ -356,6 +357,178 @@ describe('takedown decisions keep the target hidden while any request requires i
     await decide(a, 'onay');
     await decide(b, 'ret');
     expect(await hiddenAt(rec)).not.toBeNull();
+  });
+
+  /** The open release item of a takedown (opened by ek_maskeleme on a record), as the editor sees it. */
+  async function releaseItem(takedownId: string): Promise<{ id: string; payload: Record<string, unknown> }> {
+    const q = await body(
+      await adminQueueGet(api('/v1/admin/queues/takedowns', adm.token), params({ queue: 'takedowns' })),
+    );
+    return q.find(
+      (i: { subjectId: string; payload: { action?: string } }) =>
+        i.subjectId === takedownId && i.payload.action === 'release_after_remask',
+    );
+  }
+
+  async function release(takedownId: string, decision: 'onay' | 'ret' | 'duzelt', token = adm.token) {
+    const item = await releaseItem(takedownId);
+    expect(item).toBeTruthy();
+    return adminQueueDecide(
+      api(
+        `/v1/admin/queues/takedowns/${item.id}/decision`,
+        token,
+        post({ decision, note: 'yeniden maskelendi' }),
+      ),
+      params({ queue: 'takedowns', itemId: item.id }),
+    );
+  }
+
+  /**
+   * What anon.run does for the record (services/worker-py/anonymizer/store.py): the job finishes, open
+   * anonymization items are superseded, and either the masked text is published or, with spans for review, it
+   * stays empty and a new anonymization item opens.
+   */
+  async function anonymiserRuns(rec: string, held = false) {
+    await h.pg.query(
+      `update jobs set status = 'done' where type = 'anon.run' and dedupe_key = $1 and status in ('queued', 'running')`,
+      [`anon:${rec}`],
+    );
+    await h.pg.query(
+      `update review_queue set decision = 'superseded', decided_at = now()
+       where queue = 'anonymization' and subject_type = 'record' and subject_id = $1 and decision is null`,
+      [rec],
+    );
+    if (held) {
+      await h.pg.query(
+        `insert into review_queue (queue, subject_type, subject_id, payload, priority)
+         values ('anonymization', 'record', $1, '{"items": []}', 10)`,
+        [rec],
+      );
+      await h.pg.query(`update records set anonymized = false, masked_text = null where id = $1`, [rec]);
+    } else {
+      await h.pg.query(`update records set anonymized = true, masked_text = '[maskeli]' where id = $1`, [
+        rec,
+      ]);
+    }
+  }
+
+  it('ek_maskeleme: the record is shown again only after the re-mask is published and an editor approves', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    await decide(a, 'onay');
+    await decide(a, 'duzelt');
+    const item = await releaseItem(a);
+    expect(item.payload).toEqual({ action: 'release_after_remask', takedownId: a, recordId: rec });
+
+    // anon.run still queued: 409, the item stays open, the record stays hidden.
+    const early = await release(a, 'onay');
+    expect(early.status).toBe(409);
+    expect((await body(early)).message).toBe(tr.hata.maskelemeBekliyor);
+    expect(await hiddenAt(rec)).not.toBeNull();
+
+    // The run is held for editor review: still 409, also after the anonymization item is approved, since
+    // masked_text stays empty until the anonymiser publishes.
+    await anonymiserRuns(rec, true);
+    expect((await release(a, 'onay')).status).toBe(409);
+    const anonQ = await body(
+      await adminQueueGet(
+        api('/v1/admin/queues/anonymization', adm.token),
+        params({ queue: 'anonymization' }),
+      ),
+    );
+    const anonItem = anonQ.find((i: { subjectId: string }) => i.subjectId === rec);
+    const approved = await adminQueueDecide(
+      api(`/v1/admin/queues/anonymization/${anonItem.id}/decision`, adm.token, post({ decision: 'onay' })),
+      params({ queue: 'anonymization', itemId: anonItem.id }),
+    );
+    expect(approved.status).toBe(200);
+    expect((await release(a, 'onay')).status).toBe(409);
+    expect(await hiddenAt(rec)).not.toBeNull();
+
+    // A non-staff account cannot release.
+    const user = await signUp('kaldirma-kullanici@example.invalid');
+    expect((await release(a, 'onay', user.token)).status).toBe(403);
+
+    // Published: the editor's approval shows the record and closes the item, audited.
+    await anonymiserRuns(rec);
+    expect((await release(a, 'onay')).status).toBe(200);
+    expect(await hiddenAt(rec)).toBeNull();
+    expect(await releaseItem(a)).toBeUndefined();
+    const audit = await h.db
+      .select()
+      .from(schema.auditLog)
+      .where(eq(schema.auditLog.action, 'takedown.release.onay'));
+    expect(audit.find((r) => r.subjectId === a)?.diff).toMatchObject({
+      reviewItem: item.id,
+      result: 'shown',
+    });
+  });
+
+  it('two masking requests: the record is shown when the last release is approved', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    const b = await request(rec);
+    await decide(a, 'duzelt');
+    await decide(b, 'duzelt');
+    await anonymiserRuns(rec);
+    expect((await release(a, 'onay')).status).toBe(200);
+    expect(await hiddenAt(rec)).not.toBeNull();
+    expect((await release(b, 'onay')).status).toBe(200);
+    expect(await hiddenAt(rec)).toBeNull();
+  });
+
+  it('a released masking request no longer blocks ret of a temporarily hidden one', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    const b = await request(rec);
+    await decide(a, 'duzelt');
+    await decide(b, 'onay');
+    await anonymiserRuns(rec);
+    expect((await release(a, 'onay')).status).toBe(200);
+    expect(await hiddenAt(rec)).not.toBeNull();
+    await decide(b, 'ret');
+    expect(await hiddenAt(rec)).toBeNull();
+  });
+
+  it('release stays hidden under permanent removal; release ret keeps the record hidden for good', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    const b = await request(rec);
+    await decide(a, 'duzelt');
+    await decide(b, 'onay');
+    await decide(b, 'onay');
+    await anonymiserRuns(rec);
+    expect((await release(a, 'onay')).status).toBe(200);
+    expect(await hiddenAt(rec)).not.toBeNull();
+
+    const rec2 = await record();
+    const c = await request(rec2);
+    const d = await request(rec2);
+    await decide(c, 'duzelt');
+    await decide(d, 'onay');
+    await anonymiserRuns(rec2);
+    expect((await release(c, 'ret')).status).toBe(200);
+    expect(await releaseItem(c)).toBeUndefined();
+    await decide(d, 'ret');
+    expect(await hiddenAt(rec2)).not.toBeNull();
+  });
+
+  it('release duzelt queues anon.run again and keeps the item open', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    await decide(a, 'duzelt');
+    await anonymiserRuns(rec);
+    expect((await release(a, 'duzelt')).status).toBe(200);
+    const jobs = await h.pg.query<{ status: string }>(
+      `select status from jobs where type = 'anon.run' and dedupe_key = $1 order by created_at`,
+      [`anon:${rec}`],
+    );
+    expect(jobs.rows.map((r) => r.status)).toEqual(['done', 'queued']);
+    expect(await releaseItem(a)).toBeTruthy();
+    expect((await release(a, 'onay')).status).toBe(409);
+    await anonymiserRuns(rec);
+    expect((await release(a, 'onay')).status).toBe(200);
+    expect(await hiddenAt(rec)).toBeNull();
   });
 });
 
