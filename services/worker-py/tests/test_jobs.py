@@ -99,6 +99,10 @@ def test_payload_vocabularies_match_contract() -> None:
     assert sorted(jobs.BILLING_NOTICE_KINDS) == sorted(_ts_list(CONTRACT_BILLING, "billingNoticeKinds"))
     assert sorted(jobs.NOTIFICATION_CHANNELS) == sorted(_ts_list(CONTRACT_JOBS, "notificationChannels"))
     assert sorted(t.value for t in PAYLOAD_EXEMPT) == sorted(_ts_list(CONTRACT_JOBS, "jobPayloadExempt"))
+    assert sorted(jobs.AYM_DECISION_TYPES) == sorted(_ts_list(CONTRACT_JOBS, "aymDecisionTypes"))
+    assert sorted(jobs.COURT_SOURCES) == sorted(_ts_list(CONTRACT_JOBS, "courtSources"))
+    m = re.search(r"export const INGEST_MAX_PAGE = ([0-9_]+);", CONTRACT_JOBS.read_text(encoding="utf-8"))
+    assert m and int(m.group(1).replace("_", "")) == jobs.INGEST_MAX_PAGE
 
 
 def test_every_type_has_a_check_or_is_exempt() -> None:
@@ -136,6 +140,19 @@ def test_python_only_edge_cases() -> None:
     assert valid_payload(JobType.INGEST_FETCH, {"source": "mevzuat", "kanunNo": "6698", "rgDate": "2026-11-12",
                                                 "tur": 1.0})
     assert not valid_payload(JobType.ANON_RUN, "not a dict")
+    # v1.6 (ADR-0038): Python's \d and $ are wider than JavaScript's; the checks use [0-9] and \Z.
+    guid = "817f0b47-acf1-0404-3232-c313b5441fd4"
+    assert valid_payload(JobType.INGEST_FETCH, {"source": "aym", "kararTipi": "NormDenetimi", "id": guid})
+    assert not valid_payload(JobType.INGEST_FETCH, {"source": "aym", "kararTipi": "NormDenetimi", "id": guid + "\n"})
+    assert valid_payload(JobType.INGEST_FETCH, {"source": "kvkk", "page": 2.0})
+    assert not valid_payload(JobType.INGEST_FETCH, {"source": "kvkk", "page": True})
+    assert not valid_payload(JobType.INGEST_FETCH, {"source": ["kvkk"], "page": 1})
+    doc = {"source": "yargitay", "id": "1104187600", "unit": "Hukuk Genel Kurulu", "esas": "2024/660",
+           "karar": "2024/812", "date": "2024-10-02"}
+    assert valid_payload(JobType.INGEST_FETCH, doc)
+    assert not valid_payload(JobType.INGEST_FETCH, {**doc, "esas": "\u0662\u0660\u0662\u0664/660"})
+    assert not valid_payload(JobType.INGEST_FETCH, {**doc, "id": "\u0661\u0662"})
+    assert not valid_payload(JobType.INGEST_FETCH, {**doc, "karar": "2024/812\n"})
 
 
 class FakeCursor:

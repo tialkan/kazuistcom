@@ -1,4 +1,15 @@
-import { boolean, index, integer, pgTable, primaryKey, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import {
+  boolean,
+  check,
+  index,
+  integer,
+  pgTable,
+  primaryKey,
+  text,
+  uniqueIndex,
+  uuid,
+} from 'drizzle-orm/pg-core';
 import { createdAt, id, ts, updatedAt } from './_common.ts';
 
 /** Better Auth core tables (shape owned by Better Auth; ids are uuid). */
@@ -113,18 +124,50 @@ export const twoFactors = pgTable(
   (t) => [uniqueIndex('two_factors_user_uq').on(t.userId)],
 );
 
-export const eduVerifications = pgTable('edu_verifications', {
-  id: id(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  email: text('email').notNull(),
-  codeHash: text('code_hash').notNull(),
-  attempts: integer('attempts').notNull().default(0),
-  expiresAt: ts('expires_at').notNull(),
-  verifiedAt: ts('verified_at'),
-  createdAt: createdAt(),
-});
+export const eduVerifications = pgTable(
+  'edu_verifications',
+  {
+    id: id(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    email: text('email').notNull(),
+    codeHash: text('code_hash').notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    expiresAt: ts('expires_at').notNull(),
+    verifiedAt: ts('verified_at'),
+    createdAt: createdAt(),
+  },
+  // v1.6 (ADR-0038): the edu_claims trigger and account.purge look rows up by user.
+  (t) => [index('edu_verifications_user_idx').on(t.userId)],
+);
+
+/**
+ * One account per edu.tr mailbox (v1.6, ADR-0038; plan 10.1/3). email is the mailbox in the form of the SQL
+ * function edu_mailbox(text) (trimmed, lower case, trailing dots and the +tag of the local part removed; the same
+ * rule as kimlik normalizeEduEmail), so the primary key admits one account per mailbox.
+ *
+ * Maintained only by the trigger edu_verifications_claim (migration 0008): a row of edu_verifications that is or
+ * becomes verified claims its mailbox for its user; when the mailbox belongs to another account the statement
+ * fails with SQLSTATE 23505 (unique_violation, constraint edu_claims_pkey) and no e-mail in the message. When the
+ * last verified row of the owner for that mailbox is deleted or loses verified_at, the claim goes. Every writer of
+ * edu_verifications (web, admin tool, script) is held to the rule.
+ *
+ * No foreign key to users on purpose: the claim follows the edu_verifications rows, which account.purge deletes and
+ * which a users delete cascades to. verified_at is the newest verification of the owner for the mailbox.
+ */
+export const eduClaims = pgTable(
+  'edu_claims',
+  {
+    email: text('email').primaryKey(),
+    userId: uuid('user_id').notNull(),
+    verifiedAt: ts('verified_at').notNull(),
+  },
+  (t) => [
+    index('edu_claims_user_idx').on(t.userId),
+    check('edu_claims_mailbox', sql`${t.email} = edu_mailbox(${t.email})`),
+  ],
+);
 
 export const roles = pgTable('roles', {
   id: text('id').primaryKey(),

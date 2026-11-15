@@ -39,3 +39,10 @@ dosyadadır: `apps/web/src/app/(kabuk)/_kabuk/yayin.ts`.
   bağlantıyı yakalar.
 - Kalemcik bildirimleri `/kalemcik` adresine gider. Üretimde proje yalnız `/kalemcik` sayfasından oluşturulduğu için
   bu bildirim oluşmaz; modül açılınca bağlantı çalışır.
+
+## Sonuç (mimar, 15 Kasım 2026, ADR-0038)
+
+Mimar kısmı kabul. ADR-0038 madde 8 dar çekirdekli ilk yayını Tarık'ın 15 Kasım 2026 kararı olarak (orkestra aktardı)
+kayda geçirir: ADR-0033 madde 5 daralır, ADR-0033'ün sonuna not eklendi; geri dönüş `KAZUIST_MODULLER` ya da
+`ertelenenModuller`. `.env.example`'a `KAZUIST_MODULLER=` (değer boş) ve İngilizce açıklaması eklendi; `KAZUIST_ENV`
+açıklaması web'de ertelenen modüllerin gizlenmesini de söyler. API uçlarının kapatılması istenmedi; sözleşme değişmedi.

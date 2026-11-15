@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /** Contract version; equals openapi.yaml info.version and this package's version (ADR-0023). */
-export const CONTRACT_VERSION = '1.5.1';
+export const CONTRACT_VERSION = '1.6.0';
 
 /** Error body for every endpoint (plan Ek C.1, wt.65). */
 export const errorCodes = [
@@ -127,18 +127,34 @@ export const SourceChip = z.object({
 });
 export type SourceChip = z.infer<typeof SourceChip>;
 
+/**
+ * Control characters a question may not carry (v1.6, ADR-0038): C0 controls except tab, line feed and carriage
+ * return, and DEL. The gateway masks the question and the passages in one label space with an internal separator
+ * (plan 8.5); a question holding such a character could shift the passages, so it is refused at the schema.
+ * openapi.yaml AnswerRequest.q and PrepareRequest.q carry the same rule as `pattern`.
+ */
+// eslint-disable-next-line no-control-regex -- the point is to match control characters
+export const QUESTION_TEXT_PATTERN = /^[^\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]*$/;
+export const QuestionText = z
+  .string()
+  .min(3)
+  .max(1000)
+  .regex(QUESTION_TEXT_PATTERN, { message: 'q must not contain control characters' });
+
+/** Search filters of a sourced summary, the same in platform mode and in BYOK client mode (v1.6, ADR-0038). */
+export const AnswerFilters = z.strictObject({
+  type: RecordType.optional(),
+  from: z.iso.date().optional(),
+  to: z.iso.date().optional(),
+  court: z.string().optional(),
+});
+export type AnswerFilters = z.infer<typeof AnswerFilters>;
+
 export const AnswerRequest = z.strictObject({
-  q: z.string().min(3).max(1000),
+  q: QuestionText,
   mode: z.enum(['platform', 'byok_aktarma']).default('platform'),
   depth: z.enum(['standart', 'derin']).default('standart'),
-  filters: z
-    .strictObject({
-      type: RecordType.optional(),
-      from: z.iso.date().optional(),
-      to: z.iso.date().optional(),
-      court: z.string().optional(),
-    })
-    .optional(),
+  filters: AnswerFilters.optional(),
   byok: z
     .strictObject({
       provider: ByokProvider,
@@ -228,10 +244,12 @@ export const byokNonceKey = (nonce: string): string => `byok:nonce:${nonce}`;
 export const BYOK_NONCE_TTL_SECONDS = 600;
 
 export const PrepareRequest = z.strictObject({
-  q: z.string().min(3).max(1000),
+  q: QuestionText,
   provider: ByokProvider,
   model: z.string().max(120),
   depth: z.enum(['standart', 'derin']).default('standart'),
+  /** v1.6 (ADR-0038): the same search filters as AnswerRequest.filters. */
+  filters: AnswerFilters.optional(),
 });
 export type PrepareRequest = z.infer<typeof PrepareRequest>;
 

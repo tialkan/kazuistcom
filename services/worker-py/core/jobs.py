@@ -1,4 +1,4 @@
-"""Job queue contract, Python side (plan Ek C.3, ADR-0023, ADR-0035).
+"""Job queue contract, Python side (plan Ek C.3, ADR-0023, ADR-0035, ADR-0038).
 
 Mirrors packages/db/src/jobs.ts and packages/contracts JobType, JobState and the job payload schemas. Python reads
 and writes with SQL only and never changes the schema. Every handler must be idempotent; payloads carry ids, never
@@ -143,6 +143,11 @@ _UUID = re.compile(
 _DATE = re.compile(r"^\d{4}-\d{2}-\d{2}\Z", re.ASCII)
 _HTTP_URL = re.compile(r"^https?://\S+\Z")
 _KANUN_NO = re.compile(r"^[0-9]{1,6}\Z")
+# zod z.guid(): any 8-4-4-4-12 hex string (the AYM bank's ids are not RFC 9562 UUIDs).
+_GUID = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\Z")
+_COURT_DOC_ID = re.compile(r"^[0-9]{1,20}\Z")
+# connectors/judicial.py case_number with ASCII digits ("2024/817", "2019/1-123", optional "/<digits>").
+_CASE_NO = re.compile(r"^[0-9]{4}/[0-9A-Za-z()\-]+(?:/[0-9]+)?\Z")
 
 NOTIFICATION_TYPES = frozenset({
     "teslim_hatirlatmasi", "kalemcik", "tam_metin_istegi", "tam_metin_cevabi", "takip", "odeme", "fesih_teyidi",
@@ -154,6 +159,10 @@ BILLING_NOTICE_KINDS = frozenset({
 })
 NOTIFICATION_CHANNELS = frozenset({"email", "web_push", "apns"})
 CITATIONS_MAX_RECORDS = 500
+# ingest.fetch vocabularies (contracts aymDecisionTypes, courtSources, INGEST_MAX_PAGE; v1.6, ADR-0038).
+AYM_DECISION_TYPES = frozenset({"BireyselBasvuru", "NormDenetimi"})
+COURT_SOURCES = frozenset({"yargitay", "danistay"})
+INGEST_MAX_PAGE = 10_000
 
 # Types without a payload schema: no producer and no consumer yet (contracts jobPayloadExempt).
 PAYLOAD_EXEMPT = frozenset({
@@ -207,15 +216,35 @@ def _ids(v: Any) -> bool:
     return isinstance(v, list) and 1 <= len(v) <= CITATIONS_MAX_RECORDS and all(_uuid(i) for i in v)
 
 
+def _case_no(v: Any) -> bool:
+    return _text(v, 0, 50) and bool(_CASE_NO.match(v))
+
+
 def _ingest_fetch(p: Any) -> bool:
+    """contracts IngestFetchPayload: a union, since five sources have a list shape and a document shape."""
     if not isinstance(p, dict):
         return False
     source = p.get("source")
+    if not isinstance(source, str):
+        return False
     src = {"source": lambda v: v == source}
+    page = {"page": lambda v: _int(v, 1, INGEST_MAX_PAGE)}
     if source == "kvkk":
-        return _shape(p, {**src, "url": _url})
+        return _shape(p, {**src, "url": _url}) or _shape(p, {**src, **page})
     if source == "rekabet":
-        return _shape(p, {**src, "url": _url}, {"pdfUrl": _url})
+        return _shape(p, {**src, "url": _url}, {"pdfUrl": _url}) or _shape(p, {**src, **page})
+    if source == "aym":
+        kind = {**src, "kararTipi": lambda v: isinstance(v, str) and v in AYM_DECISION_TYPES}
+        return _shape(p, {**kind, **page}) or _shape(
+            p, {**kind, "id": lambda v: isinstance(v, str) and bool(_GUID.match(v))}
+        )
+    if source in COURT_SOURCES:
+        unit = {**src, "unit": lambda v: _text(v, 1, 100)}
+        return _shape(p, {**unit, "year": lambda v: _int(v, 1900, 2100), **page}) or _shape(
+            p,
+            {**unit, "id": lambda v: isinstance(v, str) and bool(_COURT_DOC_ID.match(v)), "esas": _case_no,
+             "karar": _case_no, "date": _date},
+        )
     if source in ("openalex", "crossref"):
         return _shape(p, {**src, "doi": lambda v: _text(v, 1, 200)})
     if source == "eurlex":
