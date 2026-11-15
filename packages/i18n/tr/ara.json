@@ -1,7 +1,7 @@
 {
   "meta": {
     "baslik": "Ara",
-    "aciklama": "Mevzuat, mahkeme kararları ve kurul kararlarında arayın; her sonucun künyesini, otorite sınıfını ve resmî kaynağını görün."
+    "aciklama": "Mevzuatta, kurul kararlarında ve seçili AB tüzüklerinde arayın; her sonucun künyesini, otorite sınıfını ve resmî kaynağını görün."
   },
   "baslik": "Hukuk kaynaklarında arayın",
   "giris": "Bir soru, kavram, madde atfı (KVKK m.11, TBK 49) ya da esas ve karar numarası yazın.",
@@ -124,13 +124,18 @@
     "baslik": "Örnek derlem",
     "metin": "Bu ortamda arama örnek derlem üzerinde çalışır: Kişisel Verilerin Korunması Kanunu'nun tamamı, Türk Borçlar Kanunu m.49-75, Anayasa'nın beş maddesi, yedi Yargıtay kararı, bir Kişisel Verileri Koruma Kurulu karar özeti ve GDPR m.1-2. Metinler resmî kaynaklardan 7 Kasım 2026'da alındı."
   },
+  "kisitli": {
+    "baslik": "Kısıtlı arama",
+    "vektor": "Anlam araması şu anda çalışmıyor; sonuçlar yalnız kelime ve atıf eşleşmesine göre bulundu. Farklı kelimelerle anlatılan kaynaklar listede eksik olabilir."
+  },
   "taranan": {
     "baslik": "Taranan kaynakları göster",
-    "aciklama": "Arama yalnız aşağıdaki resmî kaynaklardan derlenen kayıtlarda çalışır. Kararlar dizine girmeden önce kişisel verilerden arındırılır.",
+    "aciklama": "Arama yalnız aşağıdaki kaynaklardan derlenen kayıtlarda çalışır. Kayıtlar dizine girmeden önce kişisel verilerden arındırılır. Mahkeme kararları için henüz bir kaynak bağlantısı yok; onları aşağıdaki resmî arama sitelerinde arayabilirsiniz.",
     "mevzuat": "Mevzuat Bilgi Sistemi: kanun maddeleri",
-    "yargitay": "Yargıtay Karar Arama: kararlar",
     "kvkk": "Kişisel Verileri Koruma Kurulu: karar özetleri",
-    "eurlex": "EUR-Lex: seçili AB tüzükleri"
+    "rekabet": "Rekabet Kurulu: kurul kararları",
+    "eurlex": "EUR-Lex: seçili AB tüzükleri (İngilizce, karşılaştırmalı kaynak)",
+    "akademik": "OpenAlex ve Crossref: makalelerin künyesi ve özeti"
   },
   "etiketler": {
     "baslik": "Etiketler ne anlama geliyor?",

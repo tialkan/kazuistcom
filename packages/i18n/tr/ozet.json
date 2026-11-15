@@ -24,7 +24,7 @@
   "harcanan": "Bu özet için {kredi} kredi kullanıldı.",
   "uyari": {
     "veriGunu": "Bu cümledeki zamana bağlı ifade, 7 günden eski veriye dayanıyor; kaynağın güncel hâlini kontrol edin.",
-    "guncellik": "Bu cümledeki zamana bağlı ifadenin dayanağı yürürlükte görünmüyor ya da durumu bilinmiyor; kaynağı kontrol edin.",
+    "guncellik": "Bu cümlenin dayanağı yürürlükte görünmüyor: değişmiş, yürürlükten kalkmış, bozulmuş ya da durumu bilinmiyor olabilir. Kaynağın güncel hâlini kontrol edin.",
     "destekleyici": "Bu cümle bağlayıcı bir kaynağa değil, destekleyici kaynağa dayanıyor."
   },
   "hata": {

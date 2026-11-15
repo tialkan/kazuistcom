@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import {
+  bindingPassage,
   createLineValidator,
   hasTimeBoundWording,
+  MIN_QUOTE_CHARS,
   numericTokens,
   type ValidatorPassage,
 } from '../src/answer/validator.ts';
 import { heuristicNames, nameSpans } from '../src/answer/names.ts';
+import { negatedStem, negationMismatch, negations, quotedSpan } from '../src/answer/negation.ts';
+import { numberWordsValue, quantities } from '../src/answer/quantities.ts';
 
 const NOW = new Date('2026-11-07T12:00:00Z');
 const FRESH = '2026-11-06T09:00:00Z';
@@ -153,5 +157,174 @@ describe('validator helpers', () => {
     expect(heuristicNames.find('[KİŞİ-1] ile [Davacı] arasında')).toEqual([]);
     expect(heuristicNames.find('Kemal Kanunu ve Yargıtay Hukuk Genel Kurulu')).toEqual([]);
     expect(nameSpans('Sayın Hakan BULUT geldi')).toEqual([{ start: 0, end: 17 }]);
+  });
+});
+
+const KVKK8_BODY =
+  '(1) Kişisel veriler, ilgili kişinin açık rızası olmaksızın aktarılamaz. Başvuru otuz gün içinde ' +
+  'sonuçlandırılır. Kurul kararı yüzde yirmi oranında indirim öngörür. Bu hüküm her durumda zorunlu değildir.';
+const KVKK8: ValidatorPassage = {
+  id: 'K5',
+  text: `6698 sayılı Kişisel Verilerin Korunması Kanunu m.8 Kişisel verilerin aktarılması\n${KVKK8_BODY}`,
+  body: KVKK8_BODY,
+  authority: 'baglayici_norm',
+  status: 'yururlukte',
+  fetchedAt: FRESH,
+};
+const say = (metin: string, alinti = 'Başvuru otuz gün içinde sonuçlandırılır'): string =>
+  line({ metin, kaynaklar: ['K5'], alinti: { K5: alinti } });
+const check = async (raw: string, ps: ValidatorPassage[] = [KVKK8]) =>
+  createLineValidator(ps, { now: NOW }).check(raw);
+
+describe('line validator: review fixes (künye, quantities, negation, status, sections)', () => {
+  it('requires at least MIN_QUOTE_CHARS (20) characters', async () => {
+    expect(MIN_QUOTE_CHARS).toBe(20);
+    expect(await check(say('Başvuru otuz gün içinde sonuçlandırılır.', 'otuz gün içinde'))).toEqual({
+      ok: false,
+      reason: 'alinti_kisa',
+    });
+  });
+
+  it('does not accept a quote from the künye line, while its numbers still back the sentence', async () => {
+    expect(
+      await check(
+        say('Kişisel Verilerin Korunması Kanunu aktarmayı düzenler.', 'Kişisel Verilerin Korunması Kanunu'),
+      ),
+    ).toEqual({ ok: false, reason: 'alinti_bulunamadi' });
+    expect(
+      await check(say('6698 sayılı Kanuna göre başvuru otuz gün içinde sonuçlandırılır.')),
+    ).toMatchObject({
+      ok: true,
+    });
+  });
+
+  it('checks numbers written in words with their unit', async () => {
+    expect(await check(say('Başvuru on beş gün içinde sonuçlandırılır.'))).toEqual({
+      ok: false,
+      reason: 'dayanaksiz_sayi',
+    });
+    expect(await check(say('Başvuru 30 gün içinde sonuçlandırılır.'))).toMatchObject({ ok: true });
+    expect(await check(say('Başvuru otuz günlük süre içinde sonuçlandırılır.'))).toMatchObject({ ok: true });
+    // Same number, other unit: "otuz yıl" is not backed by "otuz gün"; "30 iş günü" is not "otuz gün" either.
+    expect(await check(say('Başvuru otuz yıl içinde sonuçlandırılır.'))).toMatchObject({ ok: false });
+    expect(await check(say('Başvuru 30 iş günü içinde sonuçlandırılır.'))).toMatchObject({ ok: false });
+    const pct = 'Kurul kararı yüzde yirmi oranında indirim öngörür';
+    expect(await check(say('Kurul kararı %20 indirim öngörür.', pct))).toMatchObject({ ok: true });
+    expect(await check(say('Kurul kararı yüzde otuz indirim öngörür.', pct))).toMatchObject({ ok: false });
+    // "bir" without a unit is an article, not a number.
+    expect(await check(say('Bir başvuru otuz gün içinde sonuçlandırılır.'))).toMatchObject({ ok: true });
+  });
+
+  it('rejects a sentence that drops or adds a negation relative to its quote', async () => {
+    const q = 'ilgili kişinin açık rızası olmaksızın aktarılamaz';
+    expect(await check(say('Kişisel veriler açık rıza olmadan aktarılamaz.', q))).toMatchObject({ ok: true });
+    expect(await check(say('Kişisel veriler açık rıza ile aktarılabilir.', q))).toEqual({
+      ok: false,
+      reason: 'olumsuzluk',
+    });
+    // Both sides negated, but the verb itself flipped: "olmaksızın aktarılabilir" against "aktarılamaz".
+    expect(await check(say('Kişisel veriler açık rıza olmaksızın aktarılabilir.', q))).toEqual({
+      ok: false,
+      reason: 'olumsuzluk',
+    });
+    expect(await check(say('Başvuru otuz gün içinde sonuçlandırılmaz.'))).toEqual({
+      ok: false,
+      reason: 'olumsuzluk',
+    });
+    // A quote cut just before "değildir" keeps the negation of the passage.
+    expect(await check(say('Bu hüküm her durumda zorunludur.', 'Bu hüküm her durumda zorunlu'))).toEqual({
+      ok: false,
+      reason: 'olumsuzluk',
+    });
+    expect(
+      await check(say('Bu hüküm her durumda zorunlu değildir.', 'Bu hüküm her durumda zorunlu')),
+    ).toMatchObject({ ok: true });
+  });
+
+  it('always warns on a changed, repealed or reversed source, with or without time bound wording', async () => {
+    for (const status of ['degisti', 'yururlukten_kalkti', 'bozuldu'] as const) {
+      const r = await check(say('Başvuru otuz gün içinde sonuçlandırılır.'), [{ ...KVKK8, status }]);
+      expect(r).toMatchObject({ ok: true, sentence: { warnings: ['guncellik'] } });
+    }
+    const unknown = await check(say('Başvuru otuz gün içinde sonuçlandırılır.'), [
+      { ...KVKK8, status: 'bilinmiyor' },
+    ]);
+    expect(unknown).toMatchObject({ ok: true, sentence: { warnings: [] } });
+  });
+
+  it('does not let a dissent, a claim or the procedural history of a binding decision bind', async () => {
+    const decision: ValidatorPassage = {
+      id: 'K6',
+      text: 'Anayasa Mahkemesi norm denetimi kararı\nKuralın Anayasaya aykırı olduğu sonucuna varılmıştır.',
+      body: 'Kuralın Anayasaya aykırı olduğu sonucuna varılmıştır.',
+      authority: 'baglayici_karar',
+      status: 'bilinmiyor',
+      fetchedAt: FRESH,
+    };
+    const sentence = line({
+      metin: 'Kuralın Anayasaya aykırı olduğu sonucuna varılmıştır.',
+      kaynaklar: ['K6'],
+      alinti: { K6: 'Anayasaya aykırı olduğu sonucuna' },
+    });
+    for (const [section, destekleyici] of [
+      ['gerekce', false],
+      ['hukum', false],
+      [null, false],
+      ['karsi_oy', true],
+      ['iddia', true],
+      ['surec', true],
+    ] as const) {
+      const r = await check(sentence, [{ ...decision, section }]);
+      expect(r, String(section)).toMatchObject({ ok: true, sentence: { destekleyici } });
+    }
+    expect(bindingPassage({ authority: 'baglayici_karar', section: 'karsi_oy' })).toBe(false);
+    expect(bindingPassage({ authority: 'emsal', section: 'gerekce' })).toBe(false);
+  });
+});
+
+describe('quantities and negation helpers', () => {
+  it('reads Turkish number words and units', () => {
+    expect(numberWordsValue(['iki', 'yüz', 'elli', 'bin'])).toBe(250_000);
+    expect(numberWordsValue(['bin', 'dokuz', 'yüz', 'doksan', 'dokuz'])).toBe(1999);
+    expect(quantities('on beş gün, onbeş günlük, 15 gün, iki yıl, yüzde yirmi, %5, 1.000 tl')).toEqual([
+      { value: 15, unit: 'gün', form: 'yazi', text: 'on beş' },
+      { value: 15, unit: 'gün', form: 'yazi', text: 'onbeş' },
+      { value: 15, unit: 'gün', form: 'rakam', text: '15' },
+      { value: 2, unit: 'yıl', form: 'yazi', text: 'iki' },
+      { value: 20, unit: '%', form: 'yazi', text: 'yirmi' },
+      { value: 5, unit: '%', form: 'rakam', text: '5' },
+      { value: 1000, unit: 'lira', form: 'rakam', text: '1.000' },
+    ]);
+    // Look-alike words are not units; numbers without a unit are not quantities.
+    expect(
+      quantities('iki ayrı karar, üç kişisel veri, altında, yüz kızartıcı suç, güncel bir karar'),
+    ).toEqual([]);
+    expect(quantities('on iş günü')).toEqual([{ value: 10, unit: 'iş günü', form: 'yazi', text: 'on' }]);
+  });
+
+  it('finds negated words without taking nouns or names for them', () => {
+    const neg = (s: string) => negations(s).map((n) => n.word);
+    expect(neg('işlenemez aktarılamaz yapılmaz olmaksızın verilmediği olmayan edilmemiş değildir')).toEqual([
+      'işlenemez',
+      'aktarılamaz',
+      'yapılmaz',
+      'olmaksızın',
+      'verilmediği',
+      'olmayan',
+      'edilmemiş',
+      'değildir',
+    ]);
+    expect(
+      neg(
+        'işlenip işlenmediğini olup olmadığını kararnameden beyannamedir uyuşmazlık komedi itimadı yasama ' +
+          'yapılması bulunmaktadır hükmedilir hükmeden yok edilir',
+      ),
+    ).toEqual([]);
+    expect(negatedStem('hükmedilemez')).toBe('hükmedile');
+    expect(negationMismatch('veri aktarılabilir', ['veri aktarılamaz'])).toBe('eksik');
+    expect(negationMismatch('veri aktarılamaz', ['veri aktarılabilir'])).toBe('fazla');
+    expect(negationMismatch('rıza olmadan işlenemez', ['rızası olmaksızın işlenemez'])).toBeNull();
+    expect(quotedSpan('rıza zorunlu değildir. sonra', 'rıza zorunlu')).toBe('rıza zorunlu değildir');
+    expect(quotedSpan('veriler aktarılamaz', 'veriler aktarıla')).toBe('veriler aktarılamaz');
   });
 });

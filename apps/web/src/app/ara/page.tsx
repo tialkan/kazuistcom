@@ -3,7 +3,8 @@ import { authorityClasses, recordTypes, SearchQuery, type RecordType } from '@ka
 import ara from '@kazuist/i18n/tr/ara.json';
 import { BosDurum, Dugme, Etiket, FormAlani, HataDurumu } from '@kazuist/ui';
 import { formatNorm, type SearchResult } from '@kazuist/casuist';
-import { araAdresi, doldur } from './_bilesen/metin.ts';
+import { araAdresi, doldur, donusAdresi, girisAdresi } from './_bilesen/metin.ts';
+import { KisitliArama } from './_bilesen/KisitliArama.tsx';
 import { OzetAlani } from './_bilesen/OzetAlani.tsx';
 import { SonucKarti } from './_bilesen/SonucKarti.tsx';
 import { runSearch } from './_sunucu/arama.ts';
@@ -174,7 +175,7 @@ function Sayfalama({ v, res }: { v: Record<string, string>; res: SearchResult })
   );
 }
 
-function Bilgiler({ q }: { q: string | undefined }) {
+function Bilgiler({ q, kaynak }: { q: string | undefined; kaynak: CorpusSource | null }) {
   const etiketler = [
     ['yeni', ara.etiketler.yeni],
     ['yerlesik', ara.etiketler.yerlesik],
@@ -234,13 +235,23 @@ function Bilgiler({ q }: { q: string | undefined }) {
       </details>
       <details className={styles.acilir}>
         <summary>{ara.taranan.baslik}</summary>
-        <p>{ara.taranan.aciklama}</p>
-        <ul>
-          <li>{ara.taranan.mevzuat}</li>
-          <li>{ara.taranan.yargitay}</li>
-          <li>{ara.taranan.kvkk}</li>
-          <li>{ara.taranan.eurlex}</li>
-        </ul>
+        {kaynak === 'fikstur' ? (
+          // The fixture corpus is not what the connectors collect: say what it holds instead.
+          <p>{ara.fikstur.metin}</p>
+        ) : (
+          <>
+            <p>{ara.taranan.aciklama}</p>
+            {/* One line per connector in services/worker-py/connectors that writes records; none for court
+                decisions yet, so no court is listed. */}
+            <ul>
+              <li>{ara.taranan.mevzuat}</li>
+              <li>{ara.taranan.kvkk}</li>
+              <li>{ara.taranan.rekabet}</li>
+              <li>{ara.taranan.eurlex}</li>
+              <li>{ara.taranan.akademik}</li>
+            </ul>
+          </>
+        )}
       </details>
     </div>
   );
@@ -288,7 +299,7 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
             </>
           }
         />
-        <Bilgiler q={undefined} />
+        <Bilgiler q={undefined} kaynak={kaynak} />
       </div>
     );
   }
@@ -320,6 +331,8 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
   }
   const { principal } = await oturum();
   const girisVar = Boolean(principal);
+  // After sign in the visitor comes back to this very search (safeNext checks the path on /giris).
+  const giris = girisAdresi(donusAdresi(v));
 
   return (
     <div className="sayfa">
@@ -345,6 +358,7 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
           ...(v.court ? { court: v.court } : {}),
         }}
         girisVar={girisVar}
+        girisAdresi={giris}
         gorunenKayitlar={res.items.map((r) => r.record.id)}
       />
       <section aria-labelledby="sonuc-baslik" className={styles.sonuclar}>
@@ -352,12 +366,13 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
           <h2 id="sonuc-baslik">{ara.sonuc.baslik}</h2>
           <p className={styles.sayiMetni}>{doldur(ara.sonuc.sayi, { toplam: res.total })}</p>
         </div>
+        <KisitliArama degraded={res.degraded} />
         <Sekmeler v={v} res={res} />
         {res.items.length ? (
           <ol className={styles.liste} start={(res.page - 1) * res.pageSize + 1}>
             {res.items.map((r) => (
               <li key={r.record.id}>
-                <SonucKarti r={r} girisVar={girisVar} />
+                <SonucKarti r={r} girisVar={girisVar} girisAdresi={giris} />
               </li>
             ))}
           </ol>
@@ -373,13 +388,13 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
           <ol className={styles.liste}>
             {res.live.map((r) => (
               <li key={r.record.id}>
-                <SonucKarti r={r} girisVar={girisVar} />
+                <SonucKarti r={r} girisVar={girisVar} girisAdresi={giris} />
               </li>
             ))}
           </ol>
         </section>
       ) : null}
-      <Bilgiler q={v.q} />
+      <Bilgiler q={v.q} kaynak={kaynak} />
     </div>
   );
 }

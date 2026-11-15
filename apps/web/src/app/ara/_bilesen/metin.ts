@@ -60,3 +60,36 @@ export function araAdresi(p: Record<string, string | number | undefined | null>)
   const s = u.toString();
   return s ? `/ara?${s}` : '/ara';
 }
+
+/**
+ * Strict percent encoding. encodeURIComponent leaves ! ' ( ) * as they are and URLSearchParams writes a space as
+ * "+"; safeNext (server/auth/page-session.ts) accepts only letters, digits, - . _ ~ / ? = & and %.
+ */
+const yuzdeKodla = (s: string): string =>
+  encodeURIComponent(s).replace(/[!'()*]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
+
+/** safeNext limit for the ?sonra= return path. */
+const DONUS_SINIRI = 200;
+const DONUS_ANAHTARLARI = ['q', 'type', 'sort', 'page', 'from', 'to', 'court', 'authority'] as const;
+
+/**
+ * /ara path back to the same search, for the sign in return (?sonra=). Within safeNext's 200 characters: the
+ * filters are dropped first, then the query.
+ */
+export function donusAdresi(v: Partial<Record<(typeof DONUS_ANAHTARLARI)[number], string>>): string {
+  const yol = (keys: readonly string[]): string => {
+    const parts = keys.flatMap((k) => {
+      const x = v[k as keyof typeof v];
+      return x ? [`${k}=${yuzdeKodla(x)}`] : [];
+    });
+    return parts.length ? `/ara?${parts.join('&')}` : '/ara';
+  };
+  for (const keys of [DONUS_ANAHTARLARI, ['q'] as const]) {
+    const p = yol(keys);
+    if (p.length <= DONUS_SINIRI) return p;
+  }
+  return '/ara';
+}
+
+/** Sign in link that comes back to `donus` after sign in. */
+export const girisAdresi = (donus: string): string => `/giris?sonra=${encodeURIComponent(donus)}`;
