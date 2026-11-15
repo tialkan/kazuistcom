@@ -390,3 +390,10 @@ def test_record_protocol_statuses_match_the_database_enum() -> None:
     assert set(re.findall(r"'([^']+)'", block.group(1))) == set(RECORD_PROTOCOL_STATUSES)
     assert set(SOURCE_PROTOCOL_STATUSES) <= set(RECORD_PROTOCOL_STATUSES)
     assert "gerekli_yapilmadi" in RECORD_PROTOCOL_STATUSES
+
+
+def test_refetch_corrects_the_protocol_status_of_an_existing_record() -> None:
+    from core.pipeline import UPSERT_RECORD_SQL
+
+    update = UPSERT_RECORD_SQL.split("DO UPDATE SET", 1)[1]
+    assert "protocol_status = EXCLUDED.protocol_status" in update

@@ -9,7 +9,7 @@
   `JobConsumer` gerçek `CLAIM_JOBS_SQL` ile alıp gerçek `ingest.fetch` işleyicisine verir; hiçbir iş geçersiz yük diye
   gömülmez, işleyici `BadJob` atmaz, keşif işlerinin kuyruğa koyduğu devam işleri sözleşmeye uyar, dry-run CLI
   `contract_pending` üretmez. `docs/kaynaklar/{yargitay,danistay,README}.md` metinleri güncellendi.
-- Doğrulama: `uv run pytest` 534 geçti, 15 atlandı; `pnpm check:text` geçti.
+- Doğrulama: `uv run pytest` 535 geçti, 15 atlandı; `pnpm check:text` geçti.
 
 ## 15 Kasım 2026, mimar: sözleşme v1.6, migration 0008, ADR-0038 (mimar/sozlesme-v1-6)
 
