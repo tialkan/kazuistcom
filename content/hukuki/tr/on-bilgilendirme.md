@@ -4,15 +4,17 @@ slug: on-bilgilendirme
 route: /hukuki/on-bilgilendirme
 lang: tr
 binding: true
-version: 2026-11-12.1
-date: 2026-11-12
+version: 2026-11-15.1
+date: 2026-11-15
 status: taslak
 consent_kind: on_bilgilendirme
 pdf: true
 pdf_fields: [AYLIK_KREDI, INDIRIM, KREDI, ODEME_DONEMI, TUTAR_TL, URUN_ACIKLAMASI, URUN_ADI, URUN_TURU]
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. 6563 sayılı Kanun m.3/1 bilgileri (sözleşmenin
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 15 Kasım 2026. Kredi satışı ilk yayında kapalıdır (ADR-0038,
+> apps/web/src/server/billing/acik.ts `odemeAcik`): bu form satış açılana kadar ödeme adımında gösterilmez ve
+> yayımlanmaz; satış açılmadan önce yeniden onaya sunulur. Form gövdesi bu sürümde değişmedi. 6563 sayılı Kanun m.3/1 bilgileri (sözleşmenin
 > kurulma adımları, veri girişi hataları, sözleşme metninin saklanması, gizlilik kuralları) eklendi; mevzuat.gov.tr
 > metninden 12 Kasım 2026'da okundu. iOS sürüm alanı çıkarıldı: bu form yalnız web satışında kullanılır, iOS
 > satın alımları Apple üzerinden yürür. Ön bilgiye `pdf` ve `pdf_fields` alanları eklendi; on-yuz ön bilgi
