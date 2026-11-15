@@ -1,3 +1,37 @@
+## 15 Kasım 2026, yz-gecidi: kaynaklı özet talimatı doğrulayıcının yeni kurallarıyla (yz-gecidi/ozet-talimati-dogrulayici)
+
+Orkestra görevi: #101'in doğrulayıcı kurallarını modele söylemek, Ek D'yi #102 sonrası plan metniyle hizalı
+tutmak. Dal #101'in dalından açıldı; main (#96-#100) ve #102'nin dalı içine birleştirildi. `packages/contracts`,
+`packages/db` ve `plan.md` bu dalda değişmedi (plan farkı yalnız #102'nin commit'i); yeni bağımlılık yok.
+- Birleştirme çakışmaları (casuist yolları, sahibine bilgi): `packages/casuist/src/answer/passages.ts` main'in
+  `promptPassage` yardımcısı #101'in `body` ve `section` alanlarıyla birleşti (künye artık `kunye(r, section)`;
+  `loadPromptPassages` de bölümlü künyeyi yeniden kurar); `apps/web/src/app/ara/_sunucu/sql.test.ts` içe aktarma
+  listesi; `DEVIR.md` ve `docs/ilerleme.md` iki tarafın satırları korunarak.
+- `packages/ai-gateway/src/prompt.ts` `SOURCED_SUMMARY_SYSTEM`: Ek D.1'in her satırı birebir (kural 2 #102
+  metniyle: en az 20 karakter, künye satırından değil gövdeden, olumsuzluk korunur). Ek D'de olmayan üç ek: künye
+  paragrafı (ilk satır künye, gerisi gövde, kararda "(Bölüm: ...)"), kural 3'e yazıyla sayı ve birim cümlesi
+  ("on beş gün" için "15 gün" olur, "otuz gün" ve "on beş iş günü" olmaz), kural 6'ya iddia ve savunma, yargılama
+  süreci ve karşı oy pasajının hükmü tek başına kurmadığı cümle. Kural numaraları 1-9 aynı. Ekler için plan isteği:
+  `docs/istekler/yz-gecidi-ek-d-talimat.md` (önerilen Ek D.1, 7.4/3, 7.4/6, D.2/c ve pasaj biçimi metni).
+- Tarayıcı kopyası yok: BYOK istemcisi talimatı `/v1/answers/prepare` paketinden (`bundle.system`, HMAC kapsamında)
+  alır; değişiklik kendiliğinden geçer.
+- Testler: `test/prompt.test.ts` (15): plan.md Ek D.1'in her satırı talimatta, dokuz kural sırasıyla; her kural
+  için ifade; `MIN_QUOTE_CHARS`, `SECTION_LABELS`, `NON_BINDING_SECTIONS` ve `kunye()` ile çapraz denetim;
+  talimattaki örnekler casuist doğrulayıcısında aynı sonucu veriyor (`alinti_kisa`, `alinti_bulunamadi`,
+  `olumsuzluk`, `dayanaksiz_sayi`, `destekleyici`). Eski talimatla 15 testin 8'i düşüyor (elle denendi).
+- Ölçüm düzeneği: `test/ozet-ab.ts` 50 soruyu fikstürde arar, üretimdeki gibi maskeler ve sarar, çıktıyı
+  `parseJsonLines` ve doğrulayıcıyla sayar (yalnız sayı, metin yok); `test/ozet-ab.test.ts` betikli modelle
+  düzeneği sınar (36/36 kabul, künye alıntısı 50/50 düşer, 15 karakterlik alıntı 36/36 çekimser);
+  `test/ozet-ab.live.test.ts` ve `pnpm --filter @kazuist/ai-gateway test:ab` eski ve yeni talimatı gerçek modelle
+  karşılaştırır (OpenRouter, zdr, 2 x 50 çağrı, tahminen 0,45 M girdi tokenı).
+- Doğrulama: typecheck, lint, check:text, build temiz; testler gateway 143/3 skip, web 728/1 skip, casuist 119,
+  worker-node 118, ledger 174, contracts 147, db 54, ui 31, i18n 23, worker-py 450/15 skip, enjeksiyon 60/60 önce ve
+  sonra. `node eval/rag/olc.ts` önce ve sonra aynı (getirme 36/36, birebir satır 36/36, birebir cümle 67/67,
+  saldırı 0/283; yalnız arama süresi oynadı). Bu iki set talimatı modele göndermez; modelli çekimserlik ölçülmedi
+  ve geçti sayılmadı: `~/Desktop/kazuist-openrouter.txt` yok.
+- Açık: canlı A/B (anahtar dosyası gelince `test:ab`); orkestra Ek D eklerini plana alır; ADR-0001'deki "en az 12
+  karakter" ifadesi mimarındır.
+
 ## 15 Kasım 2026, casuist: dış inceleme düzeltmeleri, doğrulayıcı, karar bölümleri, AND öncelikli arama (casuist/inceleme-dogrulayici-arama)
 
 Orkestra görevi: dış incelemenin beş maddesi. `packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
