@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { getAuthContext, type AuthContext } from './context.ts';
 import { schema } from './db.ts';
 import { apiError, rateLimited } from './http.ts';
+import { safeErrorFields } from './log.ts';
 import { clientIp, type RateRule } from './rate-limit.ts';
 import { hasAnyRole, isRole, type Role } from './roles.ts';
 import { hasPasskeySession, hasSecondStep } from './step-up.ts';
@@ -99,21 +100,23 @@ export async function resolvePrincipal(req: Request, ctx: AuthContext): Promise<
 /** Server side authorization wrapper for every account route. */
 export function withAuth(opts: GuardOptions, handler: Handler) {
   return async (req: Request, route?: RouteCtx): Promise<Response> => {
-    const ctx = await getAuthContext();
-    const p = await resolvePrincipal(req, ctx);
-    if (!p) return apiError('unauthorized');
-    if (!originAllowed(req, ctx)) return apiError('forbidden', tr.hata.kaynak);
-    if (opts.rate) {
-      const d = await ctx.limiter.check(opts.rate, p.userId);
-      if (!d.ok) return rateLimited(d.retryAfterSec);
-    }
-    if (opts.roles && !hasAnyRole(p.roles, opts.roles)) return apiError('forbidden');
-    if (opts.admin) {
-      const staff: Role[] = opts.admin === true ? ['yonetici'] : opts.admin;
-      if (!hasAnyRole(p.roles, staff)) return apiError('forbidden');
-      if (!(await adminAllowed(ctx, p, staff))) return apiError('forbidden', tr.hata.ikinciAdim);
-    }
+    // Session lookup, limiter and admin checks are inside the catch too: an unhandled error would reach the
+    // framework log with its raw message (Drizzle includes query parameters).
     try {
+      const ctx = await getAuthContext();
+      const p = await resolvePrincipal(req, ctx);
+      if (!p) return apiError('unauthorized');
+      if (!originAllowed(req, ctx)) return apiError('forbidden', tr.hata.kaynak);
+      if (opts.rate) {
+        const d = await ctx.limiter.check(opts.rate, p.userId);
+        if (!d.ok) return rateLimited(d.retryAfterSec);
+      }
+      if (opts.roles && !hasAnyRole(p.roles, opts.roles)) return apiError('forbidden');
+      if (opts.admin) {
+        const staff: Role[] = opts.admin === true ? ['yonetici'] : opts.admin;
+        if (!hasAnyRole(p.roles, staff)) return apiError('forbidden');
+        if (!(await adminAllowed(ctx, p, staff))) return apiError('forbidden', tr.hata.ikinciAdim);
+      }
       return await handler(req, p, ctx, await flatParams(route));
     } catch (err) {
       return internalError(req, err);
@@ -122,8 +125,9 @@ export function withAuth(opts: GuardOptions, handler: Handler) {
 }
 
 /**
- * Structured log of an unexpected error (plan 14.7): error class, method, path and requestId only; no
- * body, query, header or personal data. The same requestId goes to the client.
+ * Structured log of an unexpected error (plan 14.7): method, path, requestId and the sanitized error (class,
+ * SQLSTATE, constraint, table, column; log.ts); no message, body, query, header or personal data. The same
+ * requestId goes to the client.
  */
 export function internalError(req: Request, err: unknown): Response {
   const requestId = randomUUID();
@@ -133,8 +137,8 @@ export function internalError(req: Request, err: unknown): Response {
       level: 'error',
       method: req.method,
       path: new URL(req.url).pathname,
-      error: err instanceof Error ? err.name : 'Unknown',
       requestId,
+      ...safeErrorFields(err),
     }),
   );
   return apiError('internal', undefined, {}, requestId);
@@ -161,10 +165,10 @@ export async function checkIp(ctx: AuthContext, req: Request, rule: RateRule) {
 /** Public routes: rate limited by client IP. */
 export function withPublic(rate: RateRule, handler: (req: Request, ctx: AuthContext) => Promise<Response>) {
   return async (req: Request, _route?: RouteCtx): Promise<Response> => {
-    const ctx = await getAuthContext();
-    const d = await checkIp(ctx, req, rate);
-    if (!d.ok) return rateLimited(d.retryAfterSec);
     try {
+      const ctx = await getAuthContext();
+      const d = await checkIp(ctx, req, rate);
+      if (!d.ok) return rateLimited(d.retryAfterSec);
       return await handler(req, ctx);
     } catch (err) {
       return internalError(req, err);
