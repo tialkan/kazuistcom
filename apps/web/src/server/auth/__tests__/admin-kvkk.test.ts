@@ -532,6 +532,121 @@ describe('takedown decisions keep the target hidden while any request requires i
   });
 });
 
+describe('anonymization approval queues anon.run in the closing transaction', () => {
+  let adm: { token: string; secret: string; id: string };
+  let n = 0;
+
+  beforeAll(async () => {
+    adm = await admin('anonim-editor@example.invalid');
+    await stepUpConfirm(
+      api('/auth/step-up/confirm', adm.token, post({ code: await createOTP(adm.secret).totp() })),
+    );
+  });
+
+  async function heldRecord(subjectType = 'record'): Promise<{ rec: string; item: string }> {
+    n += 1;
+    const rec = (
+      await h.pg.query<{ id: string }>(
+        `insert into records (type, title, authority_class, license_basis, source_url, source_key, fetched_at, text)
+         values ('karar', 'Ornek', 'emsal', 'FSEK m.31', 'https://example.invalid/k/a', $1, now(), 'metin')
+         returning id`,
+        [`test:anonim:${n}`],
+      )
+    ).rows[0]?.id as string;
+    const item = (
+      await h.pg.query<{ id: string }>(
+        `insert into review_queue (queue, subject_type, subject_id, payload, priority)
+         values ('anonymization', $1, $2, '{"items": []}', 10) returning id`,
+        [subjectType, rec],
+      )
+    ).rows[0]?.id as string;
+    return { rec, item };
+  }
+
+  const decide = (item: string, decision: 'onay' | 'ret' | 'duzelt') =>
+    adminQueueDecide(
+      api(`/v1/admin/queues/anonymization/${item}/decision`, adm.token, post({ decision })),
+      params({ queue: 'anonymization', itemId: item }),
+    );
+  const anonJobs = async (rec: string) =>
+    (
+      await h.pg.query<{ payload: unknown; dedupe_key: string; status: string }>(
+        `select payload, dedupe_key, status from jobs where type = 'anon.run' and payload ->> 'recordId' = $1`,
+        [rec],
+      )
+    ).rows;
+
+  it('onay closes the item and queues one anon.run keyed anon:<recordId>; a second onay is not_found', async () => {
+    const { rec, item } = await heldRecord();
+    expect((await decide(item, 'onay')).status).toBe(200);
+    const jobs = await anonJobs(rec);
+    expect(jobs).toEqual([{ payload: { recordId: rec }, dedupe_key: `anon:${rec}`, status: 'queued' }]);
+    const [closed] = await h.db
+      .select()
+      .from(schema.reviewQueueItems)
+      .where(eq(schema.reviewQueueItems.id, item));
+    expect(closed?.decision).toBe('onay');
+    expect(closed?.decidedBy).toBe(adm.id);
+    expect((await decide(item, 'onay')).status).toBe(404);
+    expect(await anonJobs(rec)).toHaveLength(1);
+    const audit = await h.db.select().from(schema.auditLog).where(eq(schema.auditLog.subjectId, item));
+    expect(audit.map((r) => r.diff)).toEqual([
+      expect.objectContaining({ queue: 'anonymization', recordId: rec, jobQueued: true }),
+    ]);
+  });
+
+  it('an anon.run already queued for the record absorbs the insert', async () => {
+    const { rec, item } = await heldRecord();
+    await h.pg.query(
+      `insert into jobs (type, payload, dedupe_key) values ('anon.run', jsonb_build_object('recordId', $1::text), $2)`,
+      [rec, `anon:${rec}`],
+    );
+    expect((await decide(item, 'onay')).status).toBe(200);
+    expect(await anonJobs(rec)).toHaveLength(1);
+  });
+
+  it('a finished anon.run does not block a new one', async () => {
+    const { rec, item } = await heldRecord();
+    await h.pg.query(
+      `insert into jobs (type, payload, dedupe_key, status)
+       values ('anon.run', jsonb_build_object('recordId', $1::text), $2, 'done')`,
+      [rec, `anon:${rec}`],
+    );
+    expect((await decide(item, 'onay')).status).toBe(200);
+    expect((await anonJobs(rec)).map((j) => j.status).sort()).toEqual(['done', 'queued']);
+  });
+
+  it('ret and duzelt record the decision without a job', async () => {
+    for (const decision of ['ret', 'duzelt'] as const) {
+      const { rec, item } = await heldRecord();
+      expect((await decide(item, decision)).status).toBe(200);
+      expect(await anonJobs(rec)).toEqual([]);
+      const [closed] = await h.db
+        .select()
+        .from(schema.reviewQueueItems)
+        .where(eq(schema.reviewQueueItems.id, item));
+      expect(closed?.decision).toBe(decision);
+    }
+  });
+
+  it('an item whose subject is not a record queues nothing', async () => {
+    const { rec, item } = await heldRecord('chunk');
+    expect((await decide(item, 'onay')).status).toBe(200);
+    expect(await anonJobs(rec)).toEqual([]);
+  });
+
+  it('a non-staff account cannot decide', async () => {
+    const { rec, item } = await heldRecord();
+    const user = await signUp('anonim-kullanici@example.invalid');
+    const res = await adminQueueDecide(
+      api(`/v1/admin/queues/anonymization/${item}/decision`, user.token, post({ decision: 'onay' })),
+      params({ queue: 'anonymization', itemId: item }),
+    );
+    expect(res.status).toBe(403);
+    expect(await anonJobs(rec)).toEqual([]);
+  });
+});
+
 describe('KVKK application without an account', () => {
   const valid = {
     kind: 'silme',

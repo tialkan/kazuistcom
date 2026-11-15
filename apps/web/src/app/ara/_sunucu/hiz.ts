@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { logRequestError } from '@kazuist/log';
 import {
   clientIp,
   MemoryRateLimitStore,
@@ -52,18 +52,10 @@ export async function checkIpRate(req: Request, rule: RateRule) {
   );
 }
 
-/** Structured error log: class, path and request id only. Queries and bodies are never logged. */
+/**
+ * Structured error log (ADR-0039): method, path, request id and the sanitized error class and SQLSTATE fields.
+ * Queries, bodies and error messages are never logged. Returns the request id for the response.
+ */
 export function logError(req: Request, err: unknown): string {
-  const requestId = randomUUID();
-  console.error(
-    JSON.stringify({
-      at: 'casuist',
-      level: 'error',
-      method: req.method,
-      path: new URL(req.url).pathname,
-      error: err instanceof Error ? err.name : 'Unknown',
-      requestId,
-    }),
-  );
-  return requestId;
+  return logRequestError('casuist', req, err);
 }

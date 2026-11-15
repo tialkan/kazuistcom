@@ -10,6 +10,7 @@ import {
   jobsChannel,
   type ClaimedJob,
 } from '@kazuist/db/jobs';
+import { safeErrorFields, serviceLog, type ServiceLog } from '@kazuist/log';
 
 /** Minimal SQL client surface (pg.Pool, pg.Client and PGlite all fit). */
 export interface SqlClient {
@@ -18,11 +19,13 @@ export interface SqlClient {
 
 export type JobHandler = (job: ClaimedJob) => Promise<unknown>;
 
-/** Log sink; messages carry ids, type names and error classes only, never payloads or text. */
-export type QueueLog = (msg: string, extra?: Record<string, unknown>) => void;
+/**
+ * Log sink; messages carry ids, type names and sanitized error fields only, never payloads or text. Fields are
+ * primitives by type (@kazuist/log, ADR-0039), so an error object cannot be passed.
+ */
+export type QueueLog = ServiceLog;
 
-const jsonLog: QueueLog = (msg, extra = {}) =>
-  console.log(JSON.stringify({ at: new Date().toISOString(), svc: 'worker-node', msg, ...extra }));
+const jsonLog: QueueLog = serviceLog('worker-node');
 
 export interface ConsumerOptions {
   /** Lock renewal interval while a handler runs (default JOB_HEARTBEAT_SECONDS, a third of the stale limit). */
@@ -73,7 +76,7 @@ export function createConsumer(
             lost(job, 'heartbeat');
           }
         },
-        (err: unknown) => log('heartbeat failed', { jobId: job.id, error: errorName(err) }),
+        (err: unknown) => log('heartbeat failed', { jobId: job.id, ...safeErrorFields(err) }),
       );
     }, beatMs);
     timer.unref?.();

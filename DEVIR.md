@@ -1,3 +1,64 @@
+## 15 Kasım 2026, mimar: sunucu logları tek temizleyiciden geçer, ADR-0039 (arch/shared-safe-error-log)
+
+Orkestra görevi: PR #115'in `apps/web/src/server/auth/log.ts` temizleyicisini ortak yere taşımak, apps/web ve
+apps/worker-node'daki bütün sunucu log çağrılarını ona bağlamak, ham `console.error(err)`'u CI'da yasaklamak ve
+edu_claims testini CI `docker` işinde gerçek PostgreSQL'e karşı çalıştırmak. Dal `origin/main` üstünde, PR #115 dalı
+(`kimlik/anon-onay-ve-log-temizligi`) içine birleştirildi; PR #115 önce ya da bununla birlikte birleşmeli.
+`packages/contracts` ve `packages/db` değişmedi; dış bağımlılık yok.
+- `packages/log` (yeni, `@kazuist/log`, mimarın, ADR ile değişir): `safeErrorFields`, `writeLog`, `logEvent`,
+  `logError`, `logWarn`, `logRequestError`, `serviceLog`. Alanlar tipte ilkel; çalışma anında nesneler düşer, metin 256
+  karakter, dizi 32 öge, e-posta biçimli parça `redacted`. Testler: `test/log.test.ts` (Drizzle biçimli hata, cause
+  zinciri, kanallar, `at`/`level` ezilmez, çalışma anı koruması) ve `test/lint-rule.test.ts` (depo ESLint yapılandırması
+  gerçek sunucu yollarında; kontrol denemesi: worker-node globu kaldırılınca 3 test kırmızı).
+- `eslint.config.mjs`: `apps/web/src`, `apps/worker-node/src` ve `packages/*/src` için `no-console` ve log çağrısında
+  `.message`, `.stack`, `.detail`, `.hint`, `.query`, `.params`, `.cause`, `.toString`, `String()`, `JSON.*()` yasağı.
+  Muaf: `packages/log/src`, testler, `apps/web/src/app/*/_veri/uret.ts`.
+- Bağlanan yerler: kimlik `auth.ts`, `guard.ts` (`internalError` artık `logRequestError('api', ...)`, hız sınırı uyarısı
+  `logEvent`), `page-session.ts`, `log.ts` (yalnız `betterAuthLog` kaldı, `logEvent` ile yazar); casuist `ara/page.tsx`,
+  `kaydettiklerim/page.tsx`, `ara/_sunucu/hiz.ts` (`logError(req, err)` imzası korunur, `logRequestError('casuist')`;
+  atif-agi API'si de bunu kullanır), `ara/_sunucu/gecit.ts` (yapılandırma hatası, defter uyarısı, YZ geçidi metrikleri
+  `sanitizeMetric` ile `logEvent`); yazma `kurallar.ts` ve `uclar.ts` (`logWarn`); on-yuz `(kabuk)/_kabuk/oturumYukle.ts`;
+  altyapi `server/deps.ts` (`pg.pool`, `valkey`); worker-node `main.ts`, `queue.ts`, `runner.ts` (`serviceLog`,
+  `safeErrorFields`; `QueueLog` ve `Log` artık `ServiceLog`), `notify/dispatch.ts` (`logError('notify')`). Ödeme
+  (`server/billing`, `(odeme)`, worker-node `billing`) ve kampus kalıntısı yolunda log çağrısı yoktu.
+- Satır biçimi değişiklikleri: YZ geçidi metrik satırına `at`, `level`; `pg.pool` ve `valkey` satırlarına `level`;
+  worker-node hata satırları SQLSTATE alanlarını taşıyabilir; Error olmayan değer `Unknown`. Diğer satırlar aynı
+  (var olan satır testleri değişmeden geçti).
+- CI: `docker` işine "web edu_claims ... against the real PostgreSQL" adımı (`KAZUIST_IT_DATABASE_URL`, worker-node
+  purge adımından sonra). Yerelde PostgreSQL 18.6 ve pgvector 0.8.7 geçici kümesinde çalıştırıldı: postgres arka ucu 5
+  test (iki bağlantılı yarış dahil), aynı veri tabanında ikinci çalıştırma da yeşil.
+- Belgeler: ADR-0039 (Önerildi), `docs/adr/README.md`, `docs/sahiplik.md` (`packages/log/**` mimarda, ortak dosya
+  notu), `docs/ip/arka-plan-kaydi.md`, `docs/ilerleme.md`.
+- Açık: CLAUDE.md "Güvenlik" bölümüne ADR-0039 satırı önerildi; CLAUDE.md bu dalda değişmedi (Tarık onayı).
+
+## 15 Kasım 2026, kimlik: anonimleştirme onayı anon.run kuyruğa alır, loglanan hatalar temizlenir (kimlik/anon-onay-ve-log-temizligi)
+
+Orkestra görevi: `docs/istekler/anonimlestirme-onay-ve-acik-kaynak.md` madde 3 (PR #114) ve Drizzle hata mesajlarının
+loglara girmemesi. PR #111 dalı (`kimlik/edu-claims-yeniden-goster`) bu dalın tabanına birleştirildi. `packages/contracts`
+ve `packages/db` değişmedi; yeni bağımlılık yok.
+- `apps/web/src/server/auth/admin.ts` `decideAnonymization`: `anonymization` kuyruğunda kalem tek işlemde kapanır
+  (`decision IS NULL` koşullu güncelleme); `onay` ve `subject_type = 'record'` ise aynı işlemde istek dosyasındaki SQL ile
+  `anon.run` eklenir (`payload = {recordId}`, `dedupe_key = anon:<recordId>`, kuyrukta veya çalışan iş eklemeyi yutar).
+  `ret` ve `duzelt` yalnız kararı yazar. İkinci karar `not_found` (404). Denetim satırı `admin.queue.<karar>`,
+  `diff = { queue, closed, recordId, jobQueued, patchPaths }`.
+- `apps/web/src/server/auth/log.ts` (yeni): `safeErrorFields(err)` hatanın yalnız sınıf adını ve `cause` zincirinden SQLSTATE,
+  `constraint`, `table`, `column` tanımlayıcılarını verir; `message`, `detail`, `hint`, `query`, `params` hiç okunmaz.
+  `logError(at, err, extra)` tek JSON satırı yazar. `betterAuthLog` Better Auth'un `logger.log`'u: yalnız warn ve error,
+  serbest metin mesaj ancak kısa ve sabit cümle görünümündeyse (rakam, tırnak, `@`, "query" yok) kalır, yoksa `redacted`.
+- Uygulandığı yerler: `auth.ts` (`logger: { log: betterAuthLog }`, `runHook`), `guard.ts` (`internalError`; `withAuth` ve
+  `withPublic` oturum çözümü, hız sınırı ve yönetici denetimini de `try` içine aldı, böylece çerçeveye ham hata gitmez),
+  `handlers.ts` (`authHandler` hataları `internalError`'a), `page-session.ts`.
+- Bulgu: Better Auth 1.7.11 yönlendiricisi yakalanmayan hatayı nesnesiyle, "column/relation/table" içeren hatanın
+  `message`'ını düz metin loglar; Drizzle mesajı sorgu parametrelerini (e-posta) taşır. Kontrol denemesinde `logger`
+  seçeneği kaldırılınca kayıt testi adresi logda buldu; seçenekle temiz.
+- Test `__tests__/admin-kvkk.test.ts` (anonimleştirme bloğu, 6 test): onaydan sonra `anon:<id>` anahtarlı tek `anon.run`,
+  ikinci onay 404, denetim satırı; kuyrukta bekleyen iş eklemeyi yutar; `done` iş yenisini engellemez; `ret`/`duzelt` iş
+  eklemez; kayıt dışı konu iş eklemez; personel olmayan 403. `__tests__/log-sanitizer.test.ts` (8 test): bütün `console`
+  kanalları yakalanırken PGlite tetikleyicileri e-postayı hem Postgres mesajına hem Drizzle parametresine koyar; Better
+  Auth kaydı, e-posta kodu girişi, edu.tr başlatma (500, `code: P0001`), kamuya açık kaldırma talebi ve `internalError`
+  çıktısında adres yok.
+- Dokunulmayan: kimlik dışındaki modüllerin log satırları (ödeme, casuist, yazma vb.) bu sanitizer'ı kullanmıyor;
+  `apps/worker-node` zaten yalnız hata sınıfını logluyor.
 ## 15 Kasım 2026, casuist: açık kaynak kurul adları dizin, embedding ve özet dışında (casuist/uye-adlari-dizin-disi)
 
 İstek `docs/istekler/anonimlestirme-onay-ve-acik-kaynak.md` madde 4 (#114 main'de, 52c6951 üstünde). Sözleşme,
