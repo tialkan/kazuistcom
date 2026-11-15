@@ -5,7 +5,8 @@ import { Hedefim } from './Hedefim.tsx';
 import { kunye } from './kunye.ts';
 import { ModulGezinmesi } from './ModulGezinmesi.tsx';
 import type { KabukOturumu } from './oturum.ts';
-import { hukukiBelgeler, moduller } from './rotalar.ts';
+import { hukukiBelgeler } from './rotalar.ts';
+import { gorunenModuller } from './yayin.ts';
 import './kabuk.css';
 
 /**
@@ -14,6 +15,8 @@ import './kabuk.css';
  */
 export function Kabuk({ children, oturum }: { children: ReactNode; oturum?: KabukOturumu | null }) {
   const t = ortak();
+  // Narrowed launch: modules production does not show yet leave the tabs and the footer (yayin.ts).
+  const sekmeler = gorunenModuller();
   return (
     <>
       <a className="kz-atla" href="#icerik">
@@ -31,7 +34,7 @@ export function Kabuk({ children, oturum }: { children: ReactNode; oturum?: Kabu
           </nav>
           <Hedefim oturum={oturum} />
         </div>
-        <ModulGezinmesi />
+        <ModulGezinmesi sekmeler={sekmeler} />
       </header>
       <main id="icerik" tabIndex={-1} className="kabuk-icerik">
         {children}
@@ -47,7 +50,7 @@ export function Kabuk({ children, oturum }: { children: ReactNode; oturum?: Kabu
           <nav aria-label={t.altBilgi.urun}>
             <h2>{t.altBilgi.urun}</h2>
             <ul>
-              {moduller.map((m) => (
+              {sekmeler.map((m) => (
                 <li key={m.href}>
                   <Link href={m.href}>{t.gezinme.sekme[m.anahtar]}</Link>
                 </li>

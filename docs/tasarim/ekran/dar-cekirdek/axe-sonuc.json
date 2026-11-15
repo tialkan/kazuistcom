@@ -1,0 +1,57 @@
+{
+  "ana-sayfa@375": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "ana-sayfa@768": {
+    "horizontalOverflowPx": 0
+  },
+  "ana-sayfa@1440": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "bakim@375": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "bakim@768": {
+    "horizontalOverflowPx": 0
+  },
+  "bakim@1440": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "bulunamadi@375": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "bulunamadi@768": {
+    "horizontalOverflowPx": 0
+  },
+  "bulunamadi@1440": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "ertelenen-modul@375": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "ertelenen-modul@768": {
+    "horizontalOverflowPx": 0
+  },
+  "ertelenen-modul@1440": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "yazma@375": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  },
+  "yazma@768": {
+    "horizontalOverflowPx": 0
+  },
+  "yazma@1440": {
+    "violations": [],
+    "horizontalOverflowPx": 0
+  }
+}

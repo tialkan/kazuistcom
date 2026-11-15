@@ -5,6 +5,9 @@ core.runtime, anon.run from anonymizer), wakes on LISTEN jobs_<type> and polls a
 locks of crashed workers, stops cleanly on SIGTERM (the job in hand finishes, nothing new is claimed) and
 serves a liveness probe on KAZUIST_HEALTH_HOST:KAZUIST_HEALTH_PORT (default 127.0.0.1:8000) /healthz.
 
+KAZUIST_SCHEDULER=on also starts the collection scheduler (core/scheduler.py; it enqueues list and daily jobs for
+sources that are switched on and, in production, approved; KAZUIST_SCHEDULER_DRY_RUN=on only logs the plan).
+
 Logs are JSON lines with error class names only: no payload, text or connection string.
 (docs/istekler/altyapi-worker-giris-noktalari.md, ADR-0023.)
 """
@@ -187,6 +190,11 @@ def main(env: Optional[Mapping[str, str]] = None) -> int:
         config = uvicorn.Config(create_app(rt), host=env.get("KAZUIST_INTERNAL_HOST", "127.0.0.1"),
                                 port=int(internal_port), log_level="warning")
         threading.Thread(target=uvicorn.Server(config).run, name="internal-api", daemon=True).start()
+
+    # Collection scheduler: off unless KAZUIST_SCHEDULER=on; honours the source switches and approval (core/scheduler.py).
+    from .scheduler import start_scheduler_thread
+
+    start_scheduler_thread(env, rt.registry, lambda: psycopg.connect(url), stop, json_log)
 
     try:
         with psycopg.connect(url, autocommit=True) as jobs_conn, psycopg.connect(url, autocommit=True) as listen:

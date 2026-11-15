@@ -13,8 +13,8 @@ export const moduller = [
   { anahtar: 'kaydettiklerim', href: '/kaydettiklerim' },
 ] as const satisfies readonly { anahtar: keyof OrtakSozluk['gezinme']['sekme']; href: string }[];
 
-// Every module ships at launch (ADR-0033, review.md T2): there is no closed module and no "yakında" marker,
-// so `moduller` is the only list; there is no separate open-module set.
+// There is no "yakında" marker: a tab is either shown or absent. Which modules production shows is decided in
+// one place, yayin.ts (narrowed core launch, 2026-11-15); `moduller` stays the full list for development.
 
 /** Legal documents of plan 11 served under /hukuki/<slug>. */
 export const hukukiBelgeler = [

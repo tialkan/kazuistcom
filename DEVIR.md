@@ -47,6 +47,55 @@ sunucuda ilk geri yükleme testi ve raporu; kapalı prova alt alanı için DNS o
 `exclude_from_hc` davranışının kurulum günü doğrulanması; arm64 derlemesi (yalnız Arm sunucu seçilirse); sürekli WAL
 arşivi (RPO 6 saatten kısa istenirse); hukuk-uyum için yedeklerde silinen hesap verisinin 6 aya kadar kalması.
 
+## 15 Kasım 2026, on-yuz: dar çekirdekli yayın bayrağı, hata ve yükleme sayfaları, bağlantı denetimi (on-yuz/dar-cekirdek-yayin)
+
+Orkestra görevi (Tarık kararı): ilk yayın dar çekirdek; onaylı içeriği olmayan modül üretimde görünmez.
+`packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+- Tek karar dosyası `apps/web/src/app/(kabuk)/_kabuk/yayin.ts`: `ertelenenModuller = pratik, kalemcik, atif-agi`.
+  Üretim derlemesinde (`NODE_ENV=production`, `KAZUIST_ENV` development ya da test değilse; güvenli tarafta kapanır)
+  bu modüller sekmelerden, alt bilgiden, ana sayfadan, Yazma'daki Kalemcik kartından, site haritasından ve
+  llms.txt'den çıkar; rotaları `layout.tsx` içindeki `notFound()` ile 404 döner. `KAZUIST_MODULLER=pratik,...` ya da
+  `hepsi` üretimde açar. `next dev`, testler ve `KAZUIST_ENV=development` ile başlatılan yerel üretim hepsini gösterir.
+- `app/error.tsx` ve `app/global-error.tsx` (ortak gövde `HataGovdesi.tsx`; yalnız digest, ileti ve yığın yok),
+  `not-found.tsx` başlığı; `loading.tsx` Kaydettiklerim ve Atıf ağı için; Yazma'da dergi listesi `Suspense` ile
+  (dergi profili 404'ü 200'e dönmesin diye `yazma/loading.tsx` konmadı). Metinler `ortak.json` `durum.*`.
+- Ana sayfa: yer tutucu künyeler yerine fikstür derleminden KVKK m.11, TBK m.49 ve m.72 (metin resmî metinden
+  kısaltıldı); `/` ve `/bakim` başlıkları `title.absolute` ile tek markalı.
+- Kırık bağlantı: `/hesap/cuzdan` (ödeme ve fesih bildirimleri) yerine `/hesap`; `apps/web/test/baglantilar.test.ts`
+  web, worker-node ve sözlüklerdeki sabit iç adresleri sayfa dosyasına karşı denetler. `/yonetim` yalnız robots
+  yasak listesinde, bağlantı yok.
+- Yazma: kredi yetersizliği ve bütçe tavanı (`GatewayError`/`ReservationError` `insufficient_credits`, `BudgetError`,
+  platform anahtarına OpenRouter 402) `kredi_yetersiz` ve `butce_tavani` kodlarıyla ayrı iletiye düşer; kural çıkarma
+  iş kaydında ve kısaltma `X-Yazma-Oneri` başlığında. Sonnet yedeği bu durumda denenmez.
+- Doğrulama: typecheck, lint, check:text, web 693 (1 atlandı), worker-node 118, i18n 23, ui 31, build yeşil;
+  üretim kipinde `/pratik`, `/kalemcik`, `/atif-agi` 404, geliştirme kipinde 200; 5 sayfa x 375/768/1440 axe 0,
+  taşma 0 (`docs/tasarim/ekran/dar-cekirdek/`).
+- İstekler: `docs/istekler/on-yuz-dar-cekirdek-yayin.md` (mimar ADR ve `.env.example`, altyapı web imajında
+  `KAZUIST_ENV=production`).
+## 15 Kasım 2026, veri-toplama: AYM, Yargıtay, Danıştay bağlayıcıları, keşif işleri ve zamanlayıcı (worktree-agent-ac159744b3b120907)
+
+Üç yeni kaynak (hepsi `tarik_onayi: bekliyor`, anahtar varsayılan kapalı), kuyruk tabanlı keşif ve zamanlayıcı. Sözleşme,
+şema ve bağımlılık değişmedi; yeni yük biçimleri için `docs/istekler/veri-toplama-ingest-payloadlari.md` (o gelene kadar
+yeni kaynak işlerini tüketici "invalid payload" diye gömer, zamanlayıcı onları `contract_pending` diye atlar).
+- `connectors/aym.py` (norm denetimi 5.620 ve bireysel başvuru 18.003; yalnız JSON ucu `POST /api/core/public/search`;
+  PDF/UDF indirmeleri sitenin CAPTCHA kapısında olduğu için hiç kullanılmaz; başvurucu adı `basvuruAdi` hiçbir kayda
+  kopyalanmaz), `connectors/yargitay.py` (BGK=İBK 40, HGK, CGK) ve `connectors/danistay.py` (İBK siteden 0 sonuç, İDDK,
+  VDDK), `connectors/judicial.py` (paragraf ve tablo satırı farkındalıklı HTML'den metin, tarih ve numara yardımcıları).
+- `core/fetcher.py`: POST (JSON gövde) desteği, POST yönlendirmede tekrarlanmaz; `core/challenge.py`: CAPTCHA ve bot
+  denetimi cevabı (`DisplayCaptcha`, `reCaptchaTimeout`, reCAPTCHA, hCaptcha, CDN sayfaları) kaynağı anında durdurur
+  (`ChallengeDetected`), elle `reset` gerekir; aşılmaz. Üstbilgi yalnız `KazuistBot/1.0`; taklit Origin, Referer yok.
+- `core/discovery.py`: liste işi bilinmeyen kararlar için belge işi ve sıradaki sayfa işini kuyruğa alır (kuyruk durumu
+  devam noktası); KVKK ve Rekabet için de liste işi. `core/runtime.py` yeni yükleri yönlendirir; `Repository.known_source_keys`.
+- `core/scheduler.py`: RG günlük (07:00 sonrası), KVKK, Rekabet, AYM, Yargıtay, Danıştay haftalık, EUR-Lex aylık, 01:00-06:00
+  penceresi, eski yıllar için günde bir birim-yıl doldurma; anahtar, onay, kesici ve pencereye uyar; `python -m core.scheduler
+  --dry-run`; `KAZUIST_SCHEDULER=on` işçide döngüyü başlatır (`core/main.py`), `KAZUIST_SCHEDULER_DRY_RUN=on` yalnız loglar.
+- `core/cli.py`: `python -m core.cli sources | probe <kaynak>` küçük canlı örnek ve hata oranı.
+- Mevzuat düzeltmesi: bağlayıcı sayfa kabuğunu çekiyordu (madde yok); metin `/anasayfa/MevzuatFihristDetayIframe` adresinden
+  çekilir. mevzuat.gov.tr ve resmigazete.gov.tr bu ağdan cevap vermiyor (TLS tamam, HTTP cevabı yok), ham baytla doğrulama açık.
+- Belgeler: `docs/kaynaklar/{aym,yargitay,danistay}.md` (robots, koşullar, kişisel veri, hız, protokol), mevzuat, resmi-gazete,
+  kvkk, rekabet ve README güncellendi. Kod alınmadı (yargi-mcp yalnız uç şekli için okundu), `NOTICE` değişmedi.
+- Doğrulama: `uv run pytest` 391 geçti, 15 atlandı (önce 328); `pnpm check:text` temiz. Gerçek canlı kontrol:
+  aym, yargitay, danistay, kvkk, rekabet hata oranı 0,0; resmi-gazete ve mevzuat robots.txt okunamadı.
 ## 15 Kasım 2026, yz-gecidi: kaynaklı özet talimatı doğrulayıcının yeni kurallarıyla (yz-gecidi/ozet-talimati-dogrulayici)
 
 Orkestra görevi: #101'in doğrulayıcı kurallarını modele söylemek, Ek D'yi #102 sonrası plan metniyle hizalı

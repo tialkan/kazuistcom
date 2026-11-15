@@ -96,15 +96,19 @@
     },
     "serhBaslik": "Her cümle kaynağıyla birlikte okunur",
     "serhGiris": "Kenar şerhi düzeni: cümle solda, dayandığı kaynak aynı hizada sağ kenarda. Telefonda kaynaklar cümlenin altına iner.",
-    "serhOrnekNotu": "Görünüm örneği. Metin ve künyeler yer tutucudur, gerçek bir özet değildir.",
-    "serhOrnek1": "Özetin ilk cümlesi burada durur ve yalnız yanındaki kaynakta geçen bilgiyi aktarır.",
-    "serhOrnek2": "İkinci cümle başka bir kaynağa dayanır; otorite sınıfı şekil ve metinle belirtilir.",
+    "serhOrnekNotu": "Görünüm örneği. Cümleler Kişisel Verilerin Korunması Kanunu m.11 ile Türk Borçlar Kanunu m.49 ve m.72'nin resmî metninden kısaltılmıştır; bir sorunun yanıtı değildir.",
+    "serhOrnek1": "Herkes, veri sorumlusuna başvurarak kendisiyle ilgili kişisel veri işlenip işlenmediğini öğrenebilir ve işlenmişse buna ilişkin bilgi isteyebilir.",
+    "serhOrnek2": "Kusurlu ve hukuka aykırı bir fiille başkasına zarar veren, bu zararı gidermekle yükümlüdür. Tazminat istemi, zararın ve tazminat yükümlüsünün öğrenilmesinden başlayarak iki yılda, her hâlde fiilin işlenmesinden başlayarak on yılda zamanaşımına uğrar.",
     "serhKaynak": "Bu cümlenin kaynakları",
+    "serhKunye": {
+      "1": "KVKK m.11",
+      "2": "TBK m.49",
+      "3": "TBK m.72"
+    },
     "otoriteBaglayici": "Bağlayıcı norm",
-    "otoriteYuksek": "Yüksek emsal",
     "modullerBaslik": "Araştırmadan yazıma aynı yerde",
     "modul": {
-      "ara": "Soru veya konu arayın; kaynak listesi, kısa özet ve karar ağı birlikte gelir.",
+      "ara": "Soru veya konu arayın; kaynak listesi ve kaynaklı kısa özet birlikte gelir.",
       "yazma": "Enstitü kılavuzuna veya dergi kurallarına göre Word şablonu alın, yazma hedefinizi izleyin.",
       "pratik": "Kartlı oyunlarla ve HMGS destelerinde konuları tekrar edin.",
       "rehberler": "Makale ve tez rehberi, Zotero ve EndNote anlatımı, teslim öncesi kontrol listesi."
@@ -149,7 +153,12 @@
     "bakimBaslik": "Kazuist kısa bir bakımda",
     "bakimAciklama": "Sistemi güncelliyoruz. Kaydettikleriniz ve kredileriniz korunur. Lütfen birkaç dakika sonra yeniden deneyin.",
     "bakimDurum": "Durum bilgisi bu sayfada güncellenir.",
-    "yukleniyor": "Yükleniyor"
+    "yukleniyor": "Yükleniyor",
+    "hataBaslik": "Bu sayfa şu an açılamadı",
+    "hataAciklama": "Beklenmeyen bir sorun oluştu. Sayfayı yeniden deneyebilir ya da ana sayfaya dönebilirsiniz. Sorun sürerse alt bilgideki e-posta adresine yazın.",
+    "hataKodu": "Hata kaydı",
+    "yenidenDene": "Yeniden dene",
+    "yukleniyorMetin": "Sayfa hazırlanıyor."
   },
   "casuist": {
     "gorselYerTutucu": "Görsel yer tutucu",

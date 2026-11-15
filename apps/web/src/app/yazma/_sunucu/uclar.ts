@@ -14,6 +14,7 @@ import { withAuth, withPublic } from '@/server/auth/guard.ts';
 import { apiError, json, rateLimited, readJson } from '@/server/auth/http.ts';
 import { clientIp, type RateRule } from '@/server/auth/rate-limit.ts';
 import { adaylariBul, onerilerleDoldur, sirala, type KisaltmaModeli } from '../_cekirdek/kisaltmalar.ts';
+import { yzEngelKodu } from '../_cekirdek/yz-engel.ts';
 import { type KuralModeli } from '../_cekirdek/kural-cikarma.ts';
 import { degerleriDogrula, kuralListesi, type SablonTuru } from '../_cekirdek/kural-semasi.ts';
 import { docxKelimeSayimi } from '../_cekirdek/kelime-say.ts';
@@ -340,26 +341,28 @@ export const kisaltmalarPost = (b = varsayilan) =>
     const g = AbbreviationsInput.safeParse(await readJson(req));
     if (!g.success) return apiError('bad_request');
     let adaylar = adaylariBul(g.data.text);
-    let oneriKapali = false;
+    // X-Yazma-Oneri says why no suggestion came back: kapali (service off or failed), or the credit and cap
+    // refusals of yz-engel.ts, which the client explains with their own message. The table is always returned.
+    let oneri: 'kapali' | 'kredi_yetersiz' | 'butce_tavani' | null = null;
     if (g.data.useAi) {
       const model = b.kisaltmaModeli({
         userId: p.userId,
         ip: clientIp(req.headers, ctx.config.trustedProxies),
         istekKimligi: randomUUID(),
       });
-      if (!model) oneriKapali = true;
+      if (!model) oneri = 'kapali';
       else {
         try {
           adaylar = await onerilerleDoldur(adaylar, model);
-        } catch {
-          oneriKapali = true;
+        } catch (e) {
+          oneri = yzEngelKodu(e) ?? 'kapali';
         }
       }
     }
     return json(
       sirala(adaylar).map((a) => ({ short: a.kisa, long: a.uzun, source: a.kaynak, count: a.sayi })),
       200,
-      oneriKapali ? { 'X-Yazma-Oneri': 'kapali' } : {},
+      oneri ? { 'X-Yazma-Oneri': oneri } : {},
     );
   });
 

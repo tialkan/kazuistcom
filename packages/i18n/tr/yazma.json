@@ -224,6 +224,8 @@
       "docx": "Word tablosu olarak indir (.docx)",
       "docxIndirildi": "Cetvel indirildi: {ad}",
       "oneriYok": "Yapay zekâ önerisi şu an kullanılamıyor; cetvel sözlükle hazırlandı.",
+      "oneriKredi": "Kredi bakiyeniz yapay zekâ önerisi için yetmiyor; cetvel sözlükle hazırlandı. Belirsiz satırları kendiniz doldurabilirsiniz.",
+      "oneriTavan": "Yapay zekâ kullanım sınırına ulaşıldı; cetvel sözlükle hazırlandı. Öneriyi daha sonra yeniden isteyebilirsiniz.",
       "girisGerek": "Kısaltmalar cetveli için hesabınızla giriş yapmanız gerekir.",
       "kopyaAlani": "Kopyalanabilir cetvel metni"
     }
@@ -244,6 +246,8 @@
     "denetimYok": "Denetim hizmeti şu an kullanılamıyor.",
     "sema": "Kurallar güvenilir biçimde çıkarılamadı. Örnek değerlerle başlayabilirsiniz.",
     "model": "Kural çıkarma hizmetine ulaşılamadı. Biraz sonra yeniden deneyin.",
+    "krediYetersiz": "Kredi bakiyeniz kural çıkarma için yetmiyor. Şablona örnek değerlerle başlayıp değerleri kılavuzdan kendiniz girebilirsiniz.",
+    "butceTavani": "Yapay zekâ kullanım sınırına ulaşıldı; kural çıkarma şu an yapılamıyor. Daha sonra yeniden deneyebilir ya da şablona örnek değerlerle başlayabilirsiniz.",
     "gecersiz": "İstek geçersiz.",
     "girisGerek": "Bu işlem için giriş yapmanız gerekir.",
     "genel": "Bir sorun oluştu. Biraz sonra yeniden deneyin."

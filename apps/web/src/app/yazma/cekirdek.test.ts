@@ -38,6 +38,7 @@ import {
   sistemTalimati,
   type KuralModeli,
 } from './_cekirdek/kural-cikarma.ts';
+import { yzEngelKodu } from './_cekirdek/yz-engel.ts';
 import {
   adaylariBul,
   cetvelDocx,
@@ -662,6 +663,29 @@ describe('rule extraction pipeline (plan 10.5/2)', () => {
     await expect(kuralCikar([{ sayfa: 1, metin: '  ' }], 'tez', sahteModel({}))).rejects.toBeInstanceOf(
       KuralCikarmaHatasi,
     );
+  });
+  it('keeps credit and cap refusals apart from a provider failure and does not retry them on Sonnet', async () => {
+    const hata = (ad: string, alanlar: Record<string, unknown>) =>
+      Object.assign(new Error(ad), { name: ad, ...alanlar });
+    const durumlar: [Error, string][] = [
+      [hata('GatewayError', { code: 'insufficient_credits', status: 402 }), 'kredi_yetersiz'],
+      [hata('ReservationError', { code: 'insufficient_credits' }), 'kredi_yetersiz'],
+      [hata('BudgetError', { code: 'rate_limited', reason: 'kullanici_gunluk_tavan' }), 'butce_tavani'],
+      [
+        hata('BudgetError', { code: 'rate_limited', reason: 'platform_tavan_ucretsiz_durdu' }),
+        'butce_tavani',
+      ],
+      [hata('ProviderError', { status: 402 }), 'butce_tavani'],
+      [hata('BudgetError', { code: 'rate_limited', reason: 'eszamanli_akis' }), 'model'],
+      [hata('ProviderError', { status: 500 }), 'model'],
+    ];
+    for (const [e, kod] of durumlar) {
+      const m = sahteModel({ haiku: e, sonnet: IYI });
+      await expect(kuralCikar(KILAVUZ, 'tez', m), `${e.name} ${kod}`).rejects.toMatchObject({ kod });
+      expect(m.cagrilar).toEqual(['haiku']);
+    }
+    expect(yzEngelKodu(null)).toBeNull();
+    expect(yzEngelKodu('insufficient_credits')).toBeNull();
   });
   it('turns a field into an example value when its excerpt is not in the guide', async () => {
     const m = sahteModel({

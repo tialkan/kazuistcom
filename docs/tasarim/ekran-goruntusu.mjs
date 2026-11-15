@@ -2,13 +2,22 @@
 // Screenshots at 375, 768 and 1440 px and an axe-core scan of each page.
 // Usage: start the production server (pnpm --filter @kazuist/web build && start), then
 //   NODE_PATH=<dir with playwright and @axe-core/playwright> node docs/tasarim/ekran-goruntusu.mjs http://localhost:3000 docs/tasarim/ekran
+// (NODE_PATH=tests/e2e works after `pnpm --dir tests/e2e install --ignore-workspace`.)
 // Writes PNG files and axe-sonuc.json into the output folder; exits 1 on any critical or serious violation.
 import { createRequire } from 'node:module';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const require = createRequire(join(process.env.NODE_PATH ?? process.cwd(), 'x.js'));
-const { chromium } = require('playwright');
+// tests/e2e installs @playwright/test, which re-exports the browser types: either package works as NODE_PATH.
+const yukle = (ad) => {
+  try {
+    return require(ad);
+  } catch {
+    return null;
+  }
+};
+const { chromium } = yukle('playwright') ?? require('@playwright/test');
 const { AxeBuilder } = require('@axe-core/playwright');
 
 const [base = 'http://localhost:3000', out = 'docs/tasarim/ekran'] = process.argv.slice(2);
@@ -30,6 +39,9 @@ const pages = [
   ['pratik', '/pratik'],
   ['yazma', '/yazma'],
 ];
+// SAYFALAR="ad=/yol,ad2=/yol2" shoots only those pages (e.g. the pages a change touched) instead of the list above.
+const secim = process.env.SAYFALAR?.split(',').map((x) => x.split('='));
+if (secim) pages.splice(0, pages.length, ...secim);
 const widths = [375, 768, 1440];
 mkdirSync(out, { recursive: true });
 // PW_CHROME lets a cached browser build be reused when it differs from the installed Playwright.

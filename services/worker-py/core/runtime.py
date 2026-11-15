@@ -62,10 +62,21 @@ def make_handlers(rt: Runtime) -> Dict[JobType, Callable[[ClaimedJob], Any]]:
     from connectors.rekabet import RekabetConnector
     from connectors.resmi_gazete import ResmiGazeteConnector, amending_entries
 
+    from . import discovery
+
     def ingest_fetch(job: ClaimedJob) -> Dict[str, Any]:
         p = job.payload
         source = str(p.get("source", ""))
         with rt.repo_provider() as repo:
+            group = discovery.is_discovery_or_court(p)
+            if group == "aym":
+                return discovery.aym_job(rt.fetcher, repo, p)
+            if group == "court":
+                return discovery.court_job(rt.fetcher, repo, p)
+            if group == "kvkk_list":
+                return discovery.kvkk_list_job(rt.fetcher, repo, p)
+            if group == "rekabet_list":
+                return discovery.rekabet_list_job(rt.fetcher, repo, p)
             if source == "kvkk":
                 out = KvkkConnector(rt.fetcher).fetch_decision(str(p["url"]), repo)
                 return {"recordId": out.record_id, "created": out.created}

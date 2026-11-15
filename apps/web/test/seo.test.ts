@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { moduller } from '../src/app/(kabuk)/_kabuk/rotalar.ts';
+import { gorunenModuller, yolGizli } from '../src/app/(kabuk)/_kabuk/yayin.ts';
 import { sayfaDosyasi, siteHaritasiDisiModuller } from '../src/app/(seo)/_seo/adresler.ts';
 import {
   aramaBotlari,
@@ -213,12 +214,33 @@ describe('sitemap', () => {
     expect(yollar.some((y) => y.startsWith('/tr/hukuki'))).toBe(false);
   });
 
-  it('follows rotalar.ts: every open module root is listed unless it is explicitly excluded', () => {
-    for (const { href } of moduller) {
+  it('follows rotalar.ts and yayin.ts: every module shown in production is listed unless explicitly excluded', () => {
+    for (const { href } of gorunenModuller(uretim)) {
       if (siteHaritasiDisiModuller.has(href)) expect(yollar, href).not.toContain(href);
       else expect(yollar, href).toContain(href);
     }
     expect(yollar).not.toContain('/kaydettiklerim');
+  });
+
+  it('leaves out the modules production does not show yet, with all their pages (narrowed launch)', () => {
+    for (const yol of ['/pratik', '/pratik/hmgs', '/kalemcik', '/atif-agi']) {
+      expect(yollar, yol).not.toContain(yol);
+    }
+    expect(yollar.some((y) => yolGizli(y, uretim))).toBe(false);
+    for (const yol of ['/ara', '/yazma', '/yazma/sablon', '/rehberler', '/tespit'])
+      expect(yollar).toContain(yol);
+  });
+
+  it('lists every module outside production and the ones KAZUIST_MODULLER opens in production', () => {
+    const gelistirme = siteHaritasi({ APP_URL: 'https://kazuist.com' }).map((e) => new URL(e.url).pathname);
+    for (const { href } of moduller) {
+      if (!siteHaritasiDisiModuller.has(href)) expect(gelistirme, href).toContain(href);
+    }
+    expect(gelistirme).toContain('/kalemcik');
+    const acik = siteHaritasi({ ...uretim, KAZUIST_MODULLER: 'pratik' }).map((e) => new URL(e.url).pathname);
+    expect(acik).toContain('/pratik');
+    expect(acik).toContain('/pratik/hmgs');
+    expect(acik).not.toContain('/atif-agi');
   });
 
   it('lists only pages that exist in the app', () => {
@@ -250,7 +272,7 @@ describe('sitemap', () => {
   });
 
   it('builds the same list for another origin', () => {
-    const baska = siteHaritasi({ APP_URL: 'https://staging.kazuist.com' });
+    const baska = siteHaritasi({ ...uretim, APP_URL: 'https://staging.kazuist.com' });
     expect(baska.map((e) => new URL(e.url).pathname)).toEqual(yollar);
     expect(baska.every((e) => e.url.startsWith('https://staging.kazuist.com'))).toBe(true);
   });
@@ -275,6 +297,10 @@ describe('llms.txt', () => {
       expect(u.origin).toBe('https://kazuist.com');
       expect(sayfaDosyasi(u.pathname, appKok), u.pathname).not.toBeNull();
     }
+  });
+
+  it('links no module that production does not show yet (yayin.ts)', () => {
+    for (const u of baglantilar) expect(yolGizli(u.pathname, uretim), u.pathname).toBe(false);
   });
 
   it('names the same bots as robots.txt', () => {

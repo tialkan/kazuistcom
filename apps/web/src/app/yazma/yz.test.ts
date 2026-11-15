@@ -164,7 +164,9 @@ describe('rule extraction through the AI gateway', () => {
   it('the per user daily credit cap applies to writing tools as well', async () => {
     await counters.incrBy(`credits:user:${userHashOf(KIM.userId)}:${today()}`, 480);
     answers = [IYI];
-    await expect(kuralCikar(SAYFALAR, 'tez', kuralModeli(KIM, ENV)!)).rejects.toMatchObject({ kod: 'model' });
+    await expect(kuralCikar(SAYFALAR, 'tez', kuralModeli(KIM, ENV)!)).rejects.toMatchObject({
+      kod: 'butce_tavani',
+    });
     expect(requests).toHaveLength(0);
   });
 

@@ -6,6 +6,7 @@ Redirects are followed by hand and every hop is validated again. Only the transp
 
 from __future__ import annotations
 
+import json
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
@@ -14,8 +15,9 @@ from typing import Dict, Mapping, Optional, Protocol
 from urllib.parse import urljoin, urlsplit
 
 from .breaker import ErrorRateBreaker
+from .challenge import looks_like_challenge
 from .clock import Clock
-from .errors import BreakerOpen, FetchError, HttpError
+from .errors import BreakerOpen, ChallengeDetected, FetchError, HttpError
 from .ratelimit import RateLimiter, parse_retry_after
 from .robots import RobotsPolicy
 from .sources import USER_AGENT, SourceRegistry
@@ -38,6 +40,8 @@ class Response:
 class Transport(Protocol):
     def get(self, url: str, headers: Mapping[str, str], timeout: float) -> Response: ...
 
+    def post(self, url: str, headers: Mapping[str, str], body: bytes, timeout: float) -> Response: ...
+
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs):  # type: ignore[override]
@@ -51,7 +55,13 @@ class UrllibTransport:
         self._opener = urllib.request.build_opener(_NoRedirect)
 
     def get(self, url: str, headers: Mapping[str, str], timeout: float) -> Response:
-        req = urllib.request.Request(url, headers=dict(headers), method="GET")
+        return self._send(urllib.request.Request(url, headers=dict(headers), method="GET"), url, timeout)
+
+    def post(self, url: str, headers: Mapping[str, str], body: bytes, timeout: float) -> Response:
+        req = urllib.request.Request(url, data=body, headers=dict(headers), method="POST")
+        return self._send(req, url, timeout)
+
+    def _send(self, req: urllib.request.Request, url: str, timeout: float) -> Response:
         try:
             with self._opener.open(req, timeout=timeout) as resp:
                 body = resp.read(MAX_BODY_BYTES + 1)
@@ -107,8 +117,11 @@ class Fetcher:
         self.breaker.record(source, False)
 
     # -- internals -----------------------------------------------------------------------------------------
-    def _request(self, source: str, url: str, headers: Mapping[str, str]) -> Response:
-        """One validated, rate limited hop sequence with manual redirects."""
+    def _request(
+        self, source: str, url: str, headers: Mapping[str, str], body: Optional[bytes] = None
+    ) -> Response:
+        """One validated, rate limited hop sequence with manual redirects. A POST is never replayed across a
+        redirect: a 301, 302 or 303 answer to a POST ends the call with an HttpError."""
         cfg = self.registry.get(source)
         current = url
         for _ in range(MAX_REDIRECTS + 1):
@@ -118,7 +131,12 @@ class Fetcher:
             current = validate_url(current, cfg.hosts, self.resolver)
             self.limiter.acquire(source)
             self.requests_made[source] = self.requests_made.get(source, 0) + 1
-            resp = self.transport.get(current, headers, self.timeout)
+            if body is None:
+                resp = self.transport.get(current, headers, self.timeout)
+            else:
+                resp = self.transport.post(current, headers, body, self.timeout)
+                if resp.status in (301, 302, 303):
+                    raise HttpError(resp.status, current)
             if resp.status in (301, 302, 303, 307, 308):
                 location = resp.headers.get("location")
                 if not location:
@@ -156,7 +174,10 @@ class Fetcher:
         external_id: Optional[str] = None,
         headers: Optional[Mapping[str, str]] = None,
         store: bool = True,
+        json_body: Optional[object] = None,
     ) -> FetchResult:
+        """GET, or POST with a JSON body when json_body is given. external_id names the document in the raw
+        archive; a POST must pass one that identifies the request (the URL alone does not)."""
         self.registry.check_enabled(source)
         if self.breaker.is_open(source):
             raise BreakerOpen("breaker open")
@@ -166,10 +187,14 @@ class Fetcher:
         self.robots.check((urlsplit(url).hostname or "").lower(), url)
 
         req_headers = {"User-Agent": USER_AGENT, "Accept-Encoding": "identity", **(headers or {})}
+        payload: Optional[bytes] = None
+        if json_body is not None:
+            payload = json.dumps(json_body, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+            req_headers.setdefault("Content-Type", "application/json; charset=utf-8")
         resp: Optional[Response] = None
         for attempt in range(MAX_429_RETRIES + 1):
             try:
-                resp = self._request(source, url, req_headers)
+                resp = self._request(source, url, req_headers, payload)
             except FetchError:
                 raise
             except Exception:  # noqa: BLE001 - network error class only
@@ -184,6 +209,13 @@ class Fetcher:
                 continue
             break
         assert resp is not None
+        reason = looks_like_challenge(resp.status, resp.headers, resp.body)
+        if reason is not None:
+            # A human check is a "no" for automation: stop the source, alert, and leave it stopped until an
+            # operator resets it. The response is neither archived nor parsed.
+            self.registry.trip(source, f"challenge: {reason}")
+            self.alerts.append({"source": source, "challenge": reason})
+            raise ChallengeDetected(f"challenge from source ({reason})")
         if resp.status >= 400:
             self.breaker.record(source, resp.status < 500 and resp.status not in (403, 429))
             raise HttpError(resp.status, url)
