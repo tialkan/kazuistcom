@@ -36,6 +36,39 @@ ile kilitte).
 - Açık: NER'li yapılandırmada (rules+akdeniz27) yeni kod ölçülmedi (model dosyaları yerelde yok); kesmesiz ekli ilk
   anma ("Davacı Ahmet Yılmazın") anahtara eki taşır; "Ayşe Hanım'ın" gibi unvanlı tek adlar; 200 gerçek karar seti.
 
+## 14 Kasım 2026, casuist: embedding modeli ölçümü ve önerisi (casuist/embed-model-secimi)
+
+Vektör kolunun kapalı olma nedeni (model seçilmemişti) için plan 5.3'ün üç adayı ölçüldü ve ADR-0037 (Önerildi,
+Tarık onayı bekliyor) BGE-M3 int8'i önerir. Öntanım değişmedi: `KAZUIST_EMBED_BACKEND` boşken işçi vektörsüz yazar.
+Sözleşme, şema, migration ve bağımlılık değişmedi (dışa aktarma ve ölçüm mevcut `ner` ve `ner-runtime`
+ekstralarıyla). Model dosyaları depo dışında (`~/.cache/kazuist-embed`), yalnız resmî Hugging Face depolarından
+sabit revizyonla indirildi.
+- `eval/embed/hazirla.py`: `indir` (sabit revizyon, her dosya Hub özetine karşı, lisans model kartı ve API'den),
+  `hazirla` (BGE-M3 ve e5 için resmî ONNX, Qwen3 için `torch.onnx` dışa aktarımı ve Torch eşdeğerliği), `nicemle`
+  (int8, fp32 ile kosinüs uyumu manifeste).
+- `eval/embed/olc.py` (vektör kolu tek başına; isabet@k, nDCG@10, MRR, cevapsız sorularda en üst kosinüs, eşleştirilmiş
+  bootstrap farkı, gecikme, RSS), `eval/embed/hibrit.ts` (aynı vektörlerle `search()`), `eval/embed/set-sentetik.json`
+  (60 soru, düşük kelime örtüşmesi, etiketler editör teyidi bekliyor), raporlar `eval/embed/raporlar/`.
+- `services/worker-py/nlp/embedder.py`: adaylar revizyon ve lisansla sabit; `OnnxEmbedder` öntanımda metin başına
+  bir çalıştırma (int8'de yığınla gömülen vektör yığın arkadaşlarına bağlıydı, CPU'da yığın hız kazandırmadı);
+  `batch_size` artırılırsa uzunluğa göre gruplar ve yığın başına 4096 dolgu tokenı sınırı.
+- `services/worker-py/nlp/model_check.py`: kurulum denetimi (`python -m nlp.model_check <klasör> --quantized`).
+- `docs/adr/0037-embedding-modeli.md` ve ADR dizini satırı (mimarın yolu; orkestranın görevlendirmesiyle),
+  `docs/istekler/altyapi-embed-model-birimi.md` (`--extra ner-runtime`, `/models/embed`, değişkenler, bellek).
+- `packages/casuist/tsconfig.json` `eval/embed/*.ts`'yi de tip denetimine alır.
+- Sonuç (Apple M4, 4 iş parçacığı; `eval/embed/raporlar/`): BGE-M3 ile multilingual-e5-large arasında vektör
+  kolunda fark gösterilemedi (int8 eşleştirilmiş nDCG@10 farkı +0,002 [-0,038, +0,043], 99 soru); ikisi de int8'de
+  Qwen3-Embedding-0.6B'den iyi (+0,11). Hibritte BGE-M3 int8 sentetik sette nDCG@10'u 0,610'dan 0,748'e çıkardı,
+  rag-50'yi düşürmedi. e5 kosinüsleri dar ve yüksek olduğundan cevapsız 11 sorunun 11'inde ilk sonuç "Yüksek
+  ilgililik" aldı (BGE-M3'te 1, vektörsüzle aynı); karar buna dayanıyor. BGE-M3 int8: disk 542 MB, yüklenince
+  yaklaşık 1,4 GB RSS (macOS), sorgu p95 13 ms, saniyede yaklaşık 16 parça. Lisanslar: BGE-M3 MIT, e5 MIT, Qwen3
+  Apache-2.0 (sabit revizyonların model kartı ve Hub API'si).
+- Doğrulama: worker-py `uv run pytest` 336 geçti, 7 atlandı (ekstralı ortam; üç gerçek model testi dahil); ekstrasız,
+  CI benzeri ortamda 328 geçti, 15 atlandı. `pnpm check:text`, `pnpm typecheck`, `pnpm lint`, casuist vitest 107
+  geçti; `pnpm build` geçti. Arayüz değişmediği için ekran görüntüsü ve axe yok.
+- Açık: 300 soruluk `eval/embed` seti; CAX21'de yeniden ölçüm; sorgu gömme HTTP servisi (web `KAZUIST_EMBED_URL`;
+  tek model kopyası paylaşılmalı); parçaya kayıt başlığı ekleme kararı (ADR-0026 okuma kuralı); `.env.example`
+  açıklaması (mimar); altyapi birimi.
 ## 15 Kasım 2026, kimlik: hesap silme tek işlemde, kaldırma kararında gizleme, doğrulanmış e-posta kapıları (kimlik/purge-takedown-verified-gates)
 
 Orkestra görevi: main üzerinde doğrulanmış üç hata. `packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
