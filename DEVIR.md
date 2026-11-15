@@ -32,6 +32,40 @@ sabit revizyonla indirildi.
   tek model kopyası paylaşılmalı); parçaya kayıt başlığı ekleme kararı (ADR-0026 okuma kuralı); `.env.example`
   açıklaması (mimar); altyapi birimi.
 
+## 14 Kasım 2026, yazma: rota şemaları sözleşmeden, Kalemcik sakin yüz, zip bombası testi (yazma/rota-sozlesme-sakin-yuz)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` yazma madde 3 ve `docs/istekler/yazma-kalemcik-notr-ton.md` kararı.
+`packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+- `apps/web/src/app/yazma/_sunucu/uclar.ts` ve `projeler.ts`: yerel zod şemaları kalktı. `WritingProjectInput`,
+  `WritingProgressInput`, `WritingSettings`, `AbbreviationsInput` JSON gövdelerini, `TemplateRulesUpload`,
+  `TemplateCheckUpload`, `DocxCountUpload` çok parçalı gövdeleri doğrular. Sözleşme yalnız biçimi söyler (proje
+  alanlarının hepsi isteğe bağlı); sunucu, sözleşme şeması geçtikten sonra eskisi gibi şunları ister: yeni projede
+  başlık, tür ve hedef zorunlu; başlık ve not kırpılır, boş başlık olmaz, hedef en çok 2 milyon kelime.
+- Davranış değişikliği (testle gösterildi): kılavuz yüklemede `institutionName` 200 karakterden uzunsa artık 400
+  (eskiden kırpılıyordu); sözleşme `max 200` diyor. `kind` yoksa `tez`. `rules` parçası metin değilse 400.
+- Kalemcik: yükleniyor ve proje yok durumlarında `SakinKoc` (`dusunceli` yüzü, ton etiketi ve mesaj satırı yok;
+  yüklenirken ekran okuyucuya "Yükleniyor"). `packages/i18n/tr/kalemcik.json` `kalemcik.yukleniyor` eklendi.
+- `cekirdek.test.ts` zip bombası: 70 MB sıkıştırma yerine bildirilen boyutu 70 MB yazılmış küçük arşiv (aynı sınır,
+  sınırın altındaki gerçek boyutuyla okunabildiği de sınanır) ve 61 MB gerçek bomba (seviye 1, açık 60 sn zaman aşımı).
+- Test: `yazma/api.test.ts` yeni blok, `kalemcik/kalemcik.test.tsx`. Doğrulama: typecheck, lint, tam `pnpm test` iki kez
+  (web 637 geçti), build; 375/768/1440 axe 0 (yükleniyor ve proje yok).
+
+## 14 Kasım 2026, atif-agi: sözleşme v1.5 atıf ağı maddeleri (atif-agi/v1-5-rejected)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` atif-agi madde 1 ve 3 (madde 2 zaten açılabilir durumdaydı).
+Sözleşme, şema ve migration değişmedi; yeni bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
+- `services/worker-py/citations/store.py`: `UPSERT_EDGE_SQL` ve `UPSERT_WORK_CITATION_SQL` yalnız
+  `confirmed = false AND NOT rejected` satırlarını günceller; `PRUNE_EDGES_SQL` ve `PRUNE_WORK_CITATIONS_SQL`
+  `rejected` satırları silmez. Başlıktaki "until a rejected column exists" notu kalktı. `SqlCitationStore(doctrine=True)`
+  çağıran tarafın seçimidir; `job.py` mağaza fabrikasını dışarıdan aldığı için orada değişiklik gerekmedi.
+- `apps/web/src/app/atif-agi/_sunucu/sql.ts`: kenar görünürlüğü `NOT e.rejected AND (e.confirmed OR
+  e.confidence >= 0.90)`, eser okuması `NOT wc.rejected AND (wc.confirmed OR wc.confidence >= 0.90)`; eski
+  `confidence > 0` ret biçimi kalktı (migration 0007 o satırları `rejected = true` yaptı). `42P01` yedeği
+  zararsız olduğu için bırakıldı.
+- Test: `services/worker-py/citations/tests/test_llm_job.py` (upsert ve budama koşulları), `sunucu.test.ts` (ağ ve
+  kayıt ağı sorgularının `NOT rejected` taşıması).
+- Açık: retde `rejected = true` yazacak editör ekranı kimliğin (yönlendirme kimlik madde 4); bu PR yalnız okuma ve
+  yazma tarafını hazırlar. `packages/casuist/src/sql.ts` casuist ajanınındır, dokunulmadı.
 ## 14 Kasım 2026, casuist: reddedilen atıf kenarları sayılmaz (sözleşme v1.5, casuist/v1-5-reddedilen-kenarlar)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` casuist maddesi. Sözleşme, şema ve migration değişmedi; yeni

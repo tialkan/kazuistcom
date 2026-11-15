@@ -1,4 +1,12 @@
 import { eq } from 'drizzle-orm';
+import {
+  AbbreviationsInput,
+  TemplateCheckUpload,
+  TemplateRulesUpload,
+  WritingProgressInput,
+  WritingProjectInput,
+  WritingSettings,
+} from '@kazuist/contracts';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { schema } from '@/server/auth/db.ts';
 import {
@@ -741,5 +749,131 @@ describe('DOCX check endpoint', () => {
     });
     expect(dusen.status).toBe(503);
     expect(await dusen.text()).not.toContain('10.0.0.5');
+  });
+});
+
+describe('request bodies come from the contract schemas (mimar-yonlendirme-3, madde 3)', () => {
+  const sinir = hizlar.kuralYukle.limit;
+  beforeAll(() => {
+    hizlar.kuralYukle.limit = 1000;
+  });
+  afterAll(() => {
+    hizlar.kuralYukle.limit = sinir;
+  });
+  const txt = new TextEncoder().encode(KILAVUZ_METNI);
+  const yukle = (ek: Record<string, string>) =>
+    kuralYuklePost(bag({ kuralModeli: () => sahte(IYI_CEVAP) }))(
+      istek('/v1/templates/rules', a, { method: 'POST', body: cokluParca('file', txt, 'k.txt', ek) }),
+    );
+  const sonIs = async (jobId: string) => {
+    await bitir();
+    const [satir] = await h.db.select().from(schema.jobs).where(eq(schema.jobs.id, jobId));
+    return satir;
+  };
+  const patch = (id: string, json: unknown) =>
+    projePatch(bag())(istek(`/v1/writing-projects/${id}`, a, { method: 'PATCH', json }), rc(id));
+
+  it('a body the contract refuses is refused by every JSON route', async () => {
+    const p = await projeAc();
+    const kotu = {
+      proje: { title: 'x'.repeat(301), kind: 'tez', targetWords: 10 },
+      ilerleme: { words: 5, note: 'n'.repeat(1001) },
+      ayar: { hitap: 'sen', hitap2: 'siz' },
+      kisaltma: { text: 'TBK', useAi: 'evet' },
+    };
+    expect(WritingProjectInput.safeParse(kotu.proje).success).toBe(false);
+    expect(WritingProgressInput.safeParse(kotu.ilerleme).success).toBe(false);
+    expect(WritingSettings.safeParse(kotu.ayar).success).toBe(false);
+    expect(AbbreviationsInput.safeParse(kotu.kisaltma).success).toBe(false);
+    const olustur = await projelerPost(bag())(
+      istek('/v1/writing-projects', a, { method: 'POST', json: kotu.proje }),
+    );
+    expect(olustur.status).toBe(400);
+    expect((await patch(p.id, { title: 'x'.repeat(301) })).status).toBe(400);
+    const ilerleme = await ilerlemePost(bag())(
+      istek(`/v1/writing-projects/${p.id}/progress`, a, { method: 'POST', json: kotu.ilerleme }),
+      rc(p.id),
+    );
+    expect(ilerleme.status).toBe(400);
+    const ayar = await ayarlarPut(bag())(
+      istek('/v1/writing-projects/ayarlar', a, { method: 'PUT', json: kotu.ayar }),
+    );
+    expect(ayar.status).toBe(400);
+    const kisaltma = await kisaltmalarPost(bag())(
+      istek('/v1/abbreviations', a, { method: 'POST', json: kotu.kisaltma }),
+    );
+    expect(kisaltma.status).toBe(400);
+  });
+  it('the server still asks more than the contract for a new project (title, kind and target are required)', async () => {
+    // The contract's WritingProjectInput has every field optional; POST keeps requiring the three fields.
+    expect(WritingProjectInput.safeParse({}).success).toBe(true);
+    const eksikler = [
+      { kind: 'tez', targetWords: 1 },
+      { title: 'T', targetWords: 1 },
+      { title: 'T', kind: 'tez' },
+    ];
+    for (const eksik of eksikler) {
+      expect(WritingProjectInput.safeParse(eksik).success).toBe(true);
+      const r = await projelerPost(bag())(istek('/v1/writing-projects', a, { method: 'POST', json: eksik }));
+      expect(r.status, JSON.stringify(eksik)).toBe(400);
+    }
+    // PATCH takes the contract shape as it is, including an empty body; the server limits still apply.
+    const p = await projeAc();
+    expect((await patch(p.id, {})).status).toBe(200);
+    expect((await patch(p.id, { targetWords: 2_000_001 })).status).toBe(400);
+    expect((await patch(p.id, { title: '   ' })).status).toBe(400);
+  });
+  it('trims the title and the progress note after the contract schema has passed', async () => {
+    const p = await projeAc(a, { ...proje, title: '  Makale  ' });
+    const tek = await gov(await projeGet(bag())(istek(`/v1/writing-projects/${p.id}`, a), rc(p.id)));
+    expect(tek.title).toBe('Makale');
+    await ilerlemePost(bag())(
+      istek(`/v1/writing-projects/${p.id}/progress`, a, {
+        method: 'POST',
+        json: { words: 9, note: '  not  ' },
+      }),
+      rc(p.id),
+    );
+    const [kayit] = await h.db
+      .select({ note: schema.writingLogs.note })
+      .from(schema.writingLogs)
+      .where(eq(schema.writingLogs.projectId, p.id));
+    expect(kayit?.note).toBe('not');
+  });
+  it('guide upload: kind defaults to tez and is read by the contract schema', async () => {
+    expect(TemplateRulesUpload.parse({ file: 'x' }).kind).toBe('tez');
+    const r = await yukle({});
+    expect(r.status).toBe(202);
+    const is = await sonIs((await gov(r)).jobId);
+    expect(is?.payload).toEqual({ userId: aId, kind: 'tez' });
+    const makale = await yukle({ kind: 'makale', institutionName: '  Örnek Üniversitesi  ' });
+    const ms = await sonIs((await gov(makale)).jobId);
+    expect(ms?.payload).toEqual({ userId: aId, kind: 'makale' });
+  });
+  it('guide upload: behaviour change, an institution name over 200 characters is refused instead of cut', async () => {
+    // Before: the route trimmed and cut the name to 200 characters. The contract says max 200, so 201 is a 400.
+    expect(TemplateRulesUpload.safeParse({ file: 'x', institutionName: 'K'.repeat(201) }).success).toBe(
+      false,
+    );
+    const onceki = (await h.db.select().from(schema.jobs)).length;
+    expect((await yukle({ institutionName: 'K'.repeat(201) })).status).toBe(400);
+    expect((await h.db.select().from(schema.jobs)).length).toBe(onceki);
+    const sinirda = await yukle({ institutionName: 'K'.repeat(200) });
+    expect(sinirda.status).toBe(202);
+    await bitir();
+  });
+  it('DOCX check: the rules part is required and must be text, as TemplateCheckUpload says', async () => {
+    expect(TemplateCheckUpload.safeParse({ file: 'x' }).success).toBe(false);
+    const ok = { denetim: () => async () => ({ durum: 200, govde: {} }) };
+    const docx = await sablonUret(varsayilanDegerler, 'tez');
+    const kuralsiz = cokluParca('file', docx, 'tez.docx');
+    const r = await denetimPost(bag(ok))(istek('/v1/templates/check', a, { method: 'POST', body: kuralsiz }));
+    expect(r.status).toBe(400);
+    const dosyaOlarak = cokluParca('file', docx, 'tez.docx');
+    dosyaOlarak.set('rules', new File(['{}'], 'rules.json'));
+    const r2 = await denetimPost(bag(ok))(
+      istek('/v1/templates/check', a, { method: 'POST', body: dosyaOlarak }),
+    );
+    expect(r2.status).toBe(400);
   });
 });

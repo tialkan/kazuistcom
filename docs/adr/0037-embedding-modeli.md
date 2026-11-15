@@ -1,7 +1,7 @@
 # ADR-0037: Embedding modeli BGE-M3 (int8, CPU, ONNX Runtime)
 
 - Tarih: 2026-11-14
-- Durum: Önerildi, Tarık onayı bekliyor
+- Durum: Kabul edildi (Tarık İsmet Alkan, 15 Kasım 2026)
 - İlgili kararlar: K-06 ve ADR-0006 (PostgreSQL içinde hibrit getirme, `halfvec(1024)`), ADR-0026 (`embed.chunks`,
   `ner-runtime` ekstrası), ADR-0030 ve ADR-0033 (Hetzner, tek sunucu, 8 GB Arm64 ile 16 GB x86 arası); plan 5.3,
   5.5, 6.7, 7.2/3; review.md P9 madde 1 ve 9
@@ -172,5 +172,5 @@ Qwen3 0,921. RSS macOS'ta ölçüldü; Linux'ta ve Ampere'de farklı olabilir.
 
 ## Durum
 
-Önerildi, Tarık onayı bekliyor. Onay, değişkenlerin üretimde verilmesine ancak altyapi birimi kurulup hedef sunucuda
+Kabul edildi (Tarık İsmet Alkan, 15 Kasım 2026). Onay, değişkenlerin üretimde verilmesine ancak altyapi birimi kurulup hedef sunucuda
 ölçüm alındıktan sonra izin verir.

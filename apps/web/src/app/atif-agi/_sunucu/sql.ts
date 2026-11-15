@@ -14,8 +14,8 @@ import {
 /**
  * PostgreSQL source of the citation network. Only records that are servable (masked_text present, not hidden)
  * are read. An edge is drawn when an editor confirmed it, or its confidence is at least the publish threshold
- * (services/worker-py/citations/scoring.py PUBLISH_MIN); an editor rejection keeps confirmed = true and sets
- * confidence = 0 (store.py), so `confidence > 0` hides it.
+ * (services/worker-py/citations/scoring.py PUBLISH_MIN). An editor rejection sets `rejected = true` (contract
+ * v1.5, ADR-0035); rejected edges and work citations are never read, whatever their confidence or confirmed flag.
  */
 export const YAYIN_ESIGI = 0.9;
 export const KARAR_SINIRI = 500;
@@ -32,7 +32,7 @@ export const likeKacis = (s: string): string => s.replace(/[\\%_]/g, (c) => `\\$
 const KAYIT_ALANLARI = `r.id, r.type, r.title, r.court, r.chamber, r.esas_no, r.karar_no, r.decision_date::text AS date,
   r.authority_class, r.status, r.source_url, r.fetched_at::text AS fetched_at`;
 const SERVIS_EDILEBILIR = 'r.hidden_at IS NULL AND r.masked_text IS NOT NULL';
-const KENAR_GORUNUR = `((e.confirmed AND e.confidence > 0) OR e.confidence >= $2)`;
+const KENAR_GORUNUR = `(NOT e.rejected AND (e.confirmed OR e.confidence >= $2))`;
 
 interface KayitSatiri {
   id: string;
@@ -100,7 +100,10 @@ interface EserSatiri {
   csl: { kind?: 'kitap' | 'makale'; venue?: string | null; editions?: Eser['basklar'] } | null;
 }
 
-/** Doctrine edges need works.work_key and work_citations (docs/istekler/atif-agi-sema.md); absent tables mean none. */
+/**
+ * Doctrine edges come from work_citations (migration 0007). The 42P01 fallback below is no longer needed since the
+ * tables exist; it stays as a harmless guard for an environment that has not migrated yet.
+ */
 async function eserleriOku(
   pool: Pool,
   kararIdleri: string[],
@@ -110,7 +113,7 @@ async function eserleriOku(
     const { rows } = await pool.query<EserSatiri>(
       `SELECT wc.work_id, wc.from_record_id, wc.pages, w.title, w.authors, w.csl
          FROM work_citations wc JOIN works w ON w.id = wc.work_id
-        WHERE wc.from_record_id = ANY($1::uuid[]) AND ((wc.confirmed AND wc.confidence > 0) OR wc.confidence >= $2)`,
+        WHERE wc.from_record_id = ANY($1::uuid[]) AND NOT wc.rejected AND (wc.confirmed OR wc.confidence >= $2)`,
       [kararIdleri, YAYIN_ESIGI],
     );
     const works = new Map<string, Eser>();

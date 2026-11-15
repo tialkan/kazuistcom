@@ -56,6 +56,18 @@ const stilGovdesi = (stil: string, id: string) =>
 const parcalar = (zip: Uint8Array) =>
   Object.fromEntries(Object.entries(unzipSync(zip)).map(([k, v]) => [k, strFromU8(v)]));
 
+/** Rewrites the declared uncompressed size in every local and central header of a zip (test forgery). */
+function sahteBoyut(zip: Uint8Array, boyut: number): Uint8Array {
+  const kopya = zip.slice();
+  const v = new DataView(kopya.buffer);
+  for (let i = 0; i + 30 < kopya.length; i++) {
+    const imza = v.getUint32(i, true);
+    if (imza === 0x04034b50) v.setUint32(i + 22, boyut, true);
+    else if (imza === 0x02014b50) v.setUint32(i + 24, boyut, true);
+  }
+  return kopya;
+}
+
 describe('ASCII file names (plan 10.5/4)', () => {
   it('turns Turkish letters into ASCII and joins words with hyphens', () => {
     expect(asciiSlug('Ankara Sosyal Bilimler Üniversitesi')).toBe('ankara-sosyal-bilimler-universitesi');
@@ -469,13 +481,30 @@ describe('upload and text extraction (plan 10.5/1)', () => {
     expect(icerikTuru(pdfOlustur(['x']))).toBe('pdf');
     expect(uzantidanTur('Rapor.DOCX')).toBe('docx');
   });
-  it('refuses a zip bomb and a zip with too many entries', async () => {
-    const bomba = zipSync({ 'word/document.xml': new Uint8Array(70 * 1024 * 1024) }, { level: 9 });
+  it('refuses a zip whose document.xml declares more than 60 MB, without inflating it', async () => {
+    // Same limit as a real 70 MB bomb, but the declared size is forged in a tiny archive: the filter reads the
+    // declared size from the central directory before anything is inflated, so the input stays a few hundred bytes
+    // and the test no longer depends on how fast the machine compresses 70 MB under load.
+    const kucuk = zipSync({ 'word/document.xml': strToU8('<w:document/>') });
+    const bomba = sahteBoyut(kucuk, 70 * 1024 * 1024);
+    expect(bomba.length).toBeLessThan(1024);
     await expect(metinCikar(bomba, 'b.docx')).rejects.toMatchObject({ kod: 'zip_bomba' });
-    const cok: Record<string, Uint8Array> = { 'word/document.xml': strToU8('<w:document/>') };
-    for (let i = 0; i < 2100; i++) cok[`x/${i}.txt`] = strToU8('a');
-    await expect(metinCikar(zipSync(cok), 'c.docx')).rejects.toMatchObject({ kod: 'zip_bomba' });
+    // The forgery is the only difference: the same archive with its real size is read normally.
+    await expect(metinCikar(kucuk, 'b.docx')).resolves.toBeDefined();
   });
+  it(
+    'refuses a real zip bomb just over 60 MB and a zip with too many entries',
+    { timeout: 60_000 },
+    async () => {
+      // 61 MB is the smallest honest bomb past the limit; level 1 keeps compression cheap, the explicit timeout
+      // covers a loaded full run.
+      const bomba = zipSync({ 'word/document.xml': new Uint8Array(61 * 1024 * 1024) }, { level: 1 });
+      await expect(metinCikar(bomba, 'b.docx')).rejects.toMatchObject({ kod: 'zip_bomba' });
+      const cok: Record<string, Uint8Array> = { 'word/document.xml': strToU8('<w:document/>') };
+      for (let i = 0; i < 2100; i++) cok[`x/${i}.txt`] = strToU8('a');
+      await expect(metinCikar(zipSync(cok), 'c.docx')).rejects.toMatchObject({ kod: 'zip_bomba' });
+    },
+  );
   it('refuses a zip that is not a DOCX and a broken PDF', async () => {
     await expect(metinCikar(zipSync({ 'a.txt': strToU8('x') }), 'a.docx')).rejects.toMatchObject({
       kod: 'bozuk',
