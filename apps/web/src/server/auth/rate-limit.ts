@@ -75,6 +75,8 @@ export const rules = {
   kvkkVerifyId: { name: 'kvkk-verify-id', limit: 5, windowSec: 3600 },
   /** Takedown intake per IP. */
   takedownIp: { name: 'takedown-ip', limit: 10, windowSec: 3600 },
+  /** Push target registrations (Web Push, APNs) per user. */
+  pushUser: { name: 'push-user', limit: 20, windowSec: 3600 },
   /** Admin TOTP step per user. */
   stepUpUser: { name: 'step-up-user', limit: 5, windowSec: 600 },
   /** Admin API per user. */
