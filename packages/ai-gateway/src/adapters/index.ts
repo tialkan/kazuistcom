@@ -85,6 +85,8 @@ export function anthropicAdapter(cfg: AdapterConfig = {}): ProviderAdapter {
         system: req.system,
         messages: [{ role: 'user', content: req.prompt }],
         stream: true,
+        // Effort is an optional input on the Messages API; `none` and `minimal` do not exist there.
+        ...(req.reasoningEffort === 'low' ? { output_config: { effort: 'low' } } : {}),
       },
       ctx,
     );

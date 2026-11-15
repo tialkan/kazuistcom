@@ -59,10 +59,14 @@ export function valkeyCounterStore(client: ValkeyCounterClient, prefix = 'ai:'):
   };
 }
 
+/** Request ids of sourced summaries (ozet.ts); only these are charged by validated sentences. */
+const SUMMARY_REQUEST = 'ozet:';
+
 /**
  * Charges only validated sentences (plan 4.5/3). The gateway decides the charge from raw model lines; this
  * wrapper turns the consume into a release when the validator accepted nothing. docs/istekler asks yz-gecidi
- * to take the validated count directly.
+ * to take the validated count directly. Other operations on the same gateway (writing tools through
+ * `gateway.complete`) already decide their charge with their own schema check and pass through unchanged.
  */
 export class ValidatedChargeLedger implements LedgerReservations {
   private readonly requestOf = new Map<string, string>();
@@ -83,7 +87,8 @@ export class ValidatedChargeLedger implements LedgerReservations {
   async consume(reservationId: string, credits: number): Promise<void> {
     const req = this.requestOf.get(reservationId);
     this.requestOf.delete(reservationId);
-    if (req !== undefined && (this.accepted.get(req) ?? 0) === 0) return this.inner.release(reservationId);
+    if (req?.startsWith(SUMMARY_REQUEST) && (this.accepted.get(req) ?? 0) === 0)
+      return this.inner.release(reservationId);
     return this.inner.consume(reservationId, credits);
   }
   async release(reservationId: string): Promise<void> {
@@ -217,6 +222,7 @@ export function buildSummaryDeps(
     sink: overrides.sink ?? jsonLineSink((line) => console.info(line)),
     ner: overrides.ner ?? nameRecognizer,
     onSettleFailure: overrides.onSettleFailure ?? settleAlert,
+    ...(overrides.onCost ? { onCost: overrides.onCost } : {}),
     ...(overrides.now ? { now: () => now().getTime() } : {}),
   });
   return {
