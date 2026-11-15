@@ -2,7 +2,7 @@
 
 Orkestra görevi: #101'in doğrulayıcı kurallarını modele söylemek, Ek D'yi #102 sonrası plan metniyle hizalı
 tutmak. Dal #101'in dalından açıldı; main (#90-#102, #102 dahil) içine birleştirildi. `packages/contracts`,
-`packages/db` ve `plan.md` bu dalda değişmedi (plan.md main ile aynı); yeni bağımlılık yok. Bölümde ayrıca
+`packages/db` ve `plan.md` bu dalda değişmedi (plan.md main ile aynı); yeni bağımlılık yok. Ayrıca
 main'deki eski yz-gecidi satırının ikinci kopyası `docs/ilerleme.md`'den çıkarıldı (kimlik satırının kopyası kaldı).
 - Birleştirme çakışmaları (casuist yolları, sahibine bilgi): `packages/casuist/src/answer/passages.ts` main'in
   `promptPassage` yardımcısı #101'in `body` ve `section` alanlarıyla birleşti (künye artık `kunye(r, section)`;
