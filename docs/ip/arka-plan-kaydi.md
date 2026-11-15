@@ -43,6 +43,7 @@ Güncelleme 2026-11-15 (mimar, docs/adr/README.md ile aynı): ADR-0035 13 Kasım
 BGE-M3) 15 Kasım 2026'da kabul edildi. ADR-0038 (sözleşme v1.6: yeni kaynak iş yükleri, edu.tr posta kutusu başına tek
 hesap, arama ve özet alanları; migration 0008; dar çekirdekli ilk yayın, ADR-0033 madde 5'i daraltır) 2026-11-15
 tarihli, "Önerildi".
+ADR-0039 (sunucu loglarında hata temizleme kuralı, `packages/log`) 2026-11-15 tarihli, "Önerildi".
 ADR-0001 (kaynaklı özet ve kaynak bağlama) ve ADR-0006 (PostgreSQL içinde hibrit getirme) Eurostars WP4'ün
 (retrieval, grounding, provenance) arka plan IP'si bakımından temel kayıtlardır.
 Güncelleme 2026-11-12 (hukuk-uyum): ADR-0034 dosyasındaki onay kaydına göre Tarık İsmet Alkan 12 Kasım 2026'da

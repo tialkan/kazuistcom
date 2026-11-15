@@ -1,3 +1,4 @@
+import { logError } from '@kazuist/log';
 import { Valkey } from 'iovalkey';
 import pg from 'pg';
 import type { HealthDeps, Ping } from './health.ts';
@@ -39,7 +40,7 @@ export function sharedPool(url: string): pg.Pool {
       connectionTimeoutMillis: 2000,
       idleTimeoutMillis: 30_000,
     });
-    pool.on('error', (err) => console.error(JSON.stringify({ at: 'pg.pool', error: err.name })));
+    pool.on('error', (err) => logError('pg.pool', err));
     s.pool = pool;
     s.poolUrl = url;
   }
@@ -51,7 +52,7 @@ export function sharedValkey(url: string): Valkey {
   const s = shared();
   if (!s.valkey || s.valkeyUrl !== url) {
     const client = new Valkey(url, { lazyConnect: true, maxRetriesPerRequest: 1, connectTimeout: 2000 });
-    client.on('error', (err: Error) => console.error(JSON.stringify({ at: 'valkey', error: err.name })));
+    client.on('error', (err: Error) => logError('valkey', err));
     s.valkey = client;
     s.valkeyUrl = url;
   }

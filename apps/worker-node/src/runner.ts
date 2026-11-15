@@ -7,6 +7,7 @@ import {
   pruneJobsSql,
   releaseStaleJobsSql,
 } from '@kazuist/db/jobs';
+import { safeErrorFields, type ServiceLog } from '@kazuist/log';
 import type { JobConsumer, SqlClient } from './queue.ts';
 
 /**
@@ -15,7 +16,8 @@ import type { JobConsumer, SqlClient } from './queue.ts';
  * jobs once a day, stop cleanly on SIGTERM (finish the job in hand, claim nothing new).
  */
 
-export type Log = (msg: string, extra?: Record<string, unknown>) => void;
+/** Worker log sink (@kazuist/log serviceLog in production); fields are primitives by type. */
+export type Log = ServiceLog;
 
 /** Subscribe to NOTIFY channels; resolves to an unsubscribe function. */
 export type Listen = (
@@ -106,14 +108,14 @@ export function startWorker(o: WorkerOptions): RunningWorker {
           try {
             await maintain();
           } catch (err) {
-            log('prune failed', { error: err instanceof Error ? err.name : 'Error' });
+            log('prune failed', safeErrorFields(err));
           }
           // A failing tick must not stop the queue from draining.
           if (o.tick) {
             try {
               await o.tick();
             } catch (err) {
-              log('tick failed', { error: err instanceof Error ? err.name : 'Error' });
+              log('tick failed', safeErrorFields(err));
             }
           }
           // A poll round tries every type; a notification round only the notified ones.
@@ -125,8 +127,8 @@ export function startWorker(o: WorkerOptions): RunningWorker {
             }
           }
         } catch (err) {
-          // Database unreachable or similar: log the class only and retry after the poll interval.
-          log('round failed', { error: err instanceof Error ? err.name : 'Error' });
+          // Database unreachable or similar: log the sanitized error only and retry after the poll interval.
+          log('round failed', safeErrorFields(err));
         }
         if (running && pending.size === 0) await nap();
       }

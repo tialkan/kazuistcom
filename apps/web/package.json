@@ -18,6 +18,7 @@
     "@kazuist/db": "workspace:*",
     "@kazuist/i18n": "workspace:*",
     "@kazuist/ledger": "workspace:*",
+    "@kazuist/log": "workspace:*",
     "@kazuist/ui": "workspace:*",
     "better-auth": "1.7.11",
     "docx": "9.15.2",

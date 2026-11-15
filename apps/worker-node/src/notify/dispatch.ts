@@ -1,5 +1,6 @@
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
 import { deliveredTargetsSql, enqueueJob, recordDeliverySql, type ClaimedJob } from '@kazuist/db/jobs';
+import { logError } from '@kazuist/log';
 import type { SqlClient } from '../queue.ts';
 import { renderBillingNotice } from '../billing/notice-text.ts';
 import { renderKalemcikNotice } from '../kalemcik/bildirim.ts';
@@ -262,15 +263,7 @@ export async function dispatch(
       }
     } catch (err) {
       pushFailures++;
-      console.error(
-        JSON.stringify({
-          at: 'notify',
-          level: 'error',
-          channel: s.channel,
-          type: payload.type,
-          error: err instanceof Error ? err.name : 'Unknown',
-        }),
-      );
+      logError('notify', err, { channel: s.channel, type: payload.type });
     }
   }
   if (pushFailures && !sent.length) throw new PushDeliveryError('notify: every push delivery failed');
