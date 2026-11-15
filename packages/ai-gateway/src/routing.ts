@@ -1,4 +1,4 @@
-import type { Operation } from './types.ts';
+import type { Operation, ReasoningEffort } from './types.ts';
 
 /** Model IDs from https://platform.claude.com/docs/en/about-claude/models/overview (checked 2026-10-19). */
 export const MODELS = {
@@ -15,6 +15,17 @@ export const PLATFORM_PROVIDER_ORDER = ['openrouter', 'anthropic'] as const;
 export const OPENROUTER_MODELS: Record<string, string> = {
   [MODELS.haiku]: 'anthropic/claude-haiku-5.5',
   [MODELS.sonnet]: 'anthropic/claude-sonnet-5.5',
+};
+
+/**
+ * Reasoning effort sent on platform calls, by routed Anthropic model. Sonnet 5.5 always reasons and defaults to
+ * `high` (https://openrouter.ai/api/v1/models: `reasoning.mandatory: true`, efforts down to `low`; Anthropic
+ * effort page: default `high`, thinking counts toward `max_tokens`), which can spend the 1.200 token output of
+ * the deep summary before the first JSON line. `low` is its lowest effort. Haiku 5.5 is left at the provider
+ * default until a live measurement (SAGLAYICILAR.md).
+ */
+export const PLATFORM_REASONING_EFFORT: Partial<Record<string, ReasoningEffort>> = {
+  [MODELS.sonnet]: 'low',
 };
 
 /** Provider specific model ID for a routed Anthropic model. */
@@ -70,6 +81,14 @@ export const ROUTES: Record<Operation, Route> = {
     maxInputTokens: 80_000,
     maxOutputTokens: 3_000,
     timeoutMs: 180_000,
+  },
+  // plan 4.4 abbreviations table: Haiku 5.5, about 3.000 / 500 tokens; the text never reaches the model.
+  kisaltma_oneri: {
+    model: MODELS.haiku,
+    byokClass: 'hizli',
+    maxInputTokens: 3_000,
+    maxOutputTokens: 500,
+    timeoutMs: 45_000,
   },
   kampus_ozet: {
     model: MODELS.haiku,

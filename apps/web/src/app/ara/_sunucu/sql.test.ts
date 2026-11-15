@@ -6,7 +6,15 @@ import { migrationsFolder } from '@kazuist/db';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { parseQuery, search, sqlBackend, type SqlClient } from '@kazuist/casuist';
+import {
+  loadPromptPassages,
+  parseQuery,
+  search,
+  selectPassages,
+  sqlBackend,
+  STANDARD_SELECTION,
+  type SqlClient,
+} from '@kazuist/casuist';
 import { fixtureRecords } from '@kazuist/casuist/fixture';
 import { seedCorpus } from '@kazuist/casuist/testing';
 import { schema } from '@/server/auth/db';
@@ -85,6 +93,32 @@ describe('sqlBackend over PostgreSQL (turkish tsvector, chunks, citation count)'
     const ps = await backend.passages(parseQuery('silinmesi'), [target.id], 1);
     expect(ps).toHaveLength(1);
     expect(target.text.includes(ps[0]!.text)).toBe(true);
+  });
+
+  it('reloads the passages a BYOK bundle names: same text as selected, servable only (verify)', async () => {
+    const backend = sqlBackend(db);
+    const res = await search({ q: 'kişisel verilerin silinmesi' }, { backend, now: NOW });
+    const selected = await selectPassages(res.items, res.query, backend, STANDARD_SELECTION);
+    expect(selected.length).toBeGreaterThan(5);
+    // m.7 lost its chunk rows in the test above, so at least one passage was built on the fly.
+    expect(selected.some((p) => /:\d+$/.test(p.chunkId))).toBe(true);
+    expect(selected.some((p) => !/:\d+$/.test(p.chunkId))).toBe(true);
+    const refs = selected.map((p) => ({ id: p.id, recordId: p.recordId, chunkId: p.chunkId }));
+    expect(await loadPromptPassages(backend, refs, STANDARD_SELECTION)).toEqual(selected);
+
+    // A hidden record drops out; ids that are neither uuid nor on the fly are ignored without a cast error.
+    const first = selected.find((p) => !/:\d+$/.test(p.chunkId))!;
+    await pg.query('UPDATE records SET hidden_at = now() WHERE id = $1', [first.recordId]);
+    const reloaded = await loadPromptPassages(backend, refs, STANDARD_SELECTION);
+    expect(reloaded.map((p) => p.id)).not.toContain(first.id);
+    expect(await backend.chunks([first.chunkId])).toEqual([]);
+    await pg.query('UPDATE records SET hidden_at = NULL WHERE id = $1', [first.recordId]);
+    expect(await backend.chunks(['yok', "x'; DROP TABLE chunks; --", `${first.recordId}:x`])).toEqual([]);
+    // A chunk named under another record is not accepted.
+    const other = selected.find((p) => p.recordId !== first.recordId)!;
+    expect(
+      await loadPromptPassages(backend, [{ id: 'K1', recordId: other.recordId, chunkId: first.chunkId }]),
+    ).toEqual([]);
   });
 
   it('counts incoming citation edges for importance', async () => {

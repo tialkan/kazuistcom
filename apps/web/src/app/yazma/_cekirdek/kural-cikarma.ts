@@ -1,4 +1,6 @@
 import { z } from 'zod';
+// The prompt module alone: it has no Node built-ins and passes Node type stripping (eval/rules runs this file).
+import { neutralize } from '@kazuist/ai-gateway/prompt';
 import {
   alanSemalari,
   alanlarOf,
@@ -22,7 +24,16 @@ import type { MetinSayfasi } from './metin-cikarma.ts';
 export type ModelAdi = 'haiku' | 'sonnet';
 
 export interface KuralModeli {
-  tamamla(girdi: { model: ModelAdi; sistem: string; istem: string }): Promise<string>;
+  /**
+   * `kabul` is the schema check of the answer. The production binding consumes credits only when it passes, so
+   * a Haiku answer that fails the schema costs nothing and the Sonnet fallback is the only charge (plan 4.5/3).
+   */
+  tamamla(girdi: {
+    model: ModelAdi;
+    sistem: string;
+    istem: string;
+    kabul?: (ham: string) => boolean;
+  }): Promise<string>;
 }
 
 export class KuralCikarmaHatasi extends Error {
@@ -139,6 +150,9 @@ const TIRNAK: Record<string, string> = Object.fromEntries([
   [String.fromCodePoint(0x201c), '"'],
   [String.fromCodePoint(0x201d), '"'],
   [String.fromCodePoint(0x2033), '"'],
+  // The prompt neutralises angle brackets of the guide (istemOlustur); an excerpt copied from it carries them.
+  [String.fromCodePoint(0x2039), '<'],
+  [String.fromCodePoint(0x203a), '>'],
 ]);
 const TIRE = new Set(kod(0x2010, 0x2011, 0x2012, 0x2013, 0x2014, 0x2212));
 const GORUNMEZ = new Set(kod(0x00ad, 0x200b, 0xfeff));
@@ -294,9 +308,17 @@ export function sayfaSec(sayfalar: MetinSayfasi[], butce = AZAMI_ISTEM_KARAKTER)
   return sayfalar.filter((_, i) => secili.has(i));
 }
 
+/**
+ * The guide is data between <kilavuz> markers (plan 5.6/6). Its text is neutralised (`<` and `>` become `‹` and
+ * `›`), so a guide that contains `</kilavuz>` or a fake block cannot close the data block and speak as the
+ * instruction. normallestir folds the two marks back, so excerpts the model copies still match the guide.
+ */
 export function istemOlustur(sayfalar: MetinSayfasi[], tur: SablonTuru): string {
   const govde = sayfalar
-    .map((s) => (s.sayfa === null ? s.metin : `[[SAYFA ${s.sayfa}]]\n${s.metin}`))
+    .map((s) => {
+      const metin = neutralize(s.metin);
+      return s.sayfa === null ? metin : `[[SAYFA ${s.sayfa}]]\n${metin}`;
+    })
     .join('\n');
   const ne = tur === 'tez' ? 'Bir enstitünün tez yazım kılavuzu' : 'Bir derginin makale yazım kuralları';
   return `${ne}. İstenen alanlar:\n${alanListesi(tur)}\n\n<kilavuz>\n${govde}\n</kilavuz>`;
@@ -332,7 +354,12 @@ export async function kuralCikar(
     kullanilan = m;
     let ham: string;
     try {
-      ham = await model.tamamla({ model: m, sistem: sistemTalimati, istem });
+      ham = await model.tamamla({
+        model: m,
+        sistem: sistemTalimati,
+        istem,
+        kabul: (cevap) => semaDogrula(cevap, tur) !== null,
+      });
     } catch {
       // A provider failure is not a schema failure: the gateway already tried its fallbacks.
       throw new KuralCikarmaHatasi('model');

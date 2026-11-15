@@ -1,8 +1,10 @@
 """Context based person detection, role labelling and in-document consistency (plan 6.4/3).
 
-The rule layer finds names that follow a role cue ("davacı Ayşe Kaya", "Tanık: Mert Demir"), then
-propagates every found name to its other mentions in the same document. The same person always gets the
-same label within a document; numbering follows order of first appearance.
+The rule layer finds names that follow a role cue ("davacı Ayşe Kaya", "Tanık: Mert Demir") and names of two to
+four words written with an apostrophe ending ("Ahmet Yılmaz'ın", see suffixes.py), then propagates every found
+name to its other mentions in the same document. The same person always gets the same label within a document;
+numbering follows order of first appearance. Keys ignore apostrophe endings, so "Ahmet Yılmaz'a" and
+"Ahmet Yılmaz'dan" are one person.
 """
 
 from __future__ import annotations
@@ -12,11 +14,13 @@ from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Tuple
 
 from .spans import Span
+from .suffixes import APOSTROPHES, SUFFIX, apostrophe_ending_at, name_key, split_apostrophe, tr_fold
 
 UP = "A-ZÇĞİÖŞÜÂÎÛ"
 LO = "a-zçğıöşüâîû"
 NAME_WORD = rf"(?:[{UP}][{LO}]+|[{UP}]{{2,}})"
 TITLE = r"(?:(?:Av\.|Avukat|Dr\.|Doç\.|Prof\.|Uzm\.|Op\.|Sn\.)\s*)*"
+_APOS_CLASS = f"[{re.escape(APOSTROPHES)}]"
 
 # Order matters: longer cues first. Each tuple: (regex, role)
 CUES: List[Tuple[str, str]] = [
@@ -68,10 +72,6 @@ ROLE_LABELS = {
 }
 
 
-def tr_fold(s: str) -> str:
-    return s.replace("İ", "i").replace("I", "ı").lower()
-
-
 def _cue_regex() -> re.Pattern:
     alts = "|".join(f"(?P<c{i}>{rx})" for i, (rx, _) in enumerate(CUES))
     name = rf"(?P<name>{NAME_WORD}(?:[ \t]+{NAME_WORD}){{1,3}})"
@@ -96,7 +96,7 @@ def _trim_name(text: str, start: int, end: int) -> Optional[Tuple[int, int]]:
     end_at = None
     for w in words:
         token = w.group()
-        core = re.split(r"['\u2019]", token)[0].rstrip(".,;:)")
+        core = re.split(_APOS_CLASS, token)[0].rstrip(".,;:)")
         if tr_fold(core) in STOP or not re.fullmatch(NAME_WORD, core):
             break
         keep.append(w)
@@ -119,7 +119,89 @@ def find_cued_persons(text: str) -> List[Span]:
         name = text[s:e]
         if not all(w[0].isupper() for w in name.split()):
             continue
-        out.append(Span(s, e, "PERSON", "context:cue", 0.92, role=_role_of(m), key=tr_fold(name)))
+        out.append(Span(s, e, "PERSON", "context:cue", 0.92, role=_role_of(m), key=name_key(name)))
+    return out
+
+
+# Words that head the name of a place, institution, document, event or field of law, or a function noun, and so
+# never end a person name ("Kızılay Meydanı'nda", "Avrupa Birliği'nin", "Kurban Bayramı'nda", "Borçlar
+# Hukuku'nda", "Şirket Yetkilisi'nin"). STOP already covers courts, offices, streets and months.
+NOT_NAME = {
+    tr_fold(w)
+    for w in (
+        "Meydanı Köprüsü Bölgesi Birliği Sözleşmesi Antlaşması Andlaşması Holding Yolları Cumhuriyeti Devletleri "
+        "Krallığı Krallık Bakanı Başkanı Başkanlığı Valiliği Valisi Kaymakamlığı Kaymakamı Konseyi Komisyonu "
+        "Komitesi Ajansı Vakfı Derneği Odası Barosu Sendikası Partisi Merkezi Fakültesi Enstitüsü Köyü Beldesi "
+        "İlçesi İli Bayramı Heyeti Meclisi Kuvvetleri Milletler Gazetesi Gazete Havalimanı Limanı Otoyolu Yolu "
+        "Parkı Camii Kilisesi Sarayı Kalesi Gölü Dağı Nehri Adası Körfezi Boğazı Ovası Tüzüğü Yönetmeliği "
+        "Genelgesi Kararnamesi Anayasası Protokolü Grubu Kulübü Komutanlığı Karakolu Cezaevi İdaresi Teşkilatı "
+        "Şubesi Servisi Platformu Federasyonu Konfederasyonu Kooperatifi Sitesi Apartmanı Hanı Çarşısı Pazarı "
+        "Sigorta Telekom Divanı Fonu Savaşı Hukuku Usulü Hazine Hazinesi Mevkii Sokağı Yakası Şirket Müdürü "
+        "Yetkilisi Temsilcisi Sahibi Mirasçıları Kurucusu Ortağı Çalışanı Personeli Memuru Görevlisi Sorumlusu "
+        "Uzmanı Amiri Şefi Komiseri"
+    ).split()
+}
+# Closed class words that open a sentence and are capitalised there ("Ancak Ahmet Yılmaz'ın ..."), forms of
+# address ("Sayın") and words that open place and institution names ("Yeni Zelanda'da", "Kuzey Irak'ta").
+# Dropped from the left of a candidate.
+NOT_FIRST = {
+    tr_fold(w)
+    for w in (
+        "Sayın Bay Bayan "
+        "Ancak Fakat Ama Lakin Oysa Oysaki Çünkü Zira Nitekim Dolayısıyla Ayrıca Yine Hatta Üstelik Şayet Eğer "
+        "Madem Sonuç Somut Olayda Öte Diğer Bütün Tüm Her Hiç Bazı Daha Önce Sonra Şu O Bunun Buna Bunlar Onun "
+        "Ona Kaldı Hal Halde Yeni Eski Kuzey Güney Doğu Batı Orta Büyük Küçük Yukarı Aşağı Yüksek Ulusal "
+        "Uluslararası Milli Millî Resmi Resmî Avrupa Amerika Birleşik Türkiye"
+    ).split()
+}
+_NOT_IN_NAME = STOP | NOT_NAME
+# Below review_threshold in policy.yaml: without a role cue a capitalised name with an apostrophe ending may still
+# be a place or a company, so an editor confirms it unless a stronger span (NER, cue) covers the same characters.
+SUFFIX_SCORE = 0.75
+_APOS_WORD = re.compile(rf"(?<![{LO}{UP}\w]){NAME_WORD}(?={_APOS_CLASS})")
+
+
+def _word_before(text: str, pos: int) -> Optional[Tuple[int, int]]:
+    """Offsets of the capitalised word that ends right before the spaces or tabs at `pos`; None at a line
+    break, after punctuation or for a lower case word."""
+    i = pos
+    while i > 0 and text[i - 1] in " \t":
+        i -= 1
+    if i == pos:
+        return None
+    j = i
+    while j > 0 and text[j - 1].isalpha():
+        j -= 1
+    if j == i or (j > 0 and (text[j - 1].isalnum() or text[j - 1] in "._-" + APOSTROPHES)):
+        return None
+    return (j, i) if re.fullmatch(NAME_WORD, text[j:i]) else None
+
+
+def find_suffixed_names(text: str) -> List[Span]:
+    """Names of two to four capitalised words whose last word carries an apostrophe ending, with no role cue
+    ("Dosya kapsamına göre Tarkan Özdağ'a ait araç"). Turkish puts the apostrophe only after proper nouns; the
+    word lists above remove places, institutions and sentence openers, and single words ("Ankara'da",
+    "Yargıtay'ın") are never taken. The span stops before the apostrophe; its score sends it to review."""
+    out: List[Span] = []
+    for m in _APOS_WORD.finditer(text):
+        ending = apostrophe_ending_at(text, m.end())
+        if not ending or split_apostrophe(text[m.start() : m.end() + ending]) is None:
+            continue
+        if tr_fold(m.group()) in _NOT_IN_NAME:
+            continue
+        words = [(m.start(), m.end())]
+        while len(words) < 4:
+            prev = _word_before(text, words[0][0])
+            if prev is None or tr_fold(text[prev[0] : prev[1]]) in _NOT_IN_NAME:
+                break
+            words.insert(0, prev)
+        while words and tr_fold(text[words[0][0] : words[0][1]]) in NOT_FIRST:
+            words.pop(0)
+        if len(words) < 2:
+            continue
+        s, e = words[0][0], words[-1][1]
+        span = Span(s, e, "PERSON", "context:suffix", SUFFIX_SCORE, key=name_key(text[s:e]))
+        out.append(span.with_(role=infer_role(text, span)))
     return out
 
 
@@ -134,25 +216,43 @@ def infer_role(text: str, span: Span, window: int = 50) -> Optional[str]:
 
 
 def propagate(text: str, seeds: Iterable[Span]) -> List[Span]:
-    """Find other mentions of every seed person: full name (case insensitive, Turkish folding) and surname
-    alone. Surname only mentions get a lower score and go to review when below the threshold."""
+    """Find other mentions of every seed person: full name (case insensitive, Turkish folding, any run of spaces
+    between the words) and surname alone. An apostrophe ending stays outside the mention ("Yılmaz'dan" masks
+    "Yılmaz"). A full name may also carry an ending without the apostrophe ("AHMET YILMAZIN", OCR); then the
+    whole word is masked. Surname only mentions get a lower score and go to review when below the threshold.
+
+    A mention is never more certain than the best seed of its person: a seed below the review threshold (an NER
+    span with a low score, a suffix candidate) keeps its mentions, including the one at its own position, below
+    the threshold too, so propagation cannot lift it out of the editor queue."""
     folded = tr_fold(text)
     out: List[Span] = []
-    seen_keys: Dict[str, Span] = {}
+    best: Dict[str, Span] = {}
+    roles: Dict[str, str] = {}
     for s in seeds:
         if s.entity != "PERSON" or not s.key:
             continue
-        seen_keys.setdefault(s.key, s)
-    for key, seed in seen_keys.items():
-        for m in re.finditer(rf"(?<![{LO}])" + re.escape(key) + rf"(?![{LO}])", folded):
-            out.append(seed.with_(start=m.start(), end=m.end(), detector="context:propagated", score=0.9))
+        k = name_key(s.key)
+        if k not in best or s.score > best[k].score:
+            best[k] = s
+        if s.role and k not in roles:
+            roles[k] = s.role
+    for key, seed in best.items():
         parts = key.split()
+        if not parts:
+            continue
+        seed = seed.with_(key=key, role=seed.role or roles.get(key))
+        body = r"\s+".join(re.escape(p) for p in parts)
+        glued = f"(?P<glued>{SUFFIX})" if len(parts) > 1 else ""
+        for m in re.finditer(rf"(?<![{LO}])(?:{body}){glued}(?![{LO}])", folded):
+            score = min(seed.score, 0.85 if glued and m.group("glued") else 0.9)
+            out.append(seed.with_(start=m.start(), end=m.end(), detector="context:propagated", score=score))
         surname = parts[-1]
         if len(surname) >= 3 and surname not in STOP:
             for m in re.finditer(rf"(?<![{LO}])" + re.escape(surname) + rf"(?![{LO}])", folded):
                 original = text[m.start() : m.end()]
                 if original[:1].isupper():
-                    out.append(seed.with_(start=m.start(), end=m.end(), detector="context:surname", score=0.72))
+                    out.append(seed.with_(start=m.start(), end=m.end(), detector="context:surname",
+                                          score=min(seed.score, 0.72)))
     return out
 
 

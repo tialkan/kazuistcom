@@ -633,7 +633,7 @@ Haiku 5.5'te 100 bin tokeni aşan istem daha yüksek fiyat basamağına geçer (
 ### 8.7 Bütçe ve kötüye kullanım
 
 1. Kullanıcı başına günlük kredi tavanı (varsayılan 500), IP başına ücretsiz hak tavanı, kullanıcı başına en fazla 2 eşzamanlı akış.
-2. Genel günlük platform harcama tavanı (TL); aşılırsa ücretsiz hak durur, kredili işlem sürer, yöneticiye uyarı.
+2. Genel günlük platform harcama tavanı (TL); aşılırsa ücretsiz hak ve kredili platform çağrısı durur, BYOK sürer, yöneticiye uyarı (15 Kasım 2026, kötüye kullanım koruması).
 3. Sağlayıcı başına kapatma anahtarı ve yedek sağlayıcı.
 4. Girdi uzunluk sınırları; uzun belge parçalanır.
 5. Enjeksiyon test seti: içinde "önceki talimatları yok say" ve benzeri metinler bulunan sahte karar pasajları; doğrulayıcı ve istem bu sette CI'da sınanır.

@@ -3,8 +3,9 @@ review_queue, records, jobs). No statement logs record text.
 
 Contract v1.1 (ADR-0023, docs/istekler/mimar-yonlendirme-anonimlestirme.md): records.masked_text is the only
 servable text. It is written in the same transaction as the spans when the result is publishable (editor
-queue empty) and set to NULL otherwise, so a record waiting for review is neither served nor indexed. The
-embed.chunks job is queued only after masked_text has been written."""
+queue empty and, outside development, an NER model ran; AnonResult.blocked) and set to NULL otherwise, so a
+record waiting for review is neither served nor indexed. The embed.chunks job is queued only after masked_text
+has been written."""
 
 from __future__ import annotations
 

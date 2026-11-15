@@ -21,6 +21,7 @@ import { sablonUret } from './_cekirdek/docx-uret.ts';
 import { ornekKayit, varsayilanDegerler } from './_cekirdek/kural-semasi.ts';
 import type { KuralModeli } from './_cekirdek/kural-cikarma.ts';
 import { dergiTaslagiOlustur } from './_sunucu/dergiler.ts';
+import type { YzKimlik } from './_sunucu/yz.ts';
 import { denetimKurallari } from './_sunucu/denetim.ts';
 import {
   ayarlarGet,
@@ -672,12 +673,24 @@ describe('table of abbreviations endpoint (FR-91)', () => {
   });
   it('sends only the abbreviations to the model, never the text, and says when suggestions are closed', async () => {
     const gorulen: string[][] = [];
+    const kimler: YzKimlik[] = [];
     const r = await gonder(
       a,
       { text: METIN, useAi: true },
-      { kisaltmaModeli: () => ({ oner: async (k) => (gorulen.push(k), { ABC: 'Örnek Cetvel' }) }) },
+      {
+        kisaltmaModeli: (kim) => (
+          kimler.push(kim),
+          { oner: async (k) => (gorulen.push(k), { ABC: 'Örnek Cetvel' }) }
+        ),
+      },
     );
     expect(gorulen).toEqual([['ABC']]);
+    // The gateway budgets per user and IP: the port is told who asks, never charged without an identity.
+    expect(kimler).toHaveLength(1);
+    expect(kimler[0]).toMatchObject({ userId: aId });
+    expect(kimler[0]?.ip).toBeTruthy();
+    expect(kimler[0]?.istekKimligi).toMatch(/^[0-9a-f-]{36}$/);
+    expect(kimler[0]).not.toHaveProperty('kredisiz');
     expect((await gov(r)).find((x: { short: string }) => x.short === 'ABC')).toMatchObject({
       long: 'Örnek Cetvel',
       source: 'oneri',
