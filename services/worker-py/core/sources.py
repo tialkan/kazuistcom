@@ -21,12 +21,14 @@ DEFAULT_DOCS_DIR = Path(__file__).resolve().parents[3] / "docs" / "kaynaklar"
 _FRONT = re.compile(r"\A---\n(.*?)\n---\n", re.S)
 
 
-# protokol_durumu values a source file may carry. The first five are the protocol_status enum of the records
-# table; gerekli_yapilmadi means the plan asks for a protocol for bulk collection and none was applied for yet.
-# Records of such a source are written with the enum default (gerekmez) until the enum gets a value for it
-# (docs/istekler/veri-toplama-ingest-payloadlari.md).
-RECORD_PROTOCOL_STATUSES = ("gerekmez", "basvuruldu", "imzalandi", "reddedildi", "canli_federasyon")
-SOURCE_PROTOCOL_STATUSES = RECORD_PROTOCOL_STATUSES + ("gerekli_yapilmadi",)
+# protokol_durumu values a source file may carry. RECORD_PROTOCOL_STATUSES is the protocol_status enum of the records
+# table (migration 0008 added gerekli_yapilmadi: the plan asks for a protocol for bulk collection and none was applied
+# for yet), so a record is written with the source's own status. SOURCE_PROTOCOL_STATUSES stays a separate name for
+# the values a source file may carry; today both lists are equal.
+RECORD_PROTOCOL_STATUSES = (
+    "gerekmez", "basvuruldu", "imzalandi", "reddedildi", "canli_federasyon", "gerekli_yapilmadi",
+)  # fmt: skip
+SOURCE_PROTOCOL_STATUSES = RECORD_PROTOCOL_STATUSES
 
 
 @dataclass(frozen=True)

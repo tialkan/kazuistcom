@@ -13,7 +13,7 @@ istek gitmez.
 | robots_alan_adlari | robots.txt'si okunan ana makineler |
 | hiz_rps | Saniyedeki istek sınırı (varsayılan 0,5) |
 | lisans_dayanagi | Kayıtlara `licenseBasis` olarak yazılan metin |
-| protokol_durumu | gerekmez, basvuruldu, imzalandi, reddedildi, canli_federasyon, gerekli_yapilmadi (plan protokol ister, başvuru yapılmadı; kayda enum varsayılanı yazılır) |
+| protokol_durumu | gerekmez, basvuruldu, imzalandi, reddedildi, canli_federasyon, gerekli_yapilmadi (plan protokol ister, başvuru yapılmadı; kayda aynı değer yazılır, `protocol_status` enum'unda var) |
 | tarik_onayi | `bekliyor` veya `onaylandi` |
 
 ## Çalıştırma kuralı

@@ -123,10 +123,65 @@ def test_yargitay_list_job_then_document_job_round_trip(tmp_path: Path, clock) -
     assert out["created"] is True
     rec = next(r for r in repo.records.values() if r["court"] == "Yargıtay")
     assert rec["source_key"] == "yargitay:hukuk-genel-kurulu:2024-812:2024-660" and rec["anonymized"] is False
+    assert rec["protocol_status"] == "gerekli_yapilmadi"  # the plan asks for a protocol and none was applied for
     # the next sweep finds the decision known and queues one document fewer
     repo.jobs.clear()
     result2 = run({"source": "yargitay", "unit": "Hukuk Genel Kurulu", "year": 2024, "page": 1})
     assert result2["queued"] == 4
+
+
+_DOC = {
+    "source": "yargitay", "id": "1104187600", "unit": "Hukuk Genel Kurulu", "esas": "2024/812", "karar": "2024/660",
+    "date": "2024-12-11",
+}  # fmt: skip
+
+
+@pytest.mark.parametrize("number", ["2024/817", "2019/1-123", "2024/2914/2", "2024/12(A)/10", "2024/1/0"])
+def test_case_numbers_the_contract_accepts_do_not_go_dead(number: str, tmp_path: Path, clock) -> None:
+    from core.jobs import payload_problem
+
+    payload = {**_DOC, "karar": number}
+    assert payload_problem(JobType.INGEST_FETCH, payload) is None  # the consumer lets it through
+    base = yargitay.BASE
+    routes = {
+        f"{base}/robots.txt": ok(b'{"data":null,"metadata":{"FMTY":"ERROR"}}', JSON),
+        f"{base}/getDokuman?id=1104187600": ok(fixture_bytes("yargitay/dokuman-1104187600.json"), JSON),
+    }
+    repo = InMemoryRepository()
+    run, _ = _handler(routes, tmp_path, clock, repo)
+    assert run(payload)["created"] is True  # and so does the handler (it raised BadJob for a trailing /n)
+
+
+@pytest.mark.parametrize(
+    "number",
+    [
+        "", "24/660", "2024/", "2024/660 E.", "2024/660/", "2024/660/a", "2024/660\n",
+        "٢٠٢٤/660", "2024/٦٦٠", "2024/660/٢", "2024/" + "9" * 50,
+    ],
+)  # fmt: skip
+def test_case_numbers_outside_the_contract_are_refused(number: str, tmp_path: Path, clock) -> None:
+    from core.jobs import payload_problem
+
+    payload = {**_DOC, "esas": number}
+    assert payload_problem(JobType.INGEST_FETCH, payload) is not None
+    repo = InMemoryRepository()
+    run, transport = _handler({}, tmp_path, clock, repo)
+    with pytest.raises(discovery.BadJob):
+        run(payload)
+    assert transport.calls == []
+
+
+def test_discovery_case_number_pattern_is_the_contract_pattern() -> None:
+    from pathlib import Path
+
+    from connectors.judicial import case_number
+    from core import jobs
+
+    assert discovery._CASE_NO.pattern == jobs._CASE_NO.pattern
+    contract = Path(__file__).resolve().parents[3] / "packages" / "contracts" / "src" / "jobs.ts"
+    assert r"/^[0-9]{4}\/[0-9A-Za-z()-]+(?:\/[0-9]+)?$/" in contract.read_text(encoding="utf-8")
+    for number in ("2024/817", "2024/817/2", "2019/1-123"):
+        assert case_number(number) == number and discovery._CASE_NO.match(number)
 
 
 def test_danistay_list_job(tmp_path: Path, clock) -> None:

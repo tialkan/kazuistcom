@@ -28,8 +28,8 @@ Dairelerin kararları çekilmez (plan: canlı federasyon).
   okundu; web aramasında da resmî bir koşul veya toplu veri politikası çıkmadı). Otomatik erişim ve yeniden kullanım
   hakkında yazılı hüküm yok: DOĞRULANMADI.
 - Plan 6.1 "toplu çekme için protokol başvurusu" der. Başvuru yapılmadı. Bu yüzden `protokol_durumu` değeri
-  `gerekli_yapilmadi`; kayıtlar `records.protocol_status` içine enum varsayılanı `gerekmez` ile yazılır (enumda bu durum
-  için değer yok, istek `docs/istekler/veri-toplama-ingest-payloadlari.md`). Üretimde toplu çekimden önce Yargıtay
+  `gerekli_yapilmadi`; kayıtlar `records.protocol_status` içine aynı değerle yazılır (migration 0008 enum değerini
+  ekledi, ADR-0038 madde 3). Üretimde toplu çekimden önce Yargıtay
   Bilgi İşlem Daire Başkanlığı ile protokol görüşmesi gerekir.
 
 ## robots.txt (2026-11-15)

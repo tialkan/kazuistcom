@@ -369,8 +369,24 @@ def test_new_sources_load_unapproved_and_off_by_default() -> None:
         assert not reg.is_enabled(name)
     assert reg.get("aym").record_protocol_status == "gerekmez"
     assert reg.get("yargitay").protocol_status == "gerekli_yapilmadi"
-    assert reg.get("yargitay").record_protocol_status == "gerekmez"  # no enum value for it yet
+    # migration 0008 added the value to the protocol_status enum: records carry the source's own status
+    assert reg.get("yargitay").record_protocol_status == "gerekli_yapilmadi"
+    assert reg.get("danistay").record_protocol_status == "gerekli_yapilmadi"
     prod = SourceRegistry.load(env={**ALL_ON, "KAZUIST_ENV": "production"})
     for name in ("aym", "yargitay", "danistay"):
         assert not prod.is_enabled(name)  # switch on, but Tarik approval is missing
     assert "kararlarbilgibankasi.anayasa.gov.tr" in prod.all_hosts()
+
+
+def test_record_protocol_statuses_match_the_database_enum() -> None:
+    import re
+    from pathlib import Path
+
+    from core.sources import RECORD_PROTOCOL_STATUSES, SOURCE_PROTOCOL_STATUSES
+
+    schema = Path(__file__).resolve().parents[3] / "packages" / "db" / "src" / "schema" / "corpus.ts"
+    block = re.search(r"pgEnum\('protocol_status', \[(.*?)\]", schema.read_text(encoding="utf-8"), re.S)
+    assert block
+    assert set(re.findall(r"'([^']+)'", block.group(1))) == set(RECORD_PROTOCOL_STATUSES)
+    assert set(SOURCE_PROTOCOL_STATUSES) <= set(RECORD_PROTOCOL_STATUSES)
+    assert "gerekli_yapilmadi" in RECORD_PROTOCOL_STATUSES
