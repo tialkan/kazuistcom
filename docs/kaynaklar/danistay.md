@@ -28,7 +28,7 @@ Danıştay'ın başka bir kanalında yayımlanıp yayımlanmadığı araştırı
 
 Sitede kullanım koşulları veya yeniden kullanım bildirimi bulunamadı (giriş sayfası okundu). Otomatik erişim hakkında
 yazılı hüküm yok: DOĞRULANMADI. Plan 6.1 "protokol başvurusu" der; başvuru yapılmadı (`protokol_durumu:
-gerekli_yapilmadi`, kayıtlara enum varsayılanı `gerekmez` yazılır; bkz. yargitay.md).
+gerekli_yapilmadi`, kayıtlara aynı değer yazılır; bkz. yargitay.md).
 
 ## robots.txt (2026-11-15)
 

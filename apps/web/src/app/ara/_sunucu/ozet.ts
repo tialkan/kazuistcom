@@ -100,14 +100,11 @@ async function consentGranted(ctx: AuthContext, userId: string, kind: 'yz_aktari
 
 const IDEMPOTENCY = /^[\x21-\x7e]{8,100}$/;
 
-/**
- * C0 controls other than tab and line breaks, and DEL. A question never needs them; the gateway strips them
- * before masking (scrubParts), and the edge refuses them so a question cannot carry the internal part separator
- * at all. The contract schema does not say this yet (docs/istekler/yz-gecidi-soru-denetim-karakteri.md).
+/*
+ * A question with C0 controls (other than tab and line breaks) or DEL is refused by the contract schema itself
+ * (QuestionText in AnswerRequest.q and PrepareRequest.q, v1.6, ADR-0038), so it cannot carry the gateway's internal
+ * part separator. The gateway still strips them before masking (scrubParts) as defence in depth.
  */
-// eslint-disable-next-line no-control-regex -- the point is to match control characters
-const CONTROL_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
-export const hasControlChars = (q: string): boolean => CONTROL_CHARS.test(q);
 
 /** Selection per route; a bundle names its route so verify rebuilds passages at the same size. */
 const SELECTION = { ozet: STANDARD_SELECTION, derin_ozet: DEEP_SELECTION } as const;
@@ -175,7 +172,7 @@ async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Res
   const key = req.headers.get('idempotency-key') ?? '';
   if (!IDEMPOTENCY.test(key)) return apiError('bad_request');
   const parsed = AnswerRequest.safeParse(await readJson(req));
-  if (!parsed.success || hasControlChars(parsed.data.q)) return apiError('bad_request');
+  if (!parsed.success) return apiError('bad_request');
   const body = parsed.data;
   if (body.mode === 'byok_aktarma') {
     if (!body.byok) return apiError('bad_request');
@@ -331,7 +328,7 @@ export const answersPost = withAuth({ rate: casuistRules.answerUser }, async (re
 /** POST /v1/answers/prepare (plan 8.1, BYOK istemci): masked question and passages in a signed bundle. */
 export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (req, p) => {
   const parsed = PrepareRequest.safeParse(await readJson(req));
-  if (!parsed.success || hasControlChars(parsed.data.q)) return apiError('bad_request');
+  if (!parsed.success) return apiError('bad_request');
   const deps = summaryDeps();
   if (deps instanceof Response) return deps;
   if (!deps.signingSecret) return apiError('unavailable');
@@ -342,8 +339,9 @@ export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (r
     if (e instanceof SearchUnavailable) return apiError('unavailable');
     throw e;
   }
+  // The same filters as POST /v1/answers (PrepareRequest.filters, v1.6), so both modes pick from the same records.
   const result = await search(
-    { q: parsed.data.q, page: 1, pageSize: 50 },
+    { q: parsed.data.q, ...(parsed.data.filters ?? {}), page: 1, pageSize: 50 },
     { ...searchDeps, mask: maskQuery },
   );
   const operation = parsed.data.depth === 'derin' ? 'derin_ozet' : 'ozet';

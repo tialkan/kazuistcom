@@ -6,9 +6,10 @@ import {
   ByokError,
   OPENROUTER_BYOK_MODELS,
   readByokSettings,
+  setFilters,
   type ByokSettings,
 } from '@kazuist/ai-gateway/browser';
-import type { AnswerEvent, SourceChip } from '@kazuist/contracts';
+import type { AnswerEvent, AnswerFilters, SourceChip } from '@kazuist/contracts';
 import ara from '@kazuist/i18n/tr/ara.json';
 import byokMetin from '@kazuist/i18n/tr/byok.json';
 import ozet from '@kazuist/i18n/tr/ozet.json';
@@ -24,7 +25,8 @@ type Asama = 'bekliyor' | 'akiyor' | 'bitti' | 'hata' | 'giris';
 
 export interface OzetAlaniProps {
   q: string;
-  filtreler: { type?: string; from?: string; to?: string; court?: string };
+  /** Search filters of this results page; both summary modes pick their sources from the same records. */
+  filtreler: AnswerFilters;
   girisVar: boolean;
   /** Sign in link that returns to this search (/giris?sonra=...). */
   girisAdresi: string;
@@ -45,7 +47,8 @@ const HATA_KODLARI: Record<number, string> = {
  * Sourced summary (plan 7.4, FR-16..21): streams POST /api/v1/answers and shows only validated sentences, each
  * with its sources in the margin (kenar şerhi) and its verbatim basis behind "Dayanağı göster". With a BYOK key
  * in this browser (plan 8.1, K-08) the same area runs the BYOK istemci protocol instead: the browser calls
- * OpenRouter directly with the user's key and no credit or daily allowance is used.
+ * OpenRouter directly with the user's key and no credit or daily allowance is used. Both modes send the page's
+ * search filters (AnswerRequest.filters, PrepareRequest.filters).
  */
 export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar }: OzetAlaniProps) {
   const [asama, setAsama] = useState<Asama>(girisVar ? 'bekliyor' : 'giris');
@@ -98,7 +101,14 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
     const ctl = sifirla();
     setByokCalisti(true);
     try {
-      const { removed } = await byokOzet({ q, settings, signal: ctl.signal, emit: uygula });
+      const filters = setFilters(filtreler);
+      const { removed } = await byokOzet({
+        q,
+        settings,
+        signal: ctl.signal,
+        emit: uygula,
+        ...(filters ? { filters } : {}),
+      });
       if (removed.length) {
         setCumleler((c) => c.filter((x) => !removed.includes(x.index)));
         setKaldirildi(true);
@@ -122,9 +132,8 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
     if (settings) return baslatByok(settings);
     const ctl = sifirla();
     setByokCalisti(false);
-    const body: Record<string, unknown> = { q, mode: 'platform', depth: 'standart' };
-    const f = Object.fromEntries(Object.entries(filtreler).filter(([, v]) => v));
-    if (Object.keys(f).length) body.filters = f;
+    const filters = setFilters(filtreler);
+    const body = { q, mode: 'platform', depth: 'standart', ...(filters ? { filters } : {}) };
     try {
       const res = await fetch('/api/v1/answers', {
         method: 'POST',
@@ -209,9 +218,6 @@ export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar
                 })}
               </p>
               <p className={styles.ozetNot}>{byokMetin.ozet.kredi}</p>
-              {Object.values(filtreler).some(Boolean) ? (
-                <p className={styles.ozetNot}>{byokMetin.ozet.filtre}</p>
-              ) : null}
               <p className={styles.ozetNot}>
                 <a href={BYOK_AYARLARI}>{byokMetin.ozet.ayarlar}</a>
               </p>

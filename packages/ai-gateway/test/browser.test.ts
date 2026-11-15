@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { PrepareRequest } from '@kazuist/contracts';
 import pkg from '../package.json' with { type: 'json' };
 import {
   BYOK_STORAGE_ITEM,
@@ -20,6 +21,7 @@ import {
   runByokClient,
   saveByokSettings,
   scrubParts,
+  setFilters,
   type ByokClientEvent,
   type ByokSettings,
   type ByokStorages,
@@ -264,6 +266,33 @@ describe('BYOK client protocol (plan 8.1, K-08)', () => {
       depth: 'standart',
     });
     expect(events.at(-1)).toEqual({ t: 'dogrulama', results: [0, 1].map((index) => ({ index, ok: true })) });
+  });
+
+  it('sends the search filters to prepare (PrepareRequest.filters, v1.6) and drops unset fields', async () => {
+    const h = harness();
+    await collect(
+      runByokClient(
+        {
+          q: 'Kira tespiti?',
+          filters: { type: 'karar', from: '2020-01-01', to: '', court: 'Yargıtay' },
+          settings: settings(),
+        },
+        h.deps,
+      ),
+    );
+    const body = JSON.parse(h.kazuist[0]!.body) as Record<string, unknown>;
+    expect(body.filters).toEqual({ type: 'karar', from: '2020-01-01', court: 'Yargıtay' });
+    expect(PrepareRequest.safeParse(body).success).toBe(true);
+    expect(h.kazuist[0]!.body).not.toContain(KEY);
+
+    // Only empty fields: no filters key, the body is the same as without filters.
+    const empty = harness();
+    await collect(
+      runByokClient({ q: 'Kira?', filters: { from: '', court: '' }, settings: settings() }, empty.deps),
+    );
+    expect(JSON.parse(empty.kazuist[0]!.body)).not.toHaveProperty('filters');
+    expect(setFilters(undefined)).toBeUndefined();
+    expect(setFilters({})).toBeUndefined();
   });
 
   it('sends only the masked prompt and honours "gizlilik öncelikli" and the model reasoning hint', async () => {

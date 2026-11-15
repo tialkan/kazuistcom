@@ -10,7 +10,8 @@ import { quantities, quantityBacked } from './quantities.ts';
 export const MAX_SENTENCES = 3;
 export const MAX_WORDS = 70;
 /**
- * Shortest quote, normalised characters. Plan 7.4/3 and Ek D.2/b set a floor of 12; 20 is used because on the
+ * Shortest quote, normalised characters. Plan 7.4/3, Ek D.1/2 and Ek D.2/b say 20 (since #102; the floor was 12
+ * before, and ADR-0001 still says 12, docs/istekler/casuist-adr-0001-alinti-uzunlugu.md). 20 was chosen because on the
  * 50 question set (eval/rag/alinti.ts, raporlar/alinti-esigi.md) the share of shortest valid quotes that also occur
  * in another passage of the same prompt falls from 14.5% at 12 to 6.6% at 20 (the knee; 5.1% at 24, 3.8% at 32),
  * while the only passages that become unquotable are stray heading lines such as "III. Tazminat".

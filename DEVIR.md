@@ -36,6 +36,40 @@ migration ve bağımlılık değişmedi; `jobs.result` biçimi aynı. İstek: `d
 - Açık: kimlik tetikleyicisi ve casuist `index_text` kullanımı (istek); `duzelt` yaması uygulanmıyor; AİHM ve ABAD
   kurul biçimleri (İngilizce "composed of") tanınmıyor, bu kaynaklarda üyeler maskeli kalır (güvenli yön);
   `docs/kaynaklar/aym.md` notu veri-toplama'da.
+## 15 Kasım 2026, casuist ve yz-gecidi: sözleşme v1.6 sonrası süzgeç geçişi ve temizlik (casuist-contract-1-6-filters)
+
+`docs/istekler/mimar-yonlendirme-4-sozlesme-v1-6.md` casuist madde 1-3 ve yz-gecidi madde 1-2. Sözleşme, şema ve
+bağımlılık değişmedi.
+- casuist: `apps/web/src/app/ara/_sunucu/ozet.ts` `preparePost` `PrepareRequest.filters`'ı `search()`'e
+  `POST /v1/answers` ile aynı biçimde geçirir. `hasControlChars` ve iki uçtaki ek satır kalktı (kural artık şemada,
+  `QuestionText`); 400 testi kaldı. `packages/casuist/src/api.ts` `toSearchResponse` dönüş tipi yalnız `SearchResponse`.
+  `/ara` (`page.tsx`, `OzetAlani.tsx`, `_bilesen/byok.ts`) iki özet kipinde de sayfanın süzgeçlerini gönderir;
+  `filtreler` prop tipi `AnswerFilters`.
+- yz-gecidi: `packages/ai-gateway/src/byok/client.ts` `PrepareBody.filters` ve `ByokRunInput.filters`; `setFilters` boş
+  alanları atar, hiç süzgeç yoksa gövde eskisiyle aynıdır. `packages/i18n/tr/byok.json` `ozet.filtre` kaldırıldı.
+  `scrubParts` denetim karakteri silmesi değişmedi.
+- ADR-0001 "en az 12 karakter" diyor, plan ve kod 20: mimara istek `docs/istekler/casuist-adr-0001-alinti-uzunlugu.md`;
+  `validator.ts` yorumundaki eski "12" anlatımı düzeltildi.
+- Doğrulama: web 776 ve 1 atlanan (yeni: prepare süzgeçleri ve platformla aynı kaynaklar, sözleşme dışı süzgeç 400,
+  BYOK uçtan uca süzgeç), ai-gateway 144 ve 3 atlanan (yeni: prepare gövdesinde süzgeç), casuist 119, i18n 23; `pnpm typecheck`, `pnpm lint`,
+  `pnpm check:text`, `pnpm build` yeşil. Playwright `byok.spec.ts` yerel üretim derlemesinde (PostgreSQL 18.6, boş
+  derlem, CI koşulu) 9/9. Süzgeçli BYOK özeti tarayıcıda (fikstür derlem, OpenRouter taklit): prepare gövdesinde
+  süzgeçler, kaynaklar yalnız Kurul kararı, eski not yok; 375, 768, 1440 px ekran görüntüsü, axe ciddi ve kritik 0.
+- Açık: `byok.spec.ts`'in fikstür derlemli dalı (yerel koşu) başarısız, bu PR'dan bağımsız: taklit model alıntıyı
+  pasajın ilk satırından (künye) alıyor, doğrulayıcı künyeden alıntıyı #101 kuralıyla (main'e #106 ile girdi) reddediyor. CI boş derlemle
+  çekimser dalı koşar ve geçer. Dosya kalite-guvenlik'in; `modelReply` künye satırını atlamalı.
+## 15 Kasım 2026, veri-toplama: sözleşme v1.6 sonrası işler (yönlendirme 4)
+
+- `core/sources.py`: `RECORD_PROTOCOL_STATUSES` `gerekli_yapilmadi` içerir (veri tabanı enum'uyla aynı küme, testle
+  `packages/db/src/schema/corpus.ts` karşılaştırılır); Yargıtay ve Danıştay kayıtları artık `gerekli_yapilmadi` yazar.
+- `core/discovery.py`: `_CASE_NO` sözleşmeyle aynı desen (`^[0-9]{4}/[0-9A-Za-z()-]+(?:/[0-9]+)?\Z`, en çok 50,
+  ASCII rakam); belge kimliği `^[0-9]{1,20}\Z`. Sonda `/<rakam>` taşıyan numara artık `BadJob` ile ölmez. Belge başı ve
+  `core/scheduler.py` başı v1.6'ya göre güncellendi; `contract_pending` düzeneği ileri sürümler için kaldı.
+- `tests/test_scheduler_e2e.py` (yeni): `run_tick` gerçek `ENQUEUE_ONCE_SQL` ile sahte jobs tablosuna yazar, gerçek
+  `JobConsumer` gerçek `CLAIM_JOBS_SQL` ile alıp gerçek `ingest.fetch` işleyicisine verir; hiçbir iş geçersiz yük diye
+  gömülmez, işleyici `BadJob` atmaz, keşif işlerinin kuyruğa koyduğu devam işleri sözleşmeye uyar, dry-run CLI
+  `contract_pending` üretmez. `docs/kaynaklar/{yargitay,danistay,README}.md` metinleri güncellendi.
+- Doğrulama: `uv run pytest` 535 geçti, 15 atlandı; `pnpm check:text` geçti.
 
 ## 15 Kasım 2026, mimar: sözleşme v1.6, migration 0008, ADR-0038 (mimar/sozlesme-v1-6)
 
