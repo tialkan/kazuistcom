@@ -1,3 +1,37 @@
+## 15 Kasım 2026, kimlik: edu_claims okuması, 23505 eşlemesi, ek maskeleme sonrası yeniden gösterme (kimlik/edu-claims-yeniden-goster)
+
+Orkestra görevi: `docs/istekler/mimar-yonlendirme-4-sozlesme-v1-6.md` kimlik maddeleri 1 ve 2, DEVIR'deki açık iş
+("ek_maskeleme sonrası yeniden gösterme adımı yok"). `packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+- `apps/web/src/server/auth/edu.ts`: `claimedByOther` `edu_claims`'ten tek satır okur (`email` birincil anahtar);
+  eski `normalizedColumn` taraması kalktı. Onay işleminde tetikleyicinin SQLSTATE 23505 (`constraint = 'edu_claims_pkey'`)
+  hatası `isEduClaimConflict` ile tanınır (Drizzle sarmalayıcısında `cause` zinciri) ve `taken` sonucuna, uçta 400
+  `hata.eduKullanimda`'ya eşlenir; işlem bütünüyle geri alınır (rol ve profil dahil). Danışma kilidi kaldırıldı: iki eş
+  zamanlı onay `edu_claims` birincil anahtarında sıralanır, ikincisi 23505 alır; gerçek PostgreSQL'de iki bağlantılı
+  yarış testiyle doğrulandı.
+- Test `__tests__/edu-claims.test.ts`: her zaman PGlite, `KAZUIST_IT_DATABASE_URL` verilirse gerçek PostgreSQL. Tetikleyicinin
+  yazdığı talep ve yıllık yenileme; geri doldurulmuş talebin (çağıranın satırı olmadan) kodu engellemesi; kontrol ile
+  güncelleme arasına giren yazıcı (test tetikleyicisi) ve 23505 eşlemesi; başka 23505'in (users e-posta) karışmaması;
+  yalnız sunucuda iki bağlantılı gerçek yarış. Not: Drizzle'ın hata mesajı sorgu parametrelerini (adres dahil) taşır;
+  bu hata loglanmaz, yutulur.
+- `apps/web/src/server/auth/takedown.ts`: kayıt hedefli `ek_maskeleme` kararı `anon.run`'a ek olarak `takedowns`
+  kuyruğunda bir yeniden gösterme kalemi açar (`subject_type = 'takedown_release'`, `subject_id` talep,
+  `payload = { action: 'release_after_remask', takedownId, recordId }`). Kalem kararı (`decideRelease`, aynı
+  `POST /v1/admin/queues/takedowns/{itemId}/decision` ucu, personel, passkey ve ikinci adım):
+  - `onay`: yalnız yeniden maskeleme bitmişse: kaydın en yeni `anon.run` işi (`anon:<id>`) `done`, `masked_text` dolu ve
+    `anonymized`, açık `anonymization` kalemi yok. Değilse 409 `hata.maskelemeBekliyor`, kalem açık, kayıt gizli. Bitmişse
+    kalem kapanır ve `records.hidden_at` temizlenir; aynı hedefte `gecici_gizlendi`, `kalici_kaldirma` ya da yeniden
+    gösterme kalemi onaylanmamış başka `ek_maskeleme` varsa kayıt gizli kalır (o talep sonuçlanınca gösterilir).
+  - `ret`: kalem kapanır, kayıt kalıcı olarak gizli kalır. `duzelt`: `anon.run` yeniden kuyruğa, kalem açık.
+  - Kapatma ve gösterme tek işlemde, hedef üzerinde danışma kilidiyle; denetim kaydı `takedown.release.<karar>`.
+  - `otherRequestKeepsHidden` artık yeniden gösterme kalemi onaylanmış `ek_maskeleme` talebini gizleyen saymaz; `ret`
+    yolu da bunu kullanır. Bu değişiklikten önce sonuçlanmış `ek_maskeleme` taleplerinin kalemi yoktur ve gizli tutmaya
+    devam ederler (güvenli yön).
+- Bilgi: anonimleştirme kuyruğundaki `onay` kararı bugün kimse tarafından uygulanmıyor (`masked_text` boş kalır);
+  inceleme gerektiren yeniden maskelemede kayıt, anonimleştirici onaylı maskeleri yayımlayana kadar gösterilemez.
+- Test `admin-kvkk.test.ts`: erken onay 409; incelemeye düşen çalışma ve onaylanan anonimleştirme kalemi sonrası yine
+  409; personel olmayan 403; yayımlanınca onay kaydı gösterir, kalem kapanır, denetim satırı; iki maskeleme talebi;
+  geçici gizlenen talebin `ret`'i; kalıcı kaldırma altında gizli kalma ve kalem `ret`'i; kalem `duzelt`'i.
+- Açık: yönetim panelinde takedowns kuyruğu ekranı yok (yalnız API); Kampüs hedefleri için yeniden maskeleme yok.
 ## 15 Kasım 2026, casuist ve yz-gecidi: sözleşme v1.6 sonrası süzgeç geçişi ve temizlik (casuist-contract-1-6-filters)
 
 `docs/istekler/mimar-yonlendirme-4-sozlesme-v1-6.md` casuist madde 1-3 ve yz-gecidi madde 1-2. Sözleşme, şema ve

@@ -252,6 +252,8 @@ export const adminQueueDecide = withAuth(
     if (!q.success || !id || !body.success) return apiError('bad_request');
     const r = await decideQueueItem(ctx, p.userId, q.data, id, body.data);
     if (r === 'unsupported') return apiError('bad_request');
+    // Release after ek_maskeleme before the anonymiser has published the new masks; the item stays open.
+    if (r === 'not_ready') return apiError('conflict', tr.hata.maskelemeBekliyor);
     return r === 'not_found' ? apiError('not_found') : json({ ok: true });
   },
 );
