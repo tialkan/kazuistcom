@@ -79,6 +79,19 @@ export async function runHook(name: string, fn: () => Promise<void>): Promise<bo
   }
 }
 
+/**
+ * Sign up promo credits only for a verified, not deleted account, read from the database rather than from the
+ * hook argument. Idempotent in odeme (key kayit:<userId>), so a repeated user update grants nothing twice.
+ */
+export async function grantPromoIfVerified(db: Db, hooks: AccountHooks, userId: string): Promise<boolean> {
+  const [u] = await db
+    .select({ emailVerified: schema.users.emailVerified, deletedAt: schema.users.deletedAt })
+    .from(schema.users)
+    .where(eq(schema.users.id, userId));
+  if (!u || !u.emailVerified || u.deletedAt) return false;
+  return runHook('signup', () => hooks.onSignup(userId));
+}
+
 export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: AccountHooks = noAccountHooks) {
   const rpID = new URL(config.baseUrl).hostname;
   const socialProviders: Record<string, unknown> = {};
@@ -173,8 +186,15 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: Ac
               subjectType: 'user',
               subjectId: user.id,
             });
-            // 50 promo credits, once per user (key kayit:<userId>, idempotent in odeme).
-            await runHook('signup', () => hooks.onSignup(user.id));
+            // 50 promo credits, once per user (key kayit:<userId>, idempotent in odeme), only for a verified
+            // e-mail: Google and Apple accounts arrive verified, e-mail and password accounts get them below.
+            await grantPromoIfVerified(db, hooks, user.id);
+          },
+        },
+        update: {
+          /** E-mail code verification (or a verified sign in code) is the moment an account earns the promo. */
+          after: async (user) => {
+            if (user?.emailVerified) await grantPromoIfVerified(db, hooks, user.id);
           },
         },
       },

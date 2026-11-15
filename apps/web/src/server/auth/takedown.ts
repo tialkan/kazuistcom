@@ -1,5 +1,5 @@
-import { takedownDeadlines, type TakedownRequestInput } from '@kazuist/contracts';
-import { eq } from 'drizzle-orm';
+import { AnonRunPayload, takedownDeadlines, type TakedownRequestInput } from '@kazuist/contracts';
+import { and, eq, inArray, ne, or, sql } from 'drizzle-orm';
 import type { z } from 'zod';
 import { writeAudit } from './audit.ts';
 import type { AuthContext } from './context.ts';
@@ -56,12 +56,64 @@ async function targetExists(ctx: AuthContext, type: string, id: string): Promise
   return rows.length > 0;
 }
 
-async function setHidden(ctx: AuthContext, type: string, id: string, at: Date | null) {
+/** Hide the target; an earlier hiding time is kept (coalesce). */
+async function hide(ctx: AuthContext, type: string, id: string, at: Date) {
   if (type === 'record')
-    await ctx.db.update(schema.records).set({ hiddenAt: at }).where(eq(schema.records.id, id));
+    await ctx.db
+      .update(schema.records)
+      .set({ hiddenAt: sql`coalesce(${schema.records.hiddenAt}, ${at})` })
+      .where(eq(schema.records.id, id));
   else if (type === 'kampus_post')
-    await ctx.db.update(schema.kampusPosts).set({ hiddenAt: at }).where(eq(schema.kampusPosts.id, id));
-  else await ctx.db.update(schema.kampusFiles).set({ hiddenAt: at }).where(eq(schema.kampusFiles.id, id));
+    await ctx.db
+      .update(schema.kampusPosts)
+      .set({ hiddenAt: sql`coalesce(${schema.kampusPosts.hiddenAt}, ${at})` })
+      .where(eq(schema.kampusPosts.id, id));
+  else
+    await ctx.db
+      .update(schema.kampusFiles)
+      .set({ hiddenAt: sql`coalesce(${schema.kampusFiles.hiddenAt}, ${at})` })
+      .where(eq(schema.kampusFiles.id, id));
+}
+
+async function unhide(ctx: AuthContext, type: string, id: string) {
+  if (type === 'record')
+    await ctx.db.update(schema.records).set({ hiddenAt: null }).where(eq(schema.records.id, id));
+  else if (type === 'kampus_post')
+    await ctx.db.update(schema.kampusPosts).set({ hiddenAt: null }).where(eq(schema.kampusPosts.id, id));
+  else await ctx.db.update(schema.kampusFiles).set({ hiddenAt: null }).where(eq(schema.kampusFiles.id, id));
+}
+
+/**
+ * True when another request on the same target still requires the target hidden: temporarily hidden and not
+ * yet decided, or concluded with permanent removal or additional masking.
+ */
+async function otherRequestKeepsHidden(
+  ctx: AuthContext,
+  t: { id: string; targetType: string; targetId: string },
+): Promise<boolean> {
+  const T = schema.takedownRequests;
+  const rows = await ctx.db
+    .select({ id: T.id })
+    .from(T)
+    .where(
+      and(
+        eq(T.targetType, t.targetType as typeof T.$inferSelect.targetType),
+        eq(T.targetId, t.targetId),
+        ne(T.id, t.id),
+        or(eq(T.status, 'gecici_gizlendi'), inArray(T.decision, ['kalici_kaldirma', 'ek_maskeleme'])),
+      ),
+    )
+    .limit(1);
+  return rows.length > 0;
+}
+
+/** Queue the anonymiser again for a record (dedupe key anon:<id>, as the ingest pipeline uses). */
+async function enqueueRemask(ctx: AuthContext, recordId: string): Promise<void> {
+  const payload = AnonRunPayload.parse({ recordId });
+  await ctx.db
+    .insert(schema.jobs)
+    .values({ type: 'anon.run', payload, dedupeKey: `anon:${recordId}` })
+    .onConflictDoNothing();
 }
 
 export type TakedownAction = 'onay' | 'ret' | 'duzelt';
@@ -70,8 +122,10 @@ export type TakedownAction = 'onay' | 'ret' | 'duzelt';
  * Admin decision on a takedown (kaldirma.md section 3/4):
  * - onay while bekliyor: temporary hiding (gecici_gizlendi); the queue item stays open.
  * - onay while gecici_gizlendi: kalici_kaldirma (target stays hidden), concluded.
- * - duzelt: ek_maskeleme (masking is applied by the anonymiser; the target is shown again), concluded.
- * - ret: ret, the target is shown again, concluded.
+ * - duzelt: ek_maskeleme, concluded. The target stays hidden (it is hidden now if it was not) and, for a
+ *   record, anon.run is queued to mask it again; showing it again is a separate editorial step.
+ * - ret: ret, concluded. The target is shown again only when this request hid it and no other request on
+ *   the same target keeps it hidden (gecici_gizlendi, kalici_kaldirma or ek_maskeleme).
  * Returns whether the review item is closed.
  */
 export async function decideTakedown(
@@ -89,7 +143,7 @@ export async function decideTakedown(
   const now = ctx.now();
   let result: 'closed' | 'open';
   if (action === 'onay' && t.status === 'bekliyor') {
-    await setHidden(ctx, t.targetType, t.targetId, now);
+    await hide(ctx, t.targetType, t.targetId, now);
     await ctx.db
       .update(schema.takedownRequests)
       .set({ status: 'gecici_gizlendi', hiddenAt: now, updatedAt: now })
@@ -97,8 +151,12 @@ export async function decideTakedown(
     result = 'open';
   } else {
     const decision = action === 'onay' ? 'kalici_kaldirma' : action === 'duzelt' ? 'ek_maskeleme' : 'ret';
-    if (decision !== 'kalici_kaldirma') await setHidden(ctx, t.targetType, t.targetId, null);
-    else if (!t.hiddenAt) await setHidden(ctx, t.targetType, t.targetId, now);
+    if (decision === 'ret') {
+      if (t.hiddenAt && !(await otherRequestKeepsHidden(ctx, t))) await unhide(ctx, t.targetType, t.targetId);
+    } else {
+      await hide(ctx, t.targetType, t.targetId, now);
+      if (decision === 'ek_maskeleme' && t.targetType === 'record') await enqueueRemask(ctx, t.targetId);
+    }
     await ctx.db
       .update(schema.takedownRequests)
       .set({

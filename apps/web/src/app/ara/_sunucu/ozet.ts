@@ -203,7 +203,9 @@ async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Res
   const platform = body.mode === 'platform';
   let free = false;
   let freeKey: string | null = null;
-  if (platform && body.depth === 'standart') {
+  // The free allowance needs a verified e-mail (kimlik, Principal.emailVerified); unverified accounts can still
+  // sign in and use credits or BYOK.
+  if (platform && body.depth === 'standart' && p.emailVerified) {
     const limit = (await eduVerified(ctx, p.userId, now))
       ? FREE_PER_DAY.eduDogrulanmis
       : FREE_PER_DAY.standart;
