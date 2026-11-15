@@ -2,6 +2,17 @@
 # Kazuist worker-py. Build context: repository root.
 #   docker build -f infra/docker/worker-py/Dockerfile -t kazuist-worker-py .
 # uv installs from uv.lock (frozen); the runtime stage runs as an unprivileged user.
+#
+# The ner-runtime extra (onnxruntime, tokenizers, numpy; no torch, transformers or gliner) runs the anonymiser NER
+# model and the embedding model on CPU. Model files never enter the image and nothing is downloaded at run time;
+# they come from two read-only mounts, one folder per model key:
+#   /models/ner    anonymiser NER, output of eval/anon/export_ner.py (KAZUIST_NER_DIR, KAZUIST_NER_BACKEND)
+#   /models/embed  embedding model, ADR-0037 (KAZUIST_EMBED_DIR, KAZUIST_EMBED_BACKEND)
+# Mounting and checks: docs/runbook/dagitim.md, "worker-py model birimleri".
+#
+# KAZUIST_ENV defaults to production here: the image is the deployed artifact, and anon.run never publishes a
+# record anonymised without an NER model outside development (services/worker-py/anonymizer/pipeline.py). Set
+# KAZUIST_ENV=development explicitly to run the image locally without a model.
 
 ARG PYTHON_IMAGE=python:3.12-slim-trixie
 ARG UV_IMAGE=ghcr.io/astral-sh/uv:0.13
@@ -13,7 +24,7 @@ COPY --from=uv /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never UV_PROJECT_ENVIRONMENT=/opt/venv
 WORKDIR /src
 COPY services/worker-py/ ./
-RUN uv sync --frozen --no-dev \
+RUN uv sync --frozen --no-dev --extra ner-runtime \
  && rm -rf tests
 
 FROM ${PYTHON_IMAGE} AS runtime
@@ -27,6 +38,8 @@ COPY --from=build /opt/venv /opt/venv
 COPY --from=build --chown=app:app /src ./
 COPY --chown=app:app docs/kaynaklar /srv/docs/kaynaklar
 ENV KAZUIST_RAW_DIR=/srv/services/worker-py/.raw-store KAZUIST_SOURCES_DIR=/srv/docs/kaynaklar
+ENV KAZUIST_ENV=production KAZUIST_NER_DIR=/models/ner KAZUIST_EMBED_DIR=/models/embed \
+    HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 USER app
 EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \

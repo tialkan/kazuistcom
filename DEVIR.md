@@ -1,3 +1,41 @@
+## 15 Kasım 2026, anonimlestirme: üretimde NER zorunlu, Türkçe ek ayırıcı, worker-py model birimleri (anonimlestirme/ner-zorunlu-ek-ayirici)
+
+Orkestra görevi: main'de doğrulanan açık. `KAZUIST_NER_BACKEND` boşken `backend_from_env()` NullBackend döndürüyor,
+`publishable = not review` olduğu için kayıt NER olmadan yayımlanıyordu; imaj `ner-runtime` ekstrasını ve model
+birimini taşımıyordu. `packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok (`ner-runtime` ADR-0026
+ile kilitte).
+- Güvenli kapanma: `ner.ner_required()` `KAZUIST_ENV` `development`, `test` ya da boş değilse doğrudur (production,
+  staging ve yanlış yazılmış değerler dahil). O ortamda model yoksa `anonymize` sonucu `blocked =
+  "ner_unavailable"` taşır, `publishable` false olur; anon.run spanları ve `payload.blocked` içeren bir editör
+  kuyruğu satırını yazar, `records.anonymized` false, `masked_text` NULL, embed.chunks kuyruğa girmez. Yükseltme
+  yerine kaydetme seçildi: hata işlemi geri alır ve kaydın daha önce yayımlanmış metnini yerinde bırakırdı; böylece
+  yeniden çalıştırma eski açık metni de geri çeker. Log yalnız kimlik ve nedeni yazar. `jobs.result` biçimi aynı.
+- Yayılım düzeltmesi: bir anma, kişisinin en güçlü tohumundan daha güvenilir olamaz (`min(seed.score, 0.9)`).
+  Önceden düşük puanlı bir NER spanı kendi konumundaki 0,9'luk yayılım ikiziyle editör kuyruğundan çıkıyordu.
+- İmaj (`infra/docker/worker-py/Dockerfile`, altyapınındır, orkestra talimatıyla): `uv sync --frozen --no-dev
+  --extra ner-runtime`; `ENV KAZUIST_ENV=production KAZUIST_NER_DIR=/models/ner KAZUIST_EMBED_DIR=/models/embed
+  HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1`. CI'a imaj içinde onnxruntime içe aktarma ve modelsiz güvenli kapanma
+  adımı eklendi (`.github/workflows/ci.yml`). Runbook: `docs/runbook/dagitim.md` "worker-py model birimleri"
+  (yalnız okunur `/models/ner` ve `/models/embed`, Coolify adımı, izinler, değişkenler, bellek).
+- Kurulum denetimi: `python -m anonymizer.model_check` (manifest anahtarı ve revizyonu, ONNX sha256, yükleme,
+  sentetik cümlede kişi adı); metin yazdırmaz.
+- Türkçe ek ayırıcı `anonymizer/suffixes.py`: kesme işaretinden sonraki çekim ekleri (çoğul, iyelik, hâl, -ki,
+  ek eylem; yapım ekleri asla), düz ve tipografik kesme işaretleri, büyük harfli ekler; "O'Neil" bölünmez.
+  Anahtarlar eksiz (`name_key`), NER spanı kesme işaretinde biter (`person_end`), yayılım boşlukları esnek eşler ve
+  bilinen tam adın kesmesiz ekini ("AHMET YILMAZIN") bütün sözcükle maskeler. Yeni kural `find_suffixed_names`:
+  rol sözcüğü olmadan iki ile dört büyük harfli sözcük ve kesme işaretli ek ("Tarkan Özdağ'a"); yer, kurum ve cümle
+  başı sözcük listeleri eler, tek sözcük alınmaz, puan 0,75 olduğu için editöre düşer, aynı karakterleri örten NER
+  spanı onu kapatır. `ENGINE_VERSION` anon-0.3.0 (plan 6.4/7 gereği yeniden işleme).
+- Ölçüm (yalnız kural katmanı, NER modeli bu makinede yok; `eval/anon/raporlar/anon-0.3.0-{sentetik,zor}.json`):
+  sentetik kişi 418/430 (%97,21) önce ve sonra aynı, kesinlik %100, editör kuyruğu 52 öğe aynı; zor set kişi 9/69
+  (%13,04) -> 20/69 (%28,99), kesinlik 10/10 -> 21/21, editör kuyruğu 0 -> 11 öğe (5 belge). Zor set kuralları
+  yazan ajan ailesinin elinden çıktı, küçük ve iyimser; 15.3/2 kapısı kanıtlanmadı, geçmedi sayılır.
+- Test: worker-py 426 geçti, 10 atlandı (`ner-runtime` ile 429/7); ruff temiz; `pnpm lint`, `pnpm check:text` temiz.
+- İstek: `docs/istekler/anonimlestirme-ner-zorunlu.md` (mimar `.env.example` açıklaması; veri-toplama bilgi: imaj
+  öntanımı `KAZUIST_ENV=production` kaynak onay denetimini de açar).
+- Açık: NER'li yapılandırmada (rules+akdeniz27) yeni kod ölçülmedi (model dosyaları yerelde yok); kesmesiz ekli ilk
+  anma ("Davacı Ahmet Yılmazın") anahtara eki taşır; "Ayşe Hanım'ın" gibi unvanlı tek adlar; 200 gerçek karar seti.
+
 ## 14 Kasım 2026, casuist: embedding modeli ölçümü ve önerisi (casuist/embed-model-secimi)
 
 Vektör kolunun kapalı olma nedeni (model seçilmemişti) için plan 5.3'ün üç adayı ölçüldü ve ADR-0037 (Önerildi,

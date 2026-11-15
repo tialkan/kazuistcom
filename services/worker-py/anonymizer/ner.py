@@ -13,7 +13,8 @@ Backends:
 
 KAZUIST_NER_BACKEND selects one backend or a "+" separated union ("hushmark-berturk-112m+akdeniz27"). When the
 variable is set and a model or dependency is missing, loading fails instead of silently running the weaker
-rule only layer.
+rule only layer. When it is empty the rule layer runs alone; outside development (KAZUIST_ENV, see
+ner_required) that result is never published: anonymizer.pipeline holds it for review (fail closed).
 """
 
 from __future__ import annotations
@@ -23,9 +24,10 @@ import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Protocol, Sequence, Tuple
+from typing import Dict, Iterable, List, Mapping, Optional, Protocol, Sequence, Tuple
 
 from .spans import Span
+from .suffixes import person_end
 
 MANIFEST = "kazuist_manifest.json"
 
@@ -43,6 +45,29 @@ class NullBackend:
 
     def detect(self, text: str) -> List[Span]:
         return []
+
+
+# KAZUIST_ENV values that mean a developer machine or a test run. Every other value, including "production",
+# "staging" (the closed rehearsal on the production server, ADR-0033) and a mistyped one, means real decision
+# text, where the rule layer alone may not publish. The worker-py image sets KAZUIST_ENV=production by default,
+# so a deployment that forgets the variable fails closed as well.
+DEVELOPMENT_ENVS = ("", "development", "test")
+
+
+def ner_required(env: Optional[Mapping[str, str]] = None) -> bool:
+    """True when anonymisation must not publish a result produced without an NER model."""
+    env = os.environ if env is None else env
+    return (env.get("KAZUIST_ENV") or "").strip().lower() not in DEVELOPMENT_ENVS
+
+
+def has_model(backend: Optional["NerBackend"]) -> bool:
+    """True when the backend runs at least one NER model (NullBackend and "none" do not)."""
+    if backend is None or isinstance(backend, NullBackend):
+        return False
+    parts = getattr(backend, "backends", None)
+    if parts is not None:
+        return any(has_model(b) for b in parts)
+    return str(getattr(backend, "name", "none") or "none") != "none"
 
 
 @dataclass(frozen=True)
@@ -123,8 +148,9 @@ def _trim(text: str, start: int, end: int) -> Tuple[int, int]:
 
 
 def normalize_spans(text: str, s: Span) -> List[Span]:
-    """Trim edges; for PERSON spans also split at separators, strip leading titles and role words and trailing
-    trade words. Returns zero or more spans."""
+    """Trim edges; for PERSON spans also split at separators, strip leading titles and role words, trailing
+    trade words and the apostrophe ending of the last word ("Ahmet Yılmaz'ın" -> "Ahmet Yılmaz", so the key and
+    label match the other mentions; suffixes.py). Returns zero or more spans."""
     start, end = _trim(text, s.start, s.end)
     if end <= start:
         return []
@@ -142,6 +168,8 @@ def normalize_spans(text: str, s: Span) -> List[Span]:
         lead = _LEAD.match(text, a, b)
         if lead:
             a = lead.end()
+        a, b = _trim(text, a, b)
+        b = person_end(text, a, b)
         trail = _TRAIL.search(text, a, b)
         if trail and trail.start() > a:
             b = trail.start()
@@ -472,6 +500,10 @@ class EnsembleBackend:
     def __init__(self, backends: Sequence[NerBackend]):
         self._b = list(backends)
         self.name = "+".join(b.name for b in self._b)
+
+    @property
+    def backends(self) -> List[NerBackend]:
+        return list(self._b)
 
     def detect(self, text: str) -> List[Span]:
         out: List[Span] = []
