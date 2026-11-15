@@ -1,3 +1,35 @@
+## 15 Kasım 2026, yz-gecidi: BYOK arayüzü, ödeme kapalı yayın, geçit zaman aşımı ve uzlaşma (yz-gecidi/byok-arayuz-odeme-kapali)
+
+Orkestra görevi: review.md P8 madde 4 ve 5, plan K-08, K-09, FR-84, 8. bölüm. `packages/contracts` ve `packages/db`
+değişmedi; yeni bağımlılık yok. Sözleşme ve sahiplik isteği: `docs/istekler/yz-gecidi-byok.md`.
+- BYOK arayüzü `/hesap/yz-anahtari` (oturum istemez): OpenRouter, önerilen üç model ya da elle model kimliği,
+  anahtar yalnız tarayıcıda (varsayılan sessionStorage, açık seçimle localStorage ve uyarı), gizlilik öncelikli
+  (`provider.zdr`), anahtarı sil, "Anahtarı dene" (`GET openrouter.ai/api/v1/key`; ücretsiz katman ve sınırsız
+  anahtar uyarısı), `:free` modelde ücretsiz model uyarısı. Kayıtlı anahtar forma geri yazılmaz, maskeli gösterilir.
+- `/ara` kaynaklı özet: tarayıcıda anahtar varsa BYOK istemci protokolü (prepare, tarayıcıdan doğrudan OpenRouter,
+  casuist tarayıcı doğrulayıcısı, verify); yoksa günlük ücretsiz hak. Hak bitince (402) BYOK bağlantısı.
+  Maskeleme sunucuda `scrubParts` ile, tarayıcı göndermeden önce `assertMasked` ile yeniden denetler.
+- CSP `connect-src 'self' https://openrouter.ai` (`BYOK_CONNECT_ORIGINS`); başka köken yok.
+- Ödeme kapalı yayın: `apps/web/src/server/billing/acik.ts` `odemeAcik()` üç `IYZICO_*` değişkenine bakar. Yoksa
+  `/fiyatlar` "Kredi satışı henüz açılmadı" notu, `/odeme` ödeme adımı yerine ücretsiz hak ve BYOK bağlantıları.
+  `/fiyatlar` her durumda BYOK bölümü gösterir.
+- Geçit (P8.5): her sağlayıcı çağrısında ilk bayt ve toplam süre sınırı (`adapters/deadline.ts`, rota başına
+  `timeoutMs`; zaman aşımı `ProviderTimeoutError` 504, çıktı yokken yedek sağlayıcıya geçer). Akış sonunda
+  `consume` ya da `release` hatası artık akışı kırmaz: türsüz hata bir kez yeniden denenir, maliyet olayı
+  `creditsCharged` (defterin gerçekten aldığı), `creditsDue` ve `settlement` taşır, `onSettleFailure` uyarısı
+  (gecit.ts yalnız kimlik ve tutar loglar), harcama sayacı uzlaşmadan önce yazılır. Soru ve pasajlar `scrubParts`
+  ile tek etiket uzayında maskelenir; denetim karakterleri silinir, ayırıcı kayması kapandı.
+- Üretimde `VALKEY_URL` (ya da `BETTER_AUTH_SECRET`) yoksa `buildSummaryDeps` `GatewayConfigError` atar ve
+  değişken adını loglar; özet uçları 503 döner (önceden sessizce bellek sayacı).
+- Tarayıcı derlemesi `@kazuist/ai-gateway/browser` (`browser.ts`); içe aktarma zinciri Node yerleşiği içermez,
+  test zorlar.
+- Test: ai-gateway 104 (deadline, settlement, browser yeni), web 666 (gerçek prepare/verify ile BYOK uçtan uca,
+  üretim yapılandırması, `/fiyatlar` ve `/odeme` satış durumu), enjeksiyon 60/60, e2e 108/108 (yeni
+  `byok.spec.ts` 9 test, openrouter.ai tarayıcıda taklit). axe 375/768/1440 ihlal 0. Canlı OpenRouter duman testi
+  çalışmadı: anahtar dosyası yok.
+- Açık: derin özette Sonnet 5.5 zorunlu akıl yürütme (SAGLAYICILAR.md), `PrepareRequest.filters` (istek),
+  Anthropic, OpenAI ve Gemini için tarayıcı BYOK'u (CSP ve CORS denetimiyle birlikte), `USD_TL` sabiti.
+
 ## 14 Kasım 2026, yazma: rota şemaları sözleşmeden, Kalemcik sakin yüz, zip bombası testi (yazma/rota-sozlesme-sakin-yuz)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` yazma madde 3 ve `docs/istekler/yazma-kalemcik-notr-ton.md` kararı.

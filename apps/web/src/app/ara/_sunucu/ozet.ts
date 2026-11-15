@@ -25,7 +25,7 @@ import {
   NonceGoneError,
   prepareBundle,
   ROUTES,
-  scrub,
+  scrubParts,
   SignatureError,
   SOURCED_SUMMARY_SYSTEM,
   verifyBundle,
@@ -39,7 +39,15 @@ import { schema } from '@/server/auth/db';
 import type { AuthContext } from '@/server/auth/context';
 import { clientIp } from '@/server/auth/rate-limit';
 import { getSearchDeps, SearchUnavailable } from './baglam.ts';
-import { getSummaryDeps, istanbulDay, keyedHash, maskQuery, nameRecognizer } from './gecit.ts';
+import {
+  GatewayConfigError,
+  getSummaryDeps,
+  istanbulDay,
+  keyedHash,
+  maskQuery,
+  nameRecognizer,
+  type SummaryDeps,
+} from './gecit.ts';
 import { casuistRules, logError } from './hiz.ts';
 
 /** plan 4.2 and 4.4: daily free sourced summaries and credits per summary. */
@@ -122,6 +130,16 @@ function sse(events: AsyncIterable<AnswerEvent>, onClose: () => void): Response 
 
 async function* noLines(): AsyncGenerator<ModelLine | null> {}
 
+/** Missing production configuration (review.md P8.5) answers 503; gecit.ts already logged which variable. */
+function summaryDeps(): SummaryDeps | Response {
+  try {
+    return getSummaryDeps();
+  } catch (e) {
+    if (e instanceof GatewayConfigError) return apiError('unavailable', ozet.hata.saglayiciYok);
+    throw e;
+  }
+}
+
 function gatewayErrorResponse(e: unknown): Response | null {
   if (e instanceof BudgetError) return rateLimited(60);
   if (e instanceof GatewayError) {
@@ -148,7 +166,8 @@ async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Res
       return apiError('forbidden', ozet.hata.izinGerekli);
   }
 
-  const deps = getSummaryDeps();
+  const deps = summaryDeps();
+  if (deps instanceof Response) return deps;
   const now = deps.now();
   const requestId = `ozet:${keyedHash(deps.hashSecret, 'istek', `${p.userId}:${key}`)}`;
   const userHash = keyedHash(deps.hashSecret, 'kullanici', p.userId);
@@ -279,7 +298,8 @@ export const answersPost = withAuth({ rate: casuistRules.answerUser }, async (re
 export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (req) => {
   const parsed = PrepareRequest.safeParse(await readJson(req));
   if (!parsed.success) return apiError('bad_request');
-  const deps = getSummaryDeps();
+  const deps = summaryDeps();
+  if (deps instanceof Response) return deps;
   if (!deps.signingSecret) return apiError('unavailable');
   const searchDeps = await getSearchDeps();
   const result = await search(
@@ -293,11 +313,10 @@ export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (r
     searchDeps.backend,
     derin ? DEEP_SELECTION : STANDARD_SELECTION,
   );
-  // Same scrub as the gateway: question and passages together, so labels are consistent.
-  const SEP = '\u0000\u0001';
-  const scrubbed = await scrub([parsed.data.q, ...passages.map((x) => x.text)].join(SEP), nameRecognizer);
+  // Same scrub as the gateway: question and passages in one label space, so labels are consistent.
+  const scrubbed = await scrubParts([parsed.data.q, ...passages.map((x) => x.text)], nameRecognizer);
   scrubbed.mapping.clear();
-  const parts = scrubbed.text.split(SEP);
+  const parts = scrubbed.parts;
   const masked = passages.map((x, i) => ({
     id: x.id,
     type: x.type,
@@ -339,7 +358,8 @@ export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (r
 export const verifyPost = withAuth({ rate: casuistRules.verifyUser }, async (req) => {
   const parsed = VerifyRequest.safeParse(await readJson(req));
   if (!parsed.success) return apiError('bad_request');
-  const deps = getSummaryDeps();
+  const deps = summaryDeps();
+  if (deps instanceof Response) return deps;
   if (!deps.signingSecret) return apiError('unavailable');
   let bundle;
   try {
