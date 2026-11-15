@@ -1,5 +1,6 @@
 import { and, desc, eq, gte } from 'drizzle-orm';
-import { z } from 'zod';
+import { WritingProgressInput, WritingProjectInput } from '@kazuist/contracts';
+import type { z } from 'zod';
 import { schema, type Db } from '@/server/auth/db.ts';
 
 /**
@@ -9,18 +10,52 @@ import { schema, type Db } from '@/server/auth/db.ts';
 
 export const projeTurleri = ['tez', 'makale', 'odev'] as const;
 
-export const ProjeGirdisi = z.strictObject({
-  title: z.string().trim().min(1).max(300),
-  kind: z.enum(projeTurleri),
-  targetWords: z.number().int().min(0).max(2_000_000),
-  deadline: z.iso.date().optional(),
-});
-export const ProjeGuncelleme = ProjeGirdisi.partial();
-export const IlerlemeGirdisi = z.strictObject({
-  words: z.number().int().min(0).max(100_000),
-  note: z.string().trim().max(1000).optional(),
-});
-export const HitapGirdisi = z.strictObject({ hitap: z.enum(['sen', 'siz']) });
+/**
+ * The request bodies are the contract's own schemas (`WritingProjectInput`, `WritingProgressInput`,
+ * `WritingSettings`). The contract only states the shape: every project field is optional and a title or a note is
+ * any string up to its maximum. The server adds what the shape leaves open, after the contract schema has passed:
+ * a created project needs a title, a kind and a target; titles and notes are trimmed; a title is not blank; the
+ * target is capped at 2 million words (plan 10.5/6).
+ */
+export type ProjeGuncelleme = z.infer<typeof WritingProjectInput>;
+export type ProjeGirdisi = Required<Pick<ProjeGuncelleme, 'title' | 'kind' | 'targetWords'>> &
+  Pick<ProjeGuncelleme, 'deadline'>;
+export type IlerlemeGirdisi = z.infer<typeof WritingProgressInput>;
+
+const AZAMI_HEDEF = 2_000_000;
+
+function projeAlanlari(g: ProjeGuncelleme): ProjeGuncelleme | null {
+  const sonuc: ProjeGuncelleme = { ...g };
+  if (g.title !== undefined) {
+    const ad = g.title.trim();
+    if (!ad) return null;
+    sonuc.title = ad;
+  }
+  if (g.targetWords !== undefined && g.targetWords > AZAMI_HEDEF) return null;
+  return sonuc;
+}
+
+/** Body of POST /v1/writing-projects, or null when it is not acceptable. */
+export function projeGirdisiOku(ham: unknown): ProjeGirdisi | null {
+  const g = WritingProjectInput.safeParse(ham);
+  if (!g.success) return null;
+  const a = projeAlanlari(g.data);
+  if (!a || a.title === undefined || a.kind === undefined || a.targetWords === undefined) return null;
+  return { title: a.title, kind: a.kind, targetWords: a.targetWords, deadline: a.deadline };
+}
+
+/** Body of PATCH /v1/writing-projects/{id}, or null. */
+export function projeGuncellemeOku(ham: unknown): ProjeGuncelleme | null {
+  const g = WritingProjectInput.safeParse(ham);
+  return g.success ? projeAlanlari(g.data) : null;
+}
+
+/** Body of POST /v1/writing-projects/{id}/progress, or null. */
+export function ilerlemeGirdisiOku(ham: unknown): IlerlemeGirdisi | null {
+  const g = WritingProgressInput.safeParse(ham);
+  if (!g.success) return null;
+  return g.data.note === undefined ? g.data : { ...g.data, note: g.data.note.trim() };
+}
 
 /** Reminder offsets in days before the deadline (FR-51). */
 export const TESLIM_GUNLERI = [14, 7, 3, 1, 0] as const;
@@ -133,12 +168,7 @@ async function hatirlatmalariKur(
       .values({ userId, projectId, kind: SESSIZLIK, nextAt: null, enabled: true });
 }
 
-export async function projeOlustur(
-  db: Db,
-  userId: string,
-  g: z.infer<typeof ProjeGirdisi>,
-  simdi: Date,
-): Promise<Proje> {
+export async function projeOlustur(db: Db, userId: string, g: ProjeGirdisi, simdi: Date): Promise<Proje> {
   const [r] = await db
     .insert(schema.writingProjects)
     .values({
@@ -158,7 +188,7 @@ export async function projeGuncelle(
   db: Db,
   userId: string,
   id: string,
-  g: z.infer<typeof ProjeGuncelleme>,
+  g: ProjeGuncelleme,
   simdi: Date,
 ): Promise<Proje | null> {
   const set: Partial<typeof schema.writingProjects.$inferInsert> = {};
@@ -194,7 +224,7 @@ export async function ilerlemeKaydet(
   db: Db,
   userId: string,
   id: string,
-  g: z.infer<typeof IlerlemeGirdisi>,
+  g: IlerlemeGirdisi,
   simdi: Date,
   kaynak: 'manuel' | 'docx' = 'manuel',
 ): Promise<boolean> {

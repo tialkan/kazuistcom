@@ -70,6 +70,45 @@ describe('SQL conditions', () => {
     const edgeQuery = calls.find((c) => c.sql.includes('citation_edges'));
     expect(edgeQuery).toBeUndefined(); // no decisions, no further queries
   });
+  it('never reads rejected edges or work citations (contract v1.5)', async () => {
+    const kayit = {
+      id: '00000000-0000-4000-8000-000000000001',
+      type: 'karar',
+      title: 'T',
+      court: 'Yargıtay',
+      chamber: 'Hukuk Genel Kurulu',
+      esas_no: '1/1',
+      karar_no: '1/2',
+      date: '2015-01-01',
+      authority_class: 'yuksek_emsal',
+      status: 'bilinmiyor',
+      source_url: 'https://x.invalid',
+      fetched_at: null,
+    };
+    const calls: { sql: string; params: unknown[] }[] = [];
+    const pool = {
+      query: async (sql: string, params: unknown[]) => {
+        calls.push({ sql, params });
+        if (sql.includes('FROM records r')) return { rows: [kayit] };
+        return { rows: [] };
+      },
+    };
+    await sqlKaynagi(pool as never).ag({});
+    await sqlKaynagi(pool as never).kayitAgi(kayit.id);
+    const kenar = calls.filter((c) => c.sql.includes('FROM citation_edges'));
+    const eser = calls.filter((c) => c.sql.includes('FROM work_citations'));
+    expect(kenar).toHaveLength(2);
+    expect(eser).toHaveLength(2);
+    for (const c of kenar) {
+      expect(c.sql).toContain('NOT e.rejected');
+      expect(c.sql).not.toContain('confidence > 0');
+      expect(c.params).toContain(YAYIN_ESIGI);
+    }
+    for (const c of eser) {
+      expect(c.sql).toContain('NOT wc.rejected');
+      expect(c.sql).not.toContain('confidence > 0');
+    }
+  });
   it('a missing work table (schema request pending) means no doctrine data, not an error', async () => {
     const kayit = {
       id: '00000000-0000-4000-8000-000000000001',

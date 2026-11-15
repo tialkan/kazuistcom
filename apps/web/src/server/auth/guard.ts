@@ -12,6 +12,11 @@ export interface Principal {
   userId: string;
   sessionId: string;
   email: string;
+  /**
+   * users.email_verified read from the database on every request. Sign in works without it; the free AI
+   * allowance and the sign up promo credits require it (one free allowance per verified mailbox).
+   */
+  emailVerified: boolean;
   roles: Role[];
 }
 
@@ -78,7 +83,7 @@ export async function resolvePrincipal(req: Request, ctx: AuthContext): Promise<
   const s = await ctx.auth.api.getSession({ headers: req.headers });
   if (!s) return null;
   const [u] = await ctx.db
-    .select({ deletedAt: schema.users.deletedAt })
+    .select({ deletedAt: schema.users.deletedAt, emailVerified: schema.users.emailVerified })
     .from(schema.users)
     .where(eq(schema.users.id, s.user.id));
   if (!u || u.deletedAt) return null;
@@ -86,6 +91,7 @@ export async function resolvePrincipal(req: Request, ctx: AuthContext): Promise<
     userId: s.user.id,
     sessionId: s.session.id,
     email: s.user.email,
+    emailVerified: u.emailVerified === true,
     roles: await loadRoles(ctx, s.user.id),
   };
 }

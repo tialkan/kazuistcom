@@ -21,7 +21,34 @@ Resmî liste (https://platform.claude.com/docs/en/about-claude/models/overview):
 
 docs/kararlar.md (22 Ekim 2026): Gemini anahtarı yalnız kullanıcı ücretli faturalandırmayı beyan ederse kabul edilir; beyan yoksa Gemini BYOK her işlem için kapalıdır (plan 8.4 daraltıldı).
 
+## BYOK istemci denetimi (15 Kasım 2026)
+
+- OpenRouter CORS: `OPTIONS https://openrouter.ai/api/v1/chat/completions` (genel bir `Origin` ile) 204 döndü;
+  `Access-Control-Allow-Origin: *`, izinli başlıklar arasında `Authorization`, `Content-Type`, `HTTP-Referer`,
+  `X-Title` ve `X-OpenRouter-Title` var. `GET https://openrouter.ai/api/v1/key` anahtarsız 401 döndü, ön uçuşu
+  `GET` için aynı izinleri veriyor. Tarayıcıdan doğrudan çağrı bu yüzden çalışır; e2e (`tests/e2e/specs/byok.spec.ts`)
+  bunu gerçek CSP altında taklit sağlayıcıyla sınar.
+- Kimlik doğrulama: `Authorization: Bearer <anahtar>` (https://openrouter.ai/docs/api/reference/authentication).
+  Aynı sayfa, harcama sınırı olmayan anahtarın istemci koduna konmamasını öneriyor; arayüz "Anahtarı dene" ile
+  `data.limit` boşsa bunu söyler.
+- `GET /api/v1/key` yanıtında `data.is_free_tier` ve `data.limit` var
+  (https://openrouter.ai/docs/api/api-reference/api-keys/get-current-key). Ücretsiz katman uyarısı (FR-84)
+  bu alana dayanır; yanıtın geri kalanı okunmaz, saklanmaz.
+- `provider.data_collection` (`allow` varsayılan, `deny`) ve `provider.zdr` (yalnız `true` iken etkili) istek
+  gövdesindeki `provider` nesnesinin alanları (https://openrouter.ai/docs/guides/routing/provider-selection).
+- Akıl yürütme tokenleri `max_tokens` bütçesinden düşer; `reasoning.effort` değerleri `max`, `xhigh`, `high`,
+  `medium`, `low`, `minimal`, `none`; zorunlu akıl yürütmeli model `none`'u reddeder
+  (https://openrouter.ai/docs/guides/best-practices/reasoning-tokens).
+- Önerilen BYOK modelleri `https://openrouter.ai/api/v1/models` listesinden: `anthropic/claude-haiku-5.5`
+  (akıl yürütme isteğe bağlı, parametre gönderilmez), `openai/gpt-5.6-luna` (varsayılan açık, `effort: none`
+  gönderilir), `google/gemini-3.8-flash` (zorunlu, en düşük `effort: low` gönderilir). Listedeki `:free` sonlu
+  modeller için arayüz ücretsiz model uyarısı gösterir.
+- Dikkat: `anthropic/claude-sonnet-5.5` için `reasoning.mandatory: true`, varsayılan `high`. Platformdaki derin
+  özet (1.200 çıktı tokeni) bu yüzden çıktı bütçesinin çoğunu akıl yürütmeye harcayabilir; derin özet yalnız
+  krediyle açıldığı ve ödeme kapalı yayında kullanılmadığı için bu PR'da değiştirilmedi.
+
 ## Doğrulanamayanlar
 
 - Anthropic CORS başlığının güncel belgedeki yeri bu çalışmada yalnız ikincil kaynakla teyit edildi; gerçek duman testi anahtar dosyası olmadığı için çalışmadı.
 - OpenAI tarayıcı CORS davranışı resmî belgede açıkça yazılı değil; tarayıcıdan ilk kurulumda denenmeli, başarısızsa `browserCallSupport.openai` false yapılır.
+- 15 Kasım 2026: OpenRouter'a gerçek anahtarla canlı BYOK çağrısı yapılmadı (`~/Desktop/` altında OpenRouter anahtar dosyası yok). `reasoning.effort` değerlerinin GPT-5.6 Luna ve Gemini 3.8 Flash'ta beklenen bütçeyi bıraktığı canlıda denenmeli.
