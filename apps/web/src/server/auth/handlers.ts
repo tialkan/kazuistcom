@@ -45,6 +45,7 @@ import {
   registerWebPush,
   setNotificationPreferences,
 } from './notifications.ts';
+import { MailUnavailableError, trackMailFailures } from './mailer.ts';
 import { listProfessions } from './professions.ts';
 import { rules } from './rate-limit.ts';
 import type { Role } from './roles.ts';
@@ -57,6 +58,9 @@ import { createTakedownRequest } from './takedown.ts';
  */
 
 const noContent = () => new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } });
+
+/** Plan 14.6 (wt.149d): a form that sends a code answers 503 when no mail can go out, never a silent success. */
+const mailUnavailable = () => apiError('unavailable', tr.hata.epostaYok);
 
 export const meGet = withAuth({ rate: rules.meUser }, async (_req, p, ctx) => {
   const me = await getMe(ctx, p.userId);
@@ -124,14 +128,21 @@ export const targetProfessionPut = withAuth({ rate: rules.meUser }, async (req, 
 export const eduStart = withAuth({ rate: rules.eduUser }, async (req, p, ctx) => {
   const body = EduVerificationStart.safeParse(await readJson(req));
   if (!body.success) return apiError('bad_request');
-  const r = await startEduVerification(
-    ctx.db,
-    ctx.mailer,
-    ctx.config.secret,
-    p.userId,
-    body.data.email,
-    ctx.now(),
-  );
+  if (!ctx.mailer.configured) return mailUnavailable();
+  let r: Awaited<ReturnType<typeof startEduVerification>>;
+  try {
+    r = await startEduVerification(
+      ctx.db,
+      ctx.mailer,
+      ctx.config.secret,
+      p.userId,
+      body.data.email,
+      ctx.now(),
+    );
+  } catch (err) {
+    if (err instanceof MailUnavailableError) return mailUnavailable();
+    throw err;
+  }
   if (r === 'not_edu') return apiError('bad_request', tr.hata.eduDegil);
   // Contract v1.1 lists 400 only: a mailbox verified on another account is a bad request with its own text.
   if (r === 'taken') return apiError('bad_request', tr.hata.eduKullanimda);
@@ -181,9 +192,11 @@ export const kvkkPost = withAuth({ rate: rules.kvkkUser }, async (req, p, ctx) =
 export const kvkkGuestPost = withPublic(rules.kvkkGuestIp, async (req, ctx) => {
   const body = KvkkGuestRequestInput.safeParse(await readJson(req));
   if (!body.success) return apiError('bad_request');
+  if (!ctx.mailer.configured) return mailUnavailable();
   const r = await createGuestKvkkRequest(ctx, body.data);
   if (r === 'invalid_identity') return apiError('bad_request');
   if (r === 'unavailable') return apiError('unavailable');
+  if (r === 'mail_unavailable') return mailUnavailable();
   return json(r, 202);
 });
 
@@ -305,7 +318,19 @@ const codePaths = [
   '/sign-up/email',
 ];
 
-/** Better Auth handler behind the shared limiter. */
+/** Paths under /api/auth whose only job is to e-mail a code (sign in, address check, reset, e-mail change). */
+const mailPaths = [
+  '/email-otp/send-verification-otp',
+  '/email-otp/request-password-reset',
+  '/forget-password/email-otp',
+  '/email-otp/request-email-change',
+];
+
+/**
+ * Better Auth handler behind the shared limiter. A code path answers 503 when no mail provider is configured
+ * (checked first, so it says nothing about whether the address has an account) or when the provider failed
+ * during this request (Better Auth itself would answer 200).
+ */
 export async function authHandler(req: Request): Promise<Response> {
   try {
     const ctx = await getAuthContext();
@@ -316,7 +341,10 @@ export async function authHandler(req: Request): Promise<Response> {
       const c = await checkIp(ctx, req, rules.codeIp);
       if (!c.ok) return rateLimited(c.retryAfterSec);
     }
-    return await ctx.auth.handler(req);
+    if (req.method !== 'POST' || !mailPaths.includes(path)) return await ctx.auth.handler(req);
+    if (!ctx.mailer.configured) return mailUnavailable();
+    const { value, failed } = await trackMailFailures(() => ctx.auth.handler(req));
+    return failed ? mailUnavailable() : value;
   } catch (err) {
     return internalError(req, err);
   }

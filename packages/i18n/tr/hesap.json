@@ -26,6 +26,7 @@
     "ikinciAdim": "Yönetim paneli için passkey ile giriş ve ikinci adım onayı gerekir.",
     "kaynak": "İstek kaynağı doğrulanamadı.",
     "maskelemeBekliyor": "Yeniden maskeleme henüz tamamlanmadı ya da anonimleştirme incelemesi bekliyor. Kayıt gizli kalıyor.",
+    "epostaYok": "Şu anda e-posta gönderemiyoruz, bu yüzden kod gönderilmedi. Lütfen biraz sonra yeniden deneyin.",
     "genel": "Bir sorun oluştu. Lütfen biraz sonra yeniden deneyin."
   },
   "meslekler": {
@@ -107,6 +108,14 @@
         "atifKuyrugu": {
           "baslik": "Atıf kuyruğu",
           "aciklama": "Yayın eşiğinin altında kalan atıf adaylarını onaylayın ya da reddedin."
+        },
+        "kaldirma": {
+          "baslik": "Kaldırma talepleri",
+          "aciklama": "Geçici gizleme ve kesin karar; 72 saatlik gizleme süresini izleyin."
+        },
+        "anonimlestirme": {
+          "baslik": "Anonimleştirme kuyruğu",
+          "aciklama": "Editör onayı bekleyen maske önerilerini inceleyin."
         }
       }
     },
@@ -338,6 +347,93 @@
       "reddedildi": "Reddedildi.",
       "zatenKarar": "Bu aday başka bir editör tarafından karara bağlandı.",
       "hata": "Karar kaydedilemedi. Lütfen yeniden deneyin."
+    },
+    "yonetimOrtak": {
+      "yetkiYok": "Bu sayfa için passkey ile açılmış bir oturum ve bu oturumda yönetici onayı gerekir.",
+      "guvenlige": "Güvenlik sayfasında onay verin",
+      "sayi": "Bu sayfada {n} kayıt",
+      "sonraki": "Sonraki sayfa",
+      "ilk": "İlk sayfa",
+      "not": "Not (isteğe bağlı)",
+      "kaydedildi": "Karar kaydedildi.",
+      "zatenKarar": "Bu kayıt başka bir editör tarafından karara bağlandı.",
+      "hata": "Karar kaydedilemedi. Lütfen yeniden deneyin."
+    },
+    "kaldirmaKuyrugu": {
+      "baslik": "Kaldırma talepleri",
+      "aciklama": "Kişisel veri, telif ve güncellik gerekçeli kaldırma talepleri. Geçici gizleme kararı talebin alınmasından sonraki 72 saat içinde verilir; kişisel veri taleplerine 30 gün içinde cevap verilir.",
+      "bos": "Bekleyen kaldırma talebi yok.",
+      "gecikmis": "{n} talebin 72 saatlik gizleme süresi doldu. Bu talepler listenin başında.",
+      "turler": {
+        "kisisel_veri": "Kişisel veri",
+        "telif": "Telif",
+        "guncellik": "Güncellik"
+      },
+      "durumlar": {
+        "bekliyor": "Karar bekliyor",
+        "gecici_gizlendi": "Geçici olarak gizlendi",
+        "sonuclandi": "Ek maskeleme kararı verildi"
+      },
+      "adimlar": {
+        "decision": "Talep",
+        "release": "Ek maskeleme sonrası yayın"
+      },
+      "durum": "Durum",
+      "hedef": "Hedef kayıt",
+      "hedefYok": "Kayıt bulunamadı",
+      "gerekce": "Gerekçe",
+      "hak": "Hak bilgisi",
+      "alindi": "Alındığı tarih",
+      "gizlemeSonu": "Gizleme kararı için son",
+      "cevapSonu": "Cevap için son gün",
+      "sure": {
+        "ok": "{n} saat kaldı",
+        "soon": "Süre dolmak üzere: {n} saat kaldı",
+        "overdue": "Süre {n} saat önce doldu"
+      },
+      "yayinAciklama": "Yeniden maskeleme tamamlanınca kaydı yeniden gösterebilirsiniz. Başka bir talep kaydı gizli tutuyorsa kayıt gizli kalır.",
+      "eylemler": {
+        "bekliyor": {
+          "onay": "Geçici olarak gizleyin",
+          "duzelt": "Ek maskeleme isteyin",
+          "ret": "Talebi reddedin"
+        },
+        "gecici_gizlendi": {
+          "onay": "Kalıcı olarak kaldırın",
+          "duzelt": "Ek maskeleme isteyin",
+          "ret": "Reddedin ve kaydı gösterin"
+        },
+        "release": {
+          "onay": "Kaydı yeniden gösterin",
+          "duzelt": "Yeniden maskeleyin",
+          "ret": "Kaydı gizli tutun"
+        }
+      },
+      "gizlendi": "Kayıt geçici olarak gizlendi. Kesin karar için sayfayı yenileyin.",
+      "yenidenMaske": "Yeniden maskeleme sıraya alındı. Tamamlanınca kaydı yeniden gösterebilirsiniz."
+    },
+    "anonimKuyrugu": {
+      "baslik": "Anonimleştirme kuyruğu",
+      "aciklama": "Anonimleştiricinin editör onayına bıraktığı maske önerileri. Onaylanan önerilerle karar yayımlanır; reddedilen karar yayımlanmaz.",
+      "bos": "İnceleme bekleyen karar yok.",
+      "kayit": "Karar",
+      "kayitYok": "Kayıt bulunamadı",
+      "surum": "Anonimleştirme sürümü",
+      "cocuk": "Çocuk koruma kuralı",
+      "cocukVar": "Uygulandı",
+      "engel": "Yayın engeli",
+      "engelUyari": "Bu karar bir yayın engeli nedeniyle bekliyor; onay engeli kaldırmaz.",
+      "oneriler": "Maske önerileri",
+      "tur": "Tür",
+      "maske": "Maske",
+      "yontem": "Yöntem",
+      "guven": "Güven",
+      "metin": "Metindeki yer (özgün metin, yalnız editör görür)",
+      "fazla": "{n} öneri daha var.",
+      "onayla": "Maskeleri onaylayın",
+      "reddet": "Reddedin",
+      "onaylandi": "Onaylandı. Karar bir sonraki anonimleştirme çalışmasında yayımlanır.",
+      "reddedildi": "Reddedildi. Karar yayımlanmayacak."
     }
   },
   "bildirim": {

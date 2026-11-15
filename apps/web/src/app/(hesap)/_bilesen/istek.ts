@@ -35,8 +35,13 @@ export async function istek<T = unknown>(
     }
     let mesaj: string | null = null;
     if (!res.ok) {
-      const kendi = url.startsWith('/api/v1/') || url.startsWith('/api/auth/step-up/');
-      const m = (veri as { message?: unknown } | null)?.message;
+      const hata = veri as { code?: unknown; message?: unknown } | null;
+      // Our own 503 in front of Better Auth (no mail provider, plan 14.6) carries an i18n message too.
+      const kendi =
+        url.startsWith('/api/v1/') ||
+        url.startsWith('/api/auth/step-up/') ||
+        (res.status === 503 && hata?.code === 'unavailable');
+      const m = hata?.message;
       mesaj = res.status === 429 ? tr.hata.cokFazla : kendi && typeof m === 'string' && m ? m : null;
     }
     return { ok: res.ok, status: res.status, veri: res.ok ? (veri as T) : null, mesaj };

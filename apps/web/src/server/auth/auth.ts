@@ -12,7 +12,8 @@ import { writeAudit } from './audit.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';
 import { betterAuthLog } from './log.ts';
-import type { Mailer } from './mailer.ts';
+import { noteMailFailure, type Mailer } from './mailer.ts';
+import { stripUnprovenAccess } from './unproven.ts';
 
 export interface AuthConfig {
   secret: string;
@@ -141,7 +142,13 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: Ac
     },
     socialProviders,
     account: {
-      accountLinking: { enabled: true, trustedProviders: ['google', 'apple'] },
+      // Google and Apple never attach to an account whose e-mail is unproven (pre-hijacking, unproven.ts); pinned
+      // here so a library default change cannot reopen it.
+      accountLinking: {
+        enabled: true,
+        trustedProviders: ['google', 'apple'],
+        requireLocalEmailVerified: true,
+      },
       // Provider tokens are only used during sign in; they are kept encrypted at rest (hukuk-uyum madde 4).
       encryptOAuthTokens: true,
     },
@@ -152,8 +159,14 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: Ac
         allowedAttempts: 5,
         storeOTP: 'hashed',
         overrideDefaultEmailVerification: true,
+        // Better Auth swallows a failed send and answers 200; noteMailFailure lets authHandler answer 503.
         async sendVerificationOTP({ email, otp, type }) {
-          await mailer.sendCode(email, type, otp);
+          try {
+            await mailer.sendCode(email, type, otp);
+          } catch (err) {
+            noteMailFailure();
+            throw err;
+          }
         },
       }),
       passkey({
@@ -190,6 +203,16 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: Ac
           },
         },
         update: {
+          /** First proof of the address: nothing set up before it stays usable (unproven.ts). */
+          before: async (data, ctx) => {
+            const next = await stripUnprovenAccess(
+              db,
+              config.secret,
+              data as Record<string, unknown>,
+              ctx as { path?: string; body?: unknown } | null,
+            );
+            return next ? { data: next } : undefined;
+          },
           /** E-mail code verification (or a verified sign in code) is the moment an account earns the promo. */
           after: async (user) => {
             if (user?.emailVerified) await grantPromoIfVerified(db, hooks, user.id);

@@ -49,38 +49,32 @@ export async function createTakedownRequest(
   return row.id;
 }
 
+/**
+ * Only records can be taken down. Kampus is out of scope (ADR-0031): the contract still lists kampus_post and
+ * kampus_file, so such a request is refused here as an unknown target and nothing reads the kampus tables.
+ */
 async function targetExists(ctx: AuthContext, type: string, id: string): Promise<boolean> {
-  const table =
-    type === 'record' ? schema.records : type === 'kampus_post' ? schema.kampusPosts : schema.kampusFiles;
-  const rows = await ctx.db.select({ id: table.id }).from(table).where(eq(table.id, id)).limit(1);
+  if (type !== 'record') return false;
+  const rows = await ctx.db
+    .select({ id: schema.records.id })
+    .from(schema.records)
+    .where(eq(schema.records.id, id))
+    .limit(1);
   return rows.length > 0;
 }
 
-/** Hide the target; an earlier hiding time is kept (coalesce). */
+/** Hide the record; an earlier hiding time is kept (coalesce). Other target types are never stored. */
 async function hide(ctx: AuthContext, type: string, id: string, at: Date) {
-  if (type === 'record')
-    await ctx.db
-      .update(schema.records)
-      .set({ hiddenAt: sql`coalesce(${schema.records.hiddenAt}, ${at})` })
-      .where(eq(schema.records.id, id));
-  else if (type === 'kampus_post')
-    await ctx.db
-      .update(schema.kampusPosts)
-      .set({ hiddenAt: sql`coalesce(${schema.kampusPosts.hiddenAt}, ${at})` })
-      .where(eq(schema.kampusPosts.id, id));
-  else
-    await ctx.db
-      .update(schema.kampusFiles)
-      .set({ hiddenAt: sql`coalesce(${schema.kampusFiles.hiddenAt}, ${at})` })
-      .where(eq(schema.kampusFiles.id, id));
+  if (type !== 'record') return;
+  await ctx.db
+    .update(schema.records)
+    .set({ hiddenAt: sql`coalesce(${schema.records.hiddenAt}, ${at})` })
+    .where(eq(schema.records.id, id));
 }
 
 async function unhide(ctx: AuthContext, type: string, id: string) {
-  if (type === 'record')
-    await ctx.db.update(schema.records).set({ hiddenAt: null }).where(eq(schema.records.id, id));
-  else if (type === 'kampus_post')
-    await ctx.db.update(schema.kampusPosts).set({ hiddenAt: null }).where(eq(schema.kampusPosts.id, id));
-  else await ctx.db.update(schema.kampusFiles).set({ hiddenAt: null }).where(eq(schema.kampusFiles.id, id));
+  if (type !== 'record') return;
+  await ctx.db.update(schema.records).set({ hiddenAt: null }).where(eq(schema.records.id, id));
 }
 
 /** review_queue subject of the editor step that shows a record again after ek_maskeleme (queue takedowns). */

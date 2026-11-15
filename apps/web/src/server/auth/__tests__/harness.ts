@@ -6,6 +6,7 @@ import { migrationsFolder } from '@kazuist/db';
 import { drizzle } from 'drizzle-orm/pglite';
 import { eq } from 'drizzle-orm';
 import { migrate } from 'drizzle-orm/pglite/migrator';
+import type { AuthConfig } from '../auth.ts';
 import { createAuthContext, setAuthContext, type AuthContext } from '../context.ts';
 import { schema, type Db } from '../db.ts';
 import { authHandler, meGet, stepUpConfirm } from '../handlers.ts';
@@ -25,7 +26,8 @@ export interface Harness {
   hookCalls: string[];
 }
 
-export async function createHarness(): Promise<Harness> {
+/** `config` overrides AuthConfig fields, e.g. a Google provider with test verifyIdToken and getUserInfo. */
+export async function createHarness(opts: { config?: Partial<AuthConfig> } = {}): Promise<Harness> {
   const pg = await PGlite.create({ extensions: { vector, pg_trgm } });
   const raw = drizzle(pg, { schema });
   await migrate(raw, { migrationsFolder });
@@ -54,6 +56,7 @@ export async function createHarness(): Promise<Harness> {
       trustedProxies: 1,
       piiKey: Buffer.alloc(32, 7).toString('base64'),
       purgeGraceDays: 14,
+      ...opts.config,
     },
   });
   setAuthContext(ctx);
