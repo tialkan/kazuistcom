@@ -1,0 +1,367 @@
+{
+  "surum": "embed-sentetik-2026-11-14",
+  "derlem": "fikstur-2026-11-07",
+  "aciklama": "Embedding seçimi için ara set (plan 6.7 eval/embed; 300 soruluk set gelene kadar). Sorular casuist ajanı tarafından fikstür derleminin (packages/casuist/fixtures/kayitlar.json) metni okunarak yazıldı; kelime örtüşmesi bilerek düşük tutuldu (gündelik dil, eş anlamlı ifade, kısaltma, Türkçe sorudan İngilizce metne). Gerçek kişi verisi yoktur. beklenen alanı sourceKey değerleridir ve listedeki her kayıt ilgili sayılır. Etiketler hukukçu editör teyidi bekliyor.",
+  "sorular": [
+    {
+      "id": "e01",
+      "tur": "gunluk",
+      "soru": "Şirket artık ihtiyaç duymadığı müşteri bilgilerini saklamaya devam edebilir mi?",
+      "beklenen": ["mevzuat:6698:m7"]
+    },
+    {
+      "id": "e02",
+      "tur": "gunluk",
+      "soru": "Bir firmanın hakkımda hangi bilgileri tuttuğunu nasıl öğrenebilirim?",
+      "beklenen": ["mevzuat:6698:m11", "mevzuat:6698:m13"]
+    },
+    {
+      "id": "e03",
+      "tur": "gunluk",
+      "soru": "Hastane hasta kayıtlarını onay almadan kullanabilir mi?",
+      "beklenen": ["mevzuat:6698:m6"]
+    },
+    {
+      "id": "e04",
+      "tur": "anlamsal",
+      "soru": "Sendika üyeliği bilgisi hassas veri sayılır mı?",
+      "beklenen": ["mevzuat:6698:m6"]
+    },
+    {
+      "id": "e05",
+      "tur": "gunluk",
+      "soru": "Çalıştığım bankadan bir müşteriyle yaptığım telefon konuşmasının ses kaydını istedim ama vermediler",
+      "beklenen": ["kvkk:2024-592"]
+    },
+    {
+      "id": "e06",
+      "tur": "gunluk",
+      "soru": "Bilgilerimi tutan şirket verileri sızdırdı, bunu kime bildirmesi gerekir?",
+      "beklenen": ["mevzuat:6698:m12"]
+    },
+    {
+      "id": "e07",
+      "tur": "anlamsal",
+      "soru": "Veri ihlalinde Kurula ve ilgiliye bildirim zorunluluğu",
+      "beklenen": ["mevzuat:6698:m12"]
+    },
+    {
+      "id": "e08",
+      "tur": "gunluk",
+      "soru": "İnternette hakkımdaki eski haberlerin kaldırılmasını isteyebilir miyim?",
+      "beklenen": ["yargitay:1196596300", "yargitay:899210400"]
+    },
+    {
+      "id": "e09",
+      "tur": "gunluk",
+      "soru": "Müşteri bilgilerini yurt dışındaki bir bulut sunucusuna göndermek için hangi şartlar aranır?",
+      "beklenen": ["mevzuat:6698:m9"]
+    },
+    {
+      "id": "e10",
+      "tur": "gunluk",
+      "soru": "Kullanıcıya bilgilerinin ne amaçla toplandığını söylemek zorunlu mu?",
+      "beklenen": ["mevzuat:6698:m10"]
+    },
+    {
+      "id": "e11",
+      "tur": "anlamsal",
+      "soru": "Sözleşmenin yerine getirilmesi için gereken bilgileri rıza almadan kullanmak",
+      "beklenen": ["mevzuat:6698:m5"]
+    },
+    {
+      "id": "e12",
+      "tur": "gunluk",
+      "soru": "Şirket başvuruma bir ay geçtiği hâlde cevap vermedi, ne yapabilirim?",
+      "beklenen": ["mevzuat:6698:m14", "mevzuat:6698:m13"]
+    },
+    {
+      "id": "e13",
+      "tur": "anlamsal",
+      "soru": "Kurul şikâyeti incelerken şirketten belge isteyebilir mi?",
+      "beklenen": ["mevzuat:6698:m15"]
+    },
+    {
+      "id": "e14",
+      "tur": "kisaltma",
+      "soru": "VERBİS kaydı yapmayan şirkete verilecek ceza",
+      "beklenen": ["mevzuat:6698:m18", "mevzuat:6698:m16"]
+    },
+    {
+      "id": "e15",
+      "tur": "gunluk",
+      "soru": "Kişisel verileri silmeyen kişi hapis cezası alır mı?",
+      "beklenen": ["mevzuat:6698:m17"]
+    },
+    {
+      "id": "e16",
+      "tur": "gunluk",
+      "soru": "Evde aile için tuttuğum telefon rehberi bu kanuna tabi mi?",
+      "beklenen": ["mevzuat:6698:m28"]
+    },
+    {
+      "id": "e17",
+      "tur": "anlamsal",
+      "soru": "Savcılık soruşturmasında işlenen veriler kanunun kapsamı dışında mı?",
+      "beklenen": ["mevzuat:6698:m28"]
+    },
+    {
+      "id": "e18",
+      "tur": "anlamsal",
+      "soru": "Kurul üyelerini hangi makamlar seçer?",
+      "beklenen": ["mevzuat:6698:m21"]
+    },
+    {
+      "id": "e19",
+      "tur": "anlamsal",
+      "soru": "Kurul en az kaç üyeyle toplanır ve kararını hangi çoğunlukla verir?",
+      "beklenen": ["mevzuat:6698:m23"]
+    },
+    {
+      "id": "e20",
+      "tur": "anlamsal",
+      "soru": "Kurumun parası nereden gelir?",
+      "beklenen": ["mevzuat:6698:m29"]
+    },
+    {
+      "id": "e21",
+      "tur": "anlamsal",
+      "soru": "Parmak izi ve genetik bilgiler hangi veri türüne girer?",
+      "beklenen": ["mevzuat:6698:m6"]
+    },
+    {
+      "id": "e22",
+      "tur": "anlamsal",
+      "soru": "Bir kimseyi tanımlanabilir kılan her bilgi kişisel veri midir?",
+      "beklenen": ["mevzuat:6698:m3"]
+    },
+    {
+      "id": "e23",
+      "tur": "anlamsal",
+      "soru": "Veri işleyen ile veri sorumlusu arasındaki fark nedir?",
+      "beklenen": ["mevzuat:6698:m3"]
+    },
+    {
+      "id": "e24",
+      "tur": "anlamsal",
+      "soru": "Kanunun maddeleri hangi tarihte yürürlüğe girdi?",
+      "beklenen": ["mevzuat:6698:m32"]
+    },
+    {
+      "id": "e25",
+      "tur": "anlamsal",
+      "soru": "Kurum hangi bakanlıkla ilişkilidir?",
+      "beklenen": ["mevzuat:6698:m19"]
+    },
+    {
+      "id": "e26",
+      "tur": "anlamsal",
+      "soru": "Yalnız algoritmanın verdiği ve aleyhime sonuç doğuran karara itiraz edebilir miyim?",
+      "beklenen": ["mevzuat:6698:m11"]
+    },
+    {
+      "id": "e27",
+      "tur": "anlamsal",
+      "soru": "Hukuka aykırı veri işleme yüzünden uğradığım zararın giderilmesi",
+      "beklenen": ["mevzuat:6698:m11", "mevzuat:6698:m14"]
+    },
+    {
+      "id": "e28",
+      "tur": "gunluk",
+      "soru": "Komşunun köpeği beni ısırdı, kimden tazminat isterim?",
+      "beklenen": ["mevzuat:6098:m67"]
+    },
+    {
+      "id": "e29",
+      "tur": "gunluk",
+      "soru": "Apartmanın çatısından düşen kiremit arabama zarar verdi, kim sorumlu?",
+      "beklenen": ["mevzuat:6098:m69"]
+    },
+    {
+      "id": "e30",
+      "tur": "gunluk",
+      "soru": "Çalışanım müşteriye zarar verirse işveren olarak ben de sorumlu muyum?",
+      "beklenen": ["mevzuat:6098:m66"]
+    },
+    {
+      "id": "e31",
+      "tur": "gunluk",
+      "soru": "Kazada ölen babasının bakımındaki çocuklar ne talep edebilir?",
+      "beklenen": ["mevzuat:6098:m53", "mevzuat:6098:m55", "mevzuat:6098:m56"]
+    },
+    {
+      "id": "e32",
+      "tur": "gunluk",
+      "soru": "Kendimi korurken saldırganı yaraladım, tazminat öder miyim?",
+      "beklenen": ["mevzuat:6098:m64"]
+    },
+    {
+      "id": "e33",
+      "tur": "gunluk",
+      "soru": "Sarhoşken verdiğim zarardan sorumlu muyum?",
+      "beklenen": ["mevzuat:6098:m59"]
+    },
+    {
+      "id": "e34",
+      "tur": "anlamsal",
+      "soru": "Birkaç kişinin birlikte verdiği zararda her biri zararın tamamından sorumlu mu?",
+      "beklenen": ["mevzuat:6098:m61", "mevzuat:6098:m62"]
+    },
+    {
+      "id": "e35",
+      "tur": "gunluk",
+      "soru": "Uğradığım zarar için dava açmakta ne kadar sürem var?",
+      "beklenen": ["mevzuat:6098:m72"]
+    },
+    {
+      "id": "e36",
+      "tur": "anlamsal",
+      "soru": "Zarar görenin de kusuru varsa tazminat azalır mı?",
+      "beklenen": ["mevzuat:6098:m52"]
+    },
+    {
+      "id": "e37",
+      "tur": "anlamsal",
+      "soru": "Ceza mahkemesi beraat kararı verdi, hukuk hâkimi yine de tazminata hükmedebilir mi?",
+      "beklenen": ["mevzuat:6098:m74"]
+    },
+    {
+      "id": "e38",
+      "tur": "gunluk",
+      "soru": "Fabrikadaki patlamadan zarar gören komşular kimden tazminat ister?",
+      "beklenen": ["mevzuat:6098:m71"]
+    },
+    {
+      "id": "e39",
+      "tur": "anlamsal",
+      "soru": "Yaralanma yüzünden çalışamadığım dönemin kazanç kaybı",
+      "beklenen": ["mevzuat:6098:m54", "mevzuat:6098:m55"]
+    },
+    {
+      "id": "e40",
+      "tur": "anlamsal",
+      "soru": "Rakip firma hakkında asılsız haber yayarak müşterilerini çekmek",
+      "beklenen": ["mevzuat:6098:m57"]
+    },
+    {
+      "id": "e41",
+      "tur": "gunluk",
+      "soru": "Gazetede hakkımda yalan haber çıktı, manevi tazminat isteyebilir miyim?",
+      "beklenen": ["mevzuat:6098:m58"]
+    },
+    {
+      "id": "e42",
+      "tur": "anlamsal",
+      "soru": "Tedavi sürerken zararın kapsamı belli değilse hâkim kararı sonradan değiştirebilir mi?",
+      "beklenen": ["mevzuat:6098:m75"]
+    },
+    {
+      "id": "e43",
+      "tur": "anlamsal",
+      "soru": "Ödediğim tazminatın payını öteki sorumludan geri istemek için süre",
+      "beklenen": ["mevzuat:6098:m73"]
+    },
+    {
+      "id": "e44",
+      "tur": "anlamsal",
+      "soru": "Zarar verici fiili hukuka uygun kılan sebepler",
+      "beklenen": ["mevzuat:6098:m63"]
+    },
+    {
+      "id": "e45",
+      "tur": "anlamsal",
+      "soru": "Akıl hastasının verdiği zarar hakkaniyet gereği ödettirilebilir mi?",
+      "beklenen": ["mevzuat:6098:m65"]
+    },
+    {
+      "id": "e46",
+      "tur": "gunluk",
+      "soru": "Polis hâkim kararı olmadan üstümü ve çantamı arayabilir mi?",
+      "beklenen": ["mevzuat:2709:m20"]
+    },
+    {
+      "id": "e47",
+      "tur": "kisaltma",
+      "soru": "AİHS ile bir kanun hükmü farklıysa mahkeme hangisini uygular?",
+      "beklenen": ["mevzuat:2709:m90"]
+    },
+    {
+      "id": "e48",
+      "tur": "gunluk",
+      "soru": "Mahkeme kararı hakkımı ihlal ettiyse Anayasa Mahkemesine gidebilir miyim?",
+      "beklenen": ["mevzuat:2709:m148"]
+    },
+    {
+      "id": "e49",
+      "tur": "anlamsal",
+      "soru": "Anayasa Mahkemesi iptal ettiği kanunun yerine kendisi kural koyabilir mi?",
+      "beklenen": ["mevzuat:2709:m153"]
+    },
+    {
+      "id": "e50",
+      "tur": "anlamsal",
+      "soru": "Devlet bir özgürlüğü kısıtlarken ölçülü davranmak zorunda mı?",
+      "beklenen": ["mevzuat:2709:m13"]
+    },
+    {
+      "id": "e51",
+      "tur": "anlamsal",
+      "soru": "Dernek üyelerinin kimlik numarasının açık rıza olmadan bildirilmesi zorunlu tutulabilir mi?",
+      "beklenen": ["yargitay:831914500"]
+    },
+    {
+      "id": "e52",
+      "tur": "gunluk",
+      "soru": "Eşimin yurt dışında daha önce yapılmış bir evliliği olduğu ortaya çıktı, evliliğimiz geçersiz mi?",
+      "beklenen": ["yargitay:729300000"]
+    },
+    {
+      "id": "e53",
+      "tur": "gunluk",
+      "soru": "Nişanı haklı sebep olmadan bozan tarafa karşı kişilik hakkı saldırısı nedeniyle tazminat",
+      "beklenen": ["yargitay:77008700"]
+    },
+    {
+      "id": "e54",
+      "tur": "anlamsal",
+      "soru": "Haber sitesindeki bir yıllık habere erişim engeli talebinin reddi ve kanun yararına bozma",
+      "beklenen": ["yargitay:899210400"]
+    },
+    {
+      "id": "e55",
+      "tur": "anlamsal",
+      "soru": "Başkasının kimlik numarasını ve telefonunu izinsiz kaydedip yayan kişi hangi suçu işler?",
+      "beklenen": ["yargitay:746229100", "mevzuat:6698:m17"]
+    },
+    {
+      "id": "e56",
+      "tur": "gunluk",
+      "soru": "Resmî nikâh vaadiyle birlikte yaşayıp evine geri gönderilen kadının manevi tazminat talebi",
+      "beklenen": ["yargitay:54419600"]
+    },
+    {
+      "id": "e57",
+      "tur": "capraz-dil",
+      "soru": "Avrupa Birliği veri koruma tüzüğünün amacı nedir?",
+      "beklenen": ["eurlex:32016R0679:art1"]
+    },
+    {
+      "id": "e58",
+      "tur": "capraz-dil",
+      "soru": "Avrupa veri koruma tüzüğü hangi işlemlere uygulanmaz?",
+      "beklenen": ["eurlex:32016R0679:art2"]
+    },
+    {
+      "id": "e59",
+      "tur": "anlamsal",
+      "soru": "Kurulun düzenleyici işlem yapma ve idari yaptırım verme yetkisi",
+      "beklenen": ["mevzuat:6698:m22"]
+    },
+    {
+      "id": "e60",
+      "tur": "anlamsal",
+      "soru": "Veriler hangi temel ilkelere uygun işlenmelidir, örneğin doğruluk ve güncellik?",
+      "beklenen": ["mevzuat:6698:m4"]
+    }
+  ]
+}

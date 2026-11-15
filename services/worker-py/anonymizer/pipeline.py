@@ -1,4 +1,10 @@
-"""Anonymisation pipeline: detectors, merge, role labels, policy, masking, review items."""
+"""Anonymisation pipeline: detectors, merge, role labels, policy, masking, review items.
+
+Fail closed (plan 6.4/6, 15.3/2): a result is publishable only when the editor queue is empty and, outside
+development, an NER model took part. The rule layer alone misses names without a role cue, so where real
+decision text is processed (ner.ner_required) a run without a model is held for review with the reason
+"ner_unavailable"; records.masked_text stays NULL and nothing is indexed.
+"""
 
 from __future__ import annotations
 
@@ -7,12 +13,15 @@ from dataclasses import dataclass, field
 from typing import List, Optional
 
 from . import ENGINE_VERSION
-from .ner import NerBackend, NullBackend, normalize_spans
+from .ner import NerBackend, NullBackend, has_model, ner_required, normalize_spans
 from .policy import Policy, default_policy
-from .roles import Labeler, find_cued_persons, infer_role, propagate, tr_fold
+from .roles import Labeler, find_cued_persons, find_suffixed_names, infer_role, propagate, tr_fold
 from .sensitive import find_child_details, find_m6, has_child
 from .spans import Span, resolve_overlaps
 from .structural import detect_structural
+from .suffixes import name_key
+
+NER_UNAVAILABLE = "ner_unavailable"
 
 _TRADE = re.compile(
     r"\s+(?:İnşaat|Ticaret|Gıda|Nakliyat|Tekstil|Otomotiv|Turizm|Mobilya|Elektrik|Market|Yapı|Emlak)\b"
@@ -38,31 +47,38 @@ class AnonResult:
     anonymization_version: str
     child_strict: bool
     review: List[MaskedSpan] = field(default_factory=list)
+    # Why the result may not be published even with an empty editor queue (NER_UNAVAILABLE), else None.
+    blocked: Optional[str] = None
 
     @property
     def publishable(self) -> bool:
-        return not self.review
+        return self.blocked is None and not self.review
 
     def review_queue_row(self, record_id: str) -> Optional[dict]:
         """review_queue (queue 'anonymization') row. The payload holds offsets and labels only, never the
-        original text; the editor UI reads the text from the record under access control."""
-        if not self.review:
+        original text; the editor UI reads the text from the record under access control. A blocked result
+        always gets a row, so every record held back is visible in the queue with its reason."""
+        if not self.review and self.blocked is None:
             return None
+        payload = {
+            "policyVersion": self.policy_version,
+            "anonymizationVersion": self.anonymization_version,
+            "childStrict": self.child_strict,
+            "items": [
+                {"charStart": s.start, "charEnd": s.end, "entity": s.entity, "mask": s.mask,
+                 "detector": s.detector, "score": round(s.score, 3)}
+                for s in self.review
+            ],
+        }
+        if self.blocked is not None:
+            payload["blocked"] = self.blocked
         return {
             "queue": "anonymization",
             "subject_type": "record",
             "subject_id": record_id,
-            "priority": min(100, len(self.review) * 10 + (50 if self.child_strict else 0)),
-            "payload": {
-                "policyVersion": self.policy_version,
-                "anonymizationVersion": self.anonymization_version,
-                "childStrict": self.child_strict,
-                "items": [
-                    {"charStart": s.start, "charEnd": s.end, "entity": s.entity, "mask": s.mask,
-                     "detector": s.detector, "score": round(s.score, 3)}
-                    for s in self.review
-                ],
-            },
+            "priority": min(100, len(self.review) * 10 + (50 if self.child_strict else 0)
+                            + (40 if self.blocked else 0)),
+            "payload": payload,
         }
 
 
@@ -87,19 +103,27 @@ def anonymize(
     policy: Optional[Policy] = None,
     ner: Optional[NerBackend] = None,
     extra: Optional[List[NerBackend]] = None,
+    require_ner: Optional[bool] = None,
 ) -> AnonResult:
+    """Detect, label and mask. `require_ner` None reads KAZUIST_ENV (ner.ner_required); True makes a run
+    without any NER model unpublishable (blocked = NER_UNAVAILABLE), whatever the editor queue says."""
     policy = policy or default_policy()
     ner = ner or NullBackend()
+    backends = [ner, *(extra or [])]
+    if require_ner is None:
+        require_ner = ner_required()
+    blocked = NER_UNAVAILABLE if require_ner and not any(has_model(b) for b in backends) else None
     raw: List[Span] = []
     raw += detect_structural(text)
     raw += find_cued_persons(text)
+    raw += find_suffixed_names(text)
     raw += find_m6(text)
-    for backend in [ner, *(extra or [])]:
+    for backend in backends:
         for found in backend.detect(text):
             # Backends normalise already; repeating it here (idempotent) covers third party backends.
             for s in normalize_spans(text, found):
                 if s.entity == "PERSON":
-                    s = s.with_(role=infer_role(text, s), key=tr_fold(text[s.start : s.end]))
+                    s = s.with_(role=infer_role(text, s), key=name_key(text[s.start : s.end]))
                 raw.append(s)
     raw += propagate(text, [s for s in raw if s.entity == "PERSON"])
     child = has_child(text)
@@ -141,4 +165,5 @@ def anonymize(
         anonymization_version=anonymization_version(policy, ner),
         child_strict=child,
         review=[m for m in masked if m.needs_review],
+        blocked=blocked,
     )

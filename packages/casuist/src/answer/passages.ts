@@ -11,6 +11,8 @@ export interface PromptPassage extends ValidatorPassage {
   /** Prompt local id "K1".."Kn". */
   id: string;
   recordId: string;
+  /** chunks.id, or `<recordId>:<seq>` for a passage built on the fly; with recordId it names the passage. */
+  chunkId: string;
   title: string;
   type: RecordType;
   authority: AuthorityClass;
@@ -105,6 +107,33 @@ const clip = (s: string, max: number): string => {
 };
 
 /**
+ * The passage of one chunk as it goes into the prompt: künye line, then the clipped chunk text. selectPassages
+ * and loadPromptPassages both build it here, so a reloaded passage is byte for byte the selected one.
+ */
+export function promptPassage(id: string, r: CorpusRecord, c: Chunk, maxPassageChars: number): PromptPassage {
+  const section = asSection(c.section);
+  const body = clip(c.text, maxPassageChars);
+  return {
+    id,
+    recordId: r.id,
+    chunkId: c.id,
+    title: r.title,
+    type: r.type,
+    authority: r.authorityClass,
+    status: r.status,
+    date: r.date,
+    fetchedAt: r.fetchedAt,
+    dataDay: r.fetchedAt.slice(0, 10),
+    text: `${kunye(r, section)}\n${body}`,
+    body,
+    section,
+    charStart: c.charStart,
+    charEnd: c.charStart + body.length,
+    sourceUrl: r.sourceUrl,
+  };
+}
+
+/**
  * Picks the 10 to 20 most relevant records and their best passages, wraps each with id, type, authority class,
  * status and dates (plan 7.4/1). Order follows relevance.
  */
@@ -140,30 +169,46 @@ export async function selectPassages(
     ];
     for (const c of list) {
       if (!c) continue;
-      const section = asSection(c.section);
-      const head = kunye(r.record, section);
-      const body = clip(c.text, o.maxPassageChars);
-      const text = `${head}\n${body}`;
-      if (text.length > budget) break;
-      budget -= text.length;
-      out.push({
-        id: `K${out.length + 1}`,
-        recordId: r.record.id,
-        title: r.record.title,
-        type: r.record.type,
-        authority: r.record.authorityClass,
-        status: r.record.status,
-        date: r.record.date,
-        fetchedAt: r.record.fetchedAt,
-        dataDay: r.record.fetchedAt.slice(0, 10),
-        text,
-        body,
-        section,
-        charStart: c.charStart,
-        charEnd: c.charStart + body.length,
-        sourceUrl: r.record.sourceUrl,
-      });
+      const p = promptPassage(`K${out.length + 1}`, r.record, c, o.maxPassageChars);
+      if (p.text.length > budget) break;
+      budget -= p.text.length;
+      out.push(p);
     }
+  }
+  return out;
+}
+
+/** A passage named by a signed BYOK bundle. */
+export interface PassageRef {
+  id: string;
+  recordId: string;
+  chunkId: string;
+}
+
+/**
+ * Reloads the passages a bundle names from the store (servable records only) and rebuilds them exactly as
+ * selectPassages did, in the bundle's order. A record or chunk that is gone, hidden or no longer belongs to that
+ * record is left out, so the caller's comparison with the signed list fails closed.
+ */
+export async function loadPromptPassages(
+  backend: SearchBackend,
+  refs: readonly PassageRef[],
+  opts: SelectOptions = {},
+): Promise<PromptPassage[]> {
+  const o = { ...STANDARD_SELECTION, ...opts };
+  if (!refs.length) return [];
+  const [recs, chunks] = await Promise.all([
+    backend.records([...new Set(refs.map((r) => r.recordId))]),
+    backend.chunks([...new Set(refs.map((r) => r.chunkId))]),
+  ]);
+  const recById = new Map(recs.map((r) => [r.id, r]));
+  const chunkById = new Map(chunks.map((c) => [c.id, c]));
+  const out: PromptPassage[] = [];
+  for (const ref of refs) {
+    const r = recById.get(ref.recordId);
+    const c = chunkById.get(ref.chunkId);
+    if (!r || !c || c.recordId !== r.id) continue;
+    out.push(promptPassage(ref.id, r, c, o.maxPassageChars));
   }
   return out;
 }

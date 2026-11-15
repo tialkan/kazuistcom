@@ -3,6 +3,7 @@ import type { AnswerEvent, ModelLine } from '@kazuist/contracts';
 import { describe, expect, it } from 'vitest';
 import {
   kunye,
+  loadPromptPassages,
   passagesFromPrompt,
   sectionOfKunye,
   selectPassages,
@@ -53,6 +54,33 @@ describe('passage selection (plan 7.4/1)', () => {
       expect(p.dataDay).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     }
     expect(ps.reduce((s, p) => s + p.text.length, 0)).toBeLessThanOrEqual(STANDARD_SELECTION.maxChars);
+  });
+
+  it('reloads the selected passages byte for byte from (record, chunk) for BYOK verify', async () => {
+    const deps = await fixtureSearchDeps();
+    const res = await search({ q: 'kişisel verilerin silinmesi' }, { ...deps, now: () => NOW });
+    const selected = await selectPassages(res.items, res.query, deps.backend, STANDARD_SELECTION);
+    const refs = selected.map((p) => ({ id: p.id, recordId: p.recordId, chunkId: p.chunkId }));
+    expect(await loadPromptPassages(deps.backend, refs, STANDARD_SELECTION)).toEqual(selected);
+    // Another passage size (deep summary) would not rebuild the same text, so the route is part of the bundle.
+    const long = selected.find((p) => p.text.length > 1_200);
+    if (long) {
+      const [small] = await loadPromptPassages(deps.backend, [refs[selected.indexOf(long)]!], {
+        maxPassageChars: 600,
+      });
+      expect(small!.text).not.toBe(long.text);
+    }
+    // Unknown chunk or a chunk under another record: left out, never guessed.
+    expect(
+      await loadPromptPassages(deps.backend, [
+        { id: 'K1', recordId: refs[0]!.recordId, chunkId: 'yok:0' },
+        {
+          id: 'K2',
+          recordId: refs[0]!.recordId,
+          chunkId: refs.find((r) => r.recordId !== refs[0]!.recordId)!.chunkId,
+        },
+      ]),
+    ).toEqual([]);
   });
 
   it('puts the law number and the decision date into the citation line', () => {

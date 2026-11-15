@@ -196,4 +196,9 @@ export class MemoryBackend implements SearchBackend {
     }
     return out;
   }
+
+  async chunks(ids: string[]): Promise<Chunk[]> {
+    const wanted = new Set(ids);
+    return this.docs.filter((d) => wanted.has(d.chunk.id)).map((d) => d.chunk);
+  }
 }

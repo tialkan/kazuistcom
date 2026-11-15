@@ -32,3 +32,7 @@ ADR onayından sonra orkestra plan 4, K-09 ve ilgili pazarlama/i18n metinlerini 
 ## Onay kaydı
 
 Kullanıcı 27 Ekim 2026 mesajında ADR-0029 kararını açıkça onayladı. Public yayına hazırlık yetkilendirildi; görünürlük değişikliği, lisansın yürürlüğe konması veya yıkıcı geçmiş temizliği bu onaydan çıkarılmaz.
+
+## Ek: açık kaynak onayı (15 Kasım 2026)
+
+Tarık İsmet Alkan 15 Kasım 2026'da deponun public kalmasını ve Apache-2.0 lisansını açıkça onayladı. PR 92 ile eklenen LICENSE bu onayla geçerlidir. K-19'daki Eurostars arka plan IP'si notunun bu kararla uyumu hukuk-uyum tarafından ayrıca gözden geçirilir.
