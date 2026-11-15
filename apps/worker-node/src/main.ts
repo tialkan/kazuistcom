@@ -86,7 +86,8 @@ const consumer = createConsumer(pool, `worker-node-${process.pid}`, handlers);
 const worker = startWorker({
   db: pool,
   consumer,
-  listen: pgListen(pool),
+  // A dropped LISTEN connection reconnects with backoff (1 s doubling to 30 s); polling covers the gap.
+  listen: pgListen(pool, { log }),
   tick,
   log,
 });

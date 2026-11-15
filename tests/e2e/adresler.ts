@@ -67,7 +67,11 @@ export const HUKUKI_TR: readonly string[] = [
 /** English addresses removed without a redirect (ADR-0032): Ek H rows 2-11 and the former /en home. */
 export const KALDIRILAN_EN: readonly string[] = ['/en', ...EK_H.filter((r) => r.gone).map((r) => r.path)];
 
-/** Pages that must pass axe and the overflow check (plan 15.1 "ana sayfalarda axe"). */
+/**
+ * Pages that must pass axe and the overflow check (plan 15.1 "ana sayfalarda axe"): the shell pages and every
+ * launch module root (apps/web/src/app/(kabuk)/_kabuk/yayin.ts). All answer 200 without a session; /kaydettiklerim
+ * shows its sign in state and /hesap/yz-anahtari keeps the key in the browser only.
+ */
 export const ANA_SAYFALAR: readonly string[] = [
   '/',
   '/fiyatlar',
@@ -76,6 +80,12 @@ export const ANA_SAYFALAR: readonly string[] = [
   '/hukuki/kosullar',
   '/giris',
   '/kayit',
+  '/ara',
+  '/yazma',
+  '/tespit',
+  '/rehberler',
+  '/kaydettiklerim',
+  '/hesap/yz-anahtari',
   '/tr',
   '/tr/hakkinda',
   '/eski',

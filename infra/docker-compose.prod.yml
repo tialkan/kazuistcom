@@ -8,12 +8,16 @@
 #
 # Variables written as ${NAME:?} are required: Coolify refuses to deploy while they are empty. ${NAME:-} are
 # optional; empty keeps the feature off (for example empty IYZICO_* is the payments-off launch mode). Every optional
-# variable here was checked to treat "" like unset. KAZUIST_POLL_SECONDS is left out on purpose: core/main.py parses
-# float("") and the worker would crash-loop (docs/istekler/altyapi-worker-py-bos-degisken.md); its default 5 is used. Values live
-# only in Coolify (Environment Variables, "Is Secret"); never here.
+# variable here was checked to treat "" like unset; the two numeric worker-py variables keep a non-empty default
+# instead (KAZUIST_POLL_SECONDS, KAZUIST_SCHEDULE_TICK_SECONDS). Every KAZUIST_* variable that web, worker-node or
+# worker-py reads at run time is passed; the ones left out are test or build only (KAZUIST_ARAMA_KAYNAGI,
+# KAZUIST_FIKSTUR_URETIMDE, KAZUIST_IT_*, KAZUIST_LIVE_SMOKE), fixed in the image (KAZUIST_SOURCES_DIR,
+# KAZUIST_HEALTH_HOST/PORT, which the healthcheck relies on) or replaced by a variable passed here
+# (KAZUIST_ANTHROPIC_KEY_FILE by ANTHROPIC_API_KEY). Values live only in Coolify (Environment Variables,
+# "Is Secret"); never here.
 #
 # Memory budget for a 16 GB host (hard limits, swap included): postgres 6g, worker-py 3g, web 1g, worker-node 512m,
-# migrate 512m (one shot), valkey 256m, maintenance 64m. About 4 GB stay for the OS page cache, Docker, Coolify and
+# migrate 512m (one shot), valkey 384m, maintenance 64m. About 4 GB stay for the OS page cache, Docker, Coolify and
 # its Traefik proxy. No port is published: Traefik reaches web over the stack network, PostgreSQL and Valkey are
 # reachable only from this network.
 #
@@ -21,7 +25,8 @@
 #   /srv/kazuist/raw-store      worker-py raw archive, owner 10001:10001, backed up off server (infra/backup)
 #   /srv/kazuist/models/ner     anonymiser NER models, root owned, read only in the container
 #   /srv/kazuist/models/embed   embedding model (ADR-0037), root owned, read only in the container
-# PostgreSQL data stays in the named volume "pgdata"; the backup job dumps it with pg_dump.
+# PostgreSQL data stays in the named volume "pgdata"; the backup job dumps it with pg_dump. Valkey's append only
+# file stays in the named volume "valkeydata" (not backed up, see the valkey service).
 
 services:
   postgres:
@@ -78,9 +83,17 @@ services:
       kazuist.service: valkey
     environment:
       VALKEY_PASSWORD: ${VALKEY_PASSWORD:?}
-    # Rate limit counters only (apps/web/src/server/auth/context.ts); no persistence, so no fork for snapshots
-    # inside the 256 MB limit. A restart resets the counters, nothing else is lost. The first argument stays
-    # valkey-server so that the image entrypoint drops root and runs as the valkey user.
+    # Security and money state, not a cache: single use BYOK nonces, the daily free allowance and IP caps, the
+    # platform TL spend counter (apps/web/src/app/ara/_sunucu/gecit.ts) and the auth rate limits
+    # (apps/web/src/server/auth/rate-limit.ts). Every key carries a TTL, so the data set is bounded by traffic.
+    # - noeviction: under memory pressure a write fails (the request fails closed) instead of Valkey silently
+    #   dropping a nonce (replay) or a counter (the free allowance and the TL cap start again from zero).
+    #   volatile-lru would evict exactly those TTL'd keys, allkeys-lru any key.
+    # - AOF (appendfsync everysec) on the named volume "valkeydata": a restart or redeploy keeps the counters;
+    #   at most one second of writes is lost on a host crash. RDB snapshots stay off (--save ''), only AOF
+    #   rewrites fork; maxmemory 192mb plus the rewrite child's copy on write fits the 384 MB limit.
+    # The first argument stays valkey-server so that the image entrypoint chowns /data, drops root and runs as the
+    # valkey user. Not backed up off server (docs/runbook/yedek.md): every key expires within a day.
     command:
       - valkey-server
       - --requirepass
@@ -88,13 +101,19 @@ services:
       - --save
       - ''
       - --appendonly
-      - 'no'
+      - 'yes'
+      - --appendfsync
+      - everysec
+      - --dir
+      - /data
       - --maxmemory
       - 192mb
       - --maxmemory-policy
-      - allkeys-lru
-    mem_limit: 256m
-    memswap_limit: 256m
+      - noeviction
+    volumes:
+      - valkeydata:/data
+    mem_limit: 384m
+    memswap_limit: 384m
     healthcheck:
       test: ['CMD-SHELL', 'valkey-cli -a "$$VALKEY_PASSWORD" --no-auth-warning ping | grep -q PONG']
       interval: 10s
@@ -178,7 +197,8 @@ services:
       IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY:-}
       IYZICO_MERCHANT_ID: ${IYZICO_MERCHANT_ID:-}
       IYZICO_BASE_URL: ${IYZICO_BASE_URL:-}
-      MAIL_SMTP_URL: ${MAIL_SMTP_URL:-}
+      # Required (plan 14.6): sign in and edu.tr codes are mailed synchronously; /api/health is 503 without it.
+      MAIL_SMTP_URL: ${MAIL_SMTP_URL:?}
       MAIL_FROM: ${MAIL_FROM:-}
       WORKER_PY_URL: http://worker-py:8001
       KAZUIST_INTERNAL_TOKEN: ${KAZUIST_INTERNAL_TOKEN:?}
@@ -226,7 +246,7 @@ services:
       IYZICO_SECRET_KEY: ${IYZICO_SECRET_KEY:-}
       IYZICO_MERCHANT_ID: ${IYZICO_MERCHANT_ID:-}
       IYZICO_BASE_URL: ${IYZICO_BASE_URL:-}
-      MAIL_SMTP_URL: ${MAIL_SMTP_URL:-}
+      MAIL_SMTP_URL: ${MAIL_SMTP_URL:?}
       MAIL_FROM: ${MAIL_FROM:-}
       VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
       VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
@@ -289,13 +309,25 @@ services:
       KAZUIST_EMBED_BACKEND: ${KAZUIST_EMBED_BACKEND:-}
       KAZUIST_EMBED_THREADS: ${KAZUIST_EMBED_THREADS:-}
       KAZUIST_EMBED_QUANTIZED: ${KAZUIST_EMBED_QUANTIZED:-}
-      KAZUIST_SOURCE_MEVZUAT: ${KAZUIST_SOURCE_MEVZUAT:-}
-      KAZUIST_SOURCE_RESMI_GAZETE: ${KAZUIST_SOURCE_RESMI_GAZETE:-}
-      KAZUIST_SOURCE_KVKK: ${KAZUIST_SOURCE_KVKK:-}
-      KAZUIST_SOURCE_REKABET: ${KAZUIST_SOURCE_REKABET:-}
-      KAZUIST_SOURCE_OPENALEX: ${KAZUIST_SOURCE_OPENALEX:-}
+      # Job poll fallback in seconds; core/main.py reads "" as the default 5.
+      KAZUIST_POLL_SECONDS: ${KAZUIST_POLL_SECONDS:-5}
+      # Collection scheduler (core/scheduler.py): off unless "on"; DRY_RUN=on only logs the plan. The tick keeps a
+      # non-empty default because the scheduler parses it with float() and "" would stop the scheduler thread.
+      KAZUIST_SCHEDULER: ${KAZUIST_SCHEDULER:-}
+      KAZUIST_SCHEDULER_DRY_RUN: ${KAZUIST_SCHEDULER_DRY_RUN:-}
+      KAZUIST_SCHEDULE_TICK_SECONDS: ${KAZUIST_SCHEDULE_TICK_SECONDS:-600}
+      # One kill switch per docs/kaynaklar/<kaynak>.md (core/sources.py env_switch); off unless "on". CI checks that
+      # this list equals the source files. In production a source also needs tarik_onayi: onaylandi.
+      KAZUIST_SOURCE_AYM: ${KAZUIST_SOURCE_AYM:-}
       KAZUIST_SOURCE_CROSSREF: ${KAZUIST_SOURCE_CROSSREF:-}
+      KAZUIST_SOURCE_DANISTAY: ${KAZUIST_SOURCE_DANISTAY:-}
       KAZUIST_SOURCE_EURLEX: ${KAZUIST_SOURCE_EURLEX:-}
+      KAZUIST_SOURCE_KVKK: ${KAZUIST_SOURCE_KVKK:-}
+      KAZUIST_SOURCE_MEVZUAT: ${KAZUIST_SOURCE_MEVZUAT:-}
+      KAZUIST_SOURCE_OPENALEX: ${KAZUIST_SOURCE_OPENALEX:-}
+      KAZUIST_SOURCE_REKABET: ${KAZUIST_SOURCE_REKABET:-}
+      KAZUIST_SOURCE_RESMI_GAZETE: ${KAZUIST_SOURCE_RESMI_GAZETE:-}
+      KAZUIST_SOURCE_YARGITAY: ${KAZUIST_SOURCE_YARGITAY:-}
       OPENALEX_API_KEY: ${OPENALEX_API_KEY:-}
       KAZUIST_CITATIONS_SCOPE: ${KAZUIST_CITATIONS_SCOPE:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
@@ -365,3 +397,4 @@ services:
 
 volumes:
   pgdata:
+  valkeydata:

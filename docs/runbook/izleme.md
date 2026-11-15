@@ -33,11 +33,21 @@ sözleşmesi aktarım envanterine yazılır (hukuk-uyum; teknik veri olsa da kay
 | Kaynak bağlayıcı sağlığı | worker-py logları (veri-toplama) | bağlayıcı başına |
 | YZ harcaması | ai-gateway sayaçları | günlük tavanın %80'i |
 
+`/api/health` yanıtları: 200 `{"status":"ok"}` her şey hazır; 200 `{"status":"degraded"}` PostgreSQL ve Valkey
+hazır ama SMTP sağlayıcısına ulaşılamıyor (giriş ve doğrulama kodları gitmez; sonuç 5 dakika, hata 1 dakika önbellekte);
+503 `{"status":"degraded"}` PostgreSQL ya da Valkey yok veya kritik ortam değişkeni eksik (eksik adlar yalnız web
+logunda, `"at":"health"` satırında). Yanıtta bağımlılık ya da değişken adı yoktur. 200 degraded web'i trafikten
+çıkarmaz (Traefik yalnız sağlıksız konteyneri düşürür); anahtar kelime `"ok"` olmadığı için monitör yine uyarır.
+
 Kapalı provada 443 yalnız yönetici IP'lerine açık olduğu için dış HTTP monitörleri yayın günü açılır; kalp atışları
 ilk günden çalışır (giden istek).
 
 RAM ve yeniden başlama sayısı: `docker stats --no-stream`, `docker inspect -f '{{.RestartCount}}' <konteyner>`
 haftalık elle; bellek sınırına çarpan konteyner `docker inspect -f '{{.State.OOMKilled}}'` ile görülür.
+Valkey `noeviction` ile çalışır: 192 MB dolarsa yazmalar hata verir ve özet istekleri kapalı hata ile reddedilir (nonce ya
+da sayaç sessizce silinmez). Haftalık elle: `docker exec $(docker ps -q --filter label=kazuist.service=valkey) sh -c
+'valkey-cli -a "$VALKEY_PASSWORD" --no-auth-warning info memory' | grep -E 'used_memory_human|maxmemory_human'`;
+kullanım %80'i geçerse `--maxmemory` ve `mem_limit` birlikte artırılır (`infra/docker-compose.prod.yml`).
 
 ## Kurulum
 

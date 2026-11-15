@@ -148,27 +148,132 @@ export function startWorker(o: WorkerOptions): RunningWorker {
   };
 }
 
-/** Minimal pg.Pool surface for LISTEN (a dedicated client kept for the lifetime of the worker). */
-export interface ListenPool {
-  connect(): Promise<{
-    query(sql: string): Promise<unknown>;
-    on(event: 'notification', fn: (msg: { channel: string }) => void): unknown;
-    release(): void;
-  }>;
+/** The pg.PoolClient surface LISTEN needs. */
+export interface ListenClient {
+  query(sql: string): Promise<unknown>;
+  on(event: 'notification', fn: (msg: { channel: string }) => void): unknown;
+  on(event: 'error', fn: (err: Error) => void): unknown;
+  on(event: 'end', fn: () => void): unknown;
+  /** Passing an error (or true) destroys the connection instead of returning it to the pool. */
+  release(err?: Error | boolean): void;
 }
 
-/** LISTEN over node-postgres. Channel names come from jobsChannel (letters, digits, underscores only). */
-export function pgListen(pool: ListenPool): Listen {
+/** Minimal pg.Pool surface for LISTEN (a dedicated client kept for the lifetime of the worker). */
+export interface ListenPool {
+  connect(): Promise<ListenClient>;
+}
+
+export interface ListenOptions {
+  log?: Log;
+  /** First reconnect delay (default 1 s); doubles per failed attempt up to maxDelayMs. */
+  minDelayMs?: number;
+  /** Ceiling of the reconnect delay (default 30 s). */
+  maxDelayMs?: number;
+}
+
+/**
+ * LISTEN over node-postgres. Channel names come from jobsChannel (letters, digits, underscores only).
+ *
+ * A checked out pg client has no error listener of the pool's, so a dropped connection (PostgreSQL restart,
+ * failover, pg_terminate_backend, network cut) emitted an unhandled 'error' and killed the process. The client now
+ * has its own 'error' and 'end' listeners: the broken client is destroyed and a new one LISTENs again with
+ * exponential backoff. Polling keeps the queue draining meanwhile; after a reconnect every channel is reported once,
+ * because notifications sent while disconnected are lost. The first connect still throws, so a worker that cannot
+ * reach the database at start exits and the platform restarts it.
+ */
+export function pgListen(pool: ListenPool, options: ListenOptions = {}): Listen {
+  const log = options.log ?? (() => {});
+  const minDelay = options.minDelayMs ?? 1000;
+  const maxDelay = options.maxDelayMs ?? 30_000;
   return async (channels, onNotify) => {
-    const client = await pool.connect();
-    client.on('notification', (msg) => onNotify(msg.channel));
     for (const c of channels) {
       if (!/^[a-z0-9_]+$/.test(c)) throw new Error('invalid channel name');
-      await client.query(`LISTEN ${c}`);
     }
+    let stopped = false;
+    let current: (() => Promise<void>) | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let attempt = 0;
+
+    const schedule = () => {
+      if (stopped || timer) return;
+      const delay = Math.min(maxDelay, minDelay * 2 ** attempt);
+      attempt++;
+      timer = setTimeout(() => {
+        timer = undefined;
+        void reconnect();
+      }, delay);
+    };
+
+    /** Connects and LISTENs; resolves to a close function that UNLISTENs and returns the client to the pool. */
+    const subscribe = async (): Promise<() => Promise<void>> => {
+      const client = await pool.connect();
+      // done: this client is finished (lost or closed); later events on it are ignored.
+      let done = false;
+      let ready = false;
+      const close = async () => {
+        if (done) return;
+        done = true;
+        if (current === close) current = undefined;
+        await client.query('UNLISTEN *').catch(() => undefined);
+        client.release();
+      };
+      const lose = (err?: Error) => {
+        if (done) return;
+        done = true;
+        if (current === close) current = undefined;
+        // Never return a broken connection to the pool.
+        try {
+          client.release(err ?? true);
+        } catch {
+          /* already released */
+        }
+        // A failure during setup is reported by the throw below; only a live subscription schedules here.
+        if (ready && !stopped) {
+          log('listen connection lost', err ? safeErrorFields(err) : { error: 'end' });
+          schedule();
+        }
+      };
+      client.on('error', (err) => lose(err));
+      client.on('end', () => lose());
+      client.on('notification', (msg) => {
+        if (!done) onNotify(msg.channel);
+      });
+      try {
+        for (const c of channels) await client.query(`LISTEN ${c}`);
+      } catch (err) {
+        lose(err instanceof Error ? err : undefined);
+        throw err;
+      }
+      if (done) throw new Error('listen connection lost during setup');
+      ready = true;
+      return close;
+    };
+
+    async function reconnect(): Promise<void> {
+      if (stopped) return;
+      try {
+        const close = await subscribe();
+        if (stopped) {
+          await close();
+          return;
+        }
+        current = close;
+        log('listen reconnected', { attempts: attempt });
+        attempt = 0;
+        // Anything notified while disconnected was lost: let the loop look at every type once.
+        for (const c of channels) onNotify(c);
+      } catch (err) {
+        log('listen reconnect failed', { ...safeErrorFields(err), attempt });
+        schedule();
+      }
+    }
+
+    current = await subscribe();
     return async () => {
-      await client.query('UNLISTEN *').catch(() => undefined);
-      client.release();
+      stopped = true;
+      if (timer) clearTimeout(timer);
+      timer = undefined;
+      await current?.();
     };
   };
 }

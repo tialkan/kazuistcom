@@ -12,7 +12,7 @@ sunucu henüz alınmadı, seçim ve ödeme Tarık'ındır. Hetzner'ın resmî sa
 | CPX42 | https://www.hetzner.com/cloud/regular-performance | 8 (AMD, paylaşımlı) | 16 GB | 320 GB | 20 TB | NBG1 69,99 EUR, HEL1 59,49 EUR | NBG1, HEL1 | Stokta görünüyordu |
 
 Bellek bütçesi (`infra/docker-compose.prod.yml`): postgres 6 GB, worker-py 3 GB, web 1 GB, worker-node 512 MB,
-valkey 256 MB, bakım 64 MB; kalan yaklaşık 4 GB işletim sistemi, Coolify ve Traefik içindir. Disk: CX43'ün 160 GB'ı
+valkey 384 MB, bakım 64 MB; kalan yaklaşık 4 GB işletim sistemi, Coolify ve Traefik içindir. Disk: CX43'ün 160 GB'ı
 başlangıç için yeterli, corpus ve vektör dizini büyüdükçe CPX42'nin 320 GB'ı rahatlık sağlar. Konum ADR-0030 madde 2'ye
 göre Almanya (NBG1 ya da FSN1), yedek seçenek Helsinki. Aşağıdaki Türkiye araştırması tarihsel kayıttır.
 
