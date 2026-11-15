@@ -1,8 +1,9 @@
 ## 15 Kasım 2026, yz-gecidi: kaynaklı özet talimatı doğrulayıcının yeni kurallarıyla (yz-gecidi/ozet-talimati-dogrulayici)
 
 Orkestra görevi: #101'in doğrulayıcı kurallarını modele söylemek, Ek D'yi #102 sonrası plan metniyle hizalı
-tutmak. Dal #101'in dalından açıldı; main (#96-#100) ve #102'nin dalı içine birleştirildi. `packages/contracts`,
-`packages/db` ve `plan.md` bu dalda değişmedi (plan farkı yalnız #102'nin commit'i); yeni bağımlılık yok.
+tutmak. Dal #101'in dalından açıldı; main (#90-#102, #102 dahil) içine birleştirildi. `packages/contracts`,
+`packages/db` ve `plan.md` bu dalda değişmedi (plan.md main ile aynı); yeni bağımlılık yok. Bölümde ayrıca
+main'deki eski yz-gecidi satırının ikinci kopyası `docs/ilerleme.md`'den çıkarıldı (kimlik satırının kopyası kaldı).
 - Birleştirme çakışmaları (casuist yolları, sahibine bilgi): `packages/casuist/src/answer/passages.ts` main'in
   `promptPassage` yardımcısı #101'in `body` ve `section` alanlarıyla birleşti (künye artık `kunye(r, section)`;
   `loadPromptPassages` de bölümlü künyeyi yeniden kurar); `apps/web/src/app/ara/_sunucu/sql.test.ts` içe aktarma
