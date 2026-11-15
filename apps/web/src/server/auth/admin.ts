@@ -6,11 +6,12 @@ import { writeAudit } from './audit.ts';
 import { applyCitationDecision } from './citation-queue.ts';
 import type { AuthContext } from './context.ts';
 import { schema } from './db.ts';
-import { decideTakedown } from './takedown.ts';
+import { decideRelease, decideTakedown, RELEASE_SUBJECT } from './takedown.ts';
 
 /**
  * Admin panel back end (plan 10.9). Authorisation lives in guard.ts (staff role, passkey session, TOTP
- * second step). Queue decisions with a side effect are applied here: takedowns and kvkk-requests (kimlik) and
+ * second step). Queue decisions with a side effect are applied here: takedowns (with the release step after
+ * ek_maskeleme) and kvkk-requests (kimlik) and
  * citations (the edge's confirmed or rejected flag, citation-queue.ts); other queues only record the decision,
  * their module owners apply it from review_queue.
  */
@@ -52,7 +53,7 @@ export async function decideQueueItem(
   queue: ReviewQueueName,
   itemId: string,
   input: z.infer<typeof AdminQueueDecisionInput>,
-): Promise<'ok' | 'not_found' | 'unsupported'> {
+): Promise<'ok' | 'not_found' | 'unsupported' | 'not_ready'> {
   const [item] = await ctx.db
     .select()
     .from(schema.reviewQueueItems)
@@ -66,6 +67,11 @@ export async function decideQueueItem(
   if (!item) return 'not_found';
   const now = ctx.now();
   if (queue === 'citations') return decideCitation(ctx, actorId, item, input, now);
+  if (queue === 'takedowns' && item.subjectType === RELEASE_SUBJECT) {
+    // Showing a record again after ek_maskeleme; the step closes its own item and writes its own audit row.
+    const r = await decideRelease(ctx, actorId, item, input.decision, input.note);
+    return r === 'not_found' || r === 'not_ready' ? r : 'ok';
+  }
   let close = true;
   if (queue === 'takedowns') {
     if (!item.subjectId) return 'not_found';
