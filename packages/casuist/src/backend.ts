@@ -18,4 +18,10 @@ export interface SearchBackend {
   records(ids: string[]): Promise<CorpusRecord[]>;
   /** Best passages of the given records for the query, at most `perRecord` each (plan 7.4/1). */
   passages(q: ParsedQuery, ids: string[], perRecord: number, embedding?: number[] | null): Promise<Chunk[]>;
+  /**
+   * Passages by id, servable records only, in no particular order. Ids that `passages` made on the fly for a
+   * record without chunk rows (`<recordId>:<seq>`) are rebuilt the same way. Used by /v1/answers/verify to
+   * reload exactly the passages a signed BYOK bundle names.
+   */
+  chunks(ids: string[]): Promise<Chunk[]>;
 }

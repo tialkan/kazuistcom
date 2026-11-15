@@ -1,10 +1,10 @@
 openapi: 3.1.0
 info:
   title: Kazuist API
-  version: 1.5.0
+  version: 1.5.1
   summary: Kazuist web and iOS API contract (single source of truth).
   description: |
-    Contract v1.5 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md,
+    Contract v1.5.1 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md,
     docs/adr/0026-sozlesme-v1-2.md, docs/adr/0027-kalici-siparis-belgeleri-ve-urun-surumleri.md,
     docs/adr/0028-hesap-silme-iade-yonetimi.md and docs/adr/0035-sozlesme-v1-5.md). All endpoints
     validate input with zod and reject unknown fields. Every error body is `{code, message, requestId}` and
@@ -898,7 +898,7 @@ paths:
         required: true
         content:
           application/json:
-            schema: { $ref: '#/components/schemas/WritingProjectInput' }
+            schema: { $ref: '#/components/schemas/WritingProjectCreateInput' }
       responses:
         '201':
           description: Created.
@@ -1784,7 +1784,6 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
 
   /v1/notifications/preferences:
-    x-kazuist-uygulama: planlandi
     get:
       tags: [notifications]
       operationId: getNotificationPreferences
@@ -1813,7 +1812,6 @@ paths:
               schema: { $ref: '#/components/schemas/NotificationPreferences' }
         '400': { $ref: '#/components/responses/BadRequest' }
   /v1/push/web-subscriptions:
-    x-kazuist-uygulama: planlandi
     post:
       tags: [notifications]
       operationId: registerWebPush
@@ -1839,7 +1837,6 @@ paths:
         '201': { $ref: '#/components/responses/Created' }
         '400': { $ref: '#/components/responses/BadRequest' }
   /v1/push/apns-tokens:
-    x-kazuist-uygulama: planlandi
     post:
       tags: [notifications]
       operationId: registerApnsToken
@@ -3020,13 +3017,28 @@ components:
         targetWords: { type: integer }
         deadline: { type: [string, 'null'], format: date }
         currentWords: { type: integer }
+    WritingProjectCreateInput:
+      type: object
+      additionalProperties: false
+      description: >-
+        Body of createWritingProject (v1.5.1). title, kind and targetWords are required; the server trims title and
+        rejects a blank one.
+      required: [title, kind, targetWords]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 300 }
+        kind: { type: string, enum: [tez, makale, odev] }
+        targetWords: { type: integer, minimum: 0, maximum: 2000000 }
+        deadline: { type: string, format: date }
     WritingProjectInput:
       type: object
       additionalProperties: false
+      description: >-
+        Body of updateWritingProject: a partial update, every field optional and only the given fields change.
+        Same rules as WritingProjectCreateInput; deadline cannot be cleared (null is rejected).
       properties:
-        title: { type: string, maxLength: 300 }
+        title: { type: string, minLength: 1, maxLength: 300 }
         kind: { type: string, enum: [tez, makale, odev] }
-        targetWords: { type: integer, minimum: 0 }
+        targetWords: { type: integer, minimum: 0, maximum: 2000000 }
         deadline: { type: string, format: date }
     Deck:
       type: object
