@@ -26,7 +26,11 @@ const bolumler = [
 ];
 
 /** Shown to editor and yonetici only; the screens check the full admin gate again. */
-const yonetim = [{ href: '/hesap/yonetim/atif-kuyrugu', ...s.yonetim.atifKuyrugu }];
+const yonetim = [
+  { href: '/hesap/yonetim/kaldirma', ...s.yonetim.kaldirma },
+  { href: '/hesap/yonetim/anonimlestirme', ...s.yonetim.anonimlestirme },
+  { href: '/hesap/yonetim/atif-kuyrugu', ...s.yonetim.atifKuyrugu },
+];
 
 /** /hesap: profile summary, consent reminder, links to every account page and sign out. */
 export default async function HesapPage() {

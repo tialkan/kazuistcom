@@ -1,3 +1,45 @@
+## 15 Kasım 2026, kimlik: hesap ön ele geçirme, e-posta yokken 503, kaldırma ve anonimleştirme ekranları (kimlik/on-ele-gecirme-eposta-kuyruklar)
+
+Bağımsız denetimin dört kimlik bulgusu. Sözleşme, şema, migration ve bağımlılık değişmedi.
+- Ön ele geçirme: e-posta ve parolayla kayıt doğrulama istemediği için başkasının adresine hesap açılabiliyordu.
+  Better Auth 1.7.11 e-posta koduyla girişte parola ve oturumları siliyor, Google ve Apple'ı doğrulanmamış hesaba
+  bağlamıyor (`requireLocalEmailVerified`, artık `auth.ts`'te açıkça), ama passkey ve TOTP sırrını bırakıyor;
+  `/email-otp/verify-email` ve `/email-otp/reset-password`'de hiçbir şey silmiyordu (test bunu kanıtladı: koruma
+  kapatılınca 5 test kırılıyor). `server/auth/unproven.ts` users `update.before` kancasında, adresin ilk
+  kanıtlandığı anda (kod doğrulanmış, satır hâlâ doğrulanmamış): kodla giriş ve oturumsuz adres doğrulamasında
+  parola, Google ve Apple bağları, passkey, TOTP ve bütün oturumlar; parola sıfırlamada yeni parola dışında hepsi;
+  aynı hesabın oturumundan adres doğrulamasında (kayıt olan kişi) yalnız diğer oturumlar silinir. Denetim kaydı
+  `user.unproven_access_revoked` (yalnız alan adları). Kalan: kanıttan önce saldırgan parolayla girebilir ama hesapta
+  kurbanın verisi yoktur; Google ile giren kurban önce kodla girmelidir (Better Auth 401 döner, giriş sayfası bunu
+  ayrıca anlatmıyor).
+- Kaldırma talepleri yalnız kayıt içindir (ADR-0031): `takedown.ts` Kampüs tablolarını okumuyor ve yazmıyor;
+  sözleşmedeki `kampus_post` ve `kampus_file` hedefleri bilinmeyen hedef olarak 400.
+- E-posta sağlayıcısı yokken (plan 14.6): `Mailer.configured`; kod gönderen formlar (`/email-otp/send-verification-otp`
+  her tür, `request-password-reset`, `forget-password/email-otp`, `request-email-change`, edu.tr başlatma, hesapsız KVKK
+  başvurusu) hiçbir şey yazmadan 503 ve `hata.epostaYok`. Sağlayıcı yapılandırılmış ama gönderim düşerse de 503:
+  Better Auth gönderim hatasını yutup 200 döndüğü için `authHandler` isteği `trackMailFailures` (AsyncLocalStorage)
+  içinde çalıştırır. Bu durumda parola sıfırlama yalnız var olan adreste 503 verir (sağlayıcı arızası sürerken adres
+  varlığı sızar); yapılandırma yokken cevap adresten bağımsız. `istek.ts` bu 503 metnini `/api/auth` için de gösterir.
+- Ekranlar `/hesap/yonetim/kaldirma` ve `/hesap/yonetim/anonimlestirme` (noindex; atıf kuyruğuyla aynı kapı,
+  personel olmayana 404, onaysız personele güvenlik bağlantısı); `/hesap` Yönetim bölümünde bağlantılar. Kararlar
+  mevcut `POST /v1/admin/queues/{queue}/{id}/decision` ile (`KuyrukKarari.tsx`). Kaldırma: talep ve ek maskeleme
+  sonrası yayın adımı, adıma göre üç düğme, `bekliyor` taleplerde gizleme son anı ve kalan saat (12 saatten az ve
+  dolmuş uyarı biçiminde, dolmuşlar başta ve üstte sayılır); iletişim adresi gösterilmez. Anonimleştirme: kayıt,
+  sürüm, çocuk kuralı, yayın engeli, öneri başına tür, maske, yöntem, güven ve özgün metinden 40 karakterlik pencere
+  (Python kod noktası ofsetiyle), ilk 20 öneri. 72 saat için işçi uyarısı sözleşme ve orkestra kaydı ister:
+  `docs/istekler/kimlik-kaldirma-72-saat-uyarisi.md`.
+- Testler: `on-ele-gecirme.test.ts` (8: kodla giriş, oturumsuz doğrulama, sıfırlama, sahibin oturumu, doğrulanmış
+  hesaba dokunulmaz, Google bağlanmaz sonra bağlanır, yeni Google hesabı, plan), `eposta-yok.test.ts` (11: yapılandırma
+  yok ve sağlayıcı hatası için dört kod formu, edu.tr, hesapsız KVKK; satır yazılmaz; adres bağımsızlığı; kayıt
+  çalışır), `yonetim-kuyruklari.test.ts` (10: süre hesabı, Kampüs hedefi 400, sıralama ve süre, ek maskeleme adımı,
+  iletişim adresi yok, gizleme sonrası sayaç, kod noktası penceresi, bozuk yük dışarıda, 20 sınırı, yetki ve karar).
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `check:text`, `pnpm build` temiz; `pnpm test` hepsi yeşil (web 816, 2
+  atlanan). Yerel üretim derlemesi, geçici PostgreSQL 18 ve migration'larla iki ekran ve `/hesap` 375/768/1440,
+  onaysız personel ekranı, e-posta sağlayıcısız `/giris` kod düğmesi: 16 axe taraması (WCAG 2.0/2.1 A ve AA) ihlal 0,
+  yatay taşma 0; kullanıcıya iki ekran 404; ekrandan geçici gizleme `gecici_gizlendi` ve `hidden_at` yazdı. Ekran
+  görüntüleri review.md T11 kararı beklendiği için depoya konmadı. Gerçek passkey töreni, gerçek Google ve SMTP
+  denenmedi.
+
 ## 15 Kasım 2026, casuist: açık kaynak kurul adları dizin, embedding ve özet dışında (casuist/uye-adlari-dizin-disi)
 
 İstek `docs/istekler/anonimlestirme-onay-ve-acik-kaynak.md` madde 4 (#114 main'de, 52c6951 üstünde). Sözleşme,

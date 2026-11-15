@@ -6,6 +6,7 @@ import type { AuthContext } from './context.ts';
 import { schema } from './db.ts';
 import type { Principal } from './guard.ts';
 import { codeHash, safeEqualHex, sixDigitCode, subjectHash } from './hash.ts';
+import { MailUnavailableError } from './mailer.ts';
 import { encryptPii, isValidTckn } from './pii.ts';
 
 /** KVKK m.11 applications (plan 10.10, ADR-0023) in kvkk_requests, queued for the admin panel. */
@@ -71,7 +72,7 @@ export async function createKvkkRequest(
   return receipt(row);
 }
 
-export type GuestError = 'invalid_identity' | 'unavailable';
+export type GuestError = 'invalid_identity' | 'unavailable' | 'mail_unavailable';
 
 /**
  * Application without an account. Recorded at arrival (receivedAt counts from now, Teblig m.5), then
@@ -112,7 +113,13 @@ export async function createGuestKvkkRequest(
     value: codeHash(ctx.config.secret, guestCodeId(row.id), code),
     expiresAt: new Date(now.getTime() + GUEST_CODE_TTL_MS),
   });
-  await ctx.mailer.sendCode(email, 'kvkk-guest', code);
+  try {
+    await ctx.mailer.sendCode(email, 'kvkk-guest', code);
+  } catch (err) {
+    // The application stays recorded as dogrulama_bekliyor; the caller gets 503 and may send it again.
+    if (err instanceof MailUnavailableError) return 'mail_unavailable';
+    throw err;
+  }
   await writeAudit(ctx.db, ctx.config.secret, {
     actorId: null,
     action: 'kvkk.guest_request',
