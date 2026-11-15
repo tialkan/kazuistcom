@@ -1,7 +1,8 @@
 # Yurt dışı aktarım envanteri ve kararları
 
-TASLAK, Tarık onayı bekliyor. Sürüm: 2026-11-12 (taslak 2, review.md P5 madde 3 ve 4). Uyum garantisi vermez.
-Bu ajan hiçbir sözleşme imzalamaz, hiçbir kuruma bildirim göndermez.
+TASLAK, Tarık onayı bekliyor. Sürüm: 2026-11-15 (taslak 3: BYOK arayüzü, ödeme kapalı ilk yayın, ADR-0038).
+Uyum garantisi vermez. Bu ajan hiçbir sözleşme imzalamaz, hiçbir kuruma bildirim göndermez.
+Hetzner ile Standart Sözleşme 2'nin imza ve bildirim adımları: `hetzner-standart-sozlesme-bildirimi.md`.
 
 ## Dayanak (birincil kaynaktan, 12 Kasım 2026)
 
@@ -43,11 +44,11 @@ depo, yedek: Türkiye, aktarım yok" satırı yanlıştır ve kaldırıldı.
 | Cloudflare | DNS only iken yok | Yurt dışı | Yok | Proxy açılırsa IP ve istek verisi aktarılır; açılmadan önce bu tablo ve ADR-0004 güncellenir |
 | YZ sağlayıcısı, platform modu (OpenRouter, Inc., ADR-0025; istek başına data_collection deny ve zdr true) | Hedef: yok. Maskeli sorgu, maskeli kılavuz metni ve anonim corpus | ABD; uç model sağlayıcısı küresel | Maskeleme (plan 8.5); kalan risk için m.9/4-(c) Standart Sözleşme 2 önerilir | Tarık, Standart Sözleşme 2'nin değiştirilmemiş metnini OpenRouter'a sunar; imzalanırsa beş iş günü içinde bildirim. İmzalanmazsa maskelemenin yeterliliği yeniden değerlendirilir; açık rıza düzenli akışa dayanak yapılmaz (m.9/6 ve Yönetmelik m.16/1 arızi olma şartı) |
 | YZ sağlayıcısı, platform yedeği (Anthropic doğrudan) | Hedef: yok | ABD veya küresel | Maskeleme | Yalnız OpenRouter kesintisinde; API girdi ve çıktıları 30 gün içinde silinir (privacy.claude.com, 22 Ekim 2026 okuması) |
-| YZ sağlayıcısı, BYOK istemci modu | Kullanıcı kendi cihazından kendi hesabına gönderir | Kullanıcının seçimi | Kazuist aktarım yapmaz | Aydınlatma ve YZ politikasında bilgilendirme. BYOK arayüzü henüz yok (review.md P8) |
-| YZ sağlayıcısı, BYOK aktarma modu | Yalnız maskeli metin, sunucudan geçer, saklanmaz | Kullanıcının seçimi | Maskeleme; kullanıcıya açık uyarı | consents.kind = yz_aktarim kaydı (ara/_sunucu/ozet.ts denetler) |
+| YZ sağlayıcısı, BYOK istemci modu (OpenRouter, Inc.; yayında, `/hesap/yz-anahtari` ve `/ara`) | Hedef: yok. Kazuist sunucusu soruyu ve pasajları maskeleyip imzalı paketi tarayıcıya döner; tarayıcı paketi yeniden denetler (byok/client.ts `assertMasked`) ve kullanıcının anahtarıyla doğrudan OpenRouter'a gönderir. Anahtar yalnız tarayıcıda (sessionStorage, seçimle localStorage), Kazuist'e gitmez. OpenRouter isteğin geldiği IP adresini ve kullanıcının hesabını görür | ABD; uç model sağlayıcısı küresel | Kazuist sunucusu OpenRouter'a bağlanmaz; istek kullanıcının kendi hesabıyla kendi tarayıcısından yapılır. Her istekte `data_collection: deny`, seçimle `zdr: true` (adapters/index.ts) | Aydınlatma 4-5 ve YZ politikası 4'te bilgilendirme yazıldı. [DOĞRULANACAK: hukukçu değerlendirmesi: maskeli paketin kullanıcının tarayıcısından kullanıcının kendi OpenRouter hesabına gitmesinin Kulular açısından m.9 anlamında aktarım sayılmadığı; görüş farklıysa platform modu satırındaki yol uygulanır] |
+| YZ sağlayıcısı, BYOK aktarma modu | Yalnız maskeli metin, sunucudan geçer, saklanmaz | Kullanıcının seçimi | Maskeleme; kullanıcıya açık uyarı | Arayüzde sunulmuyor (ara/_bilesen/OzetAlani.tsx yalnız `mode: 'platform'` gönderir). Sunucu ucu (ara/_sunucu/ozet.ts) `byok_aktarma` isteğini yz_aktarim onayı varsa hâlâ kabul ediyor; açılmadan önce bu satır ve acik-riza madde 3 yeniden onaya sunulur |
 | E-posta gönderimi | E-posta adresi, ad, bildirim içeriği, sipariş PDF'leri (ad soyad, e-posta, tutar) | Seçilmedi (review.md T9) | Türkiye'de ise aktarım yok; yurt dışında ise Standart Sözleşme 2 | Sağlayıcı seçimi Tarık'ta. Sipariş PDF'i kişisel veri taşıdığı için yurt dışı sağlayıcıda dayanak şarttır |
-| iyzico | Ödeme verisi | Türkiye | Aktarım yok | Üye işyeri sözleşmesi |
-| e-Arşiv entegratörü | Fatura verisi | Seçilmedi | Türkiye'de ise aktarım yok | Gelir İdaresi'nin izin verdiği entegratör listesinden seçilir |
+| iyzico | Ödeme verisi | Türkiye | Aktarım yok | Üye işyeri sözleşmesi. Kredi satışı ilk yayında kapalı (server/billing/acik.ts `odemeAcik`); satış açılana kadar veri akışı yok |
+| e-Arşiv entegratörü | Fatura verisi | Seçilmedi | Türkiye'de ise aktarım yok | Gelir İdaresi'nin izin verdiği entegratör listesinden seçilir; satış açılmadan önce |
 | Apple (iOS satın alma, Apple ile giriş, APNs) | İşlem kimlikleri; hesap kimliği; cihaz belirteci | Yurt dışı | Kullanıcının Apple ile kendi ilişkisi; APNs için bildirim metni genel | [DOĞRULANACAK: Kazuist'in APNs'e cihaz belirteci göndermesinin m.9 anlamında aktarım sayılıp sayılmadığı; hukukçu değerlendirmesi]. iOS uygulaması henüz yok |
 | Web Push (tarayıcı itme hizmetleri) | Uç nokta adresi; bildirim metni genel | Yurt dışı | Apple ile aynı soru | Bildirim metninde kişisel veri ve içerik özeti gönderilmez |
 | Google ile giriş | Kullanıcı kendi hesabıyla kimlik doğrular | Yurt dışı | Kullanıcının seçimi | Aydınlatmada belirtilir |
@@ -78,7 +79,14 @@ bilinmiyor. İmza alınamazsa kalan m.9 yolları:
    dayanak olamaz.
 3. Kişisel veriyi Türkiye'de bir sunucuda tutmak: ADR-0030 ve ADR-0033'ü değiştirir, yeni ADR gerekir.
 
-Bu yüzden ADR-0033 ön koşul 1 sağlanmadan DNS geçişi yapılmamalı ve hesap, ödeme ve formlar açılmamalıdır.
+Bu yüzden ADR-0033 ön koşul 1 sağlanmadan DNS geçişi yapılmamalı ve hesap ve formlar açılmamalıdır. Dar çekirdekli
+ilk yayın da hesap ve kaydı ilk günden açtığı için bu ön koşul aynen geçerlidir (ADR-0038 madde 8); ödemenin kapalı
+olması koşulu değiştirmez.
+
+15 Kasım 2026 yeniden okuması (docs.hetzner.com/general/company-and-policy/data-protection-at-hetzner): sayfa hâlâ
+"We do not create or sign individual Data Processing Agreement (DPA)s" diyor; veri koruma soruları için müşteri
+hesabından talep veya data-protection@hetzner.com adresi veriliyor. Hetzner'a yazılı sorma ve imza adımları
+`hetzner-standart-sozlesme-bildirimi.md` dosyasındadır.
 
 ## Kararlar (Tarık onayı)
 

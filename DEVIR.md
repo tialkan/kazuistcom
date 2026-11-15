@@ -1,3 +1,32 @@
+## 15 Kasım 2026, hukuk-uyum: hukuki metinler dar çekirdekli ilk yayına göre; Hetzner Standart Sözleşme 2 kontrol listesi
+
+ADR-0038 madde 8 (dar çekirdek), ADR-0030 (Hetzner, Almanya) ve yayındaki BYOK koduna göre. Sözleşme, şema ve kod
+değişmedi; yalnız `content/hukuki/**` ve `docs/kvkk/**` (ve bu iki paylaşılan dosya).
+- 12 metin `2026-11-15.1` (status yine `taslak`): kosullar, cerezler, erisilebilirlik, uyari, aydinlatma, gizlilik,
+  yapay-zeka, acik-riza, iade-ve-kredi, on-bilgilendirme, mesafeli-satis, abonelik. basvuru ve kaldirma değişmedi.
+- Gizli modüller: kosullar 2 hizmet tanımı yalnız Ara ve kaynaklı özet, Kaydettiklerim, Yazma (şablon, kısaltma),
+  Rehberler, /tespit; Kalemcik, Pratik, atıf ağı, "desteler" ve "oyunlar" çıktı; cerezler 2'den pratik anahtarları,
+  erisilebilirlik'ten atıf ağı tablo görünümü, aydinlatma 2'den yazma projeleri (yalnız Kalemcik yazıyor) çıktı.
+- BYOK (byok/settings.ts, client.ts, adapters/index.ts satır 145, byok.json): anahtar `kazuist.byok.v1`, varsayılan
+  sessionStorage, seçimle localStorage, tek depoda; anahtar Kazuist'e gitmez; maskeli paket tarayıcıdan doğrudan
+  OpenRouter'a, `data_collection: deny`, seçimle `zdr`; tarayıcıda `assertMasked`; verify `save: false`. Aktarma modu
+  arayüzde yok (OzetAlani.tsx yalnız platform); doğrudan Gemini yok, Gemini bölümü yapay-zeka'dan çıktı, acik-riza 3
+  ve 4 "şu anda kullanılmaz".
+- Ödeme kapalı (`odemeAcik`): kosullar 1 ve 5, aydinlatma 2-4, gizlilik 3, yapay-zeka 7 ve iade-ve-kredi girişi;
+  üç PDF metninde yalnız TASLAK notu değişti, gövde ve `pdf_fields` aynı.
+- Barındırma "Almanya"; aydinlatma 5 m.9/4-(c), Standart Sözleşme 2, beş iş günü ve "bildirilmeden kişisel veri
+  işlenmez" koşulu; [DOĞRULANACAK] işareti bilerek açık.
+- docs/kvkk: envanter satır 16, 17, 19 güncellendi, satır 30 BYOK eklendi; aktarim.md:46 "BYOK arayüzü henüz yok"
+  düzeltildi (istemci modu yayında, hukukçu değerlendirmesi işareti), aktarma modu, iyzico ve e-Arşiv satırları;
+  yukumlulukler.md ödeme kapalı yayına göre; app-privacy-taslak.md; yeni `hetzner-standart-sozlesme-bildirimi.md`
+  (Kurul'un Standart Sözleşme 2 PDF'i ve bildirim modülü kılavuzu okundu; Yönetmelik m.14 ve Kanun m.9/5, m.18/1-(d)
+  15 Kasım'da birincil kaynaktan).
+- Doğrulama: hukuk-uyum ajanında kabuk yok; `pnpm test`, `pnpm check:text`, `pnpm build` çalıştırılmadı. Elle:
+  U+2014 ve yasak ifade taraması temiz (Grep), iç içe liste yok (md.ts desteklemiyor), PDF metinlerinde
+  `pdf_fields` gövdede duruyor.
+- Açık: sunucu ucu `byok_aktarma`yı yz_aktarim onayıyla hâlâ kabul ediyor (casuist, yz-gecidi kararı); Hetzner'ın
+  imzalayıp imzalamayacağı; yer tutucular (VKN, vergi dairesi, KEP, yedek ve e-posta sağlayıcısı).
+
 ## 15 Kasım 2026, mimar: sunucu logları tek temizleyiciden geçer, ADR-0039 (arch/shared-safe-error-log)
 
 Orkestra görevi: PR #115'in `apps/web/src/server/auth/log.ts` temizleyicisini ortak yere taşımak, apps/web ve

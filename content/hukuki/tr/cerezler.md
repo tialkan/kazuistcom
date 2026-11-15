@@ -4,14 +4,17 @@ slug: cerezler
 route: /hukuki/cerezler
 lang: tr
 binding: true
-version: 2026-11-12.1
-date: 2026-11-12
+version: 2026-11-15.1
+date: 2026-11-15
 status: taslak
 consent_kind: acik_riza_analitik
 ---
 
-> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 12 Kasım 2026. Tarayıcı depolaması bölümü koddaki anahtarlara göre
-> (apps/web/src/app/pratik/_alan/depo.ts, deneme-oturumu.ts, rehberler/_alan/ilerleme.ts) genişletildi.
+> TASLAK, Tarık onayı bekliyor. Sürüm tarihi: 15 Kasım 2026. Tarayıcı depolaması bölümü dar çekirdekli ilk yayına
+> göre yazıldı (ADR-0038 madde 8). Pratik üretimde gösterilmediği için kazuist.pratik.v1 ve kazuist.pratik.deneme.v1
+> anahtarları tablodan çıkarıldı; modül açıldığında geri eklenir (apps/web/src/app/pratik/_alan/depo.ts,
+> DenemeEkrani.tsx). BYOK satırı koddaki anahtara göre yazıldı (packages/ai-gateway/src/byok/settings.ts
+> `BYOK_STORAGE_ITEM`, `saveByokSettings`).
 
 Dayanak: KVKK ve Kişisel Verileri Koruma Kurumu'nun çerez uygulamalarına ilişkin rehberi
 "Çerez Uygulamaları Hakkında Rehber" (Kurumun internet sitesindeki güncel sürüm: Temmuz 2025, KVKK
@@ -31,21 +34,22 @@ sayfa yeni sürümle onaya sunulur.
 
 ## 2. Tarayıcı depolaması
 
-Bazı özellikler, istediğiniz hizmeti sunmak için tarayıcınızın yerel deposunu (localStorage) kullanır. Bu veriler
-çerez değildir, sunucumuza gönderilmez ve izin gerektirmez; tarayıcı ayarlarınızdan silebilirsiniz.
+Bazı özellikler, istediğiniz hizmeti sunmak için tarayıcınızın oturum deposunu (sessionStorage) veya yerel
+deposunu (localStorage) kullanır. Bu veriler çerez değildir, sunucumuza gönderilmez ve izin gerektirmez; tarayıcı
+ayarlarınızdan silebilirsiniz.
 
-| Anahtar | Ne işe yarar | Ne kadar kalır |
+| Anahtar | Ne işe yarar | Nerede ve ne kadar kalır |
 |---|---|---|
-| kazuist.pratik.v1 | Pratik kartlarındaki ilerlemeniz, tekrar zamanları ve ayarlarınız | Siz silene kadar |
-| kazuist.pratik.deneme.v1 | Yarım kalan HMGS denemesinin durumu | Deneme bitince veya siz silene kadar |
-| kazuist.rehber.v1 | Rehberlerde işaretlediğiniz adımlar | Siz silene kadar |
+| kazuist.rehber.v1 | Rehberlerde işaretlediğiniz adımlar | localStorage; siz silene kadar |
+| kazuist.byok.v1 | Kendi YZ anahtarınız (OpenRouter API anahtarı), seçtiğiniz model ve "gizlilik öncelikli" tercihiniz | Varsayılan olarak sessionStorage; sekmeyi kapatınca silinir. "Bu cihazda hatırla" seçeneğini seçerseniz localStorage; siz "Anahtarı sil" diyene veya tarayıcı verilerini silene kadar |
+
+Kendi anahtarınız yalnız bu tarayıcıda tutulur ve sunucumuza gönderilmez; tarayıcınız onu yalnız OpenRouter'a
+yaptığı isteklerde kullanır. Anahtar aynı anda yalnız bir depoda bulunur: "Bu cihazda hatırla" seçeneğinden
+vazgeçtiğinizde yerel depodaki kopya silinir. Yerel depodaki anahtarı o tarayıcıya erişen herkes kullanabilir;
+ortak kullanılan bir cihazda bu seçeneği seçmeyin.
 
 Yazım kuralları ve iz denetleyicisi (/tespit) tarayıcı deposu kullanmaz; yapıştırdığınız metin sayfayı
 kapattığınızda gider.
-
-Kendi YZ anahtarınızı (BYOK) girme özelliği kullanıma açıldığında anahtar varsayılan olarak yalnız o oturum için
-tarayıcınızda (sessionStorage) tutulur; "bu cihazda hatırla" seçerseniz kalıcı depolamada (localStorage) kalır.
-Anahtar sunucumuza kaydedilmez.
 
 ## 3. Tercih paneli
 
