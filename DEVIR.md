@@ -1,3 +1,26 @@
+## 15 Kasım 2026, casuist ve yz-gecidi: sözleşme v1.6 sonrası süzgeç geçişi ve temizlik (casuist-contract-1-6-filters)
+
+`docs/istekler/mimar-yonlendirme-4-sozlesme-v1-6.md` casuist madde 1-3 ve yz-gecidi madde 1-2. Sözleşme, şema ve
+bağımlılık değişmedi.
+- casuist: `apps/web/src/app/ara/_sunucu/ozet.ts` `preparePost` `PrepareRequest.filters`'ı `search()`'e
+  `POST /v1/answers` ile aynı biçimde geçirir. `hasControlChars` ve iki uçtaki ek satır kalktı (kural artık şemada,
+  `QuestionText`); 400 testi kaldı. `packages/casuist/src/api.ts` `toSearchResponse` dönüş tipi yalnız `SearchResponse`.
+  `/ara` (`page.tsx`, `OzetAlani.tsx`, `_bilesen/byok.ts`) iki özet kipinde de sayfanın süzgeçlerini gönderir;
+  `filtreler` prop tipi `AnswerFilters`.
+- yz-gecidi: `packages/ai-gateway/src/byok/client.ts` `PrepareBody.filters` ve `ByokRunInput.filters`; `setFilters` boş
+  alanları atar, hiç süzgeç yoksa gövde eskisiyle aynıdır. `packages/i18n/tr/byok.json` `ozet.filtre` kaldırıldı.
+  `scrubParts` denetim karakteri silmesi değişmedi.
+- ADR-0001 "en az 12 karakter" diyor, plan ve kod 20: mimara istek `docs/istekler/casuist-adr-0001-alinti-uzunlugu.md`;
+  `validator.ts` yorumundaki eski "12" anlatımı düzeltildi.
+- Doğrulama: web 776 ve 1 atlanan (yeni: prepare süzgeçleri ve platformla aynı kaynaklar, sözleşme dışı süzgeç 400,
+  BYOK uçtan uca süzgeç), ai-gateway 144 ve 3 atlanan (yeni: prepare gövdesinde süzgeç), casuist 119, i18n 23; `pnpm typecheck`, `pnpm lint`,
+  `pnpm check:text`, `pnpm build` yeşil. Playwright `byok.spec.ts` yerel üretim derlemesinde (PostgreSQL 18.6, boş
+  derlem, CI koşulu) 9/9. Süzgeçli BYOK özeti tarayıcıda (fikstür derlem, OpenRouter taklit): prepare gövdesinde
+  süzgeçler, kaynaklar yalnız Kurul kararı, eski not yok; 375, 768, 1440 px ekran görüntüsü, axe ciddi ve kritik 0.
+- Açık: `byok.spec.ts`'in fikstür derlemli dalı (yerel koşu) başarısız, bu PR'dan bağımsız: taklit model alıntıyı
+  pasajın ilk satırından (künye) alıyor, doğrulayıcı künyeden alıntıyı #101 kuralıyla (main'e #106 ile girdi) reddediyor. CI boş derlemle
+  çekimser dalı koşar ve geçer. Dosya kalite-guvenlik'in; `modelReply` künye satırını atlamalı.
+
 ## 15 Kasım 2026, mimar: sözleşme v1.6, migration 0008, ADR-0038 (mimar/sozlesme-v1-6)
 
 Yedi istek tek ADR ve tek sürümle işlendi; yalnız ekler, yıkıcı adım yok; canlı veri tabanına hiçbir şey uygulanmadı.

@@ -55,3 +55,9 @@ tablosuna yazılması istenir:
   kimlik, `ara/_bilesen/byok.ts` casuist, `server/billing/acik.ts` odeme, `tests/e2e/specs/byok.spec.ts`
   kalite-guvenlik satırında kalır (tarihli notla teyit edildi); `server/security-headers.ts` listede olmadığı için
   orkestranındır.
+
+## Uygulama (casuist ve yz-gecidi, 15 Kasım 2026, dal `casuist-contract-1-6-filters`)
+
+`preparePost` süzgeçleri `search()`'e `POST /v1/answers` ile aynı biçimde geçirir; `PrepareBody.filters` ve
+`ByokRunInput.filters` eklendi, boş alanlar `setFilters` ile atılır (hiç süzgeç yoksa gövde eskisi gibi); `/ara`
+iki özet kipinde de sayfanın süzgeçlerini gönderir; `byok.json` `ozet.filtre` notu kaldırıldı.

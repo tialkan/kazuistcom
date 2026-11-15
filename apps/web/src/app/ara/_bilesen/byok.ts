@@ -1,6 +1,6 @@
 import { runByokClient, type ByokClientDeps, type ByokSettings } from '@kazuist/ai-gateway/browser';
 import { createLineValidator, passagesFromPrompt, type LineValidator } from '@kazuist/casuist/validator';
-import type { AnswerEvent } from '@kazuist/contracts';
+import type { AnswerEvent, AnswerFilters } from '@kazuist/contracts';
 import ozet from '@kazuist/i18n/tr/ozet.json';
 
 /**
@@ -32,6 +32,8 @@ export function kazuistDeps(f: Fetch = (i, init) => fetch(i, init)): ByokClientD
 
 export interface ByokOzetInput {
   q: string;
+  /** Search filters of the results page (PrepareRequest.filters), the same as the platform summary sends. */
+  filters?: AnswerFilters;
   settings: ByokSettings;
   emit: (ev: AnswerEvent) => void;
   signal?: AbortSignal;
@@ -60,7 +62,12 @@ export async function byokOzet(input: ByokOzetInput): Promise<ByokOzetResult> {
   let removed: number[] = [];
 
   for await (const ev of runByokClient(
-    { q: input.q, settings: input.settings, ...(input.signal ? { signal: input.signal } : {}) },
+    {
+      q: input.q,
+      settings: input.settings,
+      ...(input.filters ? { filters: input.filters } : {}),
+      ...(input.signal ? { signal: input.signal } : {}),
+    },
     input.deps ?? kazuistDeps(),
   )) {
     if (ev.t === 'hazir') {

@@ -352,10 +352,10 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
         key={`${v.q}|${v.type ?? ''}|${v.from ?? ''}|${v.to ?? ''}|${v.court ?? ''}`}
         q={v.q}
         filtreler={{
-          ...(v.type ? { type: v.type } : {}),
-          ...(v.from ? { from: v.from } : {}),
-          ...(v.to ? { to: v.to } : {}),
-          ...(v.court ? { court: v.court } : {}),
+          ...(parsed.data.type ? { type: parsed.data.type } : {}),
+          ...(parsed.data.from ? { from: parsed.data.from } : {}),
+          ...(parsed.data.to ? { to: parsed.data.to } : {}),
+          ...(parsed.data.court ? { court: parsed.data.court } : {}),
         }}
         girisVar={girisVar}
         girisAdresi={giris}

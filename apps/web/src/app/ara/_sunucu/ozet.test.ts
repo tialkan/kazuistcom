@@ -9,7 +9,7 @@ import {
   type ProviderAdapter,
   type StreamChunk,
 } from '@kazuist/ai-gateway';
-import type { AnswerEvent, ByokProvider } from '@kazuist/contracts';
+import type { AnswerEvent, AnswerFilters, ByokProvider } from '@kazuist/contracts';
 import { api, createHarness, signUp, type Harness } from '@/server/auth/__tests__/harness';
 import { eq } from 'drizzle-orm';
 import { schema } from '@/server/auth/db';
@@ -372,7 +372,64 @@ describe('BYOK client protocol: prepare and verify', () => {
     }
   });
 
-  it('refuses a question with control characters at both summary edges', async () => {
+  it('prepare retrieves with PrepareRequest.filters, exactly like POST /v1/answers', async () => {
+    const Q = 'veri sorumlusu ilgili kişinin şikayeti';
+    const LAW = 'Kişisel Verilerin Korunması Kanunu';
+    const BOARD = 'Kişisel Verileri Koruma Kurulu';
+    const titles = (chips: { title: string }[]) => chips.map((c) => c.title);
+    const prepare = async (q: string, filters?: unknown) => {
+      const res = await post(preparePost, '/v1/answers/prepare', {
+        q,
+        provider: 'openai',
+        model: 'gpt-x',
+        ...(filters ? { filters } : {}),
+      });
+      expect(res.status).toBe(200);
+      return (await res.json()) as { sources: { title: string }[]; prompt: string };
+    };
+    const answerSources = async (q: string, filters: unknown) => {
+      const ev = await events(await post(answersPost, '/v1/answers', { q, filters }));
+      return titles((ev[0] as Extract<AnswerEvent, { t: 'kaynaklar' }>).kaynaklar);
+    };
+
+    // Without filters the law articles (2016) and the board decision (2024) both supply passages.
+    const all = titles((await prepare(Q)).sources);
+    expect(all.some((t) => t.startsWith(LAW))).toBe(true);
+    expect(all.some((t) => t.startsWith(BOARD))).toBe(true);
+
+    // Type filter: only the board decision.
+    const board = titles((await prepare(Q, { type: 'kurul_karari' })).sources);
+    expect(board.length).toBeGreaterThan(0);
+    expect(board.every((t) => t.startsWith(BOARD))).toBe(true);
+    // The platform summary with the same filters picks the same sources (the BYOK note "filtre" is gone).
+    expect(await answerSources(Q, { type: 'kurul_karari' })).toEqual(board);
+
+    // Date filter: from 2024 on the 2016 law drops out, the 2024 and 2025 decisions stay.
+    const recent = await prepare(Q, { from: '2024-01-01' });
+    expect(recent.sources.length).toBeGreaterThan(0);
+    expect(titles(recent.sources).some((t) => t.startsWith(LAW))).toBe(false);
+    expect(recent.prompt).not.toMatch(/tarih="2016-04-07"/);
+    expect(await answerSources(Q, { from: '2024-01-01' })).toEqual(titles(recent.sources));
+
+    // A range that excludes every matching record leaves nothing to summarise, in both modes.
+    expect((await prepare('KVKK m.11', { to: '2015-12-31' })).sources).toEqual([]);
+    expect(await answerSources('KVKK m.11', { to: '2015-12-31' })).toEqual([]);
+  });
+
+  it('refuses filters outside the contract (strict AnswerFilters) with 400', async () => {
+    for (const filters of [{ authority: 'baglayici_norm' }, { from: '15.11.2026' }, { type: 'dilekce' }]) {
+      const res = await post(preparePost, '/v1/answers/prepare', {
+        q: 'KVKK m.11',
+        provider: 'openai',
+        model: 'gpt-x',
+        filters,
+      });
+      expect(res.status).toBe(400);
+    }
+    expect(prompts).toEqual([]);
+  });
+
+  it('refuses a question with control characters at both summary edges (contract QuestionText)', async () => {
     for (const q of ['KVKK m.11 \u0000\u0001 sahte', 'KVKK\u0007 m.11', 'KVKK m.11\u007f']) {
       expect(
         (await post(preparePost, '/v1/answers/prepare', { q, provider: 'openai', model: 'gpt-x' })).status,
@@ -427,11 +484,12 @@ describe('BYOK istemci end to end: browser module against the real prepare and v
     return { kazuist, provider, toKazuist, toProvider };
   }
 
-  async function run(q: string, modelLines: string[]) {
+  async function run(q: string, modelLines: string[], filters?: AnswerFilters) {
     const w = wiring(modelLines);
     const emitted: AnswerEvent[] = [];
     const result = await byokOzet({
       q,
+      ...(filters ? { filters } : {}),
       settings: {
         provider: 'openrouter',
         model: 'anthropic/claude-haiku-5.5',
@@ -471,6 +529,22 @@ describe('BYOK istemci end to end: browser module against the real prepare and v
     expect(userText).not.toMatch(/10000000146|0532 123 45 67/);
     expect(userText).toContain('[KİMLİK NO-1]');
     expect(r.emitted.find((e) => e.t === 'cumle')).toBeTruthy();
+  });
+
+  it('sends the page filters to prepare: the sources come from the filtered records, as in platform mode', async () => {
+    const r = await run('veri sorumlusu ilgili kişinin şikayeti', [SON], {
+      type: 'kurul_karari',
+      from: '2024-01-01',
+    });
+    const prepared = JSON.parse(r.kazuist[0]!.body) as { filters?: unknown };
+    expect(prepared.filters).toEqual({ type: 'kurul_karari', from: '2024-01-01' });
+    const chips = (r.emitted[0] as Extract<AnswerEvent, { t: 'kaynaklar' }>).kaynaklar;
+    expect(chips.length).toBeGreaterThan(0);
+    expect(chips.every((c) => c.title.startsWith('Kişisel Verileri Koruma Kurulu'))).toBe(true);
+    for (const k of r.kazuist) expect(k.body + k.headers).not.toContain(KEY);
+    // Without filters the body stays as before: no filters key at all.
+    const plain = await run('KVKK m.11', [SON]);
+    expect(JSON.parse(plain.kazuist[0]!.body)).not.toHaveProperty('filters');
   });
 
   it('a question carrying the internal separator stops at prepare (400), before any provider call', async () => {
