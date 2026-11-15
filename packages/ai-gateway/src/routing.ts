@@ -42,30 +42,64 @@ export interface Route {
   byokClass: ByokClass;
   maxInputTokens: number;
   maxOutputTokens: number;
+  /** Overall provider deadline for the operation (review.md P8.5), sized to the output limit. */
+  timeoutMs: number;
   batch?: boolean;
 }
 
-/** plan 8.6 */
+/** plan 8.6; deadlines leave room for about 15 output tokens per second plus queueing. */
 export const ROUTES: Record<Operation, Route> = {
-  ozet: { model: MODELS.haiku, byokClass: 'hizli', maxInputTokens: 12_000, maxOutputTokens: 400 },
-  derin_ozet: { model: MODELS.sonnet, byokClass: 'orta', maxInputTokens: 20_000, maxOutputTokens: 1_200 },
+  ozet: {
+    model: MODELS.haiku,
+    byokClass: 'hizli',
+    maxInputTokens: 12_000,
+    maxOutputTokens: 400,
+    timeoutMs: 45_000,
+  },
+  derin_ozet: {
+    model: MODELS.sonnet,
+    byokClass: 'orta',
+    maxInputTokens: 20_000,
+    maxOutputTokens: 1_200,
+    timeoutMs: 90_000,
+  },
   kural_cikarma: {
     model: MODELS.haiku,
     fallbackModel: MODELS.sonnet,
     byokClass: 'orta',
     maxInputTokens: 80_000,
     maxOutputTokens: 3_000,
+    timeoutMs: 180_000,
   },
-  kampus_ozet: { model: MODELS.haiku, byokClass: 'hizli', maxInputTokens: 16_000, maxOutputTokens: 800 },
+  kampus_ozet: {
+    model: MODELS.haiku,
+    byokClass: 'hizli',
+    maxInputTokens: 16_000,
+    maxOutputTokens: 800,
+    timeoutMs: 60_000,
+  },
   atif_cikarma: {
     model: MODELS.haiku,
     byokClass: null,
     maxInputTokens: 20_000,
     maxOutputTokens: 1_500,
+    timeoutMs: 120_000,
     batch: true,
   },
-  kart_editor: { model: MODELS.sonnet, byokClass: null, maxInputTokens: 6_000, maxOutputTokens: 800 },
-  kart_akademisyen: { model: MODELS.haiku, byokClass: 'hizli', maxInputTokens: 3_000, maxOutputTokens: 400 },
+  kart_editor: {
+    model: MODELS.sonnet,
+    byokClass: null,
+    maxInputTokens: 6_000,
+    maxOutputTokens: 800,
+    timeoutMs: 60_000,
+  },
+  kart_akademisyen: {
+    model: MODELS.haiku,
+    byokClass: 'hizli',
+    maxInputTokens: 3_000,
+    maxOutputTokens: 400,
+    timeoutMs: 45_000,
+  },
 };
 
 /** Cheap conservative token estimate (about 3 characters per token for Turkish). */

@@ -4,6 +4,13 @@
  */
 
 /**
+ * Origins the browser may call besides Kazuist itself. BYOK istemci (plan 8.1, K-08) calls the provider straight
+ * from the browser so the key never reaches Kazuist; only OpenRouter is supported in the browser today, so only
+ * its API origin is allowed. Add a provider here only together with its browser support.
+ */
+export const BYOK_CONNECT_ORIGINS = ['https://openrouter.ai'] as const;
+
+/**
  * script-src: nonce + 'strict-dynamic', no 'unsafe-inline' and no 'unsafe-eval' outside development.
  * style-src keeps 'unsafe-inline' because React style attributes cannot carry a nonce; scripts stay strict,
  * which is what protects the BYOK key (plan 5.6/1).
@@ -15,7 +22,7 @@ export function contentSecurityPolicy(nonce: string, dev = false): string {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' blob: data:",
     "font-src 'self'",
-    "connect-src 'self'",
+    `connect-src 'self' ${BYOK_CONNECT_ORIGINS.join(' ')}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

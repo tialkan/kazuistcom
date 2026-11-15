@@ -8,8 +8,9 @@ const KvkkReceipt = z.object({
   receivedAt: z.iso.datetime(),
   dueAt: z.iso.datetime(),
 });
+import { grantPromoIfVerified } from '../auth.ts';
 import { schema } from '../db.ts';
-import { expireEduVerifications, isEduTrEmail } from '../edu.ts';
+import { expireEduVerifications, isEduTrEmail, normalizeEduEmail } from '../edu.ts';
 import {
   authHandler,
   consentsGet,
@@ -25,6 +26,7 @@ import {
   targetProfessionPut,
 } from '../handlers.ts';
 import { eq } from 'drizzle-orm';
+import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
 import { api, authReq, BASE, createHarness, signUp, type Harness } from './harness.ts';
 
 let h: Harness;
@@ -235,5 +237,82 @@ describe('edu.tr verification', () => {
     const after = await body(await meGet(api('/v1/me', token)));
     expect(after.eduVerified).toBe(false);
     expect(after.roles).not.toContain('ogrenci_dogrulanmis');
+  });
+});
+
+describe('one verified account per edu.tr mailbox', () => {
+  const start = (token: string, email: string) =>
+    eduStart(api('/v1/me/edu-verification', token, { method: 'POST', body: JSON.stringify({ email }) }));
+  const confirm = (token: string, code: string) =>
+    eduConfirm(
+      api('/v1/me/edu-verification/confirm', token, { method: 'POST', body: JSON.stringify({ code }) }),
+    );
+
+  it('normalises case, white space, a trailing dot and a sub address', () => {
+    expect(normalizeEduEmail(' Ali+Tez@Ogr.Ornek.EDU.TR. ')).toBe('ali@ogr.ornek.edu.tr');
+    expect(normalizeEduEmail('ali@ornek.edu.tr')).toBe('ali@ornek.edu.tr');
+  });
+
+  it('refuses to send a code for a mailbox verified on another account', async () => {
+    const a = await signUp('tekil-a@example.invalid');
+    const b = await signUp('tekil-b@example.invalid');
+    expect((await start(a.token, 'tekil@ogr.tekil.edu.tr')).status).toBe(204);
+    const code = h.mailer.last('tekil@ogr.tekil.edu.tr', 'edu')?.code ?? '';
+    expect((await confirm(a.token, code)).status).toBe(200);
+
+    const sent = h.mailer.sent.length;
+    for (const variant of ['tekil@ogr.tekil.edu.tr', 'TEKIL+2@Ogr.Tekil.edu.tr']) {
+      const res = await start(b.token, variant);
+      expect(res.status).toBe(400);
+      expect((await body(res)).message).toBe(tr.hata.eduKullanimda);
+    }
+    expect(h.mailer.sent.length).toBe(sent);
+    // The owner can renew on the same account.
+    expect((await start(a.token, 'tekil@ogr.tekil.edu.tr')).status).toBe(204);
+  });
+
+  it('two accounts confirming the same mailbox: only the first is verified', async () => {
+    const a = await signUp('yaris-a@example.invalid');
+    const b = await signUp('yaris-b@example.invalid');
+    expect((await start(a.token, 'yaris@ogr.yaris.edu.tr')).status).toBe(204);
+    const codeA = h.mailer.last('yaris@ogr.yaris.edu.tr', 'edu')?.code ?? '';
+    expect((await start(b.token, 'Yaris+b@ogr.yaris.edu.tr')).status).toBe(204);
+    const codeB = h.mailer.last('yaris+b@ogr.yaris.edu.tr', 'edu')?.code ?? '';
+    const [ra, rb] = await Promise.all([confirm(a.token, codeA), confirm(b.token, codeB)]);
+    expect([ra.status, rb.status].sort()).toEqual([200, 400]);
+    const loser = ra.status === 400 ? ra : rb;
+    expect((await body(loser)).message).toBe(tr.hata.eduKullanimda);
+    const verified = await h.pg.query<{ n: number }>(
+      `select count(distinct user_id)::int as n from edu_verifications where verified_at is not null
+       and email = 'yaris@ogr.yaris.edu.tr'`,
+    );
+    expect(verified.rows[0]?.n).toBe(1);
+  });
+});
+
+describe('sign up promo credits need a verified e-mail', () => {
+  it('no promo at e-mail and password sign up; granted once the e-mail code is verified', async () => {
+    const email = 'promo@example.invalid';
+    const { token } = await signUp(email);
+    const id = (await body(await meGet(api('/v1/me', token)))).id as string;
+    expect(h.hookCalls).not.toContain(`signup:${id}`);
+
+    const send = await authHandler(
+      authReq('/email-otp/send-verification-otp', { email, type: 'email-verification' }),
+    );
+    expect(send.status).toBe(200);
+    const code = h.mailer.last(email, 'email-verification')?.code ?? '';
+    const res = await authHandler(authReq('/email-otp/verify-email', { email, otp: code }));
+    expect(res.status).toBe(200);
+    expect(h.hookCalls.filter((c) => c === `signup:${id}`)).toHaveLength(1);
+  });
+
+  it('a deleted account earns nothing even if verified later', async () => {
+    const { token } = await signUp('promo-silinen@example.invalid');
+    const id = (await body(await meGet(api('/v1/me', token)))).id as string;
+    await h.db.update(schema.users).set({ deletedAt: new Date() }).where(eq(schema.users.id, id));
+    await h.db.update(schema.users).set({ emailVerified: true }).where(eq(schema.users.id, id));
+    expect(await grantPromoIfVerified(h.db, h.ctx.hooks, id)).toBe(false);
+    expect(h.hookCalls).not.toContain(`signup:${id}`);
   });
 });

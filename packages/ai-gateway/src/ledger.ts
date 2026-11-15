@@ -45,9 +45,23 @@ export interface CostEvent {
   outputTokens: number;
   costUsd: number;
   costTl: number;
+  /** Credits the ledger actually took; always equals what the ledger recorded. */
   creditsCharged: number;
+  /** Credits the operation should have cost; differs from creditsCharged only when settlement failed. */
+  creditsDue: number;
+  /** none: no reservation; ok: consume or release went through; failed: the ledger refused or was unreachable. */
+  settlement: 'none' | 'ok' | 'failed';
   reservationId: string | null;
   at: string;
+}
+
+/** Raised to the operator when a reservation could not be settled (review.md P8.5). No content, no key. */
+export interface SettlementFailure {
+  requestId: string;
+  reservationId: string;
+  action: 'consume' | 'release';
+  credits: number;
+  errorKind: string;
 }
 
 type Res = {

@@ -22,6 +22,7 @@
     "cokFazla": "Çok fazla deneme yaptınız. Lütfen biraz sonra yeniden deneyin.",
     "eduDegil": "Lütfen edu.tr uzantılı kurum e-posta adresinizi girin.",
     "kodHatali": "Kod hatalı veya süresi dolmuş.",
+    "eduKullanimda": "Bu kurum e-posta adresi başka bir hesapta doğrulanmış. Her adres yalnız bir hesapta kullanılabilir.",
     "ikinciAdim": "Yönetim paneli için passkey ile giriş ve ikinci adım onayı gerekir.",
     "kaynak": "İstek kaynağı doğrulanamadı.",
     "genel": "Bir sorun oluştu. Lütfen biraz sonra yeniden deneyin."

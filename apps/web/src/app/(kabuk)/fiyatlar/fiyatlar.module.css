@@ -1,3 +1,19 @@
+/* BYOK and payments-off notes (K-08, K-09). */
+.byok,
+.satisKapali {
+  margin-block: var(--kz-space-8);
+  padding: var(--kz-space-6);
+  border: 1px solid var(--kz-color-border);
+  border-radius: var(--kz-radius-md);
+  background: var(--kz-color-surface);
+}
+.byok h2,
+.satisKapali h2 {
+  margin-top: 0;
+}
+.satisKapali {
+  border-left: 4px solid var(--kz-color-warning);
+}
 .mobilePlans {
   display: none;
 }

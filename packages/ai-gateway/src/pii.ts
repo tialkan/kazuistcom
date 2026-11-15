@@ -175,6 +175,46 @@ export async function scrub(text: string, ner?: NameRecognizer): Promise<ScrubRe
   return { text: out, mapping, counts };
 }
 
+/** C0 controls except tab and line breaks, and DEL: meaningless in legal text, removed before scrubbing. */
+// eslint-disable-next-line no-control-regex -- the point is to match control characters
+const CONTROL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
+const PART_SEP = '\u0000\u0001';
+
+export interface ScrubPartsResult {
+  parts: string[];
+  /** Label to original value; keep in request memory only, never persist or log. */
+  mapping: Map<string, string>;
+  counts: Record<string, number>;
+}
+
+/**
+ * Scrubs several texts (question and passages) with one label space, so [KİŞİ-1] means the same person in all
+ * of them. Control characters are stripped first, so a question that contains the internal separator can no
+ * longer shift the passages (review.md P8.5). Names are recognised per part, never across a boundary.
+ */
+export async function scrubParts(parts: readonly string[], ner?: NameRecognizer): Promise<ScrubPartsResult> {
+  const clean = parts.map((p) => p.replace(CONTROL, ''));
+  let perPart: NameRecognizer | undefined;
+  if (ner) {
+    const spans: NameSpan[] = [];
+    let offset = 0;
+    for (const p of clean) {
+      for (const s of await ner.find(p))
+        if (s.start >= 0 && s.end <= p.length && s.end > s.start)
+          spans.push({ start: s.start + offset, end: s.end + offset });
+      offset += p.length + PART_SEP.length;
+    }
+    perPart = { find: () => spans };
+  }
+  const r = await scrub(clean.join(PART_SEP), perPart);
+  const out = r.text.split(PART_SEP);
+  if (out.length !== parts.length) {
+    r.mapping.clear();
+    throw new Error('scrub changed part boundaries');
+  }
+  return { parts: out, mapping: r.mapping, counts: r.counts };
+}
+
 /** Puts original values back into model output, for display to the same user only. */
 export function restore(text: string, mapping: ReadonlyMap<string, string>): string {
   return text.replace(/\[[^\]\n]{1,24}-\d+\]/gu, (tag) => mapping.get(tag) ?? tag);
