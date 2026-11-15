@@ -1,9 +1,9 @@
 """embed.chunks job handler (core/jobs.py contract, EmbedChunksPayload in packages/contracts/src/jobs.ts).
 
 Payload {"recordId": "<uuid>"}, nothing else. Producers: the records trigger of migration 0004 (whenever
-masked_text gets a value) and anon.run. The handler reads records.masked_text only, splits it with the same
-rule as packages/casuist (nlp/chunk.py), embeds the passages when a model is configured and replaces the
-record's chunks. Without a model the chunks are written without vectors: full text search works, the vector
+masked_text gets a value) and anon.run. The handler reads records.masked_text only (plus records.type, so that
+decisions are cut along their sections), splits it with the same rule as packages/casuist (nlp/chunk.py), embeds
+the passages when a model is configured and replaces the record's chunks. Without a model the chunks are written without vectors: full text search works, the vector
 leg reports itself degraded.
 
 jobs.result holds counts and the model id, never text. Logs carry class names only.
@@ -16,7 +16,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence
 
 from core.jobs import ClaimedJob, JobType
 
-from .chunk import Chunk, chunk_text
+from .chunk import SECTIONED_TYPES, Chunk, chunk_text
 from .embedder import Log, PassageEmbedder, embedder_from_env, json_log, valid_vectors
 from .store import EmbedStore, SqlEmbedStore
 
@@ -75,8 +75,8 @@ def make_embed_chunks_handler(
                 "embeddingModel": None,
                 "skipped": "not_servable",
             }
-        masked, digest = loaded
-        chunks = chunk_text(masked)
+        masked, digest, record_type = loaded
+        chunks = chunk_text(masked, sections=record_type in SECTIONED_TYPES)
         vectors, model = embed_chunks(embedder, chunks, log)
         if not store.replace(record_id, digest, chunks, vectors, model):
             return {

@@ -1,5 +1,5 @@
 {
-  "aciklama": "chunkText sınırları (UTF-16 birimi, [başlangıç, bitiş)). packages/casuist/test/chunk-parity.test.ts üretir; services/worker-py/nlp/tests/test_chunk.py aynı sınırları bekler.",
+  "aciklama": "chunkText sınırları (UTF-16 birimi, [başlangıç, bitiş)) ve karar bölümleri. packages/casuist/test/chunk-parity.test.ts üretir; services/worker-py/nlp/tests/test_chunk.py aynı sınırları ve bölümleri bekler. Kararlar (karar, kurul_karari) ve bolumlu örnekler bölümlerle kesilir.",
   "kayitlar": {
     "deb247eb-4308-5dca-b79a-3e5cd4f60f9c": [[0, 255]],
     "95e53b75-27de-50a9-b3e1-724d6c2e0d89": [[0, 255]],
@@ -175,15 +175,17 @@
       [8556, 9232]
     ],
     "4a507e3e-bcaf-5ad4-a6a4-1e740005f558": [
-      [0, 189],
-      [190, 1384],
-      [1385, 1875],
-      [1876, 3072],
-      [3073, 4050],
-      [4051, 5238],
-      [5239, 6293],
-      [6294, 7487],
-      [7488, 7918]
+      [0, 533],
+      [534, 1585],
+      [1586, 1870],
+      [1871, 3065],
+      [3066, 3331],
+      [3332, 4050],
+      [4051, 4890],
+      [4891, 6047],
+      [6048, 6680],
+      [6681, 7525],
+      [7526, 7918]
     ],
     "e8170f3b-6bd9-51a7-adf4-57115df6ebc9": [
       [0, 570],
@@ -226,9 +228,10 @@
       [2433, 2911],
       [2912, 3293],
       [3294, 3522],
-      [3523, 3853],
-      [3854, 4073],
-      [4074, 4433],
+      [3523, 3678],
+      [3679, 3904],
+      [3905, 4133],
+      [4134, 4433],
       [4434, 4852],
       [4853, 5095],
       [5096, 5491],
@@ -246,13 +249,15 @@
       [11140, 11481],
       [11482, 11928],
       [11929, 12417],
-      [12418, 13165]
+      [12418, 12601],
+      [12602, 13165]
     ],
     "c563f64d-74d7-5c42-a10b-bd82b696a285": [
       [0, 83],
       [84, 1268],
       [1269, 2173],
-      [2174, 2759]
+      [2174, 2479],
+      [2480, 2759]
     ],
     "470b146f-2475-5602-99e9-39ea65e8bfe3": [
       [0, 943],
@@ -277,6 +282,90 @@
       [853, 1182],
       [1183, 1385]
     ]
+  },
+  "bolumler": {
+    "8b391725-a550-57ac-9f7c-e5c67b898458": [null, null, null, null, null, null, null, null, null, null],
+    "4a507e3e-bcaf-5ad4-a6a4-1e740005f558": [
+      null,
+      "iddia",
+      "iddia",
+      "surec",
+      "surec",
+      "surec",
+      "iddia",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "hukum"
+    ],
+    "e8170f3b-6bd9-51a7-adf4-57115df6ebc9": [
+      null,
+      null,
+      null,
+      null,
+      "iddia",
+      "iddia",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "hukum",
+      "hukum"
+    ],
+    "6f1765eb-fa26-5f4a-9628-bc40e6769cba": [
+      null,
+      "surec",
+      "surec",
+      "surec",
+      "surec",
+      "surec",
+      "surec",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "hukum"
+    ],
+    "d3be4eab-be3e-5063-b045-b722825ee544": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "gerekce",
+      "hukum"
+    ],
+    "c563f64d-74d7-5c42-a10b-bd82b696a285": [null, null, null, null, "hukum"],
+    "470b146f-2475-5602-99e9-39ea65e8bfe3": [null, null, null, null, null, null],
+    "8ddb73b0-ff75-524b-9acc-28f8bca94ea7": [null, null]
   },
   "ornekler": [
     {
@@ -349,6 +438,43 @@
         [56, 109],
         [110, 136]
       ]
+    },
+    {
+      "ad": "bolumler-satir-basi",
+      "metin": "MAHKEMESİ : Asliye Hukuk Mahkemesi\nDAVA TARİHİ : 01.01.2020\nTEMYİZ EDEN: Davacı vekili\nI. DAVA\nDavacı vekili dava dilekçesinde tazminat istemiştir.\nII. CEVAP\nDavalı vekili davanın reddini istemiştir.\nV. TEMYİZ\nA. Temyiz Sebepleri\nDavacı vekili kararın bozulmasını istemiştir.\nC. Gerekçe\nSomut olayda kişilik hakkı zedelenmiştir.\nVI. KARAR\nAçıklanan sebeplerle kararın BOZULMASINA karar verildi.\nKARŞI OY\nSayın çoğunluğun görüşüne katılmıyorum.\nKarşı oy:\nEk görüş.\nSonuç olarak bu satır başlık değildir.",
+      "max": 400,
+      "min": 60,
+      "bolumlu": true,
+      "parcalar": [
+        [0, 86],
+        [87, 147],
+        [148, 199],
+        [200, 275],
+        [276, 328],
+        [329, 394],
+        [395, 443],
+        [444, 502]
+      ],
+      "bolumler": [null, "iddia", "iddia", "iddia", "gerekce", "hukum", "karsi_oy", "karsi_oy"]
+    },
+    {
+      "ad": "bolumler-satir-ici",
+      "metin": "Bölge Adliye Mahkemesi kararı temyiz edilmekle incelendi. I. DAVA Davacı vekili tazminat istemiştir. II. CEVAP Davalı vekili reddini istemiştir. III. İLK DERECE MAHKEMESİ KARARI Mahkemece dava kabul edilmiştir. V. TEMYİZ A. Temyiz Sebepleri Davacı vekili bozma istemiştir. B. Değerlendirme ve Gerekçe Uyuşmazlık kişilik hakkına ilişkindir. 2. Daire Kararı ile değil. VI. KARAR Açıklanan sebeplerle ONANMASINA karar verildi. SONUÇ:Kesin olarak. KARŞI OY Çoğunluğa katılmıyorum. DAVA TARİHİ 2020.",
+      "max": 1200,
+      "min": 200,
+      "bolumlu": true,
+      "parcalar": [
+        [0, 57],
+        [58, 100],
+        [101, 144],
+        [145, 210],
+        [211, 272],
+        [273, 366],
+        [367, 423],
+        [424, 443],
+        [444, 494]
+      ],
+      "bolumler": [null, "iddia", "iddia", "surec", "iddia", "gerekce", "hukum", "hukum", "karsi_oy"]
     },
     {
       "ad": "bos",

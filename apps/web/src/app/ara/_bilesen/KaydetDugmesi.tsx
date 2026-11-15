@@ -10,11 +10,14 @@ type Durum = 'bos' | 'gonderiliyor' | 'kaydedildi' | 'hata' | 'giris';
 export function KaydetDugmesi({
   recordId,
   girisVar,
+  girisAdresi = '/giris',
   baslik,
   baslikId,
 }: {
   recordId: string;
   girisVar: boolean;
+  /** Sign in link that returns to this search. */
+  girisAdresi?: string;
   baslik: string;
   /** Id of the card title, so every Save button is announced with its record. */
   baslikId: string;
@@ -24,7 +27,7 @@ export function KaydetDugmesi({
 
   if (durum === 'giris')
     return (
-      <a className={styles.eylem} href="/giris" aria-describedby={baslikId}>
+      <a className={styles.eylem} href={girisAdresi} aria-describedby={baslikId}>
         {ara.sonuc.kaydetGiris}
       </a>
     );

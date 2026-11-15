@@ -1,5 +1,6 @@
 import type { AuthorityClass, RecordStatus, RecordType, SourceChip } from '@kazuist/contracts';
 import type { SearchBackend } from '../backend.ts';
+import { CHUNK_SECTIONS, type ChunkSection } from '../chunk.ts';
 import type { ParsedQuery } from '../query.ts';
 import type { RankedRecord } from '../search.ts';
 import type { Chunk, CorpusRecord } from '../types.ts';
@@ -17,8 +18,12 @@ export interface PromptPassage extends ValidatorPassage {
   date: string | null;
   /** yyyy-mm-dd of fetchedAt, the veri_gunu attribute. */
   dataDay: string;
-  /** Künye line plus the passage text; this exact text is what the model sees and what quotes are checked in. */
+  /** Künye line plus the passage text; this exact text is what the model sees and what numbers are checked in. */
   text: string;
+  /** The passage text without the künye line; quotes are checked in this part only. */
+  body: string;
+  /** Decision section of the passage (chunks.section), also written into the künye line for the model. */
+  section: ChunkSection | null;
   /** Offsets of the passage body in the full record text, for "Dayanağı göster" (FR-82). */
   charStart: number;
   charEnd: number;
@@ -54,15 +59,44 @@ const fmtDate = (iso: string | null): string | null => {
   return y && m && d ? `${d}.${m}.${y}` : null;
 };
 
-/** Citation line (künye) put above every passage, so numbers in the citation are part of the checked text. */
-export function kunye(r: CorpusRecord): string {
+/** Section names as written in the künye line ("Bölüm: karşı oy"); the prompt is Turkish data, not UI text. */
+export const SECTION_LABELS: Record<ChunkSection, string> = {
+  iddia: 'iddia ve savunma',
+  surec: 'yargılama süreci',
+  gerekce: 'gerekçe',
+  hukum: 'hüküm',
+  karsi_oy: 'karşı oy',
+};
+
+const SECTION_MARK = / \(Bölüm: ([^()]+)\)$/u;
+
+/**
+ * Citation line (künye) put above every passage, so numbers in the citation are part of the checked text. A
+ * passage from a labelled decision section says so ("(Bölüm: karşı oy)"), so the model can phrase a dissent or a
+ * party's claim as such and passagesFromPrompt can recover the section from a signed prompt.
+ */
+export function kunye(r: CorpusRecord, section: ChunkSection | null = null): string {
+  let head: string;
   if (r.type === 'mevzuat') {
     const no = r.normRefs[0]?.kanunNo;
-    return no && /^\d+$/.test(no) && !r.title.includes(no) ? `${no} sayılı ${r.title}` : r.title;
+    head = no && /^\d+$/.test(no) && !r.title.includes(no) ? `${no} sayılı ${r.title}` : r.title;
+  } else {
+    const date = fmtDate(r.date);
+    head = date && !r.title.includes(date) ? `${r.title} T. ${date}` : r.title;
   }
-  const date = fmtDate(r.date);
-  return date && !r.title.includes(date) ? `${r.title} T. ${date}` : r.title;
+  // One line: the first line of a passage is the künye, the rest is the quotable body.
+  head = head.replace(/\s+/g, ' ').trim();
+  return section ? `${head} (Bölüm: ${SECTION_LABELS[section]})` : head;
 }
+
+/** Section named by the künye line of a passage, or null. */
+export function sectionOfKunye(line: string): ChunkSection | null {
+  const label = SECTION_MARK.exec(line)?.[1];
+  return CHUNK_SECTIONS.find((s) => SECTION_LABELS[s] === label) ?? null;
+}
+
+const asSection = (s: string | null): ChunkSection | null =>
+  s && (CHUNK_SECTIONS as readonly string[]).includes(s) ? (s as ChunkSection) : null;
 
 const clip = (s: string, max: number): string => {
   if (s.length <= max) return s;
@@ -106,7 +140,8 @@ export async function selectPassages(
     ];
     for (const c of list) {
       if (!c) continue;
-      const head = kunye(r.record);
+      const section = asSection(c.section);
+      const head = kunye(r.record, section);
       const body = clip(c.text, o.maxPassageChars);
       const text = `${head}\n${body}`;
       if (text.length > budget) break;
@@ -122,6 +157,8 @@ export async function selectPassages(
         fetchedAt: r.record.fetchedAt,
         dataDay: r.record.fetchedAt.slice(0, 10),
         text,
+        body,
+        section,
         charStart: c.charStart,
         charEnd: c.charStart + body.length,
         sourceUrl: r.record.sourceUrl,
@@ -148,20 +185,26 @@ export function sourceChips(passages: readonly PromptPassage[]): SourceChip[] {
 const ATTR = /(\w+)="([^"]*)"/g;
 
 /**
- * Reads the passages back from a signed prompt (Ek D.1 format) for /v1/answers/verify. The prompt is trusted
- * because its HMAC was checked; the passage text is exactly what the model saw.
+ * Reads the passages back from a signed prompt (Ek D.1 format) for /v1/answers/verify and the BYOK client. The
+ * prompt is trusted because its HMAC was checked; the passage text is exactly what the model saw. Its first line
+ * is the künye (selectPassages), so the body after it is the quotable part and a "(Bölüm: ...)" mark gives the
+ * section.
  */
 export function passagesFromPrompt(prompt: string): ValidatorPassage[] {
   const out: ValidatorPassage[] = [];
   for (const m of prompt.matchAll(/<kaynak ([^>]*)>\n([\s\S]*?)\n<\/kaynak>/g)) {
     const attrs = Object.fromEntries([...(m[1] ?? '').matchAll(ATTR)].map((a) => [a[1], a[2]]));
     if (!attrs.id) continue;
+    const text = m[2] ?? '';
+    const cut = text.indexOf('\n');
     out.push({
       id: attrs.id,
-      text: m[2] ?? '',
+      text,
+      body: cut >= 0 ? text.slice(cut + 1) : text,
       authority: (attrs.otorite ?? 'emsal_sinirli') as AuthorityClass,
       status: (attrs.durum ?? 'bilinmiyor') as RecordStatus,
       fetchedAt: attrs.veri_gunu ? `${attrs.veri_gunu}T00:00:00.000Z` : null,
+      section: cut >= 0 ? sectionOfKunye(text.slice(0, cut)) : null,
     });
   }
   return out;

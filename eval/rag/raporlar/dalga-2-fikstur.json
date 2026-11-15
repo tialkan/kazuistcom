@@ -40,7 +40,7 @@
     {
       "olcut": "Arama p95",
       "esik": "1,5 sn ve altı",
-      "deger": "4.0 ms (p50 2.7 ms)",
+      "deger": "3.9 ms (p50 2.8 ms)",
       "durum": "olculmedi",
       "not": "Bellek içi fikstür süresidir; PostgreSQL, embedding servisi ve 200 eşzamanlı istekle (k6) ölçülmedi."
     },
@@ -303,7 +303,7 @@
     },
     {
       "id": "u02",
-      "ustIlgililik": 0.306,
+      "ustIlgililik": 0.308,
       "ustEtiket": "ilgililik_orta"
     },
     {
@@ -323,7 +323,7 @@
     },
     {
       "id": "u06",
-      "ustIlgililik": 0.46,
+      "ustIlgililik": 0.48,
       "ustEtiket": "ilgililik_orta"
     },
     {
@@ -333,7 +333,7 @@
     },
     {
       "id": "u08",
-      "ustIlgililik": 0.286,
+      "ustIlgililik": 0.258,
       "ustEtiket": "ilgililik_arka_plan"
     },
     {
@@ -354,18 +354,36 @@
   ],
   "dogrulayici": {
     "saldiri": {
-      "uydurmaKimlik": 0,
-      "sahteAlinti": 0,
-      "dayanaksizSayi": 0,
-      "kisiAdi": 0,
-      "toplam": 144
+      "gecen": {
+        "uydurmaKimlik": 0,
+        "sahteAlinti": 0,
+        "dayanaksizSayi": 0,
+        "kisiAdi": 0,
+        "kunyeAlinti": 0,
+        "sayiKelime": 0,
+        "eklenenOlumsuzluk": 0,
+        "dusenOlumsuzluk": 0
+      },
+      "deneme": {
+        "uydurmaKimlik": 36,
+        "sahteAlinti": 36,
+        "dayanaksizSayi": 36,
+        "kisiAdi": 36,
+        "kunyeAlinti": 36,
+        "sayiKelime": 36,
+        "eklenenOlumsuzluk": 34,
+        "dusenOlumsuzluk": 33
+      }
     },
     "birebirKabul": 36,
-    "birebirToplam": 36
+    "birebirToplam": 36,
+    "cumleKabul": 67,
+    "cumleToplam": 67,
+    "cumleRet": {}
   },
   "aramaSureleriMs": {
-    "p50": 2.6716670000000136,
-    "p95": 4.035957999999994,
-    "en": 7.5899579999999816
+    "p50": 2.7900840000000358,
+    "p95": 3.853166999999985,
+    "en": 7.450166999999993
   }
 }

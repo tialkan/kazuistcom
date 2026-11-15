@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   kunye,
   passagesFromPrompt,
+  sectionOfKunye,
   selectPassages,
   sourceChips,
   STANDARD_SELECTION,
@@ -42,7 +43,13 @@ describe('passage selection (plan 7.4/1)', () => {
     expect(ps.length).toBeLessThanOrEqual(20);
     expect(ps.map((p) => p.id)).toEqual(ps.map((_, i) => `K${i + 1}`));
     for (const p of ps) {
-      expect(p.text.split('\n')[0]).toBe(kunye(fixtureRecords().find((r) => r.id === p.recordId)!));
+      expect(p.text.split('\n')[0]).toBe(
+        kunye(
+          fixtureRecords().find((r) => r.id === p.recordId)!,
+          p.section,
+        ),
+      );
+      expect(p.text).toBe(`${p.text.split('\n')[0]}\n${p.body}`);
       expect(p.dataDay).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     }
     expect(ps.reduce((s, p) => s + p.text.length, 0)).toBeLessThanOrEqual(STANDARD_SELECTION.maxChars);
@@ -61,18 +68,43 @@ describe('passage selection (plan 7.4/1)', () => {
       {
         id: 'K1',
         text: 'satır bir\nsatır iki',
+        body: 'satır iki',
         authority: 'baglayici_norm',
         status: 'yururlukte',
         fetchedAt: '2026-11-07T00:00:00.000Z',
+        section: null,
       },
       {
         id: 'K2',
         text: 'karar metni',
+        body: 'karar metni',
         authority: 'emsal',
         status: 'bilinmiyor',
         fetchedAt: '2026-10-01T00:00:00.000Z',
+        section: null,
       },
     ]);
+  });
+
+  it('marks the decision section in the citation line and reads it back from the prompt', () => {
+    const rec = fixtureRecords().find((r) => r.esasNo === '2018/20')!;
+    expect(kunye(rec, 'karsi_oy')).toBe(`${kunye(rec)} (Bölüm: karşı oy)`);
+    expect(sectionOfKunye(kunye(rec, 'iddia'))).toBe('iddia');
+    expect(sectionOfKunye(kunye(rec))).toBeNull();
+    const prompt = `<kaynak id="K1" tur="karar" otorite="baglayici_karar" durum="bilinmiyor" tarih="" veri_gunu="2026-11-07">\n${kunye(rec, 'karsi_oy')}\nÇoğunluğun görüşüne katılmıyorum.\n</kaynak>`;
+    expect(passagesFromPrompt(prompt)[0]).toMatchObject({
+      section: 'karsi_oy',
+      body: 'Çoğunluğun görüşüne katılmıyorum.',
+    });
+  });
+
+  it('labels passages of sectioned decisions', async () => {
+    const ps = await passagesFor('unutulma hakkı kanun yararına bozma');
+    const decision = ps.filter((p) => p.type === 'karar');
+    expect(decision.length).toBeGreaterThan(0);
+    expect(decision.some((p) => p.section !== null)).toBe(true);
+    for (const p of decision.filter((x) => x.section))
+      expect(p.text.split('\n')[0]).toMatch(/ \(Bölüm: [^)]+\)$/);
   });
 });
 

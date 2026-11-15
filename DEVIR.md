@@ -1,3 +1,47 @@
+## 15 Kasım 2026, casuist: dış inceleme düzeltmeleri, doğrulayıcı, karar bölümleri, AND öncelikli arama (casuist/inceleme-dogrulayici-arama)
+
+Orkestra görevi: dış incelemenin beş maddesi. `packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+Komşu işler: `docs/istekler/casuist-arama-kalitesi.md` (mimar `degraded` alanı, veri-toplama AB satırları,
+yz-gecidi ve plan Ek D metni, altyapı CI adımı).
+- Doğrulayıcı (`packages/casuist/src/answer/`): alıntı künye satırından değil pasaj gövdesinden (`body`); sayı
+  denetimi künyeyi kapsamaya devam eder. `MIN_QUOTE_CHARS` 12'den 20'ye (ölçüm `eval/rag/alinti.ts`, rapor
+  `eval/rag/raporlar/alinti-esigi.md`: 12'de %14,5, 16'da %10,0, 20'de %6,6, 24'te %5,1, 32'de %3,8 genel alıntı;
+  dirsek 20, alıntılanamayan yalnız "III. Tazminat" gibi başlık parçaları). Yazıyla sayı ve birim
+  (`quantities.ts`: bir..doksan, yüz, bin, milyon, milyar, birleşik "onbeş", gün/ay/yıl/iş günü/yüzde/lira ...):
+  aynı değer ve birim gerekir, "15 gün" ile "on beş gün" birbirini karşılar, "on beş gün" ile "otuz gün" düşer.
+  Olumsuzluk (`negation.ts`, ret nedeni `olumsuzluk`): -mA- eki ünlü uyumuyla (kararname, komedi dışarıda),
+  -mAzlIk adları, "işlenip işlenmediğini" ve "yok edilir" olumsuz sayılmaz; alıntı kelime sonuna ve ardından gelen
+  "değil/yok"a uzatılır; eklenen, düşen ve fiil bazında çevrilen (-AmAz/-Abilir) olumsuzluk düşer. Durumu
+  değişti, yürürlükten kalktı ya da bozuldu olan kaynakta `guncellik` uyarısı her zaman (ozet.json metni
+  güncellendi).
+- Karar bölümleri: `chunk.ts` ve `services/worker-py/nlp/chunk.py` (ikisi de casuist'in) karar ve kurul kararında
+  başlıkları tanır (satır başında ve satırı birleşmiş metinlerde cümle sonundan sonra numaralı başlık): `iddia`,
+  `surec`, `gerekce`, `hukum`, `karsi_oy`. Başlık yeni parça başlatır; yalnız başlık olan satır sonrakine katılır.
+  `parcalar.json` bölümlerle yeniden üretildi, Python eşliği testte. Worker kayıt türünü okur (`READ_SQL`
+  `type::text`). İddia, süreç ve karşı oy pasajı bağlayıcı kayıttan gelse de cümleyi tek başına bağlayıcı yapmaz
+  (`bindingPassage`, `destekleyici`); bölüm künyede "(Bölüm: karşı oy)" olarak modele ve imzalı isteme geçer.
+- EUR-Lex: `connectors/eurlex.py` `karsilastirmali` (veri-toplama yolu, orkestra talimatıyla tek satır ve test).
+  Eski satırlar upsert ile düzelmediği için casuist `SERVED_AUTHORITY`/`servedAuthority` ile AB ve yabancı kayıtları
+  etikette ve otorite süzgecinde karşılaştırmalı sunar (doktrin hariç); canlı kaynak kayıtlarına da uygulanır.
+- Arama: `sql.ts` tam metin kolu önce `websearch_to_tsquery('turkish')` (AND, tırnaklı ifade korunur, operatör
+  geçmez), 5 kayıttan azsa OR sorgusu eklenir (`OR_FALLBACK_BELOW`, ölçüm için `fullText: 'or'`). `degraded`
+  `/v1/search` yanıtında (boş değilken) ve `/ara`'da "Kısıtlı arama" notu (`KisitliArama.tsx`).
+- `/ara`: özet ve Kaydet giriş bağlantıları `/giris?sonra=` ile aynı aramaya döner (`donusAdresi`: safeNext'in
+  kabul ettiği katı yüzde kodlama, 200 karakter sınırı); taranan kaynaklar listesinde Yargıtay yok (bağlayıcısı
+  yok), Rekabet ve OpenAlex/Crossref eklendi, fikstür kipinde fikstür içeriği yazılır; meta açıklaması mahkeme
+  kararı iddia etmiyor.
+- Ölçüm (50 soruluk set, fikstür): getirme ilk 10 %100 (36/36) önce ve sonra; birebir satır 36/36; ilk üç pasajın
+  ilk cümlesi birebir 67/67 (önce 69/69, parça sınırları değişti). Yeni saldırılar önceki kodda 139/283 satır
+  gösterdi (künyeden alıntı 36/36, yazıyla sayı 36/36, eklenen olumsuzluk 34/34, düşen olumsuzluk 33/33), şimdi
+  0/283. PostgreSQL (PGlite) üzerinde OR ve AND öncelikli: recall@10 1,0 ve MRR@10 0,905 aynı; 36 sorunun hiçbirinde
+  AND tek başına 5 kayda ulaşmadı (75 kayıtlık derlem), yani bu sette etki ölçülemedi; gerçek corpus ölçülmedi.
+- Test: casuist 118, web 675/1 skip (yeni: giriş dönüşü, Kısıtlı arama, AND öncelikli, AB otoritesi, set-50
+  PostgreSQL), worker-py 312/10 skip, enjeksiyon 60/60; typecheck, lint, check:text, build yeşil. Yerel üretim
+  derlemesinde (fikstür) `/ara` 375/768/1440 axe ihlali 0; dönüş bağlantısı `/giris` sayfasına safeNext'ten geçerek
+  ulaşıyor. "Kısıtlı arama" notu fikstürde görünmez (fikstürün vektör kolu var); render testiyle doğrulandı.
+- Açık: plan Ek D metni ve model talimatı yeni kurallara göre (istek madde 3), üretimde AB satırlarının veri
+  düzeltmesi (Tarık onayı), `degraded` sözleşme alanı, olc.ts'in CI adımı.
+
 ## 15 Kasım 2026, yz-gecidi: BYOK arayüzü, ödeme kapalı yayın, geçit zaman aşımı ve uzlaşma (yz-gecidi/byok-arayuz-odeme-kapali)
 
 Orkestra görevi: review.md P8 madde 4 ve 5, plan K-08, K-09, FR-84, 8. bölüm. `packages/contracts` ve `packages/db`

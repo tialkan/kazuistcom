@@ -27,7 +27,16 @@ function kunye(r: RankedRecord): string[] {
 }
 
 /** Result card of FR-11: type, labels, authority (FR-81), title, citation, why relevant, excerpt, actions. */
-export function SonucKarti({ r, girisVar }: { r: RankedRecord; girisVar: boolean }) {
+export function SonucKarti({
+  r,
+  girisVar,
+  girisAdresi,
+}: {
+  r: RankedRecord;
+  girisVar: boolean;
+  /** Sign in link that returns to this search. */
+  girisAdresi?: string;
+}) {
   const x = r.record;
   const yil = x.date?.slice(0, 4);
   const baslikId = `sonuc-baslik-${x.id}`;
@@ -72,7 +81,13 @@ export function SonucKarti({ r, girisVar }: { r: RankedRecord; girisVar: boolean
           <span className="kz-gorunmez">: {doldur(ara.sonuc.kaynagaGitEtiket, { baslik: x.title })}</span>
         </a>
         {x.liveOnly ? null : (
-          <KaydetDugmesi recordId={x.id} girisVar={girisVar} baslik={x.title} baslikId={baslikId} />
+          <KaydetDugmesi
+            recordId={x.id}
+            girisVar={girisVar}
+            baslik={x.title}
+            baslikId={baslikId}
+            {...(girisAdresi ? { girisAdresi } : {})}
+          />
         )}
       </div>
     </article>
