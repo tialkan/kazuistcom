@@ -132,13 +132,17 @@ export const eduStart = withAuth({ rate: rules.eduUser }, async (req, p, ctx) =>
     body.data.email,
     ctx.now(),
   );
-  return r === 'not_edu' ? apiError('bad_request', tr.hata.eduDegil) : noContent();
+  if (r === 'not_edu') return apiError('bad_request', tr.hata.eduDegil);
+  // Contract v1.1 lists 400 only: a mailbox verified on another account is a bad request with its own text.
+  if (r === 'taken') return apiError('bad_request', tr.hata.eduKullanimda);
+  return noContent();
 });
 
 export const eduConfirm = withAuth({ rate: rules.meUser }, async (req, p, ctx) => {
   const body = EduVerificationConfirm.safeParse(await readJson(req));
   if (!body.success) return apiError('bad_request');
   const r = await confirmEduVerification(ctx.db, ctx.config.secret, p.userId, body.data.code, ctx.now());
+  if (r === 'taken') return apiError('bad_request', tr.hata.eduKullanimda);
   return r === 'verified' ? json(await getMe(ctx, p.userId)) : apiError('bad_request', tr.hata.kodHatali);
 });
 

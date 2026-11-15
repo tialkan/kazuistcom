@@ -10,10 +10,12 @@ import {
 } from '@kazuist/ai-gateway';
 import type { AnswerEvent, ByokProvider } from '@kazuist/contracts';
 import { api, createHarness, signUp, type Harness } from '@/server/auth/__tests__/harness';
+import { eq } from 'drizzle-orm';
 import { schema } from '@/server/auth/db';
 import { MemoryRateLimitStore, RateLimiter } from '@/server/auth/rate-limit';
+import { byokOzet, kazuistDeps } from '../_bilesen/byok.ts';
 import { setSearchDeps } from './baglam.ts';
-import { buildSummaryDeps, setSummaryDeps, type SummaryDeps } from './gecit.ts';
+import { buildSummaryDeps, GatewayConfigError, setSummaryDeps, type SummaryDeps } from './gecit.ts';
 import { answersPost, preparePost, verifyPost } from './ozet.ts';
 
 /**
@@ -116,6 +118,8 @@ beforeAll(async () => {
   token = (await signUp('ozet@example.com')).token;
   const [u] = await h.db.select({ id: schema.users.id }).from(schema.users);
   userId = u!.id;
+  // The free allowance needs a verified e-mail (kimlik); the unverified case has its own test.
+  await h.db.update(schema.users).set({ emailVerified: true }).where(eq(schema.users.id, userId));
 }, 60_000);
 afterAll(() => {
   setSummaryDeps(undefined);
@@ -191,6 +195,13 @@ describe('POST /v1/answers', () => {
     // Still free: the three abstentions did not use the allowance.
     expect(ev.at(-1)).toMatchObject({ creditsCharged: 0 });
     expect(ledger.reservations.size).toBe(0);
+  });
+
+  it('gives no free summary to an account whose e-mail is not verified; it pays with credits', async () => {
+    const other = (await signUp('dogrulanmamis@example.com')).token;
+    const ev = await events(await post(answersPost, '/v1/answers', { q: 'KVKK m.11' }, other));
+    expect(ev.at(-1)).toMatchObject({ t: 'son', creditsCharged: 2 });
+    expect([...ledger.reservations.values()].map((r) => [r.state, r.charged])).toEqual([['consumed', 2]]);
   });
 
   it('gives edu.tr verified users five free summaries', async () => {
@@ -297,5 +308,115 @@ describe('BYOK client protocol: prepare and verify', () => {
       lines: [],
     });
     expect(res.status).toBe(400);
+  });
+});
+
+describe('BYOK istemci end to end: browser module against the real prepare and verify handlers', () => {
+  /** Made up key; real keys are never written anywhere (CLAUDE.md). */
+  const KEY = 'sk-or-v1-test-1111111111111111111111111111111111';
+
+  function wiring(modelLines: string[]) {
+    const kazuist: { path: string; body: string; headers: string }[] = [];
+    const provider: { url: string; headers: Record<string, string>; body: string }[] = [];
+    const toKazuist = async (path: string, init: RequestInit) => {
+      kazuist.push({ path, body: String(init.body), headers: JSON.stringify(init.headers) });
+      const handler = path.endsWith('/prepare') ? preparePost : verifyPost;
+      return post(handler, path.replace('/api', ''), JSON.parse(String(init.body)));
+    };
+    const toProvider = async (url: string, init: RequestInit) => {
+      provider.push({ url, headers: init.headers as Record<string, string>, body: String(init.body) });
+      const frames = modelLines
+        .map((l) => `data: ${JSON.stringify({ choices: [{ delta: { content: `${l}\n` } }] })}\n\n`)
+        .join('');
+      return new Response(`${frames}data: [DONE]\n\n`);
+    };
+    return { kazuist, provider, toKazuist, toProvider };
+  }
+
+  async function run(q: string, modelLines: string[]) {
+    const w = wiring(modelLines);
+    const emitted: AnswerEvent[] = [];
+    const result = await byokOzet({
+      q,
+      settings: {
+        provider: 'openrouter',
+        model: 'anthropic/claude-haiku-5.5',
+        apiKey: KEY,
+        zdr: false,
+        persistence: 'oturum',
+      },
+      emit: (e) => emitted.push(e),
+      deps: { ...kazuistDeps(w.toKazuist), fetch: w.toProvider },
+    });
+    return { ...w, emitted, result };
+  }
+
+  it('shows validated sentences, keeps the key away from Kazuist and burns the nonce with verify', async () => {
+    const r = await run('KVKK m.11 kapsamındaki haklar nelerdir?', [GOOD, FAKE_QUOTE, SON]);
+    expect(r.emitted.map((e) => e.t)).toEqual(['kaynaklar', 'uyari', 'uyari', 'cumle', 'son']);
+    expect(r.emitted.find((e) => e.t === 'cumle')).toMatchObject({ index: 0, kaynaklar: ['K1'] });
+    expect(r.emitted.at(-1)).toMatchObject({ t: 'son', creditsCharged: 0, droppedLines: 1 });
+    expect(r.result.removed).toEqual([]);
+    expect(r.kazuist.map((k) => k.path)).toEqual(['/api/v1/answers/prepare', '/api/v1/answers/verify']);
+    for (const k of r.kazuist) expect(k.body + k.headers).not.toContain(KEY);
+    expect(r.provider).toHaveLength(1);
+    expect(r.provider[0]!.url).toBe('https://openrouter.ai/api/v1/chat/completions');
+    expect(r.provider[0]!.headers.authorization).toBe(`Bearer ${KEY}`);
+    expect(JSON.parse(r.provider[0]!.body).provider).toEqual({ data_collection: 'deny' });
+    // No platform credit was reserved.
+    expect(ledger.reservations.size).toBe(0);
+    // verify consumed the single use nonce.
+    const verifyBody = JSON.parse(r.kazuist[1]!.body) as { nonce: string; signature: string };
+    expect((await post(verifyPost, '/v1/answers/verify', { ...verifyBody, lines: [] })).status).toBe(410);
+  });
+
+  it('masks personal identifiers before the provider sees them; a separator in the question shifts nothing', async () => {
+    const r = await run('KVKK m.11 \u0000\u0001 T.C. 10000000146 numaralı başvurum, tel 0532 123 45 67', [
+      GOOD,
+      SON,
+    ]);
+    const sent = JSON.parse(r.provider[0]!.body) as { messages: { content: string }[] };
+    const userText = sent.messages[1]!.content;
+    expect(userText).not.toMatch(/10000000146|0532 123 45 67/);
+    expect(userText).toContain('[KİMLİK NO-1]');
+    expect(r.emitted.find((e) => e.t === 'cumle')).toBeTruthy();
+  });
+
+  it('abstains when the model gives no supported sentence, and still charges nothing', async () => {
+    const r = await run('KVKK m.11', ['{"t":"yetersiz","neden":"x"}', SON]);
+    expect(r.emitted.map((e) => e.t)).toEqual(['kaynaklar', 'uyari', 'uyari', 'cekimser', 'son']);
+    expect(r.emitted.find((e) => e.t === 'cekimser')).toMatchObject({ neden: 'kaynak_yetersiz' });
+    expect(r.emitted.at(-1)).toMatchObject({ creditsCharged: 0 });
+  });
+});
+
+describe('production configuration (review.md P8.5)', () => {
+  const prod = { NODE_ENV: 'production', BETTER_AUTH_SECRET: 'x'.repeat(32) };
+
+  it('refuses in-process counters and nonces in production instead of falling back silently', () => {
+    expect(() => buildSummaryDeps({}, prod)).toThrow(GatewayConfigError);
+    expect(() => buildSummaryDeps({}, { NODE_ENV: 'production' })).toThrow(/VALKEY_URL, BETTER_AUTH_SECRET/);
+    expect(() =>
+      buildSummaryDeps({ counters: new MemoryCounterStore(), nonces: new MemoryNonceStore() }, prod),
+    ).not.toThrow();
+    expect(() => buildSummaryDeps({}, { NODE_ENV: 'development' })).not.toThrow();
+  });
+
+  it('the summary endpoints answer 503 rather than run on memory counters', async () => {
+    setSummaryDeps(undefined);
+    const env = process.env as Record<string, string | undefined>;
+    const before = env.NODE_ENV;
+    env.NODE_ENV = 'production';
+    delete env.VALKEY_URL;
+    try {
+      const res = await post(preparePost, '/v1/answers/prepare', {
+        q: 'KVKK m.11',
+        provider: 'openrouter',
+        model: 'a/b',
+      });
+      expect(res.status).toBe(503);
+    } finally {
+      env.NODE_ENV = before;
+    }
   });
 });

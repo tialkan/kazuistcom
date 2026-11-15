@@ -18,6 +18,7 @@ import {
   type Ton,
 } from '../_cekirdek/ozet.ts';
 import { KalemcikYuzu, type Yuz } from './KalemcikYuzu.tsx';
+import { SakinKoc } from './SakinKoc.tsx';
 import styles from '../kalemcik.module.css';
 
 interface Proje {
@@ -217,7 +218,7 @@ export function Kalemcik() {
     if (r.ok) setMesaj(tr.ayarlar.kaydedildi);
   }
 
-  if (!yuklendi) return <p role="status">…</p>;
+  if (!yuklendi) return <SakinKoc yukleniyor />;
   if (girisGerek)
     return (
       <p className={`${styles.kutu} ${styles.uyari}`}>
@@ -439,7 +440,9 @@ export function Kalemcik() {
             ) : null}
           </section>
         </>
-      ) : null}
+      ) : (
+        <SakinKoc />
+      )}
 
       <section className={styles.bolum} aria-labelledby="k-yeni">
         <h2 id="k-yeni">{tr.form.baslik}</h2>

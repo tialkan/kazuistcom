@@ -12,6 +12,14 @@ describe('contentSecurityPolicy', () => {
     expect(csp).not.toContain('unsafe-eval');
     expect(csp.match(/script-src[^;]*/)?.[0]).not.toContain('unsafe-inline');
   });
+  it('lets the browser reach only Kazuist and the OpenRouter API (BYOK istemci, K-08)', () => {
+    const connect = contentSecurityPolicy('abc')
+      .match(/connect-src([^;]*)/)?.[1]
+      ?.trim()
+      .split(/\s+/);
+    expect(connect).toEqual(["'self'", 'https://openrouter.ai']);
+    expect(contentSecurityPolicy('abc')).not.toMatch(/connect-src[^;]*\*/);
+  });
   it('allows eval only in development', () => {
     expect(contentSecurityPolicy('x', true)).toContain("'unsafe-eval'");
   });

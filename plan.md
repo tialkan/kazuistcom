@@ -887,9 +887,7 @@ UYGULAMA_SAGLIK_UCU=/api/health
 UYGULAMA_PORTU=3000 (web); worker-py 8000 yalnız iç ağ
 VERITABANI_TURU=PostgreSQL + pgvector
 YEDEK_HEDEFI=Türkiye'de ikinci sağlayıcıda S3 uyumlu depo
-TOKEN_DOSYALARI=~/Desktop/kazuist-cloudflare-api.txt, kazuist-coolify-api.txt, kazuist-iyzico-sandbox.txt,
-                kazuist-iyzico-canli.txt, kazuist-anthropic.txt, kazuist-openalex.txt, kazuist-earsiv.txt,
-                kazuist-eposta.txt, kazuist-asc-api.p8, kazuist-apns.p8 (dosya yolları; değerler sohbete girmez)
+TOKEN_DOSYALARI=depo dışında, yerel ve şifreli saklanır (değerler ve dosya yolları depoya girmez)
 ```
 
 ### 14.2 Hesaplar (Kulular adına, iki adımlı doğrulamayla)

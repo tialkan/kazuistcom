@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
+import byok from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
 import { getMe } from '@/server/auth/account';
 import { pendingConsents, staffReady } from '@/server/auth/account-view';
 import { requirePageSession } from '@/server/auth/page-session';
@@ -21,6 +22,7 @@ const bolumler = [
   { href: '/hesap/kvkk', ...s.bolum.kvkk },
   { href: '/hesap/verilerim', ...s.bolum.verilerim },
   { href: '/hesap/iade', ...s.bolum.iade },
+  { href: '/hesap/yz-anahtari', baslik: byok.sayfa.hesapBag, aciklama: byok.sayfa.hesapAciklama },
 ];
 
 /** Shown to editor and yonetici only; the screens check the full admin gate again. */

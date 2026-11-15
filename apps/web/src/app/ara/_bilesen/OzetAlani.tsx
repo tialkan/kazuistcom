@@ -1,10 +1,19 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import {
+  browserStorages,
+  ByokError,
+  OPENROUTER_BYOK_MODELS,
+  readByokSettings,
+  type ByokSettings,
+} from '@kazuist/ai-gateway/browser';
 import type { AnswerEvent, SourceChip } from '@kazuist/contracts';
 import ara from '@kazuist/i18n/tr/ara.json';
+import byokMetin from '@kazuist/i18n/tr/byok.json';
 import ozet from '@kazuist/i18n/tr/ozet.json';
 import { Dugme, KaynakCipi, SerhliMetin, SerhSatiri } from '@kazuist/ui';
+import { byokOzet } from './byok.ts';
 import { doldur, otoriteSekli } from './metin.ts';
 import { readSse } from './sse.ts';
 import styles from '../ara.module.css';
@@ -21,6 +30,9 @@ export interface OzetAlaniProps {
   gorunenKayitlar: string[];
 }
 
+/** BYOK settings page (FR-84); the key itself never leaves this browser except towards OpenRouter. */
+const BYOK_AYARLARI = '/hesap/yz-anahtari';
+
 const HATA_KODLARI: Record<number, string> = {
   402: ozet.hata.krediYetersiz,
   429: ozet.hata.cokFazla,
@@ -29,7 +41,9 @@ const HATA_KODLARI: Record<number, string> = {
 
 /**
  * Sourced summary (plan 7.4, FR-16..21): streams POST /api/v1/answers and shows only validated sentences, each
- * with its sources in the margin (kenar şerhi) and its verbatim basis behind "Dayanağı göster".
+ * with its sources in the margin (kenar şerhi) and its verbatim basis behind "Dayanağı göster". With a BYOK key
+ * in this browser (plan 8.1, K-08) the same area runs the BYOK istemci protocol instead: the browser calls
+ * OpenRouter directly with the user's key and no credit or daily allowance is used.
  */
 export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlaniProps) {
   const [asama, setAsama] = useState<Asama>(girisVar ? 'bekliyor' : 'giris');
@@ -40,9 +54,28 @@ export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlani
   const [kredi, setKredi] = useState<number | null>(null);
   const [hata, setHata] = useState('');
   const [acik, setAcik] = useState<Record<number, boolean>>({});
+  const [byok, setByok] = useState<ByokSettings | null>(null);
+  const [byokCalisti, setByokCalisti] = useState(false);
+  const [hakBitti, setHakBitti] = useState(false);
+  const [kaldirildi, setKaldirildi] = useState(false);
   const iptal = useRef<AbortController | null>(null);
 
-  async function baslat() {
+  // The key lives in Web Storage, which exists only in the browser; read it once after hydration.
+  useEffect(() => setByok(readByokSettings(browserStorages())), []);
+
+  function uygula(ev: AnswerEvent): boolean {
+    if (ev.t === 'kaynaklar') setKaynaklar(ev.kaynaklar);
+    else if (ev.t === 'cumle') setCumleler((c) => [...c, ev]);
+    else if (ev.t === 'uyari') setUyarilar((u) => [...u, ev]);
+    else if (ev.t === 'cekimser') setCekimser(ev.metin);
+    else if (ev.t === 'son') {
+      setKredi(ev.creditsCharged);
+      return true;
+    }
+    return false;
+  }
+
+  function sifirla(): AbortController {
     iptal.current?.abort();
     const ctl = new AbortController();
     iptal.current = ctl;
@@ -54,6 +87,39 @@ export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlani
     setKredi(null);
     setHata('');
     setAcik({});
+    setHakBitti(false);
+    setKaldirildi(false);
+    return ctl;
+  }
+
+  async function baslatByok(settings: ByokSettings) {
+    const ctl = sifirla();
+    setByokCalisti(true);
+    try {
+      const { removed } = await byokOzet({ q, settings, signal: ctl.signal, emit: uygula });
+      if (removed.length) {
+        setCumleler((c) => c.filter((x) => !removed.includes(x.index)));
+        setKaldirildi(true);
+      }
+      setAsama('bitti');
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return;
+      if (e instanceof ByokError && e.kind === 'oturum') {
+        setAsama('giris');
+        return;
+      }
+      setHata(e instanceof ByokError ? byokMetin.ozetHata[e.kind] : ozet.hata.genel);
+      setAsama('hata');
+    }
+  }
+
+  async function baslat() {
+    // Read again: the key may have been added or removed in another tab since this page loaded.
+    const settings = readByokSettings(browserStorages());
+    setByok(settings);
+    if (settings) return baslatByok(settings);
+    const ctl = sifirla();
+    setByokCalisti(false);
     const body: Record<string, unknown> = { q, mode: 'platform', depth: 'standart' };
     const f = Object.fromEntries(Object.entries(filtreler).filter(([, v]) => v));
     if (Object.keys(f).length) body.filters = f;
@@ -71,6 +137,8 @@ export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlani
       if (!res.ok || !res.body) {
         const j = (await res.json().catch(() => null)) as { message?: string } | null;
         setHata(HATA_KODLARI[res.status] ?? j?.message ?? ozet.hata.genel);
+        // The daily allowance is used up and there are no credits: BYOK keeps the summary free (K-09).
+        setHakBitti(res.status === 402);
         setAsama('hata');
         return;
       }
@@ -82,14 +150,7 @@ export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlani
         } catch {
           continue;
         }
-        if (ev.t === 'kaynaklar') setKaynaklar(ev.kaynaklar);
-        else if (ev.t === 'cumle') setCumleler((c) => [...c, ev]);
-        else if (ev.t === 'uyari') setUyarilar((u) => [...u, ev]);
-        else if (ev.t === 'cekimser') setCekimser(ev.metin);
-        else if (ev.t === 'son') {
-          son = true;
-          setKredi(ev.creditsCharged);
-        }
+        if (uygula(ev)) son = true;
       }
       if (!son) {
         setHata(ozet.hata.baglanti);
@@ -138,8 +199,30 @@ export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlani
         </p>
       ) : (
         <>
-          <p className={styles.ozetNot}>{ozet.aktarim}</p>
-          <p className={styles.ozetNot}>{ozet.kredi}</p>
+          {byok ? (
+            <>
+              <p className={styles.ozetNot} data-testid="ozet-byok">
+                {doldur(byokMetin.ozet.aktarim, {
+                  model: OPENROUTER_BYOK_MODELS.find((m) => m.id === byok.model)?.name ?? byok.model,
+                })}
+              </p>
+              <p className={styles.ozetNot}>{byokMetin.ozet.kredi}</p>
+              {Object.values(filtreler).some(Boolean) ? (
+                <p className={styles.ozetNot}>{byokMetin.ozet.filtre}</p>
+              ) : null}
+              <p className={styles.ozetNot}>
+                <a href={BYOK_AYARLARI}>{byokMetin.ozet.ayarlar}</a>
+              </p>
+            </>
+          ) : (
+            <>
+              <p className={styles.ozetNot}>{ozet.aktarim}</p>
+              <p className={styles.ozetNot}>{ozet.kredi}</p>
+              <p className={styles.ozetNot}>
+                {byokMetin.ozet.kendiAnahtar} <a href={BYOK_AYARLARI}>{byokMetin.ozet.kendiAnahtarBag}</a>
+              </p>
+            </>
+          )}
           <Dugme onClick={baslat} disabled={asama === 'akiyor'}>
             {asama === 'bitti' || asama === 'hata' ? ozet.yeniden : ozet.dugme}
           </Dugme>
@@ -151,6 +234,12 @@ export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlani
       {asama === 'hata' ? (
         <p className={styles.hataMetni} role="alert">
           {hata}
+          {hakBitti ? (
+            <>
+              {' '}
+              {byokMetin.ozet.hakBitti} <a href={BYOK_AYARLARI}>{byokMetin.ozet.kendiAnahtarBag}</a>
+            </>
+          ) : null}
         </p>
       ) : null}
 
@@ -230,8 +319,14 @@ export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlani
         </div>
       ) : null}
 
+      {asama === 'bitti' && kaldirildi ? (
+        <p className={styles.ozetNot}>{byokMetin.ozet.sunucuReddetti}</p>
+      ) : null}
+
       {asama === 'bitti' ? (
-        <p className={styles.ozetNot}>{kredi ? doldur(ozet.harcanan, { kredi }) : ozet.dusmedi}</p>
+        <p className={styles.ozetNot}>
+          {byokCalisti ? byokMetin.ozet.dusmedi : kredi ? doldur(ozet.harcanan, { kredi }) : ozet.dusmedi}
+        </p>
       ) : null}
     </section>
   );

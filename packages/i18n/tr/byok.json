@@ -1,0 +1,104 @@
+{
+  "sayfa": {
+    "baslik": "Kendi YZ anahtarınız",
+    "aciklama": "Kaynaklı özeti kendi OpenRouter anahtarınızla çıkarabilirsiniz. Anahtarınız yalnız bu tarayıcıda tutulur ve Kazuist sunucusuna gönderilmez.",
+    "meta": "Kazuist'in YZ işlemlerini kendi OpenRouter anahtarınızla kullanın; anahtar yalnız tarayıcınızda tutulur.",
+    "hesapBag": "Kendi YZ anahtarınız",
+    "hesapAciklama": "OpenRouter anahtarınızı yalnız bu tarayıcıda saklayın; kaynaklı özet kredi düşmeden çalışır."
+  },
+  "nasil": {
+    "baslik": "Nasıl çalışır",
+    "1": "Sorunuz Kazuist sunucusunda kişisel verilerden arındırılır ve en ilgili kaynak pasajları seçilir.",
+    "2": "Arındırılmış soru ve pasajlar tarayıcınıza döner; tarayıcınız bunları kendi anahtarınızla doğrudan OpenRouter'a gönderir.",
+    "3": "Gelen her cümle gösterilmeden önce tarayıcınızda kaynağıyla karşılaştırılır, ardından Kazuist sunucusunda yeniden doğrulanır.",
+    "4": "Bu işlemler için platform kredisi ya da günlük ücretsiz hak düşmez; kullanım bedelini OpenRouter'a siz ödersiniz."
+  },
+  "form": {
+    "baslik": "Anahtar ayarları",
+    "saglayici": "Sağlayıcı",
+    "saglayiciAdi": "OpenRouter",
+    "saglayiciNot": "Tarayıcıdan doğrudan çağrı şimdilik yalnız OpenRouter ile çalışır. OpenRouter üzerinden Anthropic, OpenAI ve Google modellerini kullanabilirsiniz.",
+    "model": "Model",
+    "onerilen": "önerilen",
+    "modelDiger": "Başka bir model kimliği",
+    "modelKimligi": "Model kimliği",
+    "modelKimligiIpucu": "OpenRouter'daki biçimde yazın: yazar/model-adi.",
+    "anahtar": "OpenRouter API anahtarı",
+    "anahtarIpucu": "Anahtarı openrouter.ai hesabınızdaki Keys sayfasında oluşturabilirsiniz; genellikle sk-or- ile başlar. Yalnız Kazuist için, harcama sınırı koyduğunuz ayrı bir anahtar kullanmanızı öneririz.",
+    "anahtarKayitliIpucu": "Kayıtlı anahtarı değiştirmek için yenisini yazın; boş bırakırsanız kayıtlı anahtar kullanılmaya devam eder.",
+    "saklama": "Anahtar nerede saklansın?",
+    "oturum": "Yalnız bu oturumda (sekmeyi kapatınca silinir)",
+    "cihaz": "Bu cihazda hatırla",
+    "cihazUyari": "Anahtar bu tarayıcının yerel deposunda kalır ve tarayıcıya erişen herkes onu kullanabilir. Ortak ya da başkasının da kullandığı bir cihazda bu seçeneği seçmeyin.",
+    "gizlilik": "Gizlilik öncelikli: yalnız veri saklamayan (ZDR) uçları kullan",
+    "gizlilikNot": "Kazuist her istekte veri toplayan sağlayıcıları dışarıda bırakır. Bu seçenek isteği ayrıca yalnız sıfır veri saklama uçlarına yönlendirir; bazı modeller o zaman kullanılamayabilir.",
+    "kaydet": "Kaydet",
+    "sil": "Anahtarı sil",
+    "dene": "Anahtarı dene"
+  },
+  "durum": {
+    "baslik": "Bu tarayıcıdaki durum",
+    "yukleniyor": "Tarayıcınızdaki ayarlar okunuyor.",
+    "kayitli": "Kayıtlı anahtar: {anahtar}. Model: {model}.",
+    "oturumda": "Bu oturum için saklanıyor.",
+    "cihazda": "Bu cihazda hatırlanıyor.",
+    "yok": "Kayıtlı anahtar yok. Kaynaklı özet günlük ücretsiz hakkınızla çıkarılır.",
+    "kaydedildi": "Anahtarınız bu tarayıcıya kaydedildi.",
+    "silindi": "Anahtar bu tarayıcıdan silindi.",
+    "kaydedilemedi": "Tarayıcınız yerel depolamaya izin vermiyor; anahtar kaydedilemedi.",
+    "deneniyor": "Anahtar OpenRouter'da deneniyor.",
+    "gecerli": "OpenRouter anahtarı kabul etti.",
+    "ucretsizKatman": "Bu anahtar OpenRouter'ın ücretsiz katmanında: yalnız adı :free ile biten modeller günlük sınırlı sayıda kullanılabilir. Seçtiğiniz ücretli model bu anahtarla çalışmayabilir.",
+    "sinirsiz": "Bu anahtarda harcama sınırı yok. OpenRouter, sınırı olmayan anahtarların tarayıcıda kullanılmamasını öneriyor; Keys sayfasından bir sınır koyabilirsiniz."
+  },
+  "hata": {
+    "anahtarBos": "API anahtarını yazın.",
+    "anahtarBicim": "Anahtar boşluk içermemeli ve 20 ile 400 karakter arasında olmalı.",
+    "modelBicim": "Model kimliğini yazar/model-adi biçiminde yazın.",
+    "anahtar_gecersiz": "OpenRouter bu anahtarı kabul etmedi. Anahtarı kontrol edin.",
+    "saglayici": "OpenRouter şu anda yanıt veremedi. Lütfen yeniden deneyin.",
+    "zaman_asimi": "OpenRouter zamanında yanıt vermedi. Lütfen yeniden deneyin.",
+    "baglanti": "OpenRouter'a bağlanılamadı. Ağ bağlantınızı kontrol edin."
+  },
+  "ucretsiz": {
+    "baslik": "Ücretsiz model uyarısı",
+    "metin": "Adı :free ile biten ücretsiz modellerde OpenRouter'ın kullanım sınırları düşüktür ve sağlayıcı koşulları farklı olabilir. Kazuist veri toplayan sağlayıcıları dışarıda bıraktığı için ücretsiz modeller bazen yanıt vermeyebilir. Hassas ya da yayımlanmamış metin göndermeyin."
+  },
+  "ozet": {
+    "aktarim": "Kendi anahtarınızla çalışıyor ({model}). Sorunuz Kazuist sunucusunda kişisel verilerden arındırılır; arındırılmış soru ve kaynak pasajları tarayıcınızdan doğrudan OpenRouter'a gönderilir. Anahtarınız Kazuist sunucusuna gönderilmez.",
+    "kredi": "Bu özet için kredi ya da günlük hak düşmez; kullanım bedeli OpenRouter hesabınıza yansır.",
+    "filtre": "Kendi anahtarınızla çıkarılan özet arama süzgeçlerini kullanmaz; kaynaklar bütün dizinden seçilir.",
+    "ayarlar": "Anahtar ayarları",
+    "kendiAnahtar": "Kendi OpenRouter anahtarınızla da çalışabilirsiniz.",
+    "kendiAnahtarBag": "Kendi anahtarınızı ekleyin",
+    "hakBitti": "Kendi OpenRouter anahtarınızla devam edebilirsiniz.",
+    "dusmedi": "Bu özet kendi anahtarınızla çıkarıldı; kredi düşülmedi.",
+    "sunucuReddetti": "Sunucudaki doğrulamadan geçmeyen bir cümle kaldırıldı."
+  },
+  "ozetHata": {
+    "oturum": "Kaynaklı özet için giriş yapın.",
+    "cok_fazla": "Kısa sürede çok fazla özet istendi. Lütfen biraz sonra yeniden deneyin.",
+    "hazirlik_yok": "Kendi anahtarınızla özet şu anda hazırlanamıyor. Lütfen daha sonra yeniden deneyin.",
+    "hazirlik": "Özet hazırlanamadı. Lütfen yeniden deneyin.",
+    "maskesiz_metin": "Gönderilecek metinde kişisel veri kaldığı için istek OpenRouter'a gönderilmedi.",
+    "anahtar_gecersiz": "OpenRouter anahtarınızı kabul etmedi. Anahtar ayarlarını kontrol edin.",
+    "saglayici_bakiye": "OpenRouter hesabınızda yeterli bakiye yok.",
+    "model_yok": "Seçtiğiniz model bulunamadı ya da veri toplamayan bir sağlayıcıda sunulmuyor. Başka bir model seçin.",
+    "saglayici_sinir": "OpenRouter kullanım sınırına ulaşıldı. Biraz sonra yeniden deneyin.",
+    "zaman_asimi": "OpenRouter zamanında yanıt vermedi. Lütfen yeniden deneyin.",
+    "saglayici": "OpenRouter bir hata döndürdü. Lütfen yeniden deneyin.",
+    "baglanti": "OpenRouter'a bağlanılamadı. Ağ bağlantınızı kontrol edin."
+  },
+  "fiyatlar": {
+    "baslik": "Kendi anahtarınızla kullanın",
+    "metin": "OpenRouter anahtarınızı ekleyin; kaynaklı özet tarayıcınızdan doğrudan OpenRouter'a, kendi anahtarınızla gider. Anahtar yalnız tarayıcınızda tutulur ve Kazuist sunucusuna gönderilmez. Platform kredisi gerekmez.",
+    "bag": "Anahtarınızı ekleyin"
+  },
+  "satisKapali": {
+    "baslik": "Kredi satışı henüz açılmadı",
+    "metin": "Bütün özellikleri günlük ücretsiz hakla ve kendi anahtarınızla kullanabilirsiniz. Aşağıdaki paket fiyatları bilgi içindir; şu anda kredi satın alınamaz.",
+    "odemeMetin": "Şu anda kredi satın alınamaz. Bütün özellikleri günlük ücretsiz hakla ve kendi OpenRouter anahtarınızla kullanabilirsiniz.",
+    "byok": "Kendi anahtarınızı ekleyin",
+    "fiyatlar": "Kullanım seçeneklerine bakın"
+  }
+}

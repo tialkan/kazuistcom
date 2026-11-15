@@ -237,6 +237,128 @@ describe('takedown requests (72 hours, 30 days, audited)', () => {
   });
 });
 
+describe('takedown decisions keep the target hidden while any request requires it', () => {
+  let adm: { token: string; secret: string; id: string };
+  let n = 0;
+
+  beforeAll(async () => {
+    adm = await admin('kaldirma-editor@example.invalid');
+    await stepUpConfirm(
+      api('/auth/step-up/confirm', adm.token, post({ code: await createOTP(adm.secret).totp() })),
+    );
+  });
+
+  async function record(): Promise<string> {
+    n += 1;
+    return (
+      await h.pg.query<{ id: string }>(
+        `insert into records (type, title, authority_class, license_basis, source_url, source_key, fetched_at, text)
+         values ('karar', 'Ornek', 'emsal', 'FSEK m.31', 'https://example.invalid/k/t', $1, now(), 'metin')
+         returning id`,
+        [`test:gizle:${n}`],
+      )
+    ).rows[0]?.id as string;
+  }
+
+  async function request(rec: string): Promise<string> {
+    const res = await takedownPost(
+      api(
+        '/v1/takedown-requests',
+        null,
+        post({
+          kind: 'kisisel_veri',
+          targetType: 'record',
+          targetId: rec,
+          reason: 'Adim geciyor',
+          contactEmail: 'k@example.invalid',
+        }),
+      ),
+    );
+    expect(res.status).toBe(201);
+    return (await body(res)).id as string;
+  }
+
+  async function decide(takedownId: string, decision: 'onay' | 'ret' | 'duzelt') {
+    const q = await body(
+      await adminQueueGet(api('/v1/admin/queues/takedowns', adm.token), params({ queue: 'takedowns' })),
+    );
+    const item = q.find((i: { subjectId: string }) => i.subjectId === takedownId);
+    expect(item).toBeTruthy();
+    const res = await adminQueueDecide(
+      api(`/v1/admin/queues/takedowns/${item.id}/decision`, adm.token, post({ decision, note: 'inceleme' })),
+      params({ queue: 'takedowns', itemId: item.id }),
+    );
+    expect(res.status).toBe(200);
+  }
+
+  const hiddenAt = async (rec: string) =>
+    (await h.pg.query<{ hidden_at: Date | null }>('select hidden_at from records where id = $1', [rec]))
+      .rows[0]?.hidden_at ?? null;
+  const remaskJobs = async (rec: string) =>
+    (
+      await h.pg.query<{ payload: unknown; dedupe_key: string }>(
+        `select payload, dedupe_key from jobs where type = 'anon.run' and payload ->> 'recordId' = $1`,
+        [rec],
+      )
+    ).rows;
+
+  it('ek_maskeleme keeps the record hidden and queues anon.run once', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    await decide(a, 'onay');
+    const firstHidden = await hiddenAt(rec);
+    expect(firstHidden).not.toBeNull();
+    await decide(a, 'duzelt');
+    const [t] = await h.db.select().from(schema.takedownRequests).where(eq(schema.takedownRequests.id, a));
+    expect(t).toMatchObject({ status: 'sonuclandi', decision: 'ek_maskeleme' });
+    expect((await hiddenAt(rec))?.getTime()).toBe(firstHidden?.getTime());
+    expect(await remaskJobs(rec)).toEqual([{ payload: { recordId: rec }, dedupe_key: `anon:${rec}` }]);
+  });
+
+  it('ek_maskeleme straight from bekliyor hides the record', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    await decide(a, 'duzelt');
+    expect(await hiddenAt(rec)).not.toBeNull();
+    expect(await remaskJobs(rec)).toHaveLength(1);
+  });
+
+  it('ret does not show a record another request keeps temporarily hidden', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    const b = await request(rec);
+    await decide(a, 'onay');
+    await decide(b, 'onay');
+    await decide(a, 'ret');
+    expect(await hiddenAt(rec)).not.toBeNull();
+    // The last open request decides: rejecting it too shows the record again.
+    await decide(b, 'ret');
+    expect(await hiddenAt(rec)).toBeNull();
+  });
+
+  it('ret does not show a record removed permanently or masked by another request', async () => {
+    for (const final of ['onay', 'duzelt'] as const) {
+      const rec = await record();
+      const a = await request(rec);
+      const b = await request(rec);
+      await decide(a, 'onay');
+      await decide(b, 'onay');
+      await decide(a, final);
+      await decide(b, 'ret');
+      expect(await hiddenAt(rec)).not.toBeNull();
+    }
+  });
+
+  it('ret of a request that never hid the target leaves the hiding of another request alone', async () => {
+    const rec = await record();
+    const a = await request(rec);
+    const b = await request(rec);
+    await decide(a, 'onay');
+    await decide(b, 'ret');
+    expect(await hiddenAt(rec)).not.toBeNull();
+  });
+});
+
 describe('KVKK application without an account', () => {
   const valid = {
     kind: 'silme',

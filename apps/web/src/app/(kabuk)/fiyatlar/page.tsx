@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { ortak } from '@kazuist/i18n';
-import { Tablo } from '@kazuist/ui';
+import byok from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
+import { Dugme, Tablo } from '@kazuist/ui';
+import { odemeAcik } from '@/server/billing/acik';
 import { islemler, paketler, planlar } from './fiyatlar.ts';
 import styles from './fiyatlar.module.css';
 
@@ -9,8 +11,10 @@ const f = t.fiyatlar;
 
 export const metadata: Metadata = { title: f.baslik, description: f.aciklama };
 
+/** Payments-off launch mode (K-09): read per request, so turning sales on needs no rebuild. */
 export default function FiyatlarSayfasi() {
   const s = f.sutun;
+  const satisAcik = odemeAcik();
   return (
     <div className="sayfa">
       <header className="sayfa-ust">
@@ -57,6 +61,19 @@ export default function FiyatlarSayfasi() {
           not={f.kdv}
         />
       </div>
+      <section aria-labelledby="byok-baslik" className={styles.byok}>
+        <h2 id="byok-baslik">{byok.fiyatlar.baslik}</h2>
+        <p>{byok.fiyatlar.metin}</p>
+        <Dugme href="/hesap/yz-anahtari" tur="ikincil">
+          {byok.fiyatlar.bag}
+        </Dugme>
+      </section>
+      {satisAcik ? null : (
+        <section aria-labelledby="satis-kapali" className={styles.satisKapali} data-testid="satis-kapali">
+          <h2 id="satis-kapali">{byok.satisKapali.baslik}</h2>
+          <p>{byok.satisKapali.metin}</p>
+        </section>
+      )}
       <Tablo
         baslik={f.paketler}
         satirAnahtari={(p) => p.ad}
