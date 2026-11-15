@@ -100,7 +100,9 @@ def test_production_needs_tarik_approval() -> None:
 
 def test_all_sources_documented_and_pending() -> None:
     reg = SourceRegistry.load(env={})
-    assert reg.names() == ["crossref", "eurlex", "kvkk", "mevzuat", "openalex", "rekabet", "resmi-gazete"]
+    assert reg.names() == [
+        "aym", "crossref", "danistay", "eurlex", "kvkk", "mevzuat", "openalex", "rekabet", "resmi-gazete", "yargitay",
+    ]
     assert all(not reg.get(n).approved for n in reg.names())
     assert all(reg.get(n).license_basis for n in reg.names())
 

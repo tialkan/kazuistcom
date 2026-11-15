@@ -64,7 +64,7 @@ def parse_act(celex: str, markup: str, fetched_at: datetime, title: str | None =
     return RecordDraft(
         type="ab_hukuku",
         title=title or SELECTED_ACTS.get(celex, celex),
-        authority_class="baglayici_norm",
+        authority_class="karsilastirmali",  # plan Ek F: AB hukuku Türkiye için bağlayıcı değil
         jurisdiction="EU",
         license_basis=LICENSE_BASIS,
         source_url=official_link(celex),

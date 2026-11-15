@@ -1,4 +1,4 @@
-import { chunkText } from './chunk.ts';
+import { chunkText, sectionsFor } from './chunk.ts';
 import type { SqlClient } from './sql.ts';
 import type { CorpusRecord } from './types.ts';
 
@@ -44,7 +44,7 @@ export async function seedCorpus(db: SqlClient, records: readonly CorpusRecord[]
         r.openalexCitedBy ?? null,
       ],
     );
-    for (const c of chunkText(r.id, r.text)) {
+    for (const c of chunkText(r.id, r.text, { sections: sectionsFor(r.type) })) {
       await db.query(
         `INSERT INTO chunks (record_id, seq, section, text, char_start, char_end)
          VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (record_id, seq) DO NOTHING`,

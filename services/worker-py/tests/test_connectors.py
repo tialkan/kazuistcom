@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from connectors.base import html_to_text
 from connectors import crossref, eurlex, kvkk, mevzuat, openalex, rekabet, resmi_gazete
 from core.errors import ParseError
 from core.pipeline import InMemoryRepository, is_publishable
@@ -182,13 +183,34 @@ def test_mevzuat_version_snapshot_closes_old_version_and_opens_new() -> None:
 def test_mevzuat_connector_fetch_wraps_html(tmp_path: Path, clock) -> None:
     text = fixture_bytes("mevzuat/ornek-kanun-v1.txt").decode("utf-8")
     html = "<html><body>" + "".join(f"<p>{ln}</p>" for ln in text.splitlines()) + "</body></html>"
-    url = mevzuat.law_url(META)
+    url = mevzuat.text_url(META)
+    assert url.startswith("https://www.mevzuat.gov.tr/anasayfa/MevzuatFihristDetayIframe?")
     routes = {"https://www.mevzuat.gov.tr/robots.txt": ok(b"User-agent: Googlebot\nNoindex:/x\n", "text/plain"), url: ok(html.encode())}
     fetcher, _ = build_fetcher(routes, tmp_path, clock)
     repo = InMemoryRepository()
     outs = mevzuat.MevzuatConnector(fetcher).fetch_law(META, repo, date(2026, 1, 1))
     assert len(outs) == 7  # law record plus six articles
     assert repo.records[outs[0].record_id]["source_key"] == "mevzuat:9999"
+    # users get the page address, not the iframe document the text was read from
+    assert repo.records[outs[0].record_id]["source_url"] == mevzuat.law_url(META)
+
+
+def test_mevzuat_bold_label_layout_of_the_text_document() -> None:
+    """Layout reported on 2026-11-15 for the iframe document (bold labels and headings, footnote markers).
+    SYNTHETIC markup: the raw bytes could not be fetched from the development network."""
+    html = (
+        "<html><body><p><b>ÖRNEK KANUN</b></p><p><b>BİRİNCİ BÖLÜM</b></p><p><b>Amaç</b></p>"
+        "<p><b>MADDE 1-</b> (1) Bu Kanunun amacı örnektir.</p>"
+        "<p><b>Tanımlar</b></p>"
+        "<p><b>MADDE 2-</b> (Değişik: 2/3/2024-7499/33 md.) (1) Tanımlar şunlardır:"
+        '<a href="#_ftn1">[1]</a></p><p>a) Birinci tanım,</p><p>b) İkinci tanım.</p>'
+        "<p><b>MADDE 3-</b> (Mülga: 2/3/2024-7499/34 md.)</p></body></html>"
+    )
+    arts = mevzuat.parse_articles(html_to_text(html))
+    assert [a.label for a in arts] == ["Madde 1", "Madde 2", "Madde 3"]
+    assert arts[0].heading == "Amaç" and arts[1].heading == "Tanımlar"
+    assert arts[1].amended_by == "7499 sayılı Kanun (2/3/2024)" and "b) İkinci tanım." in arts[1].text
+    assert arts[2].repealed
 
 
 # --- OpenAlex and Crossref ---------------------------------------------------------------------------------
@@ -241,6 +263,7 @@ def test_eurlex_articles_and_act() -> None:
     assert arts[0][1] == "Subject-matter and objectives"
     draft = eurlex.parse_act("32016R0679", markup, NOW)
     assert draft.jurisdiction == "EU" and draft.type == "ab_hukuku"
+    assert draft.authority_class == "karsilastirmali"  # plan Ek F, never binding for Türkiye
     assert draft.source_url == "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679"
     assert "protection of natural persons" in draft.text
     assert draft.license_basis == "AB yeniden kullanım kararı (2011/833/AB)"

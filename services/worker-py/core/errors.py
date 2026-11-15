@@ -23,6 +23,10 @@ class BreakerOpen(FetchError):
     """Error rate threshold was exceeded; the source is stopped until an operator resets it."""
 
 
+class ChallengeDetected(FetchError):
+    """The source answered with a CAPTCHA or bot challenge. We never solve or bypass it: the source is stopped."""
+
+
 class HttpError(FetchError):
     def __init__(self, status: int, url: str):
         super().__init__(f"HTTP {status}")

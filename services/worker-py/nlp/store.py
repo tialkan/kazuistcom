@@ -1,8 +1,8 @@
 """Persistence for embed.chunks. SQL only; the schema belongs to packages/db (records, chunks, jobs).
 
 Consumer rule (ADR-0026, docs/istekler/mimar-yonlendirme-2-casuist-anonimlestirme-altyapi.md):
-1. Read records.masked_text and md5(masked_text). The raw records.text column is never selected (ADR-0023:
-   masked_text is the only servable text; NULL means not servable and not indexed).
+1. Read records.masked_text, md5(masked_text) and records.type. The raw records.text column is never selected
+   (ADR-0023: masked_text is the only servable text; NULL means not servable and not indexed).
 2. Chunk and embed outside any transaction.
 3. In the write transaction lock the record row FOR SHARE and compare the digest. Same digest: delete the
    record's chunks and insert the new ones, so a repeated job replaces rather than duplicates. Different
@@ -21,7 +21,7 @@ from typing import Any, Callable, Dict, List, Optional, Protocol, Sequence, Tupl
 from .chunk import Chunk
 
 READ_SQL = """
-SELECT masked_text, md5(masked_text) FROM records WHERE id = %(id)s AND masked_text IS NOT NULL
+SELECT masked_text, md5(masked_text), type::text FROM records WHERE id = %(id)s AND masked_text IS NOT NULL
 """
 LOCK_SQL = "SELECT md5(masked_text) FROM records WHERE id = %(id)s FOR SHARE"
 DELETE_CHUNKS_SQL = "DELETE FROM chunks WHERE record_id = %(id)s"
@@ -45,8 +45,9 @@ def vector_literal(vec: Optional[Sequence[float]]) -> Optional[str]:
 
 
 class EmbedStore(Protocol):
-    def read(self, record_id: str) -> Optional[Tuple[str, str]]:
-        """(masked_text, digest) or None when the record is missing or not servable."""
+    def read(self, record_id: str) -> Optional[Tuple[str, str, Optional[str]]]:
+        """(masked_text, digest, record type) or None when the record is missing or not servable. The type
+        decides whether the text is cut along decision sections (chunk.SECTIONED_TYPES)."""
 
     def replace(
         self,
@@ -70,12 +71,12 @@ class SqlEmbedStore:
     def __init__(self, connect: Connect):
         self.connect = connect
 
-    def read(self, record_id: str) -> Optional[Tuple[str, str]]:
+    def read(self, record_id: str) -> Optional[Tuple[str, str, Optional[str]]]:
         with self.connect() as conn:
             with conn.cursor() as cur:
                 cur.execute(READ_SQL, {"id": record_id})
                 rows = cur.fetchall()
-        return (rows[0][0], rows[0][1]) if rows else None
+        return (rows[0][0], rows[0][1], rows[0][2]) if rows else None
 
     def replace(
         self,
@@ -114,8 +115,8 @@ class SqlEmbedStore:
 
 
 class MemoryEmbedStore:
-    """In memory store for tests. records maps id -> {"text": raw, "masked_text": servable or None}; the raw
-    text is kept only so tests can prove it never reaches a chunk."""
+    """In memory store for tests. records maps id -> {"text": raw, "masked_text": servable or None, "type":
+    record type, optional}; the raw text is kept only so tests can prove it never reaches a chunk."""
 
     def __init__(self, records: Optional[Dict[str, Dict[str, Optional[str]]]] = None):
         self.records = records or {}
@@ -127,9 +128,9 @@ class MemoryEmbedStore:
         self.records[record_id]["masked_text"] = masked
         self.chunks.pop(record_id, None)
 
-    def read(self, record_id: str) -> Optional[Tuple[str, str]]:
+    def read(self, record_id: str) -> Optional[Tuple[str, str, Optional[str]]]:
         masked = self.records.get(record_id, {}).get("masked_text")
-        return None if masked is None else (masked, text_digest(masked))
+        return None if masked is None else (masked, text_digest(masked), self.records[record_id].get("type"))
 
     def replace(
         self,

@@ -1,4 +1,5 @@
 import type { RecordType } from '@kazuist/contracts';
+import { servedAuthority } from './authority.ts';
 import type { SearchBackend } from './backend.ts';
 import { computeLabels } from './labels.ts';
 import { terms } from './normalize.ts';
@@ -73,7 +74,10 @@ export interface SearchResult {
   total: number;
   /** Result counts per type before the type filter (FR-09). */
   counts: Partial<Record<RecordType, number>> & { tumu: number };
-  /** Legs that could not run, e.g. "vektor" without an embedding service; shown to operators, not users. */
+  /**
+   * Legs that could not run, e.g. "vektor" without an embedding service. /ara tells the user that the results
+   * are keyword and reference matches only; /v1/search returns it as `degraded`.
+   */
   degraded: string[];
   timings: { totalMs: number; liveMs: number | null };
 }
@@ -241,7 +245,7 @@ export async function search(input: SearchInput, deps: SearchDeps): Promise<Sear
       .flatMap((list) => list ?? [])
       .filter((r) => !seen.has(r.id))
       .map((r) => {
-        const record = { ...r, liveOnly: true };
+        const record = { ...r, liveOnly: true, authorityClass: servedAuthority(r) };
         return {
           record,
           relevance: 0,

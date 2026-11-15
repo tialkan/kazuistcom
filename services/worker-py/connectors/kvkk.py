@@ -89,14 +89,19 @@ class KvkkConnector:
         self.fetcher = fetcher
 
     def list_page(self, page: int = 1) -> List[KvkkListEntry]:
+        return self.list_page_full(page)[0]
+
+    def list_page_full(self, page: int = 1) -> tuple[List[KvkkListEntry], bool]:
+        """Entries of one list page and whether the page links to the next one."""
         url = LIST_URL if page == 1 else f"{LIST_URL}?page={page}"
         result = self.fetcher.fetch(SOURCE, url, external_id=f"kvkk:list:{page}")
         try:
-            entries, _ = parse_list(result.body.decode("utf-8", errors="replace"))
+            entries, pages = parse_list(result.body.decode("utf-8", errors="replace"))
         except ParseError:
             self.fetcher.report_parse_failure(SOURCE)
             raise
-        return entries
+        has_next = any(int(u.rsplit("=", 1)[1]) == page + 1 for u in pages)
+        return entries, has_next
 
     def fetch_decision(self, entry_url: str, repo: Repository) -> IngestOutcome:
         result = self.fetcher.fetch(SOURCE, entry_url, external_id=entry_url)

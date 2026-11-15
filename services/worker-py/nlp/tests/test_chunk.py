@@ -5,10 +5,20 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any, Optional
 
 import pytest
 
-from nlp.chunk import chunk_text, from_units, js_trim, sentence_ends, to_units
+from nlp.chunk import (
+    SECTIONED_TYPES,
+    chunk_text,
+    from_units,
+    headings_in,
+    js_trim,
+    section_heading,
+    sentence_ends,
+    to_units,
+)
 
 ROOT = Path(__file__).resolve().parents[4]
 GOLDEN = ROOT / "packages" / "casuist" / "fixtures" / "parcalar.json"
@@ -19,17 +29,29 @@ needs_golden = pytest.mark.skipif(
 )
 
 
-def ranges(text: str, **opts: int) -> list[list[int]]:
+def ranges(text: str, **opts: Any) -> list[list[int]]:
     return [[c.char_start, c.char_end] for c in chunk_text(text, **opts)]
+
+
+def sections(text: str, **opts: Any) -> list[Optional[str]]:
+    return [c.section for c in chunk_text(text, **opts)]
 
 
 @needs_golden
 def test_fixture_corpus_boundaries_match_typescript() -> None:
-    golden = json.loads(GOLDEN.read_text(encoding="utf-8"))["kayitlar"]
+    data = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    golden, labels = data["kayitlar"], data["bolumler"]
     records = json.loads(CORPUS.read_text(encoding="utf-8"))["kayitlar"]
     assert len(records) == len(golden) == 75
+    sectioned = [r for r in records if r["type"] in SECTIONED_TYPES]
+    assert {r["id"] for r in sectioned} == set(labels) and len(labels) == 8
     for r in records:
-        assert ranges(r["text"]) == golden[r["id"]], r["id"]
+        on = r["type"] in SECTIONED_TYPES
+        assert ranges(r["text"], sections=on) == golden[r["id"]], r["id"]
+        if on:
+            assert sections(r["text"], sections=True) == labels[r["id"]], r["id"]
+        else:
+            assert set(sections(r["text"])) <= {None}
 
 
 @needs_golden
@@ -41,10 +63,38 @@ def test_edge_case_boundaries_match_typescript() -> None:
         "bosluk-turleri",
         "pencere-siniri",
         "bos",
+        "bolumler-satir-basi",
+        "bolumler-satir-ici",
     }
     for e in examples:
-        opts = {k: e[src] for k, src in (("max_chars", "max"), ("min_chars", "min")) if src in e}
+        opts: dict[str, Any] = {
+            k: e[src] for k, src in (("max_chars", "max"), ("min_chars", "min")) if src in e
+        }
+        opts["sections"] = e.get("bolumlu", False)
         assert ranges(e["metin"], **opts) == e["parcalar"], e["ad"]
+        if opts["sections"]:
+            assert sections(e["metin"], **opts) == e["bolumler"], e["ad"]
+
+
+def test_section_headings() -> None:
+    assert section_heading("II.GEREKÇE Suç tarihinde") == "gerekce"
+    assert section_heading("IV. SONUÇ: Açıklanan nedenlerle") == "hukum"
+    assert section_heading("C. Gerekçe") == "gerekce"
+    assert section_heading("Davacı İstemi: 4. Davacı vekili") == "iddia"
+    assert section_heading("KARŞI OY") == "karsi_oy"
+    assert section_heading("Karşı oy:") == "karsi_oy"
+    # Header fields and running text are not headings.
+    assert section_heading("DAVA TARİHİ : 01.01.2020") is None
+    assert section_heading("TEMYİZ EDEN: Davacı vekili") is None
+    assert section_heading("Sonuç olarak talep reddedildi.") is None
+    assert section_heading("DAVACI : [Davacı]") is None
+    # Inline headings need an enumerator, a colon or a separate opinion heading.
+    assert [(p, s) for p, s, _ in headings_in("Bitti. III. İLK DERECE MAHKEMESİ KARARI Mahkemece")] == [
+        (7, "surec")
+    ]
+    assert headings_in("Bitti. DAVA TARİHİ 2020. KARAR verildi. 2. Daire Kararı ile") == []
+    assert [s for _, s, _ in headings_in("x. V. TEMYİZ A. Temyiz Sebepleri Davacı")] == ["surec", "iddia"]
+    assert [c.section for c in chunk_text("Kanun metni.\nKARŞI OY\nYazı.")] == [None]
 
 
 @needs_golden

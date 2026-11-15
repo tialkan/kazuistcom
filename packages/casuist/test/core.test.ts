@@ -17,7 +17,8 @@ import { MAX_SENTENCES, MAX_WORDS, MIN_QUOTE_CHARS, parseModelLine } from '../sr
 const NOW = new Date('2026-11-07T12:00:00Z');
 
 it('exposes Ek D limits and the model line parser', () => {
-  expect([MAX_SENTENCES, MAX_WORDS, MIN_QUOTE_CHARS, RRF_K]).toEqual([3, 70, 12, 60]);
+  // MIN_QUOTE_CHARS is above the Ek D.2 floor of 12, measured in eval/rag/alinti.ts.
+  expect([MAX_SENTENCES, MAX_WORDS, MIN_QUOTE_CHARS, RRF_K]).toEqual([3, 70, 20, 60]);
   expect(parseModelLine('{"t":"son"}')).toEqual({ t: 'son' });
 });
 
@@ -332,7 +333,10 @@ describe('fixture corpus and browser build', () => {
         'answer/names.ts',
         'answer/validator.ts',
         'answer/passages.ts',
+        'answer/negation.ts',
+        'answer/quantities.ts',
         'authority.ts',
+        'chunk.ts',
       ].sort(),
     );
     expect(readdirSync(src)).toContain('validator-entry.ts');
