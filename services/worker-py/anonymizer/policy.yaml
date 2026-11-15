@@ -1,6 +1,6 @@
 # Kazuist anonimleştirme politikası. Kaynak: plan.md Ek E (birebir). Politika hukukçu editör onayıyla
 # yürürlüğe girer; bu dosyadaki her değişiklik policy_version'ı artırır ve corpus yeniden işlenir.
-policy_version: "ekE-2026.10.0"
+policy_version: "ekE-2026.11.0"
 status: taslak  # hukukçu editör onayı bekliyor
 dayanak: >-
   KVKK m.4/2 (hukuka ve dürüstlük kurallarına uygunluk, amaçla bağlantılı, sınırlı ve ölçülü işleme) ve
@@ -15,7 +15,7 @@ rules:
     maske: "[Davacı], [Davalı], [Sanık 1], [Mağdur], [Tanık 2], [Bilirkişi]"
     action: mask
     entities: [PERSON]
-    roles: [davaci, davali, sanik, magdur, katilan, musteki, tanik, bilirkisi, arabulucu, kisi]
+    roles: [davaci, davali, basvurucu, sanik, magdur, katilan, musteki, tanik, bilirkisi, arabulucu, kisi]
   - varlik: "Vekil ve avukat"
     kural: "Her zaman maskeli (profilleme riski)"
     maske: "[Vekil]"
@@ -34,7 +34,7 @@ rules:
     maske: "[Hâkim], [Savcı]"
     action: mask
     entities: [PERSON]
-    roles: [hakim, savci]
+    roles: [hakim, savci, raportor]
   - varlik: "Yüksek mahkeme üyesi ve muhalefet şerhi yazarı"
     kural: "Yalnız resmî kaynak açık yayımlıyorsa korunur (ör. AYM, AİHM, ABAD); kişi adıyla arama, filtreleme ve profil sayfası yoktur"
     maske: "Kaynağa göre"
@@ -42,6 +42,23 @@ rules:
     entities: [PERSON]
     roles: [hakim]
     open_sources: [AYM, AİHM, ABAD]
+    # Which records belong to an open source. A record matches when the namespace of records.source_key (the
+    # part before the first ":", written by the connector, e.g. "aym:bb:<id>") is in source_keys, or when
+    # records.court equals one of courts or the source name itself. Court names are compared after Unicode
+    # NFKC, Turkish lower case, accents dropped, dots dropped and spaces collapsed; equality only, so "Alman
+    # Federal Anayasa Mahkemesi" or "Uluslararası Adalet Divanı" never match. Names stay open only for the
+    # panel the source itself lists (header and signature lines, roles.find_panel_members); a person who is
+    # also named with a party, lawyer, rapporteur or other non judge role stays masked.
+    open_source_match:
+      AYM:
+        source_keys: [aym]
+        courts: [Anayasa Mahkemesi, T.C. Anayasa Mahkemesi, Türkiye Cumhuriyeti Anayasa Mahkemesi]
+      AİHM:
+        source_keys: []
+        courts: [Avrupa İnsan Hakları Mahkemesi, European Court of Human Rights, ECtHR]
+      ABAD:
+        source_keys: []
+        courts: [Avrupa Birliği Adalet Divanı, AB Adalet Divanı, Court of Justice of the European Union, CJEU]
   - varlik: "T.C. kimlik, vergi no (gerçek kişi), pasaport"
     kural: "Maskeli"
     maske: "[Kimlik No]"

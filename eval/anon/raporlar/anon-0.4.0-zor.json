@@ -1,0 +1,84 @@
+{
+  "documents": 35,
+  "per_entity": {
+    "ADDRESS": {
+      "gold": 1,
+      "caught": 1,
+      "recall": 1.0,
+      "predicted": 1,
+      "correct": 1,
+      "precision": 1.0,
+      "missed_in": []
+    },
+    "DOB": {
+      "gold": 1,
+      "caught": 1,
+      "recall": 1.0,
+      "predicted": 1,
+      "correct": 1,
+      "precision": 1.0,
+      "missed_in": []
+    },
+    "PERSON": {
+      "gold": 69,
+      "caught": 20,
+      "recall": 0.2898550724637681,
+      "predicted": 21,
+      "correct": 21,
+      "precision": 1.0,
+      "missed_in": [
+        "zor-001",
+        "zor-002",
+        "zor-003",
+        "zor-004",
+        "zor-005",
+        "zor-006",
+        "zor-009",
+        "zor-010",
+        "zor-011",
+        "zor-012"
+      ]
+    }
+  },
+  "micro": {
+    "recall": 0.30985915492957744,
+    "precision": 1.0
+  },
+  "kappa": {
+    "double_annotated": 0,
+    "kappa": null
+  },
+  "gate_15_3_2": {
+    "PERSON": {
+      "threshold": 0.995,
+      "recall": 0.2898550724637681,
+      "passed": false
+    },
+    "TCKN": {
+      "threshold": 1.0,
+      "recall": null,
+      "passed": false
+    },
+    "IBAN": {
+      "threshold": 1.0,
+      "recall": null,
+      "passed": false
+    },
+    "PHONE": {
+      "threshold": 1.0,
+      "recall": null,
+      "passed": false
+    },
+    "EMAIL": {
+      "threshold": 1.0,
+      "recall": null,
+      "passed": false
+    },
+    "precision": {
+      "threshold": 0.95,
+      "value": 1.0,
+      "passed": true
+    }
+  },
+  "ner": "none"
+}
