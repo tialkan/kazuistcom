@@ -1,0 +1,52 @@
+{
+  "tarih": "2026-11-07",
+  "set": "rag-50-2026-11-07",
+  "kisaGovde": 12,
+  "rows": [
+    {
+      "esik": 12,
+      "alinti": 39609,
+      "genel": 5753,
+      "genelOran": 0.14524476760332247,
+      "kapsamDisi": 0,
+      "kunyeYeterli": 415,
+      "pasaj": 415
+    },
+    {
+      "esik": 16,
+      "alinti": 39415,
+      "genel": 3941,
+      "genelOran": 0.09998731447418495,
+      "kapsamDisi": 2,
+      "kunyeYeterli": 415,
+      "pasaj": 415
+    },
+    {
+      "esik": 20,
+      "alinti": 39238,
+      "genel": 2574,
+      "genelOran": 0.06559967378561599,
+      "kapsamDisi": 2,
+      "kunyeYeterli": 415,
+      "pasaj": 415
+    },
+    {
+      "esik": 24,
+      "alinti": 39035,
+      "genel": 1981,
+      "genelOran": 0.05074932752657871,
+      "kapsamDisi": 4,
+      "kunyeYeterli": 415,
+      "pasaj": 415
+    },
+    {
+      "esik": 32,
+      "alinti": 38587,
+      "genel": 1453,
+      "genelOran": 0.03765516883924638,
+      "kapsamDisi": 5,
+      "kunyeYeterli": 415,
+      "pasaj": 415
+    }
+  ]
+}

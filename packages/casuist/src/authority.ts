@@ -43,6 +43,25 @@ export function classifyAuthority(r: AuthorityInput): AuthorityClass {
   return 'emsal_sinirli';
 }
 
+/** Jurisdictions whose decisions and norms can bind in Türkiye (plan 6.3: TR, AİHS). */
+export const DOMESTIC_JURISDICTIONS: readonly string[] = ['TR', 'AİHS', 'AIHS'];
+
+/**
+ * Authority class served for a stored record (plan Ek F): EU law, ABAD and foreign decisions are "karşılaştırmalı"
+ * and never bind in Türkiye, whatever an earlier ingest stored (the EUR-Lex connector wrote "baglayici_norm" and
+ * its upsert does not rewrite authority_class). Doctrine stays doctrine. sql.ts applies the same rule in SQL
+ * (SERVED_AUTHORITY), so filters and labels agree.
+ */
+export function servedAuthority(r: {
+  type: RecordType;
+  jurisdiction: string;
+  authorityClass: AuthorityClass;
+}): AuthorityClass {
+  if (r.type === 'makale' || r.type === 'kitap' || r.type === 'tez') return r.authorityClass;
+  if (r.type === 'ab_hukuku' || !DOMESTIC_JURISDICTIONS.includes(r.jurisdiction)) return 'karsilastirmali';
+  return r.authorityClass;
+}
+
 /** Binding classes for Ek D rule 6 and plan 7.4/6 ("destekleyici kaynak" otherwise). */
 export const BINDING: ReadonlySet<AuthorityClass> = new Set(['baglayici_norm', 'baglayici_karar']);
 export const isBinding = (a: AuthorityClass): boolean => BINDING.has(a);

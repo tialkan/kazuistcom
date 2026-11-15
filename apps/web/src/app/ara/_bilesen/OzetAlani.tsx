@@ -26,6 +26,8 @@ export interface OzetAlaniProps {
   q: string;
   filtreler: { type?: string; from?: string; to?: string; court?: string };
   girisVar: boolean;
+  /** Sign in link that returns to this search (/giris?sonra=...). */
+  girisAdresi: string;
   /** Record ids of the result cards on this page, so a chip can jump to its card. */
   gorunenKayitlar: string[];
 }
@@ -45,7 +47,7 @@ const HATA_KODLARI: Record<number, string> = {
  * in this browser (plan 8.1, K-08) the same area runs the BYOK istemci protocol instead: the browser calls
  * OpenRouter directly with the user's key and no credit or daily allowance is used.
  */
-export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlaniProps) {
+export function OzetAlani({ q, filtreler, girisVar, girisAdresi, gorunenKayitlar }: OzetAlaniProps) {
   const [asama, setAsama] = useState<Asama>(girisVar ? 'bekliyor' : 'giris');
   const [cumleler, setCumleler] = useState<Cumle[]>([]);
   const [uyarilar, setUyarilar] = useState<Uyari[]>([]);
@@ -195,7 +197,7 @@ export function OzetAlani({ q, filtreler, girisVar, gorunenKayitlar }: OzetAlani
       <p className={styles.ozetAciklama}>{ozet.aciklama}</p>
       {asama === 'giris' ? (
         <p className={styles.ozetGiris}>
-          {ozet.girisGerekli} <a href="/giris">{ozet.girisBag}</a>
+          {ozet.girisGerekli} <a href={girisAdresi}>{ozet.girisBag}</a>
         </p>
       ) : (
         <>

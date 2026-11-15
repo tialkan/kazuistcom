@@ -47,6 +47,85 @@ sunucuda ilk geri yükleme testi ve raporu; kapalı prova alt alanı için DNS o
 `exclude_from_hc` davranışının kurulum günü doğrulanması; arm64 derlemesi (yalnız Arm sunucu seçilirse); sürekli WAL
 arşivi (RPO 6 saatten kısa istenirse); hukuk-uyum için yedeklerde silinen hesap verisinin 6 aya kadar kalması.
 
+## 15 Kasım 2026, yz-gecidi: kaynaklı özet talimatı doğrulayıcının yeni kurallarıyla (yz-gecidi/ozet-talimati-dogrulayici)
+
+Orkestra görevi: #101'in doğrulayıcı kurallarını modele söylemek, Ek D'yi #102 sonrası plan metniyle hizalı
+tutmak. Dal #101'in dalından açıldı; main (#90-#102, #102 dahil) içine birleştirildi. `packages/contracts`,
+`packages/db` ve `plan.md` bu dalda değişmedi (plan.md main ile aynı); yeni bağımlılık yok. Ayrıca
+main'deki eski yz-gecidi satırının ikinci kopyası `docs/ilerleme.md`'den çıkarıldı (kimlik satırının kopyası kaldı).
+- Birleştirme çakışmaları (casuist yolları, sahibine bilgi): `packages/casuist/src/answer/passages.ts` main'in
+  `promptPassage` yardımcısı #101'in `body` ve `section` alanlarıyla birleşti (künye artık `kunye(r, section)`;
+  `loadPromptPassages` de bölümlü künyeyi yeniden kurar); `apps/web/src/app/ara/_sunucu/sql.test.ts` içe aktarma
+  listesi; `DEVIR.md` ve `docs/ilerleme.md` iki tarafın satırları korunarak.
+- `packages/ai-gateway/src/prompt.ts` `SOURCED_SUMMARY_SYSTEM`: Ek D.1'in her satırı birebir (kural 2 #102
+  metniyle: en az 20 karakter, künye satırından değil gövdeden, olumsuzluk korunur). Ek D'de olmayan üç ek: künye
+  paragrafı (ilk satır künye, gerisi gövde, kararda "(Bölüm: ...)"), kural 3'e yazıyla sayı ve birim cümlesi
+  ("on beş gün" için "15 gün" olur, "otuz gün" ve "on beş iş günü" olmaz), kural 6'ya iddia ve savunma, yargılama
+  süreci ve karşı oy pasajının hükmü tek başına kurmadığı cümle. Kural numaraları 1-9 aynı. Ekler için plan isteği:
+  `docs/istekler/yz-gecidi-ek-d-talimat.md` (önerilen Ek D.1, 7.4/3, 7.4/6, D.2/c ve pasaj biçimi metni).
+- Tarayıcı kopyası yok: BYOK istemcisi talimatı `/v1/answers/prepare` paketinden (`bundle.system`, HMAC kapsamında)
+  alır; değişiklik kendiliğinden geçer.
+- Testler: `test/prompt.test.ts` (15): plan.md Ek D.1'in her satırı talimatta, dokuz kural sırasıyla; her kural
+  için ifade; `MIN_QUOTE_CHARS`, `SECTION_LABELS`, `NON_BINDING_SECTIONS` ve `kunye()` ile çapraz denetim;
+  talimattaki örnekler casuist doğrulayıcısında aynı sonucu veriyor (`alinti_kisa`, `alinti_bulunamadi`,
+  `olumsuzluk`, `dayanaksiz_sayi`, `destekleyici`). Eski talimatla 15 testin 8'i düşüyor (elle denendi).
+- Ölçüm düzeneği: `test/ozet-ab.ts` 50 soruyu fikstürde arar, üretimdeki gibi maskeler ve sarar, çıktıyı
+  `parseJsonLines` ve doğrulayıcıyla sayar (yalnız sayı, metin yok); `test/ozet-ab.test.ts` betikli modelle
+  düzeneği sınar (36/36 kabul, künye alıntısı 50/50 düşer, 15 karakterlik alıntı 36/36 çekimser);
+  `test/ozet-ab.live.test.ts` ve `pnpm --filter @kazuist/ai-gateway test:ab` eski ve yeni talimatı gerçek modelle
+  karşılaştırır (OpenRouter, zdr, 2 x 50 çağrı, tahminen 0,45 M girdi tokenı).
+- Doğrulama (main #90, #91 ve #102 birleştikten sonra): typecheck, lint, check:text, build temiz; testler gateway
+  143/3 skip, web 756/1 skip, casuist 119, worker-node 118, ledger 174, contracts 152, db 54, ui 31, i18n 23,
+  worker-py 450/15 skip, enjeksiyon 60/60 önce ve sonra. `node eval/rag/olc.ts` önce ve sonra aynı (getirme 36/36, birebir satır 36/36, birebir cümle 67/67,
+  saldırı 0/283; yalnız arama süresi oynadı). Bu iki set talimatı modele göndermez; modelli çekimserlik ölçülmedi
+  ve geçti sayılmadı: `~/Desktop/kazuist-openrouter.txt` yok.
+- Açık: canlı A/B (anahtar dosyası gelince `test:ab`); orkestra Ek D eklerini plana alır; ADR-0001'deki "en az 12
+  karakter" ifadesi mimarındır.
+
+## 15 Kasım 2026, casuist: dış inceleme düzeltmeleri, doğrulayıcı, karar bölümleri, AND öncelikli arama (casuist/inceleme-dogrulayici-arama)
+
+Orkestra görevi: dış incelemenin beş maddesi. `packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+Komşu işler: `docs/istekler/casuist-arama-kalitesi.md` (mimar `degraded` alanı, veri-toplama AB satırları,
+yz-gecidi ve plan Ek D metni, altyapı CI adımı).
+- Doğrulayıcı (`packages/casuist/src/answer/`): alıntı künye satırından değil pasaj gövdesinden (`body`); sayı
+  denetimi künyeyi kapsamaya devam eder. `MIN_QUOTE_CHARS` 12'den 20'ye (ölçüm `eval/rag/alinti.ts`, rapor
+  `eval/rag/raporlar/alinti-esigi.md`: 12'de %14,5, 16'da %10,0, 20'de %6,6, 24'te %5,1, 32'de %3,8 genel alıntı;
+  dirsek 20, alıntılanamayan yalnız "III. Tazminat" gibi başlık parçaları). Yazıyla sayı ve birim
+  (`quantities.ts`: bir..doksan, yüz, bin, milyon, milyar, birleşik "onbeş", gün/ay/yıl/iş günü/yüzde/lira ...):
+  aynı değer ve birim gerekir, "15 gün" ile "on beş gün" birbirini karşılar, "on beş gün" ile "otuz gün" düşer.
+  Olumsuzluk (`negation.ts`, ret nedeni `olumsuzluk`): -mA- eki ünlü uyumuyla (kararname, komedi dışarıda),
+  -mAzlIk adları, "işlenip işlenmediğini" ve "yok edilir" olumsuz sayılmaz; alıntı kelime sonuna ve ardından gelen
+  "değil/yok"a uzatılır; eklenen, düşen ve fiil bazında çevrilen (-AmAz/-Abilir) olumsuzluk düşer. Durumu
+  değişti, yürürlükten kalktı ya da bozuldu olan kaynakta `guncellik` uyarısı her zaman (ozet.json metni
+  güncellendi).
+- Karar bölümleri: `chunk.ts` ve `services/worker-py/nlp/chunk.py` (ikisi de casuist'in) karar ve kurul kararında
+  başlıkları tanır (satır başında ve satırı birleşmiş metinlerde cümle sonundan sonra numaralı başlık): `iddia`,
+  `surec`, `gerekce`, `hukum`, `karsi_oy`. Başlık yeni parça başlatır; yalnız başlık olan satır sonrakine katılır.
+  `parcalar.json` bölümlerle yeniden üretildi, Python eşliği testte. Worker kayıt türünü okur (`READ_SQL`
+  `type::text`). İddia, süreç ve karşı oy pasajı bağlayıcı kayıttan gelse de cümleyi tek başına bağlayıcı yapmaz
+  (`bindingPassage`, `destekleyici`); bölüm künyede "(Bölüm: karşı oy)" olarak modele ve imzalı isteme geçer.
+- EUR-Lex: `connectors/eurlex.py` `karsilastirmali` (veri-toplama yolu, orkestra talimatıyla tek satır ve test).
+  Eski satırlar upsert ile düzelmediği için casuist `SERVED_AUTHORITY`/`servedAuthority` ile AB ve yabancı kayıtları
+  etikette ve otorite süzgecinde karşılaştırmalı sunar (doktrin hariç); canlı kaynak kayıtlarına da uygulanır.
+- Arama: `sql.ts` tam metin kolu önce `websearch_to_tsquery('turkish')` (AND, tırnaklı ifade korunur, operatör
+  geçmez), 5 kayıttan azsa OR sorgusu eklenir (`OR_FALLBACK_BELOW`, ölçüm için `fullText: 'or'`). `degraded`
+  `/v1/search` yanıtında (boş değilken) ve `/ara`'da "Kısıtlı arama" notu (`KisitliArama.tsx`).
+- `/ara`: özet ve Kaydet giriş bağlantıları `/giris?sonra=` ile aynı aramaya döner (`donusAdresi`: safeNext'in
+  kabul ettiği katı yüzde kodlama, 200 karakter sınırı); taranan kaynaklar listesinde Yargıtay yok (bağlayıcısı
+  yok), Rekabet ve OpenAlex/Crossref eklendi, fikstür kipinde fikstür içeriği yazılır; meta açıklaması mahkeme
+  kararı iddia etmiyor.
+- Ölçüm (50 soruluk set, fikstür): getirme ilk 10 %100 (36/36) önce ve sonra; birebir satır 36/36; ilk üç pasajın
+  ilk cümlesi birebir 67/67 (önce 69/69, parça sınırları değişti). Yeni saldırılar önceki kodda 139/283 satır
+  gösterdi (künyeden alıntı 36/36, yazıyla sayı 36/36, eklenen olumsuzluk 34/34, düşen olumsuzluk 33/33), şimdi
+  0/283. PostgreSQL (PGlite) üzerinde OR ve AND öncelikli: recall@10 1,0 ve MRR@10 0,905 aynı; 36 sorunun hiçbirinde
+  AND tek başına 5 kayda ulaşmadı (75 kayıtlık derlem), yani bu sette etki ölçülemedi; gerçek corpus ölçülmedi.
+- Test: casuist 118, web 675/1 skip (yeni: giriş dönüşü, Kısıtlı arama, AND öncelikli, AB otoritesi, set-50
+  PostgreSQL), worker-py 312/10 skip, enjeksiyon 60/60; typecheck, lint, check:text, build yeşil. Yerel üretim
+  derlemesinde (fikstür) `/ara` 375/768/1440 axe ihlali 0; dönüş bağlantısı `/giris` sayfasına safeNext'ten geçerek
+  ulaşıyor. "Kısıtlı arama" notu fikstürde görünmez (fikstürün vektör kolu var); render testiyle doğrulandı.
+- Açık: plan Ek D metni ve model talimatı yeni kurallara göre (istek madde 3), üretimde AB satırlarının veri
+  düzeltmesi (Tarık onayı), `degraded` sözleşme alanı, olc.ts'in CI adımı.
+
 ## 14 Kasım 2026, kimlik: atıf kuyruğu kararları, bildirim ve push uçları, iade bağlantısı (kimlik/v1-5-atif-bildirim-iade)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` kimlik madde 3 ve 4; `hukuk-uyum-p5-tutarlilik.md` madde 4 ikinci

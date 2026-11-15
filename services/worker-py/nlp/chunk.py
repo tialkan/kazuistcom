@@ -12,6 +12,10 @@ sides must therefore agree on every boundary. Two JavaScript details are reprodu
 packages/casuist/fixtures/parcalar.json holds the expected boundaries for the fixture corpus and for edge
 cases; the TypeScript and the Python tests both check it, so a change on one side fails until the other
 follows. No function here logs or stores text.
+
+Decisions (karar, kurul_karari) are cut with sections=True: a recognised heading (GEREKÇE, HÜKÜM, KARŞI OY ...)
+starts a new passage and labels it (chunks.section: iddia, surec, gerekce, hukum, karsi_oy). The heading table
+and the rules are those of chunk.ts SECTION_HEADINGS and headingAt.
 """
 
 from __future__ import annotations
@@ -36,6 +40,142 @@ ABBREVIATIONS = ("md", "vd", "bkz", "age", "dn", "no", "art", "sy", "syf", "vb",
 _PUNCT = frozenset(".!?;:")
 _OPENERS = frozenset('(“"0123456789')
 _LINES = re.compile(r"[^\n]+")
+
+SECTIONED_TYPES = frozenset({"karar", "kurul_karari"})
+
+# chunk.ts SECTION_HEADINGS, same order: headings as published (upper case, Turkish letters).
+SECTION_HEADINGS: Tuple[Tuple[str, Tuple[str, ...]], ...] = (
+    (
+        "karsi_oy",
+        (
+            "KARŞI OY",
+            "KARŞIOY",
+            "KARŞI OY GEREKÇESİ",
+            "KARŞI OY YAZISI",
+            "MUHALEFET ŞERHİ",
+            "AZLIK OYU",
+            "AZLIK GÖRÜŞÜ",
+            "AYRIŞIK OY",
+            "FARKLI GEREKÇE",
+            "DEĞİŞİK GEREKÇE",
+            "EK GEREKÇE",
+            "KARŞI GÖRÜŞ",
+        ),
+    ),
+    (
+        "iddia",
+        (
+            "DAVA",
+            "DAVACI İSTEMİ",
+            "DAVACININ İSTEMİ",
+            "DAVACI İDDİASI",
+            "DAVACININ İDDİALARI",
+            "DAVACI İDDİALARI",
+            "İDDİA",
+            "İDDİALAR",
+            "İDDİALARIN ÖZETİ",
+            "İSTEM",
+            "İSTEMİN ÖZETİ",
+            "İSTEMİN KONUSU",
+            "CEVAP",
+            "DAVALI CEVABI",
+            "DAVALININ CEVABI",
+            "SAVUNMA",
+            "SAVUNMANIN ÖZETİ",
+            "TARAFLARIN İDDİA VE SAVUNMALARI",
+            "TEMYİZ SEBEPLERİ",
+            "TEMYİZ İSTEMİ",
+            "TEMYİZ YOLUNA BAŞVURANLAR",
+            "BAŞVURUNUN KONUSU",
+            "BAŞVURUCUNUN İDDİALARI",
+            "İPTAL DAVASININ KONUSU",
+            "İPTAL TALEBİNİN GEREKÇESİ",
+            "TEBLİĞNAME",
+        ),
+    ),
+    (
+        "surec",
+        (
+            "YARGILAMA SÜRECİ",
+            "BAŞVURU SÜRECİ",
+            "DOSYA EVRESİ",
+            "OLAY VE OLGULAR",
+            "OLAYLAR",
+            "İLK DERECE MAHKEMESİ KARARI",
+            "BÖLGE ADLİYE MAHKEMESİ KARARI",
+            "BÖLGE İDARE MAHKEMESİ KARARI",
+            "İSTİNAF",
+            "TEMYİZ",
+            "İNCELENEN KARAR",
+            "BOZMA KARARI",
+            "DİRENME KARARI",
+            "RAPORTÖR GÖRÜŞÜ",
+            "DANIŞTAY TETKİK HÂKİMİ DÜŞÜNCESİ",
+            "DANIŞTAY TETKİK HAKİMİ DÜŞÜNCESİ",
+            "DANIŞTAY SAVCISI DÜŞÜNCESİ",
+        ),
+    ),
+    (
+        "gerekce",
+        (
+            "GEREKÇE",
+            "İNCELEME VE GEREKÇE",
+            "DEĞERLENDİRME",
+            "İNCELEME VE DEĞERLENDİRME",
+            "DEĞERLENDİRME VE GEREKÇE",
+            "UYUŞMAZLIK",
+            "UYUŞMAZLIK KONUSU",
+            "İLGİLİ HUKUK",
+            "ESASIN İNCELENMESİ",
+            "HUKUK GENEL KURULU KARARI",
+            "CEZA GENEL KURULU KARARI",
+            "DAİRE KARARI",
+        ),
+    ),
+    ("hukum", ("HÜKÜM", "HÜKÜM SONUCU", "KARAR", "SONUÇ", "SONUÇ VE KARAR")),
+)
+_CONJUNCTIONS = frozenset({"VE", "İLE", "VEYA"})
+
+
+def tr_lower(s: str) -> str:
+    """chunk.ts trLower: İ to i, I to ı, then the default lower case mapping."""
+    return s.replace("İ", "i").replace("I", "ı").lower()
+
+
+def _mixed_forms(upper: str) -> List[str]:
+    words = upper.split(" ")
+
+    def cap(w: str) -> str:
+        return w[:1] + tr_lower(w[1:])
+
+    title = " ".join(cap(w) for w in words)
+    title_lower = " ".join(
+        tr_lower(w) if i > 0 and w in _CONJUNCTIONS else cap(w) for i, w in enumerate(words)
+    )
+    sentence = upper[:1] + tr_lower(upper[1:])
+    return list(dict.fromkeys([title, title_lower, sentence]))
+
+
+@dataclass(frozen=True)
+class _Form:
+    section: str
+    text: str
+    upper: bool
+
+
+# Longer forms first; at equal length the upper case form first (a stable sort, as in chunk.ts).
+_FORMS: List[_Form] = sorted(
+    (
+        form
+        for section, headings in SECTION_HEADINGS
+        for h in headings
+        for form in [_Form(section, h, True)] + [_Form(section, t, False) for t in _mixed_forms(h)]
+    ),
+    key=lambda f: (-len(f.text), not f.upper),
+)
+# Optional enumerator before a heading ("III.", "II.GEREKÇE", "C.", "A-", "2)"); group 1 is a digit form.
+_ENUMERATOR = re.compile(r"(?:(?:[IVX]{1,6}|[A-ZÇĞİÖŞÜ]|([0-9]{1,3}))[ \t]*[.)\-][ \t]*)?")
+_COLON = re.compile(r"[ \t]*:")
 
 
 @dataclass(frozen=True)
@@ -147,6 +287,116 @@ def sentence_ends(window: str) -> List[int]:
     ]
 
 
+def _first_word(s: str) -> str:
+    """chunk.ts firstWord: after leading JavaScript whitespace, up to the next whitespace (unit string)."""
+    i = 0
+    while i < len(s) and s[i] in JS_WHITESPACE:
+        i += 1
+    j = i
+    while j < len(s) and s[j] not in JS_WHITESPACE:
+        j += 1
+    return s[i:j]
+
+
+def heading_at(line: str, pos: int) -> Optional[Tuple[str, int]]:
+    """chunk.ts headingAt on a unit string: (section, index after the heading and its colon) or None."""
+    line_start = pos == 0
+    s = line[pos:]
+    en = _ENUMERATOR.match(s)
+    en_len = en.end() if en else 0
+    has_enum = en_len > 0 and (line_start or (en is not None and en.group(1) is None))
+    if en_len > 0 and not has_enum:
+        return None
+    rest = s[en_len:]
+    for f in _FORMS:
+        if not rest.startswith(f.text):
+            continue
+        after = rest[len(f.text) :]
+        colon = _COLON.match(after)
+        end = pos + en_len + len(f.text) + (colon.end() if colon else 0)
+        if after == "" or colon:
+            if line_start or has_enum or f.upper:
+                return f.section, end
+            continue
+        first_is_space = after[0] in JS_WHITESPACE
+        if not first_is_space and not (f.upper and after[0] in ".;-"):
+            continue
+        nxt = from_units(_first_word(after))
+        if f.upper:
+            if not line_start and not has_enum and f.section != "karsi_oy":
+                continue
+            letters = [c for c in nxt if _is_letter(c)]
+            header_field = len(letters) >= 2 and all(unicodedata.category(c) == "Lu" for c in letters)
+            if not header_field:
+                return f.section, end
+        elif has_enum and first_is_space and nxt and unicodedata.category(nxt[0]) == "Lu":
+            return f.section, end
+    return None
+
+
+def section_heading(paragraph: str) -> Optional[str]:
+    """Section that a paragraph opens, or None (chunk.ts sectionHeading)."""
+    found = heading_at(to_units(paragraph), 0)
+    return found[0] if found else None
+
+
+def _sentence_end_positions(line: str) -> List[int]:
+    """Ends of the matches of /[.:;]\\s+/gu, non overlapping as in matchAll."""
+    out: List[int] = []
+    i, n = 0, len(line)
+    while i < n:
+        if line[i] in ".:;" and i + 1 < n and line[i + 1] in JS_WHITESPACE:
+            j = i + 1
+            while j < n and line[j] in JS_WHITESPACE:
+                j += 1
+            out.append(j)
+            i = j
+        else:
+            i += 1
+    return out
+
+
+def headings_in(line: str) -> List[Tuple[int, str, int]]:
+    """chunk.ts headingsIn on a unit string: (position, section, end) at the start, after sentence ends and
+    right after another heading, in order."""
+    ends = _sentence_end_positions(line)
+    out: List[Tuple[int, str, int]] = []
+    floor = 0
+    nested: Optional[int] = 0
+    k = 0
+    while True:
+        while k < len(ends) and ends[k] < floor:
+            k += 1
+        e = ends[k] if k < len(ends) else None
+        if nested is not None and (e is None or nested <= e):
+            pos = nested
+            nested = None
+            if e == pos:
+                k += 1
+        elif e is not None:
+            pos = e
+            k += 1
+        else:
+            break
+        h = heading_at(line, pos)
+        if h is None:
+            continue
+        out.append((pos, h[0], h[1]))
+        floor = h[1]
+        q = h[1]
+        while q < len(line) and line[q] in JS_WHITESPACE:
+            q += 1
+        nested = q if q < len(line) else None
+    return out
+
+
+def _js_trim_end(s: str) -> str:
+    end = len(s)
+    while end > 0 and s[end - 1] in JS_WHITESPACE:
+        end -= 1
+    return s[:end]
+
+
 def _split_long(text: str, start: int, mx: int) -> List[Tuple[str, int]]:
     out: List[Tuple[str, int]] = []
     frm = 0
@@ -168,26 +418,92 @@ def _split_long(text: str, start: int, mx: int) -> List[Tuple[str, int]]:
     return out
 
 
-def chunk_text(text: str, max_chars: int = DEFAULT_MAX, min_chars: int = DEFAULT_MIN) -> List[Chunk]:
-    """chunkText(recordId, text, {max, min}): paragraphs kept whole when they fit, merged when short and
-    split at sentence ends when long. Returns [] for empty or whitespace only text."""
+@dataclass
+class _Segment:
+    frm: int
+    to: int
+    section: Optional[str]
+    opens: bool
+    head_end: int = 0
+
+
+@dataclass
+class _Paragraph:
+    text: str
+    start: int
+    section: Optional[str]
+    opens: bool
+    head_only: bool
+
+
+@dataclass
+class _Merged:
+    start: int
+    end: int
+    section: Optional[str]
+    head_only: bool
+
+
+def chunk_text(
+    text: str, max_chars: int = DEFAULT_MAX, min_chars: int = DEFAULT_MIN, sections: bool = False
+) -> List[Chunk]:
+    """chunkText(recordId, text, {max, min, sections}): paragraphs kept whole when they fit, merged when short
+    and split at sentence ends when long. With sections, a decision heading starts a new passage and labels it;
+    a heading alone is joined to the next one. Returns [] for empty or whitespace only text."""
     u = to_units(text)
-    paragraphs: List[Tuple[str, int]] = []
+    paragraphs: List[_Paragraph] = []
+    section: Optional[str] = None
     for m in _LINES.finditer(u):
         seg = m.group()
         t = js_trim(seg)
         if not t:
             continue
         start = m.start() + seg.index(t)
-        paragraphs.extend(_split_long(t, start, max_chars) if len(t) > max_chars else [(t, start)])
-    merged: List[List[int]] = []
-    for t, start in paragraphs:
-        end = start + len(t)
+        cur = _Segment(0, len(t), section, False)
+        segs = [cur]
+        if sections:
+            join_at = -1
+            for pos, sec, end in headings_in(t):
+                if pos == join_at or (pos == 0 and cur.frm == 0):
+                    cur.section = sec
+                    cur.opens = True
+                else:
+                    cur.to = pos
+                    cur = _Segment(pos, len(t), sec, True)
+                    segs.append(cur)
+                cur.head_end = end
+                q = end
+                while q < len(t) and t[q] in JS_WHITESPACE:
+                    q += 1
+                join_at = q
+        for g in segs:
+            body = _js_trim_end(t[g.frm : g.to])
+            if not body:
+                continue
+            section = g.section
+            at = start + g.frm
+            head_only = g.opens and g.head_end >= g.frm + len(body)
+            pieces = _split_long(body, at, max_chars) if len(body) > max_chars else [(body, at)]
+            for i, (pt, ps) in enumerate(pieces):
+                paragraphs.append(_Paragraph(pt, ps, g.section, g.opens and i == 0, head_only and i == 0))
+    merged: List[_Merged] = []
+    for p in paragraphs:
+        end = p.start + len(p.text)
         last = merged[-1] if merged else None
-        if last is not None and last[1] - last[0] < min_chars and end - last[0] <= max_chars:
-            last[1] = end
+        if (
+            last is not None
+            and (last.head_only if p.opens else last.end - last.start < min_chars)
+            and end - last.start <= max_chars
+        ):
+            last.end = end
+            if p.opens:
+                last.section = p.section
+            last.head_only = p.opens and p.head_only
         else:
-            merged.append([start, end])
+            merged.append(_Merged(p.start, end, p.section, p.head_only))
     return [
-        Chunk(seq=i, text=from_units(u[s:e]), char_start=s, char_end=e) for i, (s, e) in enumerate(merged)
+        Chunk(
+            seq=i, text=from_units(u[m.start : m.end]), char_start=m.start, char_end=m.end, section=m.section
+        )
+        for i, m in enumerate(merged)
     ]

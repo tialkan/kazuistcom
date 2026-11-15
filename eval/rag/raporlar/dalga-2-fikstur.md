@@ -11,7 +11,7 @@ Gerçek corpus ve gerçek model olmadan ölçülemeyen her eşik "ölçülmedi" 
 | Desteksiz cümle oranı (insan değerlendirmesi) | %1 altı (200 soru) | yok | ölçülmedi | İnsan değerlendirmesi ve gerçek model çıktısı gerekir. |
 | Cevapsız sorularda doğru çekimserlik | %90 ve üstü | yok | ölçülmedi | Model çıktısı gerekir; getirmenin cevapsız sorulardaki en üst ilgililiği aşağıda bilgi olarak verildi. |
 | Beklenen kaynaklardan en az biri ilk 10'da | %85 ve üstü | %100.0 (36/36) | geçti | Yalnız 75 kayıtlık fikstür derleminde ve karakter üçlüsü vektörüyle; gerçek corpus ve embedding modeliyle yeniden ölçülmeli. |
-| Arama p95 | 1,5 sn ve altı | 4.0 ms (p50 2.7 ms) | ölçülmedi | Bellek içi fikstür süresidir; PostgreSQL, embedding servisi ve 200 eşzamanlı istekle (k6) ölçülmedi. |
+| Arama p95 | 1,5 sn ve altı | 3.9 ms (p50 2.8 ms) | ölçülmedi | Bellek içi fikstür süresidir; PostgreSQL, embedding servisi ve 200 eşzamanlı istekle (k6) ölçülmedi. |
 | İlk doğrulanmış cümle p95 | 3 sn ve altı | yok | ölçülmedi | Gerçek sağlayıcıyla akış ölçümü yapılmadı. |
 | Kişi adı sızıntısı | 0 | doğrulayıcı 0/36 saldırgan satırı geçirdi | ölçülmedi | Kural tabanlı ad denetimi saldırgan satırları durdurdu; NER bağlanmadı ve gerçek modelle ölçülmedi. |
 
@@ -21,20 +21,32 @@ Gerçek corpus ve gerçek model olmadan ölçülemeyen her eşik "ölçülmedi" 
 
 ## Doğrulayıcı saldırı satırları
 
-Her cevaplı soru için en ilgili pasajdan birebir alıntılı bir satır ve dört saldırgan satır denendi.
-Birebir alıntılı satır kabulü: 36/36. Saldırgan satırlardan gösterilen: uydurma kimlik 0,
-sahte alıntı 0, dayanaksız sayı 0, kişi adı 0 (toplam 144 satır).
+Her cevaplı soru için en ilgili pasajdan birebir alıntılı bir satır ve saldırgan satırlar denendi (olumsuzluk
+saldırıları yalnız uygun pasaj bulunan sorularda). Birebir alıntılı satır kabulü: 36/36.
+İlk üç pasajın ilk tam cümlesi birebir yazılıp alıntılandığında kabul: 67/67.
+
+| Saldırı | Gösterilen / denenen |
+|---|---|
+| Uydurma kimlik | 0/36 |
+| Sahte alıntı | 0/36 |
+| Dayanaksız sayı | 0/36 |
+| Kişi adı | 0/36 |
+| Yalnız künyeden alıntı | 0/36 |
+| Yazıyla dayanaksız sayı (kırk yedi gün) | 0/36 |
+| Eklenen olumsuzluk (değildir) | 0/34 |
+| Düşen olumsuzluk (-AmAz yerine -Abilir) | 0/33 |
+| Toplam | 0/283 |
 
 ## Cevapsız sorularda getirmenin en üst sonucu
 
 - u01: ilgililik 0.4 (ilgililik_orta)
-- u02: ilgililik 0.306 (ilgililik_orta)
+- u02: ilgililik 0.308 (ilgililik_orta)
 - u03: ilgililik 0.115 (ilgililik_arka_plan)
 - u04: ilgililik 0.287 (ilgililik_arka_plan)
 - u05: ilgililik 0.192 (ilgililik_arka_plan)
-- u06: ilgililik 0.46 (ilgililik_orta)
+- u06: ilgililik 0.48 (ilgililik_orta)
 - u07: ilgililik 0.345 (ilgililik_orta)
-- u08: ilgililik 0.286 (ilgililik_arka_plan)
+- u08: ilgililik 0.258 (ilgililik_arka_plan)
 - u09: ilgililik 0.262 (ilgililik_arka_plan)
 - u10: ilgililik 0.345 (ilgililik_orta)
 - t03: ilgililik 0.569 (ilgililik_orta)

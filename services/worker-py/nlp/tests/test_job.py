@@ -176,7 +176,11 @@ class FakeCursor:
     def execute(self, sql: str, params: Optional[Dict[str, Any]] = None) -> None:
         self.db.log.append((sql, params))
         if sql == store.READ_SQL:
-            self.rows = [(self.db.masked, text_digest(self.db.masked))] if self.db.masked is not None else []
+            self.rows = (
+                [(self.db.masked, text_digest(self.db.masked), self.db.type)]
+                if self.db.masked is not None
+                else []
+            )
         elif sql == store.LOCK_SQL:
             self.rows = [(text_digest(self.db.masked) if self.db.masked is not None else None,)]
         else:
@@ -191,8 +195,9 @@ class FakeCursor:
 
 
 class FakeDb:
-    def __init__(self, masked: Optional[str]) -> None:
+    def __init__(self, masked: Optional[str], record_type: str = "karar") -> None:
         self.masked = masked
+        self.type = record_type
         self.log: List[tuple] = []
         self.outcomes: List[str] = []
 
@@ -243,6 +248,33 @@ def test_vectorless_rows_bind_null_embedding_and_model() -> None:
     [insert] = [p for sql, p in db.log if sql == store.INSERT_CHUNK_SQL]
     assert insert["embedding"] is None and insert["model"] is None and insert["section"] is None
     assert (insert["start"], insert["end"], insert["seq"]) == (0, 25, 0)
+
+
+SECTIONED = (
+    "Bölge Adliye Mahkemesi kararı incelendi.\nI. DAVA\nDavacı tazminat istedi.\nII. GEREKÇE\n"
+    + ("Kişilik hakkı zedelendi. " * 12)
+    + "\nVI. KARAR\nOnanmasına karar verildi.\nKARŞI OY\nÇoğunluğa katılmıyorum."
+)
+
+
+@pytest.mark.parametrize(
+    ("record_type", "expected"),
+    [
+        ("karar", [None, "iddia", "gerekce", "hukum", "karsi_oy"]),
+        ("kurul_karari", [None, "iddia", "gerekce", "hukum", "karsi_oy"]),
+        ("mevzuat", [None, None]),  # same text, no labels and no section breaks
+    ],
+)
+def test_decisions_are_cut_along_their_sections(record_type: str, expected: List[Optional[str]]) -> None:
+    db = FakeDb(SECTIONED, record_type)
+    make_embed_handler(db.connect, NullEmbedder(), Logs())(job({"recordId": RID}))
+    inserts = [p for sql, p in db.log if sql == store.INSERT_CHUNK_SQL]
+    assert [p["section"] for p in inserts] == expected
+    for p in inserts:
+        assert SECTIONED[p["start"] : p["end"]] == p["text"]
+    s = MemoryEmbedStore({RID: {"text": RAW, "masked_text": SECTIONED, "type": record_type}})
+    make_embed_chunks_handler(s, NullEmbedder(), Logs())(job({"recordId": RID}))
+    assert [r["section"] for r in s.chunks[RID]] == expected
 
 
 def test_vector_literal() -> None:

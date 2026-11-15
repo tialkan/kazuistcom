@@ -5,9 +5,12 @@ import { vector } from '@electric-sql/pglite-pgvector';
 import { migrationsFolder } from '@kazuist/db';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
+import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
+  andTsQueryText,
   loadPromptPassages,
+  OR_FALLBACK_BELOW,
   parseQuery,
   search,
   selectPassages,
@@ -180,4 +183,112 @@ describe('sqlBackend over PostgreSQL (turkish tsvector, chunks, citation count)'
     expect(hits[0]?.score).toBeCloseTo(1);
     expect(await sqlBackend(db).vector!(v, 'baska-model', {}, 10)).toEqual([]);
   });
+
+  it('runs the AND query first and adds the OR query only when it finds fewer than 5 records', async () => {
+    const and = sqlBackend(db);
+    const or = sqlBackend(db, { fullText: 'or' });
+    // Many records hold every word: the AND leg alone answers, and each hit holds both words.
+    const q = parseQuery('kişisel veri');
+    const both = await and.fullText(q, {}, 100);
+    const any = await or.fullText(q, {}, 100);
+    expect(both.length).toBeGreaterThanOrEqual(OR_FALLBACK_BELOW);
+    expect(both.length).toBeLessThan(any.length);
+    for (const r of await and.records(both.map((h) => h.id)))
+      expect(`${r.title} ${r.text}`.toLocaleLowerCase('tr-TR')).toMatch(
+        /kişisel[\s\S]*veri|veri[\s\S]*kişisel/,
+      );
+    // A rare word plus a common one: too few AND hits, so the OR hits follow the AND hits.
+    const rare = parseQuery('unutulma tazminat');
+    const andRare = await and.fullText(rare, {}, 100);
+    const orRare = await or.fullText(rare, {}, 100);
+    expect(andRare.length).toBe(orRare.length);
+    expect(new Set(andRare.map((h) => h.id))).toEqual(new Set(orRare.map((h) => h.id)));
+  });
+
+  it('builds a safe websearch query: phrases kept, operators dropped', () => {
+    expect(andTsQueryText(parseQuery('"açık rıza" KVKK\'nın m.11 -silme or x'))).toBe(
+      '"açık rıza" kvkk 11 silme',
+    );
+    expect(andTsQueryText(parseQuery('<script> & | ! :*'))).toBe('script');
+  });
+
+  it('serves EU law as comparative even when an older ingest stored it as binding (plan Ek F)', async () => {
+    const gdpr = fixtureRecords().find((r) => r.type === 'ab_hukuku')!;
+    await pg.query(
+      `UPDATE records SET authority_class = 'baglayici_norm', jurisdiction = 'EU' WHERE id = $1`,
+      [gdpr.id],
+    );
+    const backend = sqlBackend(db);
+    const [rec] = await backend.records([gdpr.id]);
+    expect(rec?.authorityClass).toBe('karsilastirmali');
+    const binding = await backend.fullText(parseQuery('personal data'), { authority: 'baglayici_norm' }, 100);
+    expect(binding.map((h) => h.id)).not.toContain(gdpr.id);
+    const comparative = await backend.fullText(
+      parseQuery('personal data'),
+      { authority: 'karsilastirmali' },
+      100,
+    );
+    expect(comparative.map((h) => h.id)).toContain(gdpr.id);
+    await pg.query(
+      `UPDATE records SET authority_class = 'karsilastirmali', jurisdiction = 'AB' WHERE id = $1`,
+      [gdpr.id],
+    );
+  });
+});
+
+/**
+ * eval/rag on PostgreSQL: the 50 question set through sqlBackend (Turkish tsvector, no vector leg), recall of an
+ * expected source in the first 10 for the earlier OR only full text leg and for AND first. Printed for the
+ * measurement report; both must keep the plan 7.6 threshold of 85%.
+ */
+describe('eval/rag set-50 over PostgreSQL', () => {
+  it('keeps recall@10 at or above 85% with AND first', async () => {
+    const set = JSON.parse(
+      readFileSync(new URL('../../../../../../eval/rag/set-50.json', import.meta.url), 'utf8'),
+    ) as { sorular: { id: string; tur: string; soru: string; beklenen: string[] }[] };
+    const raw = JSON.parse(
+      readFileSync(
+        new URL('../../../../../../packages/casuist/fixtures/kayitlar.json', import.meta.url),
+        'utf8',
+      ),
+    ) as { kayitlar: { id: string; sourceKey: string }[] };
+    const idOf = new Map(raw.kayitlar.map((r) => [r.sourceKey, r.id]));
+    const answered = set.sorular.filter((s) => s.tur === 'cevapli');
+    const recall = async (mode: 'or' | 'and_first') => {
+      const backend = sqlBackend(db, { fullText: mode });
+      let hit = 0;
+      let rr = 0;
+      const missed: string[] = [];
+      for (const s of answered) {
+        const res = await search({ q: s.soru, pageSize: 10 }, { backend, now: NOW });
+        const want = new Set(s.beklenen.map((k) => idOf.get(k)));
+        const at = res.items.findIndex((r) => want.has(r.record.id));
+        if (at >= 0) {
+          hit++;
+          rr += 1 / (at + 1);
+        } else missed.push(s.id);
+      }
+      const n = answered.length;
+      return { recall10: Number((hit / n).toFixed(3)), mrr10: Number((rr / n).toFixed(3)), kacan: missed };
+    };
+    const or = await recall('or');
+    const andFirst = await recall('and_first');
+    // Questions the AND query answered on its own (at least OR_FALLBACK_BELOW records, no OR query).
+    let andAlone = 0;
+    for (const s of answered) {
+      const a = await sqlBackend(db).fullText(parseQuery(s.soru), {}, 100);
+      const o = await sqlBackend(db, { fullText: 'or' }).fullText(parseQuery(s.soru), {}, 100);
+      if (a.length < o.length) andAlone++;
+    }
+    console.log(
+      JSON.stringify({
+        olcum: 'eval-rag-postgres',
+        sorular: answered.length,
+        or,
+        and_first: andFirst,
+        andAlone,
+      }),
+    );
+    expect(andFirst.recall10).toBeGreaterThanOrEqual(0.85);
+  }, 60_000);
 });
