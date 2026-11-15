@@ -67,7 +67,6 @@
   "ozet": {
     "aktarim": "Kendi anahtarınızla çalışıyor ({model}). Sorunuz Kazuist sunucusunda kişisel verilerden arındırılır; arındırılmış soru ve kaynak pasajları tarayıcınızdan doğrudan OpenRouter'a gönderilir. Anahtarınız Kazuist sunucusuna gönderilmez.",
     "kredi": "Bu özet için kredi ya da günlük hak düşmez; kullanım bedeli OpenRouter hesabınıza yansır.",
-    "filtre": "Kendi anahtarınızla çıkarılan özet arama süzgeçlerini kullanmaz; kaynaklar bütün dizinden seçilir.",
     "ayarlar": "Anahtar ayarları",
     "kendiAnahtar": "Kendi OpenRouter anahtarınızla da çalışabilirsiniz.",
     "kendiAnahtarBag": "Kendi anahtarınızı ekleyin",

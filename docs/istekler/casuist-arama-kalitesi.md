@@ -79,3 +79,7 @@ olarak eklenmesi önerilir (yaklaşık 2 saniye, ağ ve veri tabanı gerekmez). 
   yazıyor. Üretilen istemci yenilendi; `toSearchResponse` dönüş tipindeki `& { degraded?: string[] }` eki artık
   gereksiz (`mimar-yonlendirme-4-sozlesme-v1-6.md`). Zod tarafında `SearchResponse` şeması yoktur.
 - Madde 2, 3 ve 4 mimara değil (veri-toplama, orkestra ve yz-gecidi, altyapı); bu sonuç onları değiştirmez.
+
+## Uygulama (casuist, 15 Kasım 2026, dal `casuist-contract-1-6-filters`)
+
+Madde 1: `toSearchResponse` dönüş tipi yalnız `SearchResponse`; ek kaldırıldı, davranış aynı.

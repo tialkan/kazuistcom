@@ -10,7 +10,7 @@ SRS "Kısa cevap" adında bir özellik tanımlıyor. kazuist.com bugün "Kazuist
 
 ## Karar
 
-Kazuist, Casuist kaynak bağlama çekirdeği (packages/casuist) üzerine kurulu araştırma ve yazma platformudur. SRS'teki "Kısa cevap" arayüzde "Kaynaklı özet" adını alır: her cümle en az bir kaynağa bağlanır, her kaynak için birebir dayanak alıntısı doğrulanır (en az 12 karakter, normalize edilmiş haliyle pasajda geçer), dayanak yetersizse sistem çekimser kalır. Akış ve doğrulayıcı plan 7.4 ve Ek D'dedir.
+Kazuist, Casuist kaynak bağlama çekirdeği (packages/casuist) üzerine kurulu araştırma ve yazma platformudur. SRS'teki "Kısa cevap" arayüzde "Kaynaklı özet" adını alır: her cümle en az bir kaynağa bağlanır, her kaynak için birebir dayanak alıntısı doğrulanır (en az 20 karakter, pasaj gövdesinden alınır, normalize edilmiş haliyle pasajda geçer; 15 Kasım 2026, plan 7.4/3), dayanak yetersizse sistem çekimser kalır. Akış ve doğrulayıcı plan 7.4 ve Ek D'dedir.
 
 ## Gerekçe
 

@@ -1,4 +1,4 @@
-import { PrepareResponse, VerifyResponse, type ModelLine } from '@kazuist/contracts';
+import { PrepareResponse, VerifyResponse, type AnswerFilters, type ModelLine } from '@kazuist/contracts';
 import { openRouterAdapter } from '../adapters/index.ts';
 import { parseJsonLines } from '../jsonl.ts';
 import { scrub } from '../pii.ts';
@@ -8,8 +8,9 @@ import { reasoningEffortFor, type ByokSettings } from './settings.ts';
 
 /**
  * BYOK istemci protocol in the browser (plan 8.1, K-08, ADR-0008):
- * 1. POST /v1/answers/prepare with the question, provider and model. The key is never part of this request.
- *    The server retrieves, masks question and passages (plan 8.5) and returns a signed bundle (nonce, 10 min).
+ * 1. POST /v1/answers/prepare with the question, provider, model and the search filters. The key is never part of
+ *    this request. The server retrieves with the same filters as platform mode, masks question and passages
+ *    (plan 8.5) and returns a signed bundle (nonce, 10 min).
  * 2. The browser checks the masked prompt once more and calls the provider directly with the user's key.
  * 3. Model lines stream back as JSON Lines; the caller validates each with the casuist browser validator.
  * 4. POST /v1/answers/verify re-validates the lines on the server and burns the single use nonce.
@@ -57,6 +58,8 @@ export interface PrepareBody {
   provider: ByokSettings['provider'];
   model: string;
   depth: 'standart' | 'derin';
+  /** PrepareRequest.filters (contract v1.6, ADR-0038); sent only when at least one filter is set. */
+  filters?: AnswerFilters;
 }
 
 export interface VerifyBody {
@@ -79,6 +82,8 @@ export interface ByokClientDeps {
 export interface ByokRunInput {
   q: string;
   depth?: 'standart' | 'derin';
+  /** Search filters of the results page; the summary picks its sources from the same records. */
+  filters?: AnswerFilters;
   settings: ByokSettings;
   signal?: AbortSignal;
 }
@@ -172,6 +177,16 @@ export async function checkOpenRouterKey(
 }
 
 /** VerifyRequest limits (contracts): at most 20 lines of at most 4000 characters. */
+/**
+ * The filters that are actually set: an empty form field arrives as "" or undefined and must not become a filter
+ * (an empty date would also fail the contract's date check). Undefined when none is set, so the body stays as before.
+ */
+export function setFilters(f: AnswerFilters | undefined): AnswerFilters | undefined {
+  if (!f) return undefined;
+  const set = Object.fromEntries(Object.entries(f).filter(([, v]) => typeof v === 'string' && v !== ''));
+  return Object.keys(set).length ? (set as AnswerFilters) : undefined;
+}
+
 const VERIFY_MAX_LINES = 20;
 const VERIFY_MAX_CHARS = 4000;
 
@@ -181,10 +196,14 @@ export async function* runByokClient(
 ): AsyncGenerator<ByokClientEvent> {
   const depth = input.depth ?? 'standart';
   const s = input.settings;
+  const filters = setFilters(input.filters);
 
   let res: Response;
   try {
-    res = await deps.prepare({ q: input.q, provider: s.provider, model: s.model, depth }, input.signal);
+    res = await deps.prepare(
+      { q: input.q, provider: s.provider, model: s.model, depth, ...(filters ? { filters } : {}) },
+      input.signal,
+    );
   } catch (e) {
     if (isAbort(e, input.signal)) throw e;
     throw new ByokError('baglanti');
