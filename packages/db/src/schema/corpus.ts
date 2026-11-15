@@ -27,6 +27,9 @@ export const protocolStatus = pgEnum('protocol_status', [
   'imzalandi',
   'reddedildi',
   'canli_federasyon',
+  // v1.6 (ADR-0038): the plan asks for a protocol for bulk collection (plan 6.1 Yargitay, Danistay) and none
+  // was applied for yet; the same word as protokol_durumu in docs/kaynaklar/<kaynak>.md.
+  'gerekli_yapilmadi',
 ]);
 export const outcome = pgEnum('outcome', ['bozma', 'onama', 'kabul', 'ret', 'ihlal', 'ihlal_yok']);
 

@@ -1,12 +1,13 @@
 openapi: 3.1.0
 info:
   title: Kazuist API
-  version: 1.5.1
+  version: 1.6.0
   summary: Kazuist web and iOS API contract (single source of truth).
   description: |
-    Contract v1.5.1 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md,
+    Contract v1.6.0 for Kazuist (plan.md Ek C.1; changes in docs/adr/0023-sozlesme-v1-1.md,
     docs/adr/0026-sozlesme-v1-2.md, docs/adr/0027-kalici-siparis-belgeleri-ve-urun-surumleri.md,
-    docs/adr/0028-hesap-silme-iade-yonetimi.md and docs/adr/0035-sozlesme-v1-5.md). All endpoints
+    docs/adr/0028-hesap-silme-iade-yonetimi.md, docs/adr/0035-sozlesme-v1-5.md and
+    docs/adr/0038-sozlesme-v1-6-dar-cekirdek.md). All endpoints
     validate input with zod and reject unknown fields. Every error body is `{code, message, requestId}` and
     never exposes internal structure. Paths are relative to the `/api` prefix of the web application.
 
@@ -2722,6 +2723,14 @@ components:
           items: { $ref: '#/components/schemas/NormRef' }
         page: { type: integer }
         total: { type: integer }
+        degraded:
+          type: array
+          minItems: 1
+          description: >-
+            Retrieval legs that could not run, so the results come from the remaining legs only (v1.6, ADR-0038).
+            Written only when not empty. Known value: `vektor` (no embedding service or model). The list is open:
+            a later leg may add a value without a contract change, and clients ignore values they do not know.
+          items: { type: string, minLength: 1, examples: [vektor] }
     CitationGraph:
       type: object
       required: [nodes, edges]
@@ -2750,22 +2759,32 @@ components:
         status: { $ref: '#/components/schemas/RecordStatus' }
         date: { type: [string, 'null'], format: date }
         fetchedAt: { type: [string, 'null'], format: date-time }
+    QuestionText:
+      type: string
+      minLength: 3
+      maxLength: 1000
+      pattern: '^[^\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]*$'
+      description: >-
+        Question of a sourced summary. C0 control characters other than tab, line feed and carriage return, and
+        DEL, are refused with 400 (v1.6, ADR-0038; the gateway masks question and passages in one label space).
+    AnswerFilters:
+      type: object
+      additionalProperties: false
+      description: Search filters of a sourced summary, the same in platform mode and BYOK client mode (v1.6).
+      properties:
+        type: { $ref: '#/components/schemas/RecordType' }
+        from: { type: string, format: date }
+        to: { type: string, format: date }
+        court: { type: string }
     AnswerRequest:
       type: object
       additionalProperties: false
       required: [q]
       properties:
-        q: { type: string, minLength: 3, maxLength: 1000 }
+        q: { $ref: '#/components/schemas/QuestionText' }
         mode: { type: string, enum: [platform, byok_aktarma], default: platform }
         depth: { type: string, enum: [standart, derin], default: standart }
-        filters:
-          type: object
-          additionalProperties: false
-          properties:
-            type: { $ref: '#/components/schemas/RecordType' }
-            from: { type: string, format: date }
-            to: { type: string, format: date }
-            court: { type: string }
+        filters: { $ref: '#/components/schemas/AnswerFilters' }
         byok:
           description: Only for byok_aktarma; key is held in request memory, never stored or logged.
           type: object
@@ -2845,10 +2864,11 @@ components:
       additionalProperties: false
       required: [q, provider, model]
       properties:
-        q: { type: string, minLength: 3, maxLength: 1000 }
+        q: { $ref: '#/components/schemas/QuestionText' }
         provider: { $ref: '#/components/schemas/ByokProvider' }
         model: { type: string, maxLength: 120 }
         depth: { type: string, enum: [standart, derin], default: standart }
+        filters: { $ref: '#/components/schemas/AnswerFilters' }
     PrepareResponse:
       type: object
       required: [nonce, expiresAt, signature, system, prompt, sources, limits]

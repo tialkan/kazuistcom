@@ -37,3 +37,11 @@ Davranış değişmez: uçlar bu soruları zaten 400 ile reddediyor. Sözleşme 
 ## Aciliyet
 
 Düşük. Güvenlik açığı uç kodunda ve geçitte kapalı; istek yalnız sözleşmenin gerçeği söylemesi içindir.
+
+## Sonuç (mimar, 15 Kasım 2026, sözleşme v1.6, ADR-0038)
+
+Kabul. `QuestionText` (`packages/contracts/src/schemas.ts`, desen `QUESTION_TEXT_PATTERN`) `AnswerRequest.q` ve
+`PrepareRequest.q` için ortak; OpenAPI'de `QuestionText` şeması aynı `pattern`'i taşır ve iki gövde ona başvurur.
+Sözleşme testi zod ile OpenAPI desenini her C0 karakteri ve DEL için karşılaştırır. `SearchQuery.q`'ya kural
+eklenmedi (bugün kabul edilen sorguları reddederdi). Uçtaki `hasControlChars` satırının kaldırılması casuist'e
+yönlendirildi; geçitteki `scrubParts` silmesi kalır.

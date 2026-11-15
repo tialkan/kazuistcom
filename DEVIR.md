@@ -1,3 +1,36 @@
+## 15 Kasım 2026, mimar: sözleşme v1.6, migration 0008, ADR-0038 (mimar/sozlesme-v1-6)
+
+Yedi istek tek ADR ve tek sürümle işlendi; yalnız ekler, yıkıcı adım yok; canlı veri tabanına hiçbir şey uygulanmadı.
+Taban: PR #105 (veri-toplama), #103 (on-yuz), #106, #107, #108 ve #104 birleştikten sonraki main; yeni yükleri üreten kod #105'tedir.
+- Sürüm: `packages/contracts` ve `packages/db` 1.6.0 (`openapi.yaml`, `CONTRACT_VERSION`, iki `package.json`);
+  `src/generated/api.ts` yeniden üretildi. Migration `0008_v1_6_edu_claims_protocol_status.sql` ve snapshot. Kaldırıcı
+  adım B (ADR-0036) artık "migration 0008" değil, o gün sıradaki boş numara.
+- `ingest.fetch` (`packages/contracts/src/jobs.ts`, `services/worker-py/core/jobs.py`): `z.union`; KVKK ve Rekabet liste,
+  AYM liste ve belge, Yargıtay ve Danıştay liste ve belge biçimleri. İstekten iki sapma: AYM kimliği `z.guid()`
+  (bankanın kimlikleri RFC 9562 değil, fikstürde sürüm hanesi 0), esas ve karar numarası `case_number` biçiminde (sonda
+  `/<rakam>`, ASCII rakam, en çok 50). Ortak fikstüre 10 geçerli ve 21 geçersiz örnek. `tests/test_scheduler.py`'deki
+  `contract_pending` testi "bütün gece işleri sözleşmede" testine çevrildi (veri-toplama dosyası, sözleşmenin sonucu).
+- `protocol_status` `gerekli_yapilmadi` (istekte `gerekli`; kaynak dosyalarındaki sözcük).
+- `edu_claims` (posta kutusu birincil anahtar), `edu_mailbox()` ve `edu_verifications_claim` tetikleyicisi: her yazıcı
+  bağlanır, başka hesabın posta kutusu 23505 (`edu_claims_pkey`, mesajda adres yok); `users`'a yabancı anahtar yok
+  (purge değişmedi); geri doldurmada en eski kazanır, diğer satırlar değişmez ve adressiz `WARNING` ile sayılır;
+  `edu_verifications_user_idx`.
+- OpenAPI: `SearchResponse.degraded` (açık liste, bilinen değer `vektor`), ortak `QuestionText` (C0 ve DEL deseni) ve `AnswerFilters`,
+  `PrepareRequest.filters`. Zod: `QuestionText`, `QUESTION_TEXT_PATTERN`, `AnswerFilters`.
+- `.env.example`: `KAZUIST_ENV` ve `KAZUIST_NER_BACKEND` açıklamaları, `KAZUIST_MODULLER`, `KAZUIST_SCHEDULER`,
+  `KAZUIST_SCHEDULER_DRY_RUN`, `KAZUIST_SCHEDULE_TICK_SECONDS`, `KAZUIST_SOURCE_{AYM,YARGITAY,DANISTAY}`.
+- Belgeler: ADR-0038 (dar çekirdek kaydı madde 8; ADR-0033'e not), ADR dizini, IP kaydı, sahiplik (byok.json
+  yz-gecidi, worker-py testleri veri-toplama, tarihli teyit notu), istek sonuçları, v1.6 karar tablosu, yönlendirme
+  `docs/istekler/mimar-yonlendirme-4-sozlesme-v1-6.md`.
+- Doğrulama: `pnpm typecheck`, `pnpm lint`, `pnpm check:text`, Redocly lint, i18n denetimi, `pnpm test` (contracts 160,
+  db 62, web 773 ve 1 atlanan, worker-node 118, ledger 174, casuist 119, ai-gateway 143 ve 3 atlanan, ui 31, i18n 23),
+  `pnpm build`, enjeksiyon seti 60/60 ve `uv run pytest` (513 geçti, 15 atlandı) geçti; `check:generated` commit'ten sonra
+  temiz. Gerçek PostgreSQL 18.6 (yerel, geçici küme): v1.5 verisinde migration 0008, geri doldurma ve `WARNING`, iki
+  oturumun aynı posta kutusunu aynı anda doğrulaması (ikinci oturum bekledi, sonra 23505), REPEATABLE READ'de 23505,
+  yeni enum değerinin yazılması.
+- Açık: veri-toplama `RECORD_PROTOCOL_STATUSES` ve `_CASE_NO`; kimlik `claimedByOther` ve 23505 eşlemesi; casuist ve
+  yz-gecidi süzgeç geçişi (yönlendirme dosyasında). ADR-0038 ve ADR-0033 Tarık onayı bekliyor.
+
 ## 15 Kasım 2026, altyapi: tek sunucu üretimi, GHCR imajları, sunucu dışı yedek ve geri yükleme testi (altyapi/tek-sunucu-uretim)
 
 Orkestra görevi (review.md P2, ADR-0033): hedef tek Hetzner x86 sunucusu (8 vCPU, 16 GB; CX43 ya da CPX42, henüz

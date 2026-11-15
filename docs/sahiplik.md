@@ -23,9 +23,9 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
 | mimar | `packages/contracts/**`, `packages/db/**`, `docs/adr/**`, `docs/sahiplik.md`, `docs/istekler/README.md`, `CLAUDE.md`, `.claude/agents/**`, `scripts/check-text.mjs`, `.env.example` |
 | altyapi | `infra/**`, `.github/workflows/**`, `**/Dockerfile`, `**/.dockerignore`, `docs/runbook/**` |
 | kimlik | `apps/web/src/server/auth/**`, `apps/web/src/app/(hesap)/**`, `apps/web/src/app/api/auth/**`, `packages/i18n/tr/hesap.json`, `apps/web/src/app/api/v1/{me,kvkk-requests,professions,notifications,push,takedown-requests,admin}/**`, `apps/worker-node/src/notify/**`, `apps/worker-node/src/account/**` |
-| yz-gecidi | `packages/ai-gateway/**` |
+| yz-gecidi | `packages/ai-gateway/**`, `packages/i18n/tr/byok.json` |
 | casuist | `packages/casuist/**`, `apps/web/src/app/ara/**`, `apps/web/src/app/kaydettiklerim/**`, `apps/web/src/app/api/v1/{search,answers,norms,library}/**`, `apps/web/src/app/api/v1/records/[id]/route.ts`, `services/worker-py/nlp/**`, `eval/rag/**`, `eval/embed/**`, `packages/i18n/tr/ara.json`, `packages/i18n/tr/ozet.json`, `packages/i18n/tr/kaydettiklerim.json` |
-| veri-toplama | `services/worker-py/connectors/**`, `services/worker-py/core/**` (jobs.py hariç), `docs/kaynaklar/**` |
+| veri-toplama | `services/worker-py/connectors/**`, `services/worker-py/core/**` (jobs.py hariç), `services/worker-py/tests/{conftest,helpers,test_connectors,test_core,test_fetcher,test_discovery,test_judicial,test_scheduler}.py`, `services/worker-py/tests/fixtures/**`, `docs/kaynaklar/**` |
 | anonimlestirme | `services/worker-py/anonymizer/**`, `eval/anon/**` |
 | atif-agi | `services/worker-py/citations/**`, `apps/web/src/app/atif-agi/**`, `apps/web/src/app/api/v1/citation-network/**`, `apps/web/src/app/api/v1/records/[id]/network/**`, `eval/citations/**`, `packages/i18n/tr/atif-agi.json` |
 | yazma | `apps/web/src/app/yazma/**`, `apps/web/src/app/kalemcik/**`, `apps/web/src/app/tespit/**`, `apps/web/src/app/api/v1/{templates,journals,writing-projects,abbreviations,jobs}/**`, `apps/worker-node/src/kalemcik/**`, `services/worker-py/docxcheck/**`, `eval/rules/**`, `docs/tespit/**`, `packages/i18n/tr/yazma.json`, `packages/i18n/tr/kalemcik.json`, `packages/i18n/tr/tespit.json` |
@@ -52,3 +52,16 @@ Bir ajanın yeni bağımlılığı varsa paketin kendi `package.json` dosyasına
 
 - 2026-10-21, orkestra: `api/v1/takedown-requests/**` ve `api/v1/admin/**` kimlik ajanına verildi (yetki ve denetim kaydı orada); modül kuyruk işleyicileri modül ajanlarında kalır.
 - 2026-11-12, mimar (codex/p1-mimar-kararlar, review.md P1 madde 2): kampus satırı pasif (ADR-0031); `{tr,en}` desenleri `tr` (ADR-0032); sahibi yazılı olmayan yollar git geçmişindeki ilk ekleyene verildi: `hesap.json` kimlik (7552557), `kaydettiklerim/**`, `kaydettiklerim.json` ve `api/v1/{search,answers,norms,library}` ile `records/[id]` casuist (#62), `tespit/**`, `docs/tespit/**`, `tespit.json` yazma (#57, ADR-0031 madde 5) ve yazma API yolları (#63), `citation-network` ve `records/[id]/network` atif-agi (#67), `decks` pratik (#61); kök `review.md` orkestranın.
+- 2026-11-15, mimar (ADR-0038, istek `yz-gecidi-byok.md` madde 2 ve PR #105): yeni yollar. `packages/i18n/tr/byok.json`
+  yz-gecidi'ye verildi (BYOK arayüz metinleri; `/ara`, `/fiyatlar`, `/odeme` ve `/hesap/yz-anahtari` okur).
+  `services/worker-py/tests` altındaki bağlayıcı, çekirdek, keşif ve zamanlayıcı testleri, `conftest.py`, `helpers.py` ve
+  `fixtures/**` veri-toplama'ya verildi (ilk ekleyen #7 ve #105); `test_jobs.py` ve `test_main.py` not 7 gereği mimarda,
+  `test_v11.py` ve `test_api_docxcheck_mount.py` listede olmadığı için orkestrada kalır. Var olan satırların kapsadığı
+  yeni yollar teyit edildi: `apps/web/src/app/(hesap)/hesap/yz-anahtari/**` ve `(hesap)/_bilesen/ByokAyarlari.tsx`
+  kimlik (`(hesap)/**`; sayfa oturum istemez, anahtar yalnız tarayıcıda), `packages/ai-gateway/src/byok/**` yz-gecidi,
+  `apps/web/src/app/ara/_bilesen/byok.ts` casuist, `apps/web/src/server/billing/acik.ts` odeme,
+  `tests/e2e/specs/byok.spec.ts` kalite-guvenlik, `services/worker-py/connectors/{aym,yargitay,danistay,judicial}.py`
+  ve `services/worker-py/core/{scheduler,discovery,challenge,cli}.py` veri-toplama, `apps/web/src/app/(kabuk)/_kabuk/yayin.ts`
+  on-yuz, `apps/web/src/app/{pratik,kalemcik,atif-agi}/layout.tsx` modül ajanları (pratik, yazma, atif-agi).
+  `apps/web/src/server/security-headers.ts` listede olmadığı için orkestranındır (`connect-src` artık
+  `https://openrouter.ai` içerir).

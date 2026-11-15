@@ -76,3 +76,18 @@ ADR-0035 "Önerildi, Tarık onayı bekliyor". Yönlendirme `mimar-yonlendirme-3-
 | atif-agi-sema | Kabul | `works.work_key`, `work_citations` (ek olarak `rejected`), `citation_edges.rejected` ve eski ret biçiminin işaretlenmesi; `esas_key` sütunu yerine ifade dizinleri; `sources_raw_record_idx`. |
 | kimlik-p7-bildirim-idempotency | Değiştirerek kabul | `notification_deliveries`; saklama ayrı 30 gün yerine işle birlikte (`ON DELETE CASCADE`); hedef özeti CHECK ile 64 onaltılık. |
 | casuist-p9-arama-dizini (madde 2, 3) | Kabul | `test_main.py` satırı kabul; `.env.example`'a `KAZUIST_EMBED_BACKEND`, `_DIR`, `_THREADS`, `_QUANTIZED` ve `KAZUIST_TEST_DATABASE_URL`. Madde 1 orkestra, madde 4 altyapı. |
+
+## Karar tablosu: sözleşme v1.6 (2026-11-15, ADR-0038)
+
+ADR-0038 "Önerildi". Yönlendirme `mimar-yonlendirme-4-sozlesme-v1-6.md`. Migration 0008 bu turun ek migration'ıdır;
+kaldırıcı adım B (ADR-0036) o gün sıradaki boş migration numarasını alır.
+
+| İstek | Karar | Gerekçe ve uygulama |
+|---|---|---|
+| veri-toplama-ingest-payloadlari | Değiştirerek kabul | `IngestFetchPayload` `z.union`; KVKK ve Rekabet liste, AYM liste ve belge, Yargıtay ve Danıştay liste ve belge biçimleri; AYM kimliği `z.guid()` (bankanın kimlikleri RFC 9562 değil), esas ve karar numarası `case_number` biçiminde; `core/jobs.py` ve ortak fikstür; `protocol_status` `gerekli_yapilmadi` (istekte `gerekli`; kaynak dosyalarıyla aynı sözcük). Madde 4 anonimleştirmeye yönlendirildi. |
+| kimlik-edu-tekil | Değiştirerek kabul (A) | `edu_claims` (posta kutusu birincil anahtar), `edu_mailbox()` ve `edu_verifications` tetikleyicisi: her yazıcı bağlanır, çakışma 23505; `users`'a yabancı anahtar yok (talep `edu_verifications` satırlarını izler); geri doldurmada en eski kazanır, diğerleri değişmez ve sayılır. |
+| casuist-arama-kalitesi (madde 1) | Değiştirerek kabul | `SearchResponse.degraded` (`minItems: 1`), öğeler kapalı enum yerine açık liste, bilinen değer `vektor` (yeni kol kırıcı olmasın; casuist `string[]` yazıyor). Madde 2-4 mimara değil. |
+| yz-gecidi-soru-denetim-karakteri | Kabul | `QuestionText` (`AnswerRequest.q`, `PrepareRequest.q`) ve OpenAPI `pattern`; `SearchQuery.q` değişmedi (davranış değişikliği olurdu). |
+| yz-gecidi-byok | Kabul | Madde 1: `AnswerFilters` ortak şema, `PrepareRequest.filters`. Madde 2: `byok.json` yz-gecidi'ye, diğer yollar mevcut satırlarda teyit edildi, `security-headers.ts` orkestrada. |
+| anonimlestirme-ner-zorunlu | Kabul | `.env.example` `KAZUIST_ENV` ve `KAZUIST_NER_BACKEND` açıklamaları istekteki metinle. |
+| on-yuz-dar-cekirdek-yayin (mimar kısmı) | Kabul | ADR-0038 madde 8: dar çekirdek kayda geçti, ADR-0033 madde 5 daraldı (ADR-0033'e not); `.env.example` `KAZUIST_MODULLER`. |

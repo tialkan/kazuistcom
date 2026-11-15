@@ -1,5 +1,5 @@
 {
-  "_comment": "Shared fixture of the job payload contract (ADR-0035). packages/contracts/test/jobs.test.ts checks it with zod, services/worker-py/tests/test_jobs.py with core.jobs.valid_payload. Ids only, no personal data.",
+  "_comment": "Shared fixture of the job payload contract (ADR-0035, ADR-0038). packages/contracts/test/jobs.test.ts checks it with zod, services/worker-py/tests/test_jobs.py with core.jobs.valid_payload. Ids only, no personal data.",
   "ingest.fetch": {
     "valid": [
       { "source": "mevzuat", "kanunNo": "6698", "rgDate": "2026-11-12" },
@@ -20,7 +20,31 @@
       { "source": "rekabet", "url": "https://www.rekabet.gov.tr/Karar?kararId=1" },
       { "source": "openalex", "doi": "10.1234/abc" },
       { "source": "crossref", "doi": "10.1234/abc" },
-      { "source": "eurlex", "celex": "32016R0679" }
+      { "source": "eurlex", "celex": "32016R0679" },
+      { "source": "kvkk", "page": 2 },
+      { "source": "rekabet", "page": 1 },
+      { "source": "aym", "kararTipi": "BireyselBasvuru", "page": 1 },
+      { "source": "aym", "kararTipi": "NormDenetimi", "page": 10000 },
+      { "source": "aym", "kararTipi": "NormDenetimi", "id": "817f0b47-acf1-0404-3232-c313b5441fd4" },
+      { "source": "aym", "kararTipi": "BireyselBasvuru", "id": "766f0500-fa4d-4729-a1b4-828db5e756ad" },
+      { "source": "yargitay", "unit": "Hukuk Genel Kurulu", "year": 2024, "page": 1 },
+      { "source": "danistay", "unit": "Vergi Dava Daireleri Kurulu", "year": 1900, "page": 3 },
+      {
+        "source": "yargitay",
+        "id": "1104187600",
+        "unit": "Hukuk Genel Kurulu",
+        "esas": "2024/660",
+        "karar": "2024/812",
+        "date": "2024-10-02"
+      },
+      {
+        "source": "danistay",
+        "id": "1134943400",
+        "unit": "İdare Dava Daireleri Kurulu",
+        "esas": "2019/1-123",
+        "karar": "2024/2914/2",
+        "date": "2024-05-02"
+      }
     ],
     "invalid": [
       {},
@@ -33,7 +57,75 @@
       { "source": "kvkk", "url": "https://example.invalid/x", "extra": true },
       { "source": "openalex", "doi": "" },
       { "source": "eurlex" },
-      { "source": "unknown", "url": "https://example.invalid/x" }
+      { "source": "unknown", "url": "https://example.invalid/x" },
+      { "source": "kvkk", "page": 0 },
+      { "source": "kvkk", "page": 10001 },
+      { "source": "kvkk", "page": 2, "url": "https://www.kvkk.gov.tr/Icerik/1/karar" },
+      { "source": "rekabet", "page": "1" },
+      { "source": "rekabet", "page": 1, "pdfUrl": "https://www.rekabet.gov.tr/Dosya/1.pdf" },
+      { "source": "aym", "page": 1 },
+      { "source": "aym", "kararTipi": "Bireysel", "page": 1 },
+      {
+        "source": "aym",
+        "kararTipi": "NormDenetimi",
+        "page": 1,
+        "id": "817f0b47-acf1-0404-3232-c313b5441fd4"
+      },
+      { "source": "aym", "kararTipi": "NormDenetimi", "id": "817f0b47acf104043232c313b5441fd4" },
+      { "source": "aym", "kararTipi": "NormDenetimi", "id": "kbb:817f0b47-acf1-0404-3232-c313b5441fd4" },
+      { "source": "yargitay", "unit": "Hukuk Genel Kurulu", "page": 1 },
+      { "source": "yargitay", "unit": "", "year": 2024, "page": 1 },
+      { "source": "yargitay", "unit": "Hukuk Genel Kurulu", "year": 1899, "page": 1 },
+      { "source": "danistay", "unit": "Hukuk Genel Kurulu", "year": 2024, "page": 1, "esas": "2024/1" },
+      {
+        "source": "yargitay",
+        "id": "11041876a",
+        "unit": "Hukuk Genel Kurulu",
+        "esas": "2024/660",
+        "karar": "2024/812",
+        "date": "2024-10-02"
+      },
+      {
+        "source": "yargitay",
+        "id": "1104187600",
+        "unit": "Hukuk Genel Kurulu",
+        "esas": "24/660",
+        "karar": "2024/812",
+        "date": "2024-10-02"
+      },
+      {
+        "source": "yargitay",
+        "id": "1104187600",
+        "unit": "Hukuk Genel Kurulu",
+        "esas": "2024/660 E.",
+        "karar": "2024/812",
+        "date": "2024-10-02"
+      },
+      {
+        "source": "danistay",
+        "id": "1134943400",
+        "unit": "İdare Dava Daireleri Kurulu",
+        "esas": "2024/2914",
+        "karar": "2024/2914",
+        "date": "2024-02-30"
+      },
+      {
+        "source": "danistay",
+        "id": "1134943400",
+        "unit": "İdare Dava Daireleri Kurulu",
+        "esas": "2024/2914",
+        "karar": "2024/2914"
+      },
+      {
+        "source": "yargitay",
+        "id": "1104187600",
+        "unit": "Hukuk Genel Kurulu",
+        "esas": "2024/660",
+        "karar": "2024/812",
+        "date": "2024-10-02",
+        "taraf": "x"
+      },
+      { "source": "ayim", "kararTipi": "NormDenetimi", "page": 1 }
     ]
   },
   "anon.run": {

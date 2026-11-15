@@ -122,3 +122,10 @@ NER modeli olmadan anonimleştirmenin yayına açılıp açılmayacağı (T5) ay
 Tarık 12 Kasım 2026'da staging'in atlanmasını ve bütün modüllerin tek seferde yayına alınmasını bildirdi; karar orkestra
 aracılığıyla mimara iletildi. Sunucu boyutu seçilmedi. Bu ADR metni Tarık onayı bekliyor. Onay; üretimde kişisel veri
 işlenmesine, sunucu satın alımına, DNS değişikliğine ya da canlı ödemeye izin değildir.
+
+## Not: dar çekirdekli ilk yayın (15 Kasım 2026)
+
+Madde 5 ADR-0038 ile daraldı. Tarık'ın kararıyla (orkestra 15 Kasım 2026'da aktardı) ilk yayın dar çekirdektir: Ara
+ve kaynaklı özet, Kaydettiklerim, Yazma (şablon ve kısaltma), Rehberler ve `/tespit`. Onaylı içeriği olmayan Pratik,
+Kalemcik ve Atıf ağı üretimde gösterilmez ve içerik onayıyla sonradan açılır. Yayın yine tek seferdir ve fazlara
+bölünmez. Bu ADR'nin diğer maddeleri ve "Yayının ön koşulları" bölümü değişmez.

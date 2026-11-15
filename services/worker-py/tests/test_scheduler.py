@@ -49,12 +49,14 @@ def test_night_plan_with_contract_assumed() -> None:
     assert any(s == "mevzuat" for s, _ in reasons) and any(s == "openalex" for s, _ in reasons)
 
 
-def test_unknown_payload_shapes_wait_for_the_contract_but_known_ones_run() -> None:
-    result = _sched().plan(NIGHT)  # default: respect the job contract
-    got = _by_source(result.planned)
-    assert set(got) == {"eurlex"}  # the only night job whose payload shape the contract accepts today
-    pending = {s["source"] for s in result.skipped if s["reason"] == "contract_pending"}
-    assert pending == {"kvkk", "rekabet", "aym", "yargitay", "danistay"}
+def test_every_night_payload_shape_is_in_the_job_contract() -> None:
+    # Contract v1.6 (ADR-0038) accepts the list and document shapes; the default plan, which respects the job
+    # contract, now equals the plan that assumes it, and nothing waits as contract_pending.
+    result = _sched().plan(NIGHT)
+    assumed = _sched(assume_contract=True).plan(NIGHT)
+    assert [p.dedupe_key for p in result.planned] == [p.dedupe_key for p in assumed.planned]
+    assert set(_by_source(result.planned)) == {"kvkk", "rekabet", "aym", "yargitay", "danistay", "eurlex"}
+    assert not [s for s in result.skipped if s["reason"] == "contract_pending"]
 
 
 def test_rg_daily_runs_from_seven_and_needs_mevzuat_too() -> None:

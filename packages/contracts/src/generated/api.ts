@@ -1916,6 +1916,8 @@ export interface components {
             resolvedNorms?: components["schemas"]["NormRef"][];
             page: number;
             total: number;
+            /** @description Retrieval legs that could not run, so the results come from the remaining legs only (v1.6, ADR-0038). Written only when not empty. Known value: `vektor` (no embedding service or model). The list is open: a later leg may add a value without a contract change, and clients ignore values they do not know. */
+            degraded?: string[];
         };
         CitationGraph: {
             nodes: components["schemas"]["RecordSummary"][];
@@ -1942,8 +1944,19 @@ export interface components {
             /** Format: date-time */
             fetchedAt?: string | null;
         };
+        /** @description Question of a sourced summary. C0 control characters other than tab, line feed and carriage return, and DEL, are refused with 400 (v1.6, ADR-0038; the gateway masks question and passages in one label space). */
+        QuestionText: string;
+        /** @description Search filters of a sourced summary, the same in platform mode and BYOK client mode (v1.6). */
+        AnswerFilters: {
+            type?: components["schemas"]["RecordType"];
+            /** Format: date */
+            from?: string;
+            /** Format: date */
+            to?: string;
+            court?: string;
+        };
         AnswerRequest: {
-            q: string;
+            q: components["schemas"]["QuestionText"];
             /**
              * @default platform
              * @enum {string}
@@ -1954,14 +1967,7 @@ export interface components {
              * @enum {string}
              */
             depth: "standart" | "derin";
-            filters?: {
-                type?: components["schemas"]["RecordType"];
-                /** Format: date */
-                from?: string;
-                /** Format: date */
-                to?: string;
-                court?: string;
-            };
+            filters?: components["schemas"]["AnswerFilters"];
             /** @description Only for byok_aktarma; key is held in request memory, never stored or logged. */
             byok?: {
                 provider: components["schemas"]["ByokProvider"];
@@ -2027,7 +2033,7 @@ export interface components {
             droppedLines?: number;
         };
         PrepareRequest: {
-            q: string;
+            q: components["schemas"]["QuestionText"];
             provider: components["schemas"]["ByokProvider"];
             model: string;
             /**
@@ -2035,6 +2041,7 @@ export interface components {
              * @enum {string}
              */
             depth: "standart" | "derin";
+            filters?: components["schemas"]["AnswerFilters"];
         };
         PrepareResponse: {
             /** @description Single use. Stored in Valkey with SET NX EX 600 at prepare and consumed atomically (GETDEL) at verify; a reused or expired nonce returns 410. */

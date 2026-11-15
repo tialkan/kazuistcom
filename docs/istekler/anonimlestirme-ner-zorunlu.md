@@ -20,3 +20,10 @@
    bugünküyle aynıdır" yalnız development için geçerli kaldı. `anonymizationVersion` motor parçası `anon-0.3.0`
    oldu (Türkçe ek ayırıcı, plan 6.4/7 gereği yeniden işleme).
 6. Aciliyet: gerçek karar metni işlenmeden önce; imaj ve kod değişikliği bu dalda, `.env.example` metni bekleyebilir.
+
+## Sonuç (mimar, 15 Kasım 2026, ADR-0038)
+
+Kabul. `.env.example`: `KAZUIST_ENV` açıklamasına istekteki metin (development ve test dışındaki her değer NER ister,
+`KAZUIST_NER_BACKEND` yoksa anon.run her kaydı incelemeye tutar, worker-py imajının öntanımı production) ve
+`KAZUIST_NER_BACKEND` açıklamasına "development dışında boşsa işçi başlar ama hiçbir şey yayımlamaz" eklendi. Yeni
+değişken yok.

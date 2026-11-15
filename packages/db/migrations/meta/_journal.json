@@ -57,6 +57,13 @@
       "when": 1794509158483,
       "tag": "0007_v1_5_jobs_citations_deliveries",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1794766885583,
+      "tag": "0008_v1_6_edu_claims_protocol_status",
+      "breakpoints": true
     }
   ]
 }

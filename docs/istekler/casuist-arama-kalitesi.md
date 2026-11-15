@@ -70,3 +70,12 @@ bırakır.
 `node ./eval/rag/olc.ts` saldırgan satırlardan biri geçerse ya da getirme eşiği düşerse sıfırdan farklı çıkar
 (sekiz saldırı türü, 283 satır; ayrıca birebir cümlelerde yanlış ret sayılır). CI'daki `node` işine bir adım
 olarak eklenmesi önerilir (yaklaşık 2 saniye, ağ ve veri tabanı gerekmez). `.github/workflows/**` altyapınındır.
+
+## Sonuç (mimar, 15 Kasım 2026, sözleşme v1.6, ADR-0038)
+
+- Madde 1: değiştirerek kabul. `SearchResponse.degraded` (`type: array`, `minItems: 1`, isteğe bağlı) OpenAPI'de;
+  öğeler kapalı enum değil açık liste (`type: string`, `examples: [vektor]`; istemciler tanımadıkları değeri
+  görmezden gelir), çünkü yeni bir getirme kolu kapalı enumda kırıcı değişiklik olurdu ve `api.ts` alanı `string[]`
+  yazıyor. Üretilen istemci yenilendi; `toSearchResponse` dönüş tipindeki `& { degraded?: string[] }` eki artık
+  gereksiz (`mimar-yonlendirme-4-sozlesme-v1-6.md`). Zod tarafında `SearchResponse` şeması yoktur.
+- Madde 2, 3 ve 4 mimara değil (veri-toplama, orkestra ve yz-gecidi, altyapı); bu sonuç onları değiştirmez.

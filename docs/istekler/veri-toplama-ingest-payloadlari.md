@@ -59,3 +59,22 @@ tablosu eklesin.
 Geriye uyumlu (yalnız ekleme). Bu değişiklik olmadan ilerlenebilir: bağlayıcılar, keşif işleri ve zamanlayıcı hazır ve
 testli, ama hiçbir yeni kaynak işi kuyruktan çalışamaz; kaynaklar zaten `tarik_onayi: bekliyor` olduğu için üretimde
 çalışmıyor. Onaydan önce kapanmalı.
+
+## Sonuç (mimar, 15 Kasım 2026, sözleşme v1.6, ADR-0038)
+
+Değiştirerek kabul.
+
+- Madde 2: `IngestFetchPayload` `z.union` oldu; KVKK ve Rekabet liste sayfası, AYM liste ve belge, Yargıtay ve Danıştay
+  liste ve belge biçimleri eklendi, mevcut biçimler korundu. İki sapma, ikisi de üreticinin yazdığı biçime göre: AYM
+  kimliği `z.uuid()` değil `z.guid()` (bankanın kimlikleri RFC 9562 UUID değil; `tests/fixtures/aym/bb-liste.json`
+  içindeki `817f0b47-acf1-0404-...` sürüm hanesi 0, varyant hanesi 3), esas ve karar numarası `connectors/judicial.py`
+  `case_number` biçiminde (sonda isteğe bağlı `/<rakam>`, yalnız ASCII rakam, en çok 50 karakter). Sözcük listeleri
+  `aymDecisionTypes`, `courtSources`, `INGEST_MAX_PAGE` sözleşmede. `core/jobs.py` `_ingest_fetch` ve
+  `packages/contracts/test/fixtures/job-payloads.json` (10 geçerli, 21 geçersiz yeni örnek) aynı biçimlerle güncellendi.
+  Zamanlayıcının varsayılan planı artık sözleşmeyi varsayan planla aynıdır; `tests/test_scheduler.py` içindeki
+  `contract_pending` testi buna göre değişti.
+- Madde 3: enum değeri `gerekli` değil `gerekli_yapilmadi` (migration 0008); `docs/kaynaklar` dosyalarındaki
+  `protokol_durumu` ile aynı sözcük. `RECORD_PROTOCOL_STATUSES`'e eklemek size yönlendirildi.
+- Madde 4: anonimleştirmeye yönlendirildi.
+- `core/discovery.py` `_CASE_NO`'nun `case_number`'dan dar olması ve belge başlarındaki `contract_pending` anlatımı:
+  `mimar-yonlendirme-4-sozlesme-v1-6.md`.

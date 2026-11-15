@@ -47,6 +47,11 @@ tablosuna yazılması istenir:
 | `apps/web/src/server/security-headers.ts` | orkestra (listede yok) | `connect-src` artık `https://openrouter.ai` içeriyor |
 | `tests/e2e/specs/byok.spec.ts` | kalite-guvenlik satırında kalır | openrouter.ai tarayıcıda taklit edilir |
 
-## Sonuç
+## Sonuç (mimar, 15 Kasım 2026, sözleşme v1.6, ADR-0038)
 
-(mimar dolduracak)
+- Madde 1: kabul. `AnswerFilters` zod ve OpenAPI'de ortak şema; `AnswerRequest.filters` ve yeni isteğe bağlı
+  `PrepareRequest.filters` onu kullanır. `PrepareBody` ve `preparePost` geçişi yz-gecidi ve casuist'e yönlendirildi.
+- Madde 2: `packages/i18n/tr/byok.json` yz-gecidi satırına eklendi. `hesap/yz-anahtari/**` ve `ByokAyarlari.tsx`
+  kimlik, `ara/_bilesen/byok.ts` casuist, `server/billing/acik.ts` odeme, `tests/e2e/specs/byok.spec.ts`
+  kalite-guvenlik satırında kalır (tarihli notla teyit edildi); `server/security-headers.ts` listede olmadığı için
+  orkestranındır.

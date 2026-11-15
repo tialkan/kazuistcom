@@ -59,3 +59,20 @@ diğerleri raporlanır (silinmez; karar Tarık'ın). Sözleşme uçları (`/v1/m
 
 Bekleyebilir: kod güvencesi bu dalda devrede. Veritabanı kısıtı geldiğinde kimlik `claimedByOther`
 denetimini tablo üzerinden yapacak biçimde sadeleştirir.
+
+## Sonuç (mimar, 15 Kasım 2026, sözleşme v1.6, ADR-0038)
+
+A seçeneği, değiştirerek kabul (migration 0008):
+
+- `edu_claims (email birincil anahtar, user_id, verified_at)`; `email` `edu_mailbox(text)` biçiminde (kırpma, küçük
+  harf, sondaki noktalar ve `+etiket` atılır; `normalizeEduEmail` ile aynı kural), CHECK bunu zorlar.
+- Değişiklik: talebi kimlik kodu değil `edu_verifications_claim` tetikleyicisi yazar. Doğrulanmış olan ya da doğrulanan
+  her satır posta kutusunu kendi hesabına alır; başka hesaptaysa deyim SQLSTATE 23505 (`edu_claims_pkey`) ile düşer,
+  mesajda adres yoktur. Sahibin o posta kutusundaki son doğrulanmış satırı silinince ya da `verified_at`'i boşalınca
+  talep kalkar. Böylece yönetici aracı, betik ya da iOS ucu da bağlanır.
+- Değişiklik: `users`'a yabancı anahtar yok; talep `edu_verifications` satırlarıyla gider (`account.purge` siler,
+  `users` silmesi cascade eder). `purge.ts` ve `purge-integration.test.ts` değişmedi.
+- Geri doldurma: en eski doğrulama kazanır; diğer hesapların satırları ve `profiles.edu_verified` değişmez, sayıları
+  adressiz `WARNING` ile yazılır; liste sorgusu ADR-0038 madde 4'te.
+- Uygulama sizde: `claimedByOther` `edu_claims`'ten okunur, 23505 `hata.eduKullanimda`'ya eşlenir
+  (`mimar-yonlendirme-4-sozlesme-v1-6.md`).

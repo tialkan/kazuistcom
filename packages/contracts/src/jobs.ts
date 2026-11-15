@@ -91,14 +91,57 @@ const httpUrl = z
   .max(2000)
   .regex(/^https?:\/\/\S+$/);
 
+/** Decision types of the Constitutional Court bank (services/worker-py/connectors/aym.py BB and ND). */
+export const aymDecisionTypes = ['BireyselBasvuru', 'NormDenetimi'] as const;
+/** Courts collected by unit, decision year and page (connectors/yargitay.py and connectors/danistay.py). */
+export const courtSources = ['yargitay', 'danistay'] as const;
+/** Highest list page a discovery job may ask for (services/worker-py/core/discovery.py MAX_PAGE). */
+export const INGEST_MAX_PAGE = 10_000;
+
+const listPage = z.number().int().min(1).max(INGEST_MAX_PAGE);
 /**
- * ingest.fetch payload (v1.5, ADR-0035), one shape per connector (services/worker-py/core/runtime.py). Today only
- * mevzuat.rg_daily produces it (source mevzuat with kanunNo and rgDate); the other shapes are what the handler
- * accepts for manual and scheduled runs.
+ * Case number as the court writes it ("2024/817", "2019/1-123"), the same form as connectors/judicial.py
+ * case_number, which also allows a trailing "/<digits>". ASCII digits only.
  */
-export const IngestFetchPayload = z.discriminatedUnion('source', [
+const caseNumber = z
+  .string()
+  .max(50)
+  .regex(/^[0-9]{4}\/[0-9A-Za-z()-]+(?:\/[0-9]+)?$/);
+
+/**
+ * ingest.fetch payload (v1.5 ADR-0035, extended in v1.6 ADR-0038), one or two shapes per connector
+ * (services/worker-py/core/runtime.py and core/discovery.py). Payloads carry identifiers only (numbers, dates,
+ * unit names, addresses of public pages), never a party name or decision text. A z.union, not a discriminated
+ * union, because kvkk, rekabet, aym, yargitay and danistay each have a list shape and a document shape:
+ *
+ * - mevzuat: one law (mevzuat.rg_daily produces it with kanunNo and rgDate).
+ * - kvkk and rekabet: one decision page (url) or, since v1.6, a list page (page) that queues the unknown decisions.
+ * - aym (v1.6): a list page per decision type or one decision by its bank id. The bank's ids are GUIDs that are not
+ *   RFC 9562 UUIDs (version and variant digits are arbitrary), so the check is z.guid(), not z.uuid().
+ * - yargitay and danistay (v1.6): a list page (unit, decision year, page) or one decision (bank id, unit, case and
+ *   decision number, decision date).
+ * - openalex, crossref (doi) and eurlex (celex).
+ */
+export const IngestFetchPayload = z.union([
   z.strictObject({ source: z.literal('kvkk'), url: httpUrl }),
   z.strictObject({ source: z.literal('rekabet'), url: httpUrl, pdfUrl: httpUrl.optional() }),
+  z.strictObject({ source: z.enum(['kvkk', 'rekabet']), page: listPage }),
+  z.strictObject({ source: z.literal('aym'), kararTipi: z.enum(aymDecisionTypes), page: listPage }),
+  z.strictObject({ source: z.literal('aym'), kararTipi: z.enum(aymDecisionTypes), id: z.guid() }),
+  z.strictObject({
+    source: z.enum(courtSources),
+    unit: z.string().min(1).max(100),
+    year: z.number().int().min(1900).max(2100),
+    page: listPage,
+  }),
+  z.strictObject({
+    source: z.enum(courtSources),
+    id: z.string().regex(/^[0-9]{1,20}$/),
+    unit: z.string().min(1).max(100),
+    esas: caseNumber,
+    karar: caseNumber,
+    date: z.iso.date(),
+  }),
   z.strictObject({ source: z.literal('openalex'), doi: z.string().min(1).max(200) }),
   z.strictObject({ source: z.literal('crossref'), doi: z.string().min(1).max(200) }),
   z.strictObject({ source: z.literal('eurlex'), celex: z.string().min(1).max(50) }),
