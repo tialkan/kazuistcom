@@ -30,6 +30,11 @@ kurumun niyetini göstermez; Tarık onayı sırasında bu kararın bilerek veril
 0,5 istek/sn, haftalık. Protokol gerekmez. Geliştirmede 6 HTTP isteği yapıldı, yani 5 sınırı bir aşıldı: robots.txt
 (yönlendirme izlendiği için 2 istek) ve bir ek başlık sorgusu, ana sayfa, liste, bir özet sayfası. Fikstürler: liste (ilk 6 özet, 14+ sayfa gezinmesi) ve 2024/592 sayılı karar özeti.
 
+## Canlı kontrol (2026-11-15)
+
+`core.cli probe kvkk`: 4 istek (robots.txt yönlendirmeli, liste, bir özet), liste sayfası 10 satır ve sonraki sayfa bağlantısı
+var, 1 kayıt ayrıştırıldı (anonimleştirme kuyruğa girdi), hata oranı 0,0. Düzen değişmemiş.
+
 ## Tarık'tan
 
 Robots yokluğunun kabulü ve onay: bu dosyada `tarik_onayi: onaylandi`.

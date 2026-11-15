@@ -69,7 +69,18 @@ class Article:
 
 
 def law_url(meta: LawMeta) -> str:
+    """The address users get (sourceUrl). Its HTML is a shell; the text is not in it."""
     return f"{BASE}/mevzuat?MevzuatNo={meta.kanun_no}&MevzuatTur={meta.tur}&MevzuatTertip={meta.tertip}"
+
+
+def text_url(meta: LawMeta) -> str:
+    """The address the page itself loads the law text from (an iframe document), checked 2026-11-15 through a
+    reading tool that answered with the law text: bold "MADDE n-" labels, bold headings, (Degisik: d/m/yyyy-NNNN/n md.)
+    notes and footnote markers. Fetching law_url() instead returns the shell without any article."""
+    return (
+        f"{BASE}/anasayfa/MevzuatFihristDetayIframe?MevzuatTur={meta.tur}"
+        f"&MevzuatNo={meta.kanun_no}&MevzuatTertip={meta.tertip}"
+    )
 
 
 def _looks_like_heading(line: str) -> bool:
@@ -181,7 +192,7 @@ class MevzuatConnector:
 
     def fetch_law(self, meta: LawMeta, repo: Repository, snapshot_date: date) -> List[IngestOutcome]:
         url = law_url(meta)
-        result = self.fetcher.fetch(SOURCE, url, external_id=f"mevzuat:{meta.kanun_no}")
+        result = self.fetcher.fetch(SOURCE, text_url(meta), external_id=f"mevzuat:{meta.kanun_no}")
         try:
             articles = parse_articles(html_to_text(result.body.decode("utf-8", errors="replace")))
         except ParseError:

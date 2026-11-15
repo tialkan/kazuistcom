@@ -11,7 +11,10 @@ from core.storage import LocalObjectStore, RawArchive
 FIX = Path(__file__).resolve().parent / "fixtures"
 ALL_ON = {
     f"KAZUIST_SOURCE_{n}": "on"
-    for n in ("MEVZUAT", "RESMI_GAZETE", "KVKK", "REKABET", "OPENALEX", "CROSSREF", "EURLEX")
+    for n in (
+        "MEVZUAT", "RESMI_GAZETE", "KVKK", "REKABET", "OPENALEX", "CROSSREF", "EURLEX", "AYM", "YARGITAY",
+        "DANISTAY",
+    )
 }
 
 
@@ -20,22 +23,35 @@ def fixture_bytes(rel: str) -> bytes:
 
 
 class FakeTransport:
-    """Offline transport: maps URL to a response or a list of responses served in order."""
+    """Offline transport: maps URL to a response, a list of responses served in order, or a function of the
+    request body (POST) for routes that answer by request."""
 
     def __init__(self, routes: Optional[Dict[str, object]] = None):
         self.routes: Dict[str, object] = routes or {}
         self.calls: List[Tuple[str, Dict[str, str]]] = []
+        self.bodies: List[Optional[bytes]] = []  # request body per call, None for GET
 
-    def get(self, url: str, headers: Mapping[str, str], timeout: float) -> Response:
-        self.calls.append((url, dict(headers)))
+    def _answer(self, url: str, body: Optional[bytes]) -> Response:
         route = self.routes.get(url)
         if route is None:
             return Response(404, {}, b"not found", url)
+        if callable(route):
+            return route(body)  # type: ignore[no-any-return]
         if isinstance(route, list):
             item = route.pop(0) if len(route) > 1 else route[0]
         else:
             item = route
         return item  # type: ignore[return-value]
+
+    def get(self, url: str, headers: Mapping[str, str], timeout: float) -> Response:
+        self.calls.append((url, dict(headers)))
+        self.bodies.append(None)
+        return self._answer(url, None)
+
+    def post(self, url: str, headers: Mapping[str, str], body: bytes, timeout: float) -> Response:
+        self.calls.append((url, dict(headers)))
+        self.bodies.append(body)
+        return self._answer(url, body)
 
 
 def ok(body: bytes, ctype: str = "text/html") -> Response:

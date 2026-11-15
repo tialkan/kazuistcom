@@ -37,6 +37,11 @@ Tam karar PDF'lerinin adres düzeni bu çalışmada doğrulanamadı (karar özet
 katmanından çıkarır (`pypdf`); metin katmanı yoksa kayıt reddedilir, OCR bu aşamada yok. PDF testi, testin kendi
 ürettiği sentetik bir PDF ile yapılır; gerçek bir Kurul kararı PDF'i çekilmedi.
 
+## Canlı kontrol (2026-11-15)
+
+`core.cli probe rekabet`: 3 istek (robots.txt, liste, bir karar sayfası), liste 10 satır, 1 kayıt ayrıştırıldı (özet metni;
+bağlayıcı liste satırından PDF adresi çıkarmıyor, bu yüzden zamanlayıcı yalnız özet metni toplar; tam metin için PDF adresini bulma AÇIK iş), hata oranı 0,0. Düzen değişmemiş.
+
 ## Tarık'tan
 
 Robots yokluğunun ve telif bildiriminin kabulü; onay: bu dosyada `tarik_onayi: onaylandi`.
