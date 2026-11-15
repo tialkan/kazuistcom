@@ -4,7 +4,9 @@ import {
   adminFlagsGet,
   adminPricesGet,
   adminQueueGet,
+  adminQueueDecide,
   adminUsersGet,
+  apnsTokenPost,
   authHandler,
   consentsGet,
   consentsPost,
@@ -15,8 +17,11 @@ import {
   meExport,
   meGet,
   mePatch,
+  notificationPrefsGet,
+  notificationPrefsPut,
   stepUpConfirm,
   targetProfessionPut,
+  webPushPost,
 } from '../handlers.ts';
 import { json } from '../http.ts';
 import { clientIp, MemoryRateLimitStore, RateLimiter, rules } from '../rate-limit.ts';
@@ -64,6 +69,23 @@ describe('IDOR: one user never reaches another user resource', () => {
     () => eduStart(api('/v1/me/edu-verification', null, post('', { email: 'x@ornek.edu.tr' }))),
     () => eduConfirm(api('/v1/me/edu-verification/confirm', null, post('', { code: '123456' }))),
     () => kvkkPost(api('/v1/kvkk-requests', null, post('', { kind: 'bilgi', detail: 'x' }))),
+    () => notificationPrefsGet(api('/v1/notifications/preferences', null)),
+    () =>
+      notificationPrefsPut(
+        api('/v1/notifications/preferences', null, { method: 'PUT', body: '{"email":{"kalemcik":false}}' }),
+      ),
+    () =>
+      webPushPost(
+        api(
+          '/v1/push/web-subscriptions',
+          null,
+          post('', { endpoint: 'https://fcm.googleapis.com/fcm/send/x', keys: { p256dh: 'a', auth: 'b' } }),
+        ),
+      ),
+    () =>
+      apnsTokenPost(
+        api('/v1/push/apns-tokens', null, post('', { deviceToken: 'a'.repeat(64), environment: 'sandbox' })),
+      ),
   ];
   it.each(routes.map((r, i) => [i, r] as const))('route %i returns 401 for misafir', async (_i, r) => {
     expect((await r()).status).toBe(401);
@@ -137,6 +159,16 @@ describe('roles: admin endpoints are closed to kullanici and misafir', () => {
     (t: string | null) => adminFlagsGet(api('/v1/admin/flags', t)),
     (t: string | null) => adminUsersGet(api('/v1/admin/users?q=abc', t)),
     (t: string | null) => adminPricesGet(api('/v1/admin/prices', t)),
+    (t: string | null) => adminQueueGet(api('/v1/admin/queues/citations', t), params({ queue: 'citations' })),
+    (t: string | null) =>
+      adminQueueDecide(
+        api(
+          '/v1/admin/queues/citations/00000000-0000-4000-8000-000000000000/decision',
+          t,
+          post('', { decision: 'onay' }),
+        ),
+        params({ queue: 'citations', itemId: '00000000-0000-4000-8000-000000000000' }),
+      ),
   ];
 
   it('misafir gets 401 and kullanici 403 on every admin route', async () => {

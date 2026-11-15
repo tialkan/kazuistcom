@@ -93,8 +93,7 @@ bir veri tabanında sınanır (`packages/db/test/migration-0007.test.ts`).
   (ADR-0036 ile kalkar). `packages/contracts/test/rotalar.test.ts` bunu, ekli bir yolun işleyicisi gelince ekin
   kaldırılmasını ve her işleyicinin sözleşmede olmasını sınar.
 - `planlandi`: `/v1/guides/{id}/progress` (icerik); `/v1/hmgs/exams`, `/v1/hmgs/exams/{id}/attempts`,
-  `/v1/hmgs/report`, `/v1/reviews` (pratik); `/v1/notifications/preferences`, `/v1/push/apns-tokens`,
-  `/v1/push/web-subscriptions` (kimlik); `/v1/records/{id}/versions` (casuist); `/v1/templates/docx` (yazma);
+  `/v1/hmgs/report`, `/v1/reviews` (pratik); `/v1/records/{id}/versions` (casuist); `/v1/templates/docx` (yazma);
   `/v1/webhooks/appstore` (odeme ve ios).
 - `kaldirilacak`: 11 `/v1/kampus/*` yolu (ADR-0031).
 - Sözleşmeye eklenen dört uç (şekilleri bugünkü rota dosyalarından okundu): `POST /v1/templates/check`
@@ -189,3 +188,26 @@ ve DEVIR.md'dedir.
 - Sözleşme dışı bir yük işleyiciye ulaşmaz; şema eklenmeden yeni bir iş türü tüketilemez.
 - OpenAPI ile rotalar arasındaki fark testle görünür; yeni uç sözleşmesiz eklenemez.
 - Açık: ADR-0036 (kaldırıcı adım), Tarık onayı ve `live.fetch` kapsam kararı.
+
+Not (14 Kasım 2026): `/v1/notifications/preferences`, `/v1/push/web-subscriptions` ve `/v1/push/apns-tokens`
+işleyicileri kimlik tarafından yazıldı (PR #91); `planlandi` ekleri kaldırıldı.
+
+## Not: sözleşme 1.5.1, yazma projesi gövdeleri (14 Kasım 2026)
+
+Sözleşmede `createWritingProject` ve `updateWritingProject` aynı, alanları tümüyle isteğe bağlı `WritingProjectInput`
+şemasını kullanıyordu; sunucu (`apps/web/src/app/yazma/_sunucu/projeler.ts`) ise POST'ta `title`, `kind` ve
+`targetWords` alanlarını zorunlu tutuyor, başlığı kırpıp boşu reddediyor ve `targetWords` için 2.000.000 üst sınırı
+uyguluyordu. Sözleşme, gerçek davranışa göre düzeltildi:
+
+- Yeni `WritingProjectCreateInput` (POST): `title` (kırpılır, 1-300), `kind` (`tez`, `makale`, `odev`) ve
+  `targetWords` (0-2.000.000 tam sayı) zorunlu, `deadline` (tarih) isteğe bağlı; bilinmeyen alan reddedilir.
+- `WritingProjectInput` (PATCH) aynı kurallarla kısmi şemadır (`WritingProjectCreateInput.partial()`); yalnız verilen
+  alanlar değişir, `deadline` `null` ile silinemez. Ad, eklemeci kalmak için değişmedi; `WritingProjectUpdateInput`
+  adına geçiş ADR-0036'da konuşulabilir.
+- Yazma rotaları (`uclar.ts` `projelerPost`, `projePatch`) yerel `ProjeGirdisi` ve `ProjeGuncelleme` yerine bu iki
+  sözleşme şemasını içe aktarır (orkestra isteğiyle, yazma yolunda tek dokunuş). Yerel kopya kalktığı için sözleşme
+  ile işleyici artık ayrışamaz; `packages/contracts/test/writing-projects.test.ts` zod ile OpenAPI'deki zorunlu
+  alanları ve sınırları karşılaştırır.
+- Sürüm 1.5.1 (`openapi.yaml` `info.version`, `CONTRACT_VERSION`, `packages/contracts/package.json`). Yalnız
+  sözleşme değişti; şema ve migration yok, `packages/db` 1.5.0'da kaldı. Sunucu bu kuralları zaten uyguladığı için
+  kablo davranışı değişmedi; iOS istemcisi henüz üretilmedi.

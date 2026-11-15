@@ -147,10 +147,33 @@ describe('writing projects (FR-45)', () => {
       { ...proje, deadline: '07.12.2026' },
       { ...proje, ekstra: 1 },
       { ...proje, title: ' ' },
+      { ...proje, targetWords: 2_000_001 },
+      { kind: 'tez', targetWords: 1000 },
+      { title: 'Tez', targetWords: 1000 },
+      { title: 'Tez', kind: 'tez' },
     ]) {
       const r = await projelerPost(bag())(istek('/v1/writing-projects', a, { method: 'POST', json: bad }));
       expect(r.status, JSON.stringify(bad)).toBe(400);
     }
+  });
+  it('updates partially with the contract rules (WritingProjectInput)', async () => {
+    const p = await projeAc();
+    const patch = (json: unknown) =>
+      projePatch(bag())(istek(`/v1/writing-projects/${p.id}`, a, { method: 'PATCH', json }), rc(p.id));
+    for (const bad of [
+      { ekstra: 1 },
+      { title: ' ' },
+      { kind: 'roman' },
+      { targetWords: 2_000_001 },
+      { deadline: null },
+      { deadline: '07.12.2026' },
+    ]) {
+      expect((await patch(bad)).status, JSON.stringify(bad)).toBe(400);
+    }
+    const r = await patch({ title: '  Yeni başlık  ' });
+    expect(r.status).toBe(200);
+    expect(await gov(r)).toMatchObject({ title: 'Yeni başlık', kind: 'makale', targetWords: 6000 });
+    expect((await patch({})).status).toBe(200);
   });
   it('never shows or changes another user project (IDOR)', async () => {
     const p = await projeAc();

@@ -179,7 +179,7 @@ kenarlı varlıklar için elde vektör çizim daha uygundur; Midjourney çıktı
 | Manifest simgeleri | `apps/web/public/icon-192.png`, `icon-512.png`, `app/manifest.ts` | 192 ve 512 px |
 | OpenGraph kartı | `apps/web/src/app/opengraph-image.png` | 1200 x 630 |
 | Meslek avatarları | `apps/web/public/avatar/<id>-{a,b,n}` | 8 meslek, 3 görünüm, 24 dosya; en az 108 px |
-| Kalemcik yüzleri | şimdilik kodla çizili (`KalemcikYuzu.tsx`) | 4 ifade |
+| Kalemcik yüzleri | şimdilik kodla çizili (`KalemcikYuzu.tsx`) | 4 ifade; nötr için beşinci yüz yok, veri olmayan anlarda `dusunceli` (plan 12 madde 8 "dört ton ve sakin yüz" olarak düzeltildi, `docs/istekler/yazma-kalemcik-notr-ton.md`) |
 | Kart piktogramları | şimdilik kodla çizili (`Isaretler.tsx`) | 20 x 20 |
 
 Kabul: tek bir görsel dil, açık ve koyu zeminde okunurluk, belirteçlerdeki renklerle uyum, dosya boyutu
