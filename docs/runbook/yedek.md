@@ -12,7 +12,7 @@ yedek kaydı geri yüklenebilirlik kanıtı değildir.
 | Roller | `pg_dumpall --globals-only --no-role-passwords` | aynı | aynı anlık görüntü |
 | Ham arşiv | `/srv/kazuist/raw-store` (worker-py `/data/raw-store`) | aynı | etiket `raw-store` |
 | Coolify yapılandırması | `/data/coolify/source/.env` (APP_KEY) ve `/data/coolify/backups` | aynı | etiket `coolify` |
-| Valkey | yedeklenmez: yalnız hız sınırı sayaçları, kalıcılık kapalı | yok | yok |
+| Valkey | yedeklenmez: BYOK nonce'ları, ücretsiz hak ve TL sayaçları, hız sınırları; her anahtarın süresi en çok bir gün. Yeniden başlatmada AOF (`valkeydata` birimi) korur; sunucu kaybında sayaçlar sıfırdan başlar | yok | yok |
 | Model klasörleri | yedeklenmez: `eval/anon/export_ner.py` ve `eval/embed/hazirla.py` ile yeniden üretilir | yok | yok |
 
 Betikler: `infra/backup/backup.sh` (yedek, saklama, haftalık prune ve kısmi veri denetimi),

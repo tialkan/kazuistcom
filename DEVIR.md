@@ -1,3 +1,32 @@
+## 15 Kasım 2026, altyapi: main denetimi düzeltmeleri (altyapi/denetim-duzeltmeleri)
+
+Bağımsız main denetiminin beş maddesi (501eb35 üstünde). Sözleşme, şema, migration ve bağımlılık değişmedi.
+- `infra/docker-compose.prod.yml` worker-py: `KAZUIST_SCHEDULER`, `KAZUIST_SCHEDULER_DRY_RUN`,
+  `KAZUIST_SCHEDULE_TICK_SECONDS` (öntanım 600, `float("")` zamanlayıcıyı düşürürdü), `KAZUIST_POLL_SECONDS` (öntanım
+  5; `core/main.py` artık boşu öntanım sayıyor) ve eksik üç kaynak anahtarı `KAZUIST_SOURCE_AYM/YARGITAY/DANISTAY`
+  (toplam 10). `infra/scripts/compose-env-check.py` CI'da işlenmiş compose JSON'una bakar: web, worker-node ve
+  worker-py kodunun okuduğu her `KAZUIST_*` geçiyor mu, kaynak anahtarları `docs/kaynaklar` ile birebir mi
+  (eski dosyada 7 eksik buluyor). Bilerek geçmeyenler gerekçesiyle betikte.
+- Valkey: `allkeys-lru` ve kalıcılıksız yapı nonce ve para sayaçlarını sessizce silebiliyordu. Şimdi `noeviction`
+  (dolunca yazma hata verir, istek kapalı düşer; `volatile-lru` tam da bu TTL'li anahtarları silerdi), AOF
+  `everysec` adlandırılmış `valkeydata` biriminde, RDB kapalı, bellek 256m'den 384m'ye (AOF yeniden yazım fork'u).
+  CI: politika, AOF ve yeniden başlatma sonrası TTL'li anahtarın kalması denetlenir.
+- `/api/health`: `MAIL_SMTP_URL` kritik değişken (yoksa 503, eksik adlar yalnız logda ve bir kez). SMTP
+  ulaşılabilirliği `deps.ts` `cachedPing` ile nodemailer `verify` (başarı 5 dk, hata 1 dk önbellek); ulaşılamazsa
+  200 `{"status":"degraded"}`: 503 Traefik'in web'i trafikten çıkarmasına ve bütün sitenin bakım sayfasına
+  düşmesine yol açardı, Uptime Kuma `"ok"` anahtar kelimesiyle yine uyarır. Compose'ta `MAIL_SMTP_URL` web ve
+  worker-node için `:?`. CI: Mailpit ile 200 ok, değişkensiz 503 (adsız gövde), kapalı portla 200 degraded.
+- `tests/e2e/adresler.ts` (kalite-guvenlik yolu): `ANA_SAYFALAR`'a `/ara`, `/yazma`, `/tespit`, `/rehberler`,
+  `/kaydettiklerim`, `/hesap/yz-anahtari`. `infra/lighthouse/lighthouserc.json`: 8 sayfa, erişilebilirlik 0,95 ve
+  SEO 0,9 hata eşiği (plan 1412), `is-crawlable` atlanır (CI sunucusu bilerek noindex).
+- `apps/worker-node/src/runner.ts` (orkestra yolu): LISTEN istemcisinin `error`/`end` dinleyicisi yoktu, bağlantı
+  koptuğunda işlenmemiş `error` süreci düşürüyordu. `pgListen` kırık istemciyi yok eder, 1 sn'den 30 sn'ye ikiye
+  katlanan beklemeyle yeniden LISTEN eder, sonra her kanalı bir kez bildirir (kopukken kaçan NOTIFY'lar). İlk bağlantı
+  hatası yine fırlatır. `test/listen.test.ts` sahte havuzla ve CI'da gerçek PostgreSQL'de `pg_terminate_backend` ile.
+- Runbook: `ilk-kurulum.md` (10 kaynak, zamanlayıcı, `MAIL_SMTP_URL` zorunlu), `izleme.md` (sağlık yanıtları, Valkey
+  belleği), `coolify.md`, `yedek.md`, `vps-secimi.md`.
+- Kimlik için not: web'in `smtpMailer`'ı `MAIL_FROM`'u okumuyor (sabit gönderen); worker-node okuyor.
+
 ## 15 Kasım 2026, yz-gecidi: teklif metni sunucu yapılandırmasına bağlı, tavan uyarısı, USD/TL kuru (yz-gecidi/platform-yz-yapilandirma)
 
 Bağımsız denetim bulgusu: `OPENROUTER_API_KEY` boşken /fiyatlar ve `byok.json` `satisKapali.metin` günlük ücretsiz hak ve
@@ -28,6 +57,7 @@ Bağımsız denetim bulgusu: `OPENROUTER_API_KEY` boşken /fiyatlar ve `byok.jso
   (hukuk-uyum); `yazma/_sunucu/yz.ts` `yzAcikMi` yalnız anahtara bakıyor, tavan yoksa gateway 503 verir (yazma);
   platform kapalı ve ödeme açık durumda kredi satılabilir ama harcanamaz (odeme kararı).
 
+
 ## 15 Kasım 2026, hukuk-uyum: hukuki metinler dar çekirdekli ilk yayına göre; Hetzner Standart Sözleşme 2 kontrol listesi
 
 ADR-0038 madde 8 (dar çekirdek), ADR-0030 (Hetzner, Almanya) ve yayındaki BYOK koduna göre. Sözleşme, şema ve kod
@@ -56,6 +86,7 @@ değişmedi; yalnız `content/hukuki/**` ve `docs/kvkk/**` (ve bu iki paylaşıl
   `pdf_fields` gövdede duruyor.
 - Açık: sunucu ucu `byok_aktarma`yı yz_aktarim onayıyla hâlâ kabul ediyor (casuist, yz-gecidi kararı); Hetzner'ın
   imzalayıp imzalamayacağı; yer tutucular (VKN, vergi dairesi, KEP, yedek ve e-posta sağlayıcısı).
+
 
 ## 15 Kasım 2026, mimar: sunucu logları tek temizleyiciden geçer, ADR-0039 (arch/shared-safe-error-log)
 

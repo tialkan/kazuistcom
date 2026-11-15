@@ -166,7 +166,8 @@ yere kaydedilmez, Kulular parola yöneticisine yazılır.
 | `BYOK_SIGNING_SECRET` | evet | `openssl rand -hex 32` | web |
 | `PII_ENCRYPTION_KEY` | evet | `openssl rand -base64 32`; kaybı şifreli alanları okunamaz yapar | web |
 | `KAZUIST_INTERNAL_TOKEN` | evet | `openssl rand -hex 32` | web, worker-py |
-| `MAIL_SMTP_URL`, `MAIL_FROM` | yayın öncesi evet | e-posta sağlayıcısı (plan 14.6); gönderen `"Kazuist" <bildirim@kazuist.com>` | web, worker-node |
+| `MAIL_SMTP_URL` | evet | e-posta sağlayıcısının SMTP adresi (plan 14.6). Dosyada `:?`: boşken dağıtım olmaz; web'de eksikse `/api/health` 503 döner, sağlayıcıya ulaşılamıyorsa 200 `degraded` (`izleme.md`) | web, worker-node |
+| `MAIL_FROM` | hayır | gönderen `"Kazuist" <bildirim@kazuist.com>` (boşken bu öntanım) | worker-node |
 | `AUTH_TRUSTED_ORIGINS` | hayır | ek kökenler, virgülle | web |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | hayır | Google Cloud Console | web |
 | `APPLE_CLIENT_ID`, `APPLE_CLIENT_SECRET`, `APPLE_APP_BUNDLE_IDENTIFIER` | hayır | Apple Developer | web |
@@ -180,12 +181,16 @@ yere kaydedilmez, Kulular parola yöneticisine yazılır.
 | `APNS_KEY_ID`, `APNS_TEAM_ID`, `APNS_PRIVATE_KEY`, `APNS_BUNDLE_ID` | hayır | iOS bildirimleri | worker-node |
 | `KAZUIST_NER_BACKEND`, `KAZUIST_NER_THREADS`, `KAZUIST_NER_QUANTIZED` | hayır | model klasörü kurulunca (`dagitim.md`, "worker-py model birimleri") | worker-py |
 | `KAZUIST_EMBED_BACKEND`, `KAZUIST_EMBED_THREADS`, `KAZUIST_EMBED_QUANTIZED` | hayır | ADR-0037 koşullarıyla; 16 GB x86'da `THREADS=4` | worker-py |
-| `KAZUIST_SOURCE_*` (7), `OPENALEX_API_KEY`, `KAZUIST_CITATIONS_SCOPE` | hayır | kaynak onayı (docs/kaynaklar) ve veri-toplama | worker-py |
+| `KAZUIST_SOURCE_*` (10): `AYM`, `CROSSREF`, `DANISTAY`, `EURLEX`, `KVKK`, `MEVZUAT`, `OPENALEX`, `REKABET`, `RESMI_GAZETE`, `YARGITAY` | hayır (öntanım kapalı) | `docs/kaynaklar/<kaynak>.md` başına bir anahtar, `on` açar; üretimde dosyada `tarik_onayi: onaylandi` da gerekir. CI listenin kaynak dosyalarıyla aynı olduğunu denetler (`infra/scripts/compose-env-check.py`) | worker-py |
+| `KAZUIST_SCHEDULER`, `KAZUIST_SCHEDULER_DRY_RUN` | hayır (öntanım kapalı) | toplama zamanlayıcısı (`services/worker-py/core/scheduler.py`); önce `DRY_RUN=on` ile planı loglayın, sonra `SCHEDULER=on` | worker-py |
+| `KAZUIST_SCHEDULE_TICK_SECONDS` | hayır (dosyada öntanım 600) | zamanlayıcı turu, en az 60 sn | worker-py |
+| `KAZUIST_POLL_SECONDS` | hayır (dosyada öntanım 5) | iş kuyruğu yoklama aralığı | worker-py |
+| `OPENALEX_API_KEY`, `KAZUIST_CITATIONS_SCOPE` | hayır | veri-toplama ve atıf ağı | worker-py |
 
 Dosyada sabit olan ve panele girilmeyenler: `DATABASE_URL`, `VALKEY_URL`, `BETTER_AUTH_URL` (APP_URL),
 `TRUSTED_PROXY_COUNT=1`, `WORKER_PY_URL=http://worker-py:8001`, `KAZUIST_RAW_DIR=/data/raw-store`, model dizinleri,
 `HF_HUB_OFFLINE=1`, `TRANSFORMERS_OFFLINE=1`. `S3_*` gerekmez (hiçbir kod okumuyor; `/api/health` artık istemiyor).
-`KAZUIST_POLL_SECONDS` dosyada yoktur: boş değer worker-py'yi düşürüyor, öntanım 5 saniye kullanılır. Yerelde ve testte kullanılan `KAZUIST_ARAMA_KAYNAGI`, `KAZUIST_FIKSTUR_URETIMDE`, `KAZUIST_LIVE_SMOKE` sunucuya hiç
+`KAZUIST_POLL_SECONDS` ve `KAZUIST_SCHEDULE_TICK_SECONDS` dosyada boş olmayan öntanımla geçer (worker-py ikisini `float()` ile okur). Yerelde ve testte kullanılan `KAZUIST_ARAMA_KAYNAGI`, `KAZUIST_FIKSTUR_URETIMDE`, `KAZUIST_LIVE_SMOKE` sunucuya hiç
 girilmez.
 
 ### Bakım sayfası (FR-105)
