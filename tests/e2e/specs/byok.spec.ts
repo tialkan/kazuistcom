@@ -61,7 +61,9 @@ function modelReply(prompt: string): string {
   const m = /<kaynak id="(K\d+)"[^>]*>\n([\s\S]*?)\n<\/kaynak>/.exec(prompt);
   if (!m) return '{"t":"yetersiz","neden":"kaynak yok"}\n{"t":"son"}\n';
   // The first line of a passage is its künye; the validator rejects quotes taken from it (plan Ek D.1).
-  const words = (m[2] ?? '').split('\n').slice(1).join(' ').split(/\s+/);
+  const lines = (m[2] ?? '').split('\n');
+  const body = lines.length > 1 ? lines.slice(1) : lines;
+  const words = body.join(' ').split(/\s+/);
   let quote = '';
   for (let i = 0; i + 5 <= words.length; i++) {
     const run = words.slice(i, i + 5);
