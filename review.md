@@ -65,8 +65,7 @@ Hepsi doğrulandı: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm check:text
 
 Yerel ortamda ayrıca eski `.next` önbelleği ve bozuk `apps/web/node_modules` temizlendi (depoya etkisi yok).
 
-Bilerek dokunulmayan: "yakında" düzeneği (`acikModuller`, `ModulBagi`). Şu an altı modül de açık olduğu için
-ölü görünüyor ama Faz 1'de modülleri kapatmak için gerekecek (P3).
+"Yakında" düzeneği (`acikModuller`, `ModulBagi`) tek seferde yayın kararıyla (T2) gereksizleşti ve #76 ile #80'de silindi.
 
 ## 3. İş paketleri
 
@@ -82,7 +81,7 @@ ve rapor biçimine uyar. `packages/contracts` ve `packages/db` yalnız mimar ve 
 
 ### P1. mimar: kararların yazımı ve sözleşme temizliği
 
-1. ADR-0033 (tek sunucu, staging'siz, fazlı yayın) ve ADR-0034 (görsel üretimi); ADR-0002, 0003, 0014, 0016
+1. ADR-0033 (tek sunucu, staging'siz, tek seferde yayın) ve ADR-0034 (görsel üretimi); ADR-0002, 0003, 0014, 0016
    ve `docs/adr/README.md:8,9,20,22` durum satırlarına "ADR-0030/0031/0032 ile değişti" notu.
 2. `docs/sahiplik.md`: `:33` kampus satırı pasif, `:47` örnek, `{tr,en}` desenleri `tr`, yazma satırına
    `apps/web/src/app/tespit/**`, `docs/tespit/**` ve yazma API yolları, eksik `hesap.json`,
@@ -142,8 +141,7 @@ ve rapor biçimine uyar. `packages/contracts` ve `packages/db` yalnız mimar ve 
 
 ### P3. on-yuz: Faz 1 görünümü ve tasarım tutarlılığı
 
-1. Faz 1 için `apps/web/src/app/(kabuk)/_kabuk/rotalar.ts:21` `acikModuller` daraltılır (T2); kapalı
-   modüller "yakında" görünür.
+1. Düştü (T2: hepsi birlikte açılır).
 2. Ana sayfadaki yer tutucu künyeler (`apps/web/src/app/page.tsx:63,77,83`, `ortak.json:94`) doğrulanmış
    gerçek bir örnekle değişir.
 3. Topluluk kuralları bağlantısı (`rotalar.ts:41`, `ortak.json:71`) kalkar; P5 ile aynı PR'da.
@@ -160,7 +158,7 @@ ve rapor biçimine uyar. `packages/contracts` ve `packages/db` yalnız mimar ve 
     (`(odeme)/odeme/page.tsx:26,91`, `checkout-step.tsx`, `Kalemcik.tsx`); belirteç dışı tek renk
     (`packages/ui/src/components.css:231`).
 11. `/eski` arşivi (T10) ve `(odeme)/odeme/page.tsx` içindeki ölü dallar (`:48,69,75,82`).
-12. Faz 2 açılınca "yakında" düzeneği tümüyle silinir (`ModulBagi`, `OrnekSoru`, `Bulunamadi`, `kabuk.css`).
+12. Yapıldı: "yakında" düzeneği #76 ve #80 ile silindi.
 
 ### P4. on-yuz: görsel varlıklar (Midjourney)
 
@@ -283,8 +281,7 @@ Sunucu ve kararlar beklenirken başlayabilecek işler işaretlidir.
    canlı hesap ve e-Arşiv entegratörü, kaynak onayları, Pratik kartlarının editör onayı.
 4. Kapı: P10, ardından bagimsiz-denetci. Sonra DNS onayı ve yayın.
 
-P3 madde 1 (modülleri Faz 1 için kapatma) bu kararla düşer; madde 12 (yakında düzeneğinin silinmesi) hemen
-yapılabilir.
+P3 madde 1 bu kararla düştü; madde 12 #76 ve #80 ile yapıldı.
 
 ## 5. Belgelerdeki bayatlıklar
 

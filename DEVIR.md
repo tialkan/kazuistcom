@@ -23,6 +23,105 @@ Orkestra isteği. Şema ve migration değişmedi; yeni bağımlılık yok. Canl�
   `docs/tasarim/gorsel-istemleri.md` 4.7'deki "açık soru" notu artık cevaplı (orkestra yolu). Yazma'nın kalan yerel
   şemaları (`IlerlemeGirdisi`, `HitapGirdisi`, şablon ve kısaltma gövdeleri) yönlendirme belgesindeki gibi açık.
 
+## 15 Kasım 2026, kimlik: hesap silme tek işlemde, kaldırma kararında gizleme, doğrulanmış e-posta kapıları (kimlik/purge-takedown-verified-gates)
+
+Orkestra görevi: main üzerinde doğrulanmış üç hata. `packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+- `apps/worker-node/src/account/purge.ts`: `account.purge` artık tek işlemde ve tek bağlantıda (pg.Pool'dan istemci
+  alınır). Eskiden işlemsiz siliyor, `wallets.user_id` (ON DELETE yok) yüzünden `delete from users` 23503 ile
+  düşüyor, e-posta değiştirilip bırakılıyordu; cascade hiç çalışmadığından kütüphane, yazma projeleri ve günlükleri,
+  hatırlatıcılar, şablon kuralları, kart ve sınav kayıtları, Kampüs profili, bildirim işleri ve KVKK başvurusunun
+  kişisel alanları kalıyordu. `purgeSteps` packages/db şemasındaki her `users` yabancı anahtarını açıkça siler ya da
+  bağı kaldırır; rıza ve denetim kaydı yalnız özetle, KVKK başvurusu tür, durum, tarih ve özetle kalır. Yasal saklama
+  satırları (`retainedReferences`: cüzdan, kredi lotları, defter, sipariş, ödeme, abonelik, fatura, iade, IAP,
+  dondurulmuş sözleşme belgeleri) dokunulmadan kalır ve anonim mezar taşı `users` satırına bağlanır; boş cüzdan
+  silinir. İkinci çalıştırma `already_anonymised` ile atlanır.
+- Entegrasyon testi `purge-integration.test.ts`: her zaman PGlite'ta, `KAZUIST_IT_DATABASE_URL` verilirse gerçek
+  PostgreSQL'de de (pg.Pool yolu). Kullanıcı her `users` tablosunda işaretli satırla tohumlanır; silmeden sonra işaret
+  her tablonun her satırının metin biçiminde aranır (yalnız `order_legal_documents` yasal saklama olarak muaf).
+  Yeni bir `users` yabancı anahtarı `purgeSteps` ya da `retainedReferences`'a eklenmezse test kırılır. Kısmi hata
+  testi her satırın yerinde kaldığını kanıtlar.
+- `apps/web/src/server/auth/takedown.ts`: `ek_maskeleme` hedefi gizli tutar (gizli değilse gizler) ve kayıtlar için
+  `anon.run` kuyruğa alır (tekilleştirme anahtarı `anon:<id>`, ingest hattıyla aynı). `ret` hedefi yalnız bu talep
+  gizlediyse ve aynı hedefte `gecici_gizlendi`, `kalici_kaldirma` ya da `ek_maskeleme` durumunda başka talep yoksa
+  gösterir. Gizleme zamanı `coalesce` ile korunur.
+- Doğrulanmış e-posta: `Principal.emailVerified` her istekte veritabanından okunur. Kayıt promosyonu
+  (`grantPromoIfVerified`) yalnız doğrulanmış ve silinmemiş hesaba: Google ve Apple oluşturmada, e-posta ve parola
+  hesabı e-posta kodu doğrulanınca (`databaseHooks.user.update.after`). Ücretsiz özet hakkı
+  `apps/web/src/app/ara/_sunucu/ozet.ts`'de `p.emailVerified` ister (casuist yolunda tek satır, orkestra görevi
+  gereği; test `ozet.test.ts`). Giriş doğrulamasız açık kalır; kredi ve BYOK kullanılabilir.
+- edu.tr: `normalizeEduEmail` (küçük harf, boşluk, sondaki nokta, `+etiket`); başka hesapta doğrulanmış posta kutusu
+  için kod gönderilmez ve onay danışma kilidi altında yeniden denetlenir (400, `hata.eduKullanimda`). Veritabanı
+  güvencesi isteği: `docs/istekler/kimlik-edu-tekil.md`.
+- Açık: `ek_maskeleme` sonrası yeniden gösterme için editör ya da anonimleştirici adımı yok (hedef gizli kalır);
+  Kampüs hedefinde yeniden maskeleme yok. CI'da gerçek PostgreSQL ile purge testi için docker işine
+  `KAZUIST_IT_DATABASE_URL=... pnpm --filter @kazuist/worker-node exec vitest run src/account` adımı altyapıya.
+
+## 15 Kasım 2026, yz-gecidi: BYOK arayüzü, ödeme kapalı yayın, geçit zaman aşımı ve uzlaşma (yz-gecidi/byok-arayuz-odeme-kapali)
+
+Orkestra görevi: review.md P8 madde 4 ve 5, plan K-08, K-09, FR-84, 8. bölüm. `packages/contracts` ve `packages/db`
+değişmedi; yeni bağımlılık yok. Sözleşme ve sahiplik isteği: `docs/istekler/yz-gecidi-byok.md`.
+- BYOK arayüzü `/hesap/yz-anahtari` (oturum istemez): OpenRouter, önerilen üç model ya da elle model kimliği,
+  anahtar yalnız tarayıcıda (varsayılan sessionStorage, açık seçimle localStorage ve uyarı), gizlilik öncelikli
+  (`provider.zdr`), anahtarı sil, "Anahtarı dene" (`GET openrouter.ai/api/v1/key`; ücretsiz katman ve sınırsız
+  anahtar uyarısı), `:free` modelde ücretsiz model uyarısı. Kayıtlı anahtar forma geri yazılmaz, maskeli gösterilir.
+- `/ara` kaynaklı özet: tarayıcıda anahtar varsa BYOK istemci protokolü (prepare, tarayıcıdan doğrudan OpenRouter,
+  casuist tarayıcı doğrulayıcısı, verify); yoksa günlük ücretsiz hak. Hak bitince (402) BYOK bağlantısı.
+  Maskeleme sunucuda `scrubParts` ile, tarayıcı göndermeden önce `assertMasked` ile yeniden denetler.
+- CSP `connect-src 'self' https://openrouter.ai` (`BYOK_CONNECT_ORIGINS`); başka köken yok.
+- Ödeme kapalı yayın: `apps/web/src/server/billing/acik.ts` `odemeAcik()` üç `IYZICO_*` değişkenine bakar. Yoksa
+  `/fiyatlar` "Kredi satışı henüz açılmadı" notu, `/odeme` ödeme adımı yerine ücretsiz hak ve BYOK bağlantıları.
+  `/fiyatlar` her durumda BYOK bölümü gösterir.
+- Geçit (P8.5): her sağlayıcı çağrısında ilk bayt ve toplam süre sınırı (`adapters/deadline.ts`, rota başına
+  `timeoutMs`; zaman aşımı `ProviderTimeoutError` 504, çıktı yokken yedek sağlayıcıya geçer). Akış sonunda
+  `consume` ya da `release` hatası artık akışı kırmaz: türsüz hata bir kez yeniden denenir, maliyet olayı
+  `creditsCharged` (defterin gerçekten aldığı), `creditsDue` ve `settlement` taşır, `onSettleFailure` uyarısı
+  (gecit.ts yalnız kimlik ve tutar loglar), harcama sayacı uzlaşmadan önce yazılır. Soru ve pasajlar `scrubParts`
+  ile tek etiket uzayında maskelenir; denetim karakterleri silinir, ayırıcı kayması kapandı.
+- Üretimde `VALKEY_URL` (ya da `BETTER_AUTH_SECRET`) yoksa `buildSummaryDeps` `GatewayConfigError` atar ve
+  değişken adını loglar; özet uçları 503 döner (önceden sessizce bellek sayacı).
+- Tarayıcı derlemesi `@kazuist/ai-gateway/browser` (`browser.ts`); içe aktarma zinciri Node yerleşiği içermez,
+  test zorlar.
+- Test: ai-gateway 104 (deadline, settlement, browser yeni), web 666 (gerçek prepare/verify ile BYOK uçtan uca,
+  üretim yapılandırması, `/fiyatlar` ve `/odeme` satış durumu), enjeksiyon 60/60, e2e 108/108 (yeni
+  `byok.spec.ts` 9 test, openrouter.ai tarayıcıda taklit). axe 375/768/1440 ihlal 0. Canlı OpenRouter duman testi
+  çalışmadı: anahtar dosyası yok.
+- Açık: derin özette Sonnet 5.5 zorunlu akıl yürütme (SAGLAYICILAR.md), `PrepareRequest.filters` (istek),
+  Anthropic, OpenAI ve Gemini için tarayıcı BYOK'u (CSP ve CORS denetimiyle birlikte), `USD_TL` sabiti.
+
+## 14 Kasım 2026, yazma: rota şemaları sözleşmeden, Kalemcik sakin yüz, zip bombası testi (yazma/rota-sozlesme-sakin-yuz)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` yazma madde 3 ve `docs/istekler/yazma-kalemcik-notr-ton.md` kararı.
+`packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+- `apps/web/src/app/yazma/_sunucu/uclar.ts` ve `projeler.ts`: yerel zod şemaları kalktı. `WritingProjectInput`,
+  `WritingProgressInput`, `WritingSettings`, `AbbreviationsInput` JSON gövdelerini, `TemplateRulesUpload`,
+  `TemplateCheckUpload`, `DocxCountUpload` çok parçalı gövdeleri doğrular. Sözleşme yalnız biçimi söyler (proje
+  alanlarının hepsi isteğe bağlı); sunucu, sözleşme şeması geçtikten sonra eskisi gibi şunları ister: yeni projede
+  başlık, tür ve hedef zorunlu; başlık ve not kırpılır, boş başlık olmaz, hedef en çok 2 milyon kelime.
+- Davranış değişikliği (testle gösterildi): kılavuz yüklemede `institutionName` 200 karakterden uzunsa artık 400
+  (eskiden kırpılıyordu); sözleşme `max 200` diyor. `kind` yoksa `tez`. `rules` parçası metin değilse 400.
+- Kalemcik: yükleniyor ve proje yok durumlarında `SakinKoc` (`dusunceli` yüzü, ton etiketi ve mesaj satırı yok;
+  yüklenirken ekran okuyucuya "Yükleniyor"). `packages/i18n/tr/kalemcik.json` `kalemcik.yukleniyor` eklendi.
+- `cekirdek.test.ts` zip bombası: 70 MB sıkıştırma yerine bildirilen boyutu 70 MB yazılmış küçük arşiv (aynı sınır,
+  sınırın altındaki gerçek boyutuyla okunabildiği de sınanır) ve 61 MB gerçek bomba (seviye 1, açık 60 sn zaman aşımı).
+- Test: `yazma/api.test.ts` yeni blok, `kalemcik/kalemcik.test.tsx`. Doğrulama: typecheck, lint, tam `pnpm test` iki kez
+  (web 637 geçti), build; 375/768/1440 axe 0 (yükleniyor ve proje yok).
+
+## 14 Kasım 2026, atif-agi: sözleşme v1.5 atıf ağı maddeleri (atif-agi/v1-5-rejected)
+
+`docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` atif-agi madde 1 ve 3 (madde 2 zaten açılabilir durumdaydı).
+Sözleşme, şema ve migration değişmedi; yeni bağımlılık yok. Canlı veri tabanına hiçbir şey uygulanmadı.
+- `services/worker-py/citations/store.py`: `UPSERT_EDGE_SQL` ve `UPSERT_WORK_CITATION_SQL` yalnız
+  `confirmed = false AND NOT rejected` satırlarını günceller; `PRUNE_EDGES_SQL` ve `PRUNE_WORK_CITATIONS_SQL`
+  `rejected` satırları silmez. Başlıktaki "until a rejected column exists" notu kalktı. `SqlCitationStore(doctrine=True)`
+  çağıran tarafın seçimidir; `job.py` mağaza fabrikasını dışarıdan aldığı için orada değişiklik gerekmedi.
+- `apps/web/src/app/atif-agi/_sunucu/sql.ts`: kenar görünürlüğü `NOT e.rejected AND (e.confirmed OR
+  e.confidence >= 0.90)`, eser okuması `NOT wc.rejected AND (wc.confirmed OR wc.confidence >= 0.90)`; eski
+  `confidence > 0` ret biçimi kalktı (migration 0007 o satırları `rejected = true` yaptı). `42P01` yedeği
+  zararsız olduğu için bırakıldı.
+- Test: `services/worker-py/citations/tests/test_llm_job.py` (upsert ve budama koşulları), `sunucu.test.ts` (ağ ve
+  kayıt ağı sorgularının `NOT rejected` taşıması).
+- Açık: retde `rejected = true` yazacak editör ekranı kimliğin (yönlendirme kimlik madde 4); bu PR yalnız okuma ve
+  yazma tarafını hazırlar. `packages/casuist/src/sql.ts` casuist ajanınındır, dokunulmadı.
 ## 14 Kasım 2026, casuist: reddedilen atıf kenarları sayılmaz (sözleşme v1.5, casuist/v1-5-reddedilen-kenarlar)
 
 `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` casuist maddesi. Sözleşme, şema ve migration değişmedi; yeni

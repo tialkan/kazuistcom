@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
+import byok from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
 import { getMe } from '@/server/auth/account';
 import { pendingConsents } from '@/server/auth/account-view';
 import { requirePageSession } from '@/server/auth/page-session';
@@ -19,6 +20,7 @@ const bolumler = [
   { href: '/hesap/guvenlik', ...s.bolum.guvenlik },
   { href: '/hesap/kvkk', ...s.bolum.kvkk },
   { href: '/hesap/verilerim', ...s.bolum.verilerim },
+  { href: '/hesap/yz-anahtari', baslik: byok.sayfa.hesapBag, aciklama: byok.sayfa.hesapAciklama },
 ];
 
 /** /hesap: profile summary, consent reminder, links to every account page and sign out. */

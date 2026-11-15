@@ -15,6 +15,7 @@ import {
   type LedgerReservations,
   type NameRecognizer,
   type NonceStore,
+  type SettlementFailure,
 } from '@kazuist/ai-gateway';
 import { nameSpans } from '@kazuist/casuist';
 import { ensureWallet, walletRunner } from '@kazuist/ledger/pg';
@@ -123,6 +124,47 @@ const noLedger: LedgerReservations = {
 
 let current: SummaryDeps | undefined;
 
+/**
+ * review.md P8.5: production used to fall back silently to in-process counters and nonces when VALKEY_URL was
+ * missing. That breaks the daily free allowance, the IP and platform caps and single use nonces as soon as the
+ * process restarts or a second instance runs. Production now refuses to build the summary dependencies.
+ */
+export class GatewayConfigError extends Error {
+  override name = 'GatewayConfigError';
+  constructor(readonly missing: string[]) {
+    super(`missing in production: ${missing.join(', ')}`);
+  }
+}
+
+function requireProductionConfig(
+  env: Record<string, string | undefined>,
+  overrides: { counters?: CounterStore; nonces?: NonceStore; hashSecret?: string },
+): void {
+  if (env.NODE_ENV !== 'production') return;
+  const missing: string[] = [];
+  if (!env.VALKEY_URL && !(overrides.counters && overrides.nonces)) missing.push('VALKEY_URL');
+  if (!env.BETTER_AUTH_SECRET && !overrides.hashSecret) missing.push('BETTER_AUTH_SECRET');
+  if (!missing.length) return;
+  // Variable names only, never values.
+  console.error(JSON.stringify({ at: 'gecit', level: 'error', error: 'GatewayConfigError', missing }));
+  throw new GatewayConfigError(missing);
+}
+
+/** Operator alert for a reservation that could not be settled; ids and amounts only (plan 8.8). */
+function settleAlert(f: SettlementFailure): void {
+  console.error(
+    JSON.stringify({
+      at: 'gecit',
+      level: 'error',
+      error: 'ledger_settle_failed',
+      requestId: f.requestId,
+      action: f.action,
+      credits: f.credits,
+      kind: f.errorKind,
+    }),
+  );
+}
+
 /** Tests replace the dependencies. */
 export function setSummaryDeps(d: SummaryDeps | undefined): void {
   current = d;
@@ -139,6 +181,7 @@ export function buildSummaryDeps(
   } = {},
   env: Record<string, string | undefined> = process.env,
 ): SummaryDeps {
+  requireProductionConfig(env, overrides);
   const counters =
     overrides.counters ??
     (env.VALKEY_URL ? valkeyCounterStore(sharedValkey(env.VALKEY_URL)) : new MemoryCounterStore());
@@ -173,6 +216,7 @@ export function buildSummaryDeps(
     platformKeys: overrides.platformKeys ?? platformKeys,
     sink: overrides.sink ?? jsonLineSink((line) => console.info(line)),
     ner: overrides.ner ?? nameRecognizer,
+    onSettleFailure: overrides.onSettleFailure ?? settleAlert,
     ...(overrides.now ? { now: () => now().getTime() } : {}),
   });
   return {

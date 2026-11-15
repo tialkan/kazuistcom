@@ -1,7 +1,14 @@
 import tr from '@kazuist/i18n/tr/yazma.json' with { type: 'json' };
 import { after } from 'next/server';
 import { z } from 'zod';
-import { WritingProjectCreateInput, WritingProjectInput, type ErrorCode } from '@kazuist/contracts';
+import {
+  AbbreviationsInput,
+  DocxCountUpload,
+  TemplateCheckUpload,
+  TemplateRulesUpload,
+  WritingSettings,
+  type ErrorCode,
+} from '@kazuist/contracts';
 import { withAuth, withPublic } from '@/server/auth/guard.ts';
 import { apiError, json, rateLimited, readJson } from '@/server/auth/http.ts';
 import type { RateRule } from '@/server/auth/rate-limit.ts';
@@ -21,11 +28,12 @@ import { pythonDenetimIstemcisi, type DenetimIstemcisi } from './denetim.ts';
 import { dergiAra, dergiyiBul, onayliKurallar } from './dergiler.ts';
 import { cikarmayiCalistir, isOlustur, isiBitir, isiGetir, kayitGetir, kayitSil } from './kurallar.ts';
 import {
-  HitapGirdisi,
-  IlerlemeGirdisi,
   hitapOku,
   hitapYaz,
+  ilerlemeGirdisiOku,
   ilerlemeKaydet,
+  projeGirdisiOku,
+  projeGuncellemeOku,
   projeGuncelle,
   projeOlustur,
   projeleriListele,
@@ -117,6 +125,20 @@ async function dosyaAl(req: Request): Promise<{ bayt: Uint8Array; ad: string; fo
   return { bayt: new Uint8Array(await dosya.arrayBuffer()), ad: dosya.name, form };
 }
 
+/**
+ * Text parts of a multipart body, for the contract's upload schemas: an absent part is left out (FormData gives
+ * `null`), so `.optional()` and `.default()` in the schema apply; a part that is a file is passed as it is and the
+ * schema decides.
+ */
+function formAlanlari(form: FormData, adlar: readonly string[]): Record<string, FormDataEntryValue> {
+  const cikti: Record<string, FormDataEntryValue> = {};
+  for (const ad of adlar) {
+    const d = form.get(ad);
+    if (d !== null) cikti[ad] = d;
+  }
+  return cikti;
+}
+
 const Kimlik = z.uuid();
 const kimlikli = (params: Record<string, string>, ad = 'id') => {
   const r = Kimlik.safeParse(params[ad]);
@@ -130,9 +152,9 @@ export const projelerGet = (_b = varsayilan) =>
 
 export const projelerPost = (b = varsayilan) =>
   withAuth({ rate: hizlar.genel }, async (req, p, ctx) => {
-    const g = WritingProjectCreateInput.safeParse(await readJson(req));
-    if (!g.success) return apiError('bad_request');
-    return json(await projeOlustur(ctx.db, p.userId, g.data, b.now()), 201);
+    const g = projeGirdisiOku(await readJson(req));
+    if (!g) return apiError('bad_request');
+    return json(await projeOlustur(ctx.db, p.userId, g, b.now()), 201);
   });
 
 export const projeGet = (b = varsayilan) =>
@@ -145,10 +167,10 @@ export const projeGet = (b = varsayilan) =>
 export const projePatch = (b = varsayilan) =>
   withAuth({ rate: hizlar.genel }, async (req, p, ctx, params) => {
     const id = kimlikli(params);
-    const g = WritingProjectInput.safeParse(await readJson(req));
+    const g = projeGuncellemeOku(await readJson(req));
     if (!id) return apiError('not_found');
-    if (!g.success) return apiError('bad_request');
-    const r = await projeGuncelle(ctx.db, p.userId, id, g.data, b.now());
+    if (!g) return apiError('bad_request');
+    const r = await projeGuncelle(ctx.db, p.userId, id, g, b.now());
     return r ? json(r) : apiError('not_found');
   });
 
@@ -162,10 +184,10 @@ export const projeDelete = (_b = varsayilan) =>
 export const ilerlemePost = (b = varsayilan) =>
   withAuth({ rate: hizlar.genel }, async (req, p, ctx, params) => {
     const id = kimlikli(params);
-    const g = IlerlemeGirdisi.safeParse(await readJson(req));
+    const g = ilerlemeGirdisiOku(await readJson(req));
     if (!id) return apiError('not_found');
-    if (!g.success) return apiError('bad_request');
-    if (!(await ilerlemeKaydet(ctx.db, p.userId, id, g.data, b.now()))) return apiError('not_found');
+    if (!g) return apiError('bad_request');
+    if (!(await ilerlemeKaydet(ctx.db, p.userId, id, g, b.now()))) return apiError('not_found');
     return json({ ok: true }, 201);
   });
 
@@ -177,7 +199,8 @@ export const docxSayimiPost = (_b = varsayilan) =>
   withAuth({ rate: hizlar.denetim }, async (req, _p, _ctx, params) => {
     if (!kimlikli(params)) return apiError('not_found');
     try {
-      const { bayt, ad } = await dosyaAl(req);
+      const { bayt, ad, form } = await dosyaAl(req);
+      if (!DocxCountUpload.safeParse(formAlanlari(form, ['file'])).success) return apiError('bad_request');
       if (uzantidanTur(ad) !== 'docx' || icerikTuru(bayt) !== 'docx')
         throw new YuklemeHatasi('tur_uyusmuyor');
       return json(docxKelimeSayimi(bayt));
@@ -192,7 +215,7 @@ export const ayarlarGet = (_b = varsayilan) =>
 
 export const ayarlarPut = (_b = varsayilan) =>
   withAuth({ rate: hizlar.genel }, async (req, p, ctx) => {
-    const g = HitapGirdisi.safeParse(await readJson(req));
+    const g = WritingSettings.safeParse(await readJson(req));
     if (!g.success) return apiError('bad_request');
     await hitapYaz(ctx.db, p.userId, g.data.hitap);
     return json(g.data);
@@ -223,8 +246,6 @@ export const dergiKurallariGet = (_b = varsayilan) =>
 
 // ---- Guide rule extraction -------------------------------------------------------------------------------------------
 
-const Tur = z.enum(['tez', 'makale']);
-
 export const kuralYuklePost = (b = varsayilan) =>
   withAuth({ rate: hizlar.genel }, async (req, p, ctx) => {
     // The file is validated first, whatever the state of the AI service: a bad file is always a 4xx.
@@ -235,10 +256,12 @@ export const kuralYuklePost = (b = varsayilan) =>
       if (e instanceof YuklemeHatasi) return yuklemeHatasi(e);
       throw e;
     }
-    const tur = Tur.safeParse(dosya.form.get('kind') ?? 'tez');
-    const kurumHam = dosya.form.get('institutionName');
-    const kurum = typeof kurumHam === 'string' && kurumHam.trim() ? kurumHam.trim().slice(0, 200) : null;
-    if (!tur.success) return apiError('bad_request');
+    const yukleme = TemplateRulesUpload.safeParse(
+      formAlanlari(dosya.form, ['file', 'institutionName', 'kind']),
+    );
+    if (!yukleme.success) return apiError('bad_request');
+    const tur = { data: yukleme.data.kind };
+    const kurum = yukleme.data.institutionName?.trim() || null;
     try {
       const ad = uzantidanTur(dosya.ad);
       if (!ad) throw new YuklemeHatasi('tur_desteklenmiyor');
@@ -306,11 +329,9 @@ export const kuralDelete = (_b = varsayilan) =>
 
 // ---- Abbreviations ---------------------------------------------------------------------------------------------------
 
-const KisaltmaGirdisi = z.strictObject({ text: z.string().max(200_000), useAi: z.boolean().default(false) });
-
 export const kisaltmalarPost = (b = varsayilan) =>
   withAuth({ rate: hizlar.kisaltma }, async (req) => {
-    const g = KisaltmaGirdisi.safeParse(await readJson(req));
+    const g = AbbreviationsInput.safeParse(await readJson(req));
     if (!g.success) return apiError('bad_request');
     let adaylar = adaylariBul(g.data.text);
     let oneriKapali = false;
@@ -334,7 +355,11 @@ export const kisaltmalarPost = (b = varsayilan) =>
 
 // ---- DOCX check ------------------------------------------------------------------------------------------------------
 
-const DenetimKurallari = z.strictObject({ tur: Tur, degerler: z.record(z.string(), z.unknown()) });
+/** The JSON string in the `rules` part of TemplateCheckUpload: {tur, degerler}. */
+const DenetimKurallari = z.strictObject({
+  tur: z.enum(['tez', 'makale']),
+  degerler: z.record(z.string(), z.unknown()),
+});
 
 export const denetimPost = (b = varsayilan) =>
   withAuth({ rate: hizlar.denetim }, async (req) => {
@@ -349,10 +374,11 @@ export const denetimPost = (b = varsayilan) =>
     }
     if (uzantidanTur(dosya.ad) !== 'docx' || icerikTuru(dosya.bayt) !== 'docx')
       return yuklemeHatasi(new YuklemeHatasi('tur_uyusmuyor'));
-    const ham = dosya.form.get('rules');
+    const yukleme = TemplateCheckUpload.safeParse(formAlanlari(dosya.form, ['file', 'rules']));
+    if (!yukleme.success) return apiError('bad_request');
     let kurallar: z.infer<typeof DenetimKurallari>;
     try {
-      kurallar = DenetimKurallari.parse(JSON.parse(typeof ham === 'string' ? ham : ''));
+      kurallar = DenetimKurallari.parse(JSON.parse(yukleme.data.rules));
     } catch {
       return apiError('bad_request');
     }

@@ -248,10 +248,12 @@ def test_sql_store_idempotent_upserts_and_queue():
     ex = extract_record("bkz. E. 2014/4-56 K. 2015/1679", RecordMeta(RID, "1/1", "1/1"), store().index())
     st.save(RID, ex)
     sql = [c[0] for c in cur.calls]
-    assert any("ON CONFLICT (from_record_id, to_raw, kind) DO UPDATE" in q and "confirmed = false" in q for q in sql)
-    assert any(q.strip().startswith("DELETE FROM citation_edges") for q in sql)
+    assert any("ON CONFLICT (from_record_id, to_raw, kind) DO UPDATE" in q and "confirmed = false AND NOT citation_edges.rejected" in q
+               for q in sql)
+    prune = [q for q in sql if q.strip().startswith("DELETE FROM citation_edges")]
+    assert len(prune) == 1 and "confirmed = false AND NOT rejected" in prune[0]  # editor rows (confirmed or rejected) survive
     assert any("superseded" in q for q in sql)
-    assert not any("work_citations" in q for q in sql)  # doctrine tables are off until the schema request lands
+    assert not any("work_citations" in q for q in sql)  # doctrine tables are opt in (doctrine=True)
     ins = [c for c in cur.calls if "INSERT INTO review_queue" in c[0]]
     assert len(ins) == 1 and json.loads(ins[0][1]["payload"])["recordId"] == RID and ins[0][1]["subject"] == "edge-1"
     with pytest.raises(NotServable):
@@ -267,3 +269,8 @@ def test_sql_store_doctrine_tables_when_enabled():
     st.save(RID, ex)
     sql = " ".join(c[0] for c in cur.calls)
     assert "INSERT INTO works" in sql and "INSERT INTO work_citations" in sql and "PRUNE" not in sql
+    upsert = [c[0] for c in cur.calls if "INSERT INTO work_citations" in c[0]]
+    assert upsert and "confirmed = false AND NOT work_citations.rejected" in upsert[0]
+    prune = [c[0] for c in cur.calls if c[0].strip().startswith("DELETE FROM work_citations")]
+    assert len(prune) == 1 and "confirmed = false AND NOT rejected" in prune[0]
+    assert not any("DELETE" in c[0] and "rejected = true" in c[0] for c in cur.calls)

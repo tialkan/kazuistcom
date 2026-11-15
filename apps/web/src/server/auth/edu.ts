@@ -1,4 +1,4 @@
-import { and, desc, eq, gt, isNotNull } from 'drizzle-orm';
+import { and, desc, eq, gt, isNotNull, sql } from 'drizzle-orm';
 import { writeAudit } from './audit.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';
@@ -23,11 +23,45 @@ export function isEduTrEmail(email: string): boolean {
   return domain.endsWith('.edu.tr');
 }
 
+/**
+ * One verified account per mailbox. Lower case, trimmed, trailing dot of the domain removed and a sub address
+ * (+etiket) dropped, since university mail servers deliver ali+1@ and ali@ to the same mailbox.
+ */
+export function normalizeEduEmail(email: string): string {
+  const e = email.trim().toLowerCase();
+  const at = e.lastIndexOf('@');
+  const local = e.slice(0, at).replace(/\+.*$/, '');
+  const domain = e.slice(at + 1).replace(/\.$/, '');
+  return `${local}@${domain}`;
+}
+
+/** The same normalisation in SQL, for rows written before normalizeEduEmail existed. */
+const normalizedColumn = sql`regexp_replace(rtrim(lower(trim(${schema.eduVerifications.email})), '.'), '\\+[^@]*@', '@')`;
+
+/**
+ * True when another account holds a verification of this mailbox. Every verified row counts, also one older than a
+ * year: the owner renews on the same account. The rows go when that account is purged (account.purge).
+ */
+async function claimedByOther(db: Db, userId: string, normalized: string): Promise<boolean> {
+  const rows = await db
+    .select({ id: schema.eduVerifications.id })
+    .from(schema.eduVerifications)
+    .where(
+      and(
+        isNotNull(schema.eduVerifications.verifiedAt),
+        sql`${schema.eduVerifications.userId} <> ${userId}`,
+        sql`${normalizedColumn} = ${normalized}`,
+      ),
+    )
+    .limit(1);
+  return rows.length > 0;
+}
+
 export function eduStillValid(verifiedAt: Date | null, now: Date): boolean {
   return !!verifiedAt && now.getTime() - verifiedAt.getTime() < EDU_VALID_MS;
 }
 
-export type EduStartResult = 'sent' | 'not_edu';
+export type EduStartResult = 'sent' | 'not_edu' | 'taken';
 
 export async function startEduVerification(
   db: Db,
@@ -38,15 +72,25 @@ export async function startEduVerification(
   now: Date,
 ): Promise<EduStartResult> {
   if (!isEduTrEmail(email)) return 'not_edu';
+  const normalized = normalizeEduEmail(email);
+  if (await claimedByOther(db, userId, normalized)) {
+    await writeAudit(db, secret, {
+      actorId: userId,
+      action: 'edu.taken',
+      subjectType: 'user',
+      subjectId: userId,
+    });
+    return 'taken';
+  }
   const code = sixDigitCode();
-  const normalized = email.trim().toLowerCase();
   await db.insert(schema.eduVerifications).values({
     userId,
     email: normalized,
     codeHash: codeHash(secret, `edu:${userId}`, code),
     expiresAt: new Date(now.getTime() + EDU_CODE_TTL_MS),
   });
-  await mailer.sendCode(normalized, 'edu', code);
+  // The code goes to the address as typed (lower case); the row keeps the normalised mailbox.
+  await mailer.sendCode(email.trim().toLowerCase(), 'edu', code);
   await writeAudit(db, secret, {
     actorId: userId,
     action: 'edu.start',
@@ -56,7 +100,7 @@ export async function startEduVerification(
   return 'sent';
 }
 
-export type EduConfirmResult = 'verified' | 'invalid';
+export type EduConfirmResult = 'verified' | 'invalid' | 'taken';
 
 export async function confirmEduVerification(
   db: Db,
@@ -79,7 +123,12 @@ export async function confirmEduVerification(
       .where(eq(schema.eduVerifications.id, row.id));
     return 'invalid';
   }
-  await db.transaction(async (tx) => {
+  const normalized = normalizeEduEmail(row.email);
+  const claimed = await db.transaction(async (tx) => {
+    // Serialise confirmations of one mailbox, so two accounts confirming at once cannot both succeed. Until a
+    // unique index exists (docs/istekler/kimlik-edu-tekil.md) this lock and the check are the guarantee.
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${`edu:${normalized}`}, 0))`);
+    if (await claimedByOther(tx as unknown as Db, userId, normalized)) return true;
     await tx
       .update(schema.eduVerifications)
       .set({ verifiedAt: now })
@@ -89,7 +138,17 @@ export async function confirmEduVerification(
       .values({ userId, eduVerified: true })
       .onConflictDoUpdate({ target: schema.profiles.userId, set: { eduVerified: true, updatedAt: now } });
     await tx.insert(schema.userRoles).values({ userId, roleId: 'ogrenci_dogrulanmis' }).onConflictDoNothing();
+    return false;
   });
+  if (claimed) {
+    await writeAudit(db, secret, {
+      actorId: userId,
+      action: 'edu.taken',
+      subjectType: 'user',
+      subjectId: userId,
+    });
+    return 'taken';
+  }
   await writeAudit(db, secret, {
     actorId: userId,
     action: 'edu.verified',
