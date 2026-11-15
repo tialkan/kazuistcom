@@ -157,7 +157,7 @@ def main(env: Optional[Mapping[str, str]] = None) -> int:
     if not url:
         json_log("DATABASE_URL is not set")
         return 1
-    poll = float(env.get("KAZUIST_POLL_SECONDS", "5"))
+    poll = float(env.get("KAZUIST_POLL_SECONDS") or "5")
     stop = threading.Event()
 
     def on_signal(signum: int, _frame: Any) -> None:
