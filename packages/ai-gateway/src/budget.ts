@@ -22,20 +22,32 @@ export class MemoryCounterStore implements CounterStore {
 export interface BudgetConfig {
   userDailyCredits: number;
   ipDailyFreeUses: number;
+  /** Credits spent on platform calls from one IP per day; bounds many accounts spending promo credits. */
+  ipDailyCredits: number;
   maxConcurrentStreamsPerUser: number;
+  /** Platform spend per day (TL); every platform call stops at it, BYOK does not. */
   platformDailyTlCap: number;
 }
 
-/** plan 8.7 defaults; IP free limit and TL cap are operator settings. */
+/**
+ * plan 8.7 defaults; IP limits and the TL cap are operator settings. The IP credit ceiling is six users at their
+ * daily cap, so a shared campus address is not blocked by a few heavy users.
+ */
 export const DEFAULT_BUDGET: BudgetConfig = {
   userDailyCredits: 500,
   ipDailyFreeUses: 10,
+  ipDailyCredits: 3_000,
   maxConcurrentStreamsPerUser: 2,
   platformDailyTlCap: 1_000,
 };
 
 export type BudgetDenial =
-  'kullanici_gunluk_tavan' | 'ip_ucretsiz_tavan' | 'eszamanli_akis' | 'platform_tavan_ucretsiz_durdu';
+  | 'kullanici_gunluk_tavan'
+  | 'ip_ucretsiz_tavan'
+  | 'ip_kredi_tavan'
+  | 'eszamanli_akis'
+  | 'platform_tavan_ucretsiz_durdu'
+  | 'platform_tavan_kredili_durdu';
 
 export class BudgetError extends Error {
   readonly status = 429;
@@ -52,8 +64,14 @@ const dayKey = (now: Date): string => now.toISOString().slice(0, 10);
 export interface AdmitInput {
   userHash: string;
   ipHash: string;
+  /**
+   * The platform pays the provider: the free allowance and every credit call (promo or bought credits alike,
+   * the ledger does not tell them apart at admission). BYOK calls are false and only hold a stream slot.
+   */
+  platform: boolean;
+  /** Credits the call reserves; counted only on platform calls. */
   credits: number;
-  /** Free allowance use (not paid credits). */
+  /** Free allowance use (not paid credits); counted only on platform calls. */
   free: boolean;
 }
 
@@ -72,7 +90,10 @@ export class BudgetGuard {
     private readonly onAlert: (kind: 'platform_tavan') => void = () => undefined,
   ) {}
 
-  /** Checks all limits, counts usage and holds one stream slot until release. */
+  /**
+   * Checks all limits, counts usage and holds one stream slot until release. Every limit is checked before
+   * anything is counted, so a refused call leaves no counter behind.
+   */
   async admit(input: AdmitInput): Promise<Admission> {
     const d = dayKey(this.now());
     const active = this.streams.get(input.userHash) ?? 0;
@@ -87,25 +108,34 @@ export class BudgetGuard {
       if (n <= 0) this.streams.delete(input.userHash);
       else this.streams.set(input.userHash, n);
     };
+    const free = input.platform && input.free;
+    const credits = input.platform ? Math.max(0, input.credits) : 0;
+    const ipFreeKey = `free:ip:${input.ipHash}:${d}`;
+    const ipCreditKey = `credits:ip:${input.ipHash}:${d}`;
+    const userKey = `credits:user:${input.userHash}:${d}`;
     try {
-      if (input.free) {
-        if ((await this.store.get(`spend:tl:${d}`)) >= this.cfg.platformDailyTlCap) {
-          this.onAlert('platform_tavan');
-          throw new BudgetError('platform_tavan_ucretsiz_durdu');
-        }
-        const ipKey = `free:ip:${input.ipHash}:${d}`;
-        if ((await this.store.get(ipKey)) >= this.cfg.ipDailyFreeUses)
-          throw new BudgetError('ip_ucretsiz_tavan');
-        await this.store.incrBy(ipKey, 1, DAY);
+      if (input.platform && (await this.store.get(`spend:tl:${d}`)) >= this.cfg.platformDailyTlCap) {
+        this.onAlert('platform_tavan');
+        throw new BudgetError(free ? 'platform_tavan_ucretsiz_durdu' : 'platform_tavan_kredili_durdu');
       }
-      const userKey = `credits:user:${input.userHash}:${d}`;
-      if ((await this.store.get(userKey)) + input.credits > this.cfg.userDailyCredits)
+      if (free && (await this.store.get(ipFreeKey)) >= this.cfg.ipDailyFreeUses)
+        throw new BudgetError('ip_ucretsiz_tavan');
+      if (credits > 0 && (await this.store.get(ipCreditKey)) + credits > this.cfg.ipDailyCredits)
+        throw new BudgetError('ip_kredi_tavan');
+      if ((await this.store.get(userKey)) + credits > this.cfg.userDailyCredits)
         throw new BudgetError('kullanici_gunluk_tavan');
-      await this.store.incrBy(userKey, input.credits, DAY);
+      if (free) await this.store.incrBy(ipFreeKey, 1, DAY);
+      if (credits > 0) {
+        await this.store.incrBy(ipCreditKey, credits, DAY);
+        await this.store.incrBy(userKey, credits, DAY);
+      }
       const rollback = async (): Promise<void> => {
         release();
-        if (input.credits) await this.store.incrBy(userKey, -input.credits, DAY);
-        if (input.free) await this.store.incrBy(`free:ip:${input.ipHash}:${d}`, -1, DAY);
+        if (credits > 0) {
+          await this.store.incrBy(userKey, -credits, DAY);
+          await this.store.incrBy(ipCreditKey, -credits, DAY);
+        }
+        if (free) await this.store.incrBy(ipFreeKey, -1, DAY);
       };
       return { release, rollback };
     } catch (e) {

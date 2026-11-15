@@ -1,4 +1,4 @@
-import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { BYOK_NONCE_TTL_SECONDS, byokNonceKey } from '@kazuist/contracts';
 
 /**
@@ -45,15 +45,32 @@ export function valkeyNonceStore(client: ValkeyLike): NonceStore {
   };
 }
 
+/**
+ * One source of the bundle. `sha256` is the digest of the passage text exactly as the model sees it (masked and
+ * neutralised, the body of its <kaynak> block). verify reloads record and chunk from the store, rebuilds that
+ * text and compares digests, so it never trusts passage text parsed back out of the prompt.
+ */
+export interface BundleSource {
+  /** Prompt local id, K1..Kn. */
+  id: string;
+  recordId: string;
+  chunkId: string;
+  sha256: string;
+}
+
 /** Signed prompt bundle payload. */
 export interface BundlePayload {
   nonce: string;
   expiresAt: string;
+  /** The signed in user the bundle was issued to (the web passes a keyed hash, so Valkey never holds the id). */
+  subject: string;
+  /** Route the passages were selected for; fixes the passage size used to rebuild them. */
+  operation: string;
   provider: string;
   model: string;
   system: string;
   prompt: string;
-  sourceIds: string[];
+  sources: BundleSource[];
 }
 
 /** 410 Gone: nonce expired or reused; maps to ErrorCode nonce_expired. */
@@ -75,8 +92,44 @@ export class SignatureError extends Error {
   }
 }
 
+/** 403: the bundle was issued to another user. The nonce is burnt all the same. */
+export class BundleSubjectError extends Error {
+  readonly status = 403;
+  readonly code = 'forbidden' as const;
+  constructor() {
+    super('bundle issued to another user');
+    this.name = 'BundleSubjectError';
+  }
+}
+
+/** 409: a source changed or disappeared since prepare; the lines cannot be checked against what the model saw. */
+export class SourceMismatchError extends Error {
+  readonly status = 409;
+  readonly code = 'conflict' as const;
+  constructor() {
+    super('bundle sources changed');
+    this.name = 'SourceMismatchError';
+  }
+}
+
+/** Hex SHA-256 of a passage text as the model sees it. */
+export function passageDigest(text: string): string {
+  return createHash('sha256').update(text, 'utf8').digest('hex');
+}
+
 function canonical(p: BundlePayload): string {
-  return JSON.stringify([p.nonce, p.expiresAt, p.provider, p.model, p.system, p.prompt, p.sourceIds]);
+  return JSON.stringify([
+    'kazuist-byok-v2',
+    p.nonce,
+    p.expiresAt,
+    p.subject,
+    p.operation,
+    p.provider,
+    p.model,
+    p.system,
+    p.prompt,
+    p.sources.map((x) => [x.id, x.recordId, x.chunkId, x.sha256]),
+  ]);
 }
 
 export function signBundle(secret: string, payload: BundlePayload): string {
@@ -90,11 +143,13 @@ function sameSig(a: string, b: string): boolean {
 }
 
 export interface PrepareInput {
+  subject: string;
+  operation: string;
   provider: string;
   model: string;
   system: string;
   prompt: string;
-  sourceIds: string[];
+  sources: BundleSource[];
 }
 
 /** Creates nonce, stores it single use with a 10 minute TTL and signs the bundle. */
@@ -104,6 +159,7 @@ export async function prepareBundle(
   input: PrepareInput,
   now: Date = new Date(),
 ): Promise<BundlePayload & { signature: string }> {
+  if (!input.subject) throw new Error('bundle needs a subject');
   const nonce = randomBytes(24).toString('base64url');
   const expiresAt = new Date(now.getTime() + BYOK_NONCE_TTL_SECONDS * 1000).toISOString();
   const payload: BundlePayload = { nonce, expiresAt, ...input };
@@ -114,20 +170,51 @@ export async function prepareBundle(
 }
 
 /**
- * Consumes the nonce atomically and checks the signature. Throws NonceGoneError (410) when the
- * nonce is missing, expired or reused; SignatureError (400) on a bad signature.
+ * Consumes the nonce atomically, checks the signature and the owner. Throws NonceGoneError (410) when the nonce
+ * is missing, expired or reused; SignatureError (400) on a bad signature or a payload of an older format;
+ * BundleSubjectError (403) when another user presents it.
  */
 export async function verifyBundle(
   store: NonceStore,
   secret: string,
   nonce: string,
   signature: string,
+  subject: string,
   now: Date = new Date(),
 ): Promise<BundlePayload> {
   const raw = await store.getDel(byokNonceKey(nonce));
   if (!raw) throw new NonceGoneError();
-  const payload = JSON.parse(raw) as BundlePayload;
+  let payload: BundlePayload;
+  try {
+    payload = JSON.parse(raw) as BundlePayload;
+  } catch {
+    throw new SignatureError();
+  }
+  if (!Array.isArray(payload.sources) || typeof payload.subject !== 'string') throw new SignatureError();
   if (Date.parse(payload.expiresAt) <= now.getTime()) throw new NonceGoneError();
   if (!sameSig(signBundle(secret, payload), signature)) throw new SignatureError();
+  if (!subject || !sameSig(payload.subject, subject)) throw new BundleSubjectError();
   return payload;
+}
+
+/**
+ * Checks passages rebuilt from the store against the signed sources: same ids in the same order and the same
+ * digest of the text the model saw. Throws SourceMismatchError (409) otherwise.
+ */
+export function assertSourcesMatch(
+  sources: readonly BundleSource[],
+  rebuilt: readonly { id: string; recordId: string; chunkId: string; text: string }[],
+): void {
+  if (sources.length !== rebuilt.length) throw new SourceMismatchError();
+  sources.forEach((s, i) => {
+    const r = rebuilt[i];
+    if (
+      !r ||
+      r.id !== s.id ||
+      r.recordId !== s.recordId ||
+      r.chunkId !== s.chunkId ||
+      !sameSig(passageDigest(r.text), s.sha256)
+    )
+      throw new SourceMismatchError();
+  });
 }

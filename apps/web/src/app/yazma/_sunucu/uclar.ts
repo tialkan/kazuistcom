@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import tr from '@kazuist/i18n/tr/yazma.json' with { type: 'json' };
 import { after } from 'next/server';
 import { z } from 'zod';
@@ -11,7 +12,7 @@ import {
 } from '@kazuist/contracts';
 import { withAuth, withPublic } from '@/server/auth/guard.ts';
 import { apiError, json, rateLimited, readJson } from '@/server/auth/http.ts';
-import type { RateRule } from '@/server/auth/rate-limit.ts';
+import { clientIp, type RateRule } from '@/server/auth/rate-limit.ts';
 import { adaylariBul, onerilerleDoldur, sirala, type KisaltmaModeli } from '../_cekirdek/kisaltmalar.ts';
 import { yzEngelKodu } from '../_cekirdek/yz-engel.ts';
 import { type KuralModeli } from '../_cekirdek/kural-cikarma.ts';
@@ -41,7 +42,7 @@ import {
   projeyiGetir,
   projeyiSil,
 } from './projeler.ts';
-import { kisaltmaModeli, kuralModeli } from './yz.ts';
+import { kisaltmaModeli, kuralModeli, type YzKimlik } from './yz.ts';
 
 /** Rate rules of the writing endpoints; per user unless noted (plan 5.6/3). */
 export const hizlar = {
@@ -55,8 +56,9 @@ export const hizlar = {
 /** Outside collaborators of the handlers; tests replace them. */
 export interface Bagimliliklar {
   now: () => Date;
-  kuralModeli: () => KuralModeli | null;
-  kisaltmaModeli: () => KisaltmaModeli | null;
+  /** The model ports get who asks, so the AI gateway budgets per user and IP and holds the credits. */
+  kuralModeli: (kim: YzKimlik) => KuralModeli | null;
+  kisaltmaModeli: (kim: YzKimlik) => KisaltmaModeli | null;
   denetim: () => DenetimIstemcisi | null;
   /** Runs work after the response (Next `after`); tests run it inline. */
   sonra: (is: () => Promise<void>) => void;
@@ -64,8 +66,8 @@ export interface Bagimliliklar {
 
 export const varsayilan: Bagimliliklar = {
   now: () => new Date(),
-  kuralModeli: () => kuralModeli(),
-  kisaltmaModeli: () => kisaltmaModeli(),
+  kuralModeli: (kim) => kuralModeli(kim),
+  kisaltmaModeli: (kim) => kisaltmaModeli(kim),
   denetim: () => pythonDenetimIstemcisi(),
   sonra: (is) => after(is),
 };
@@ -277,7 +279,11 @@ export const kuralYuklePost = (b = varsayilan) =>
     if (!karar.ok) return rateLimited(karar.retryAfterSec);
     const is = await isOlustur(ctx.db, p.userId, tur.data, req.headers.get('idempotency-key') ?? undefined);
     if (!is.yeni) return json({ jobId: is.id }, 202);
-    const model = b.kuralModeli();
+    const model = b.kuralModeli({
+      userId: p.userId,
+      ip: clientIp(req.headers, ctx.config.trustedProxies),
+      istekKimligi: is.id,
+    });
     if (!model) {
       // Fail closed: nothing is sent anywhere and nothing is invented. The job says why it did not run, the
       // file is dropped (it is never stored), and the user is told to start with example values.
@@ -331,7 +337,7 @@ export const kuralDelete = (_b = varsayilan) =>
 // ---- Abbreviations ---------------------------------------------------------------------------------------------------
 
 export const kisaltmalarPost = (b = varsayilan) =>
-  withAuth({ rate: hizlar.kisaltma }, async (req) => {
+  withAuth({ rate: hizlar.kisaltma }, async (req, p, ctx) => {
     const g = AbbreviationsInput.safeParse(await readJson(req));
     if (!g.success) return apiError('bad_request');
     let adaylar = adaylariBul(g.data.text);
@@ -339,7 +345,11 @@ export const kisaltmalarPost = (b = varsayilan) =>
     // refusals of yz-engel.ts, which the client explains with their own message. The table is always returned.
     let oneri: 'kapali' | 'kredi_yetersiz' | 'butce_tavani' | null = null;
     if (g.data.useAi) {
-      const model = b.kisaltmaModeli();
+      const model = b.kisaltmaModeli({
+        userId: p.userId,
+        ip: clientIp(req.headers, ctx.config.trustedProxies),
+        istekKimligi: randomUUID(),
+      });
       if (!model) oneri = 'kapali';
       else {
         try {

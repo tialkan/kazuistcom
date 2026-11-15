@@ -80,6 +80,10 @@
           "baslik": "Güvenlik",
           "aciklama": "Passkey ve iki adımlı doğrulama."
         },
+        "bildirimler": {
+          "baslik": "Bildirimler",
+          "aciklama": "Hangi bildirimi hangi kanaldan alacağınızı seçin."
+        },
         "kvkk": {
           "baslik": "KVKK başvurusu",
           "aciklama": "6698 sayılı Kanun m.11 kapsamındaki haklarınız için başvurun."
@@ -87,12 +91,23 @@
         "verilerim": {
           "baslik": "Verilerim",
           "aciklama": "Verilerinizi indirin ya da hesabınızı silin."
+        },
+        "iade": {
+          "baslik": "İade talebi",
+          "aciklama": "Kredi paketi iadesi ve cayma bildirimi."
         }
       },
       "cikis": "Çıkış yapın",
       "cikiliyor": "Çıkış yapılıyor",
       "cikisHata": "Çıkış yapılamadı. Lütfen yeniden deneyin.",
-      "geri": "Hesabım sayfasına dönün"
+      "geri": "Hesabım sayfasına dönün",
+      "yonetimBaslik": "Yönetim",
+      "yonetim": {
+        "atifKuyrugu": {
+          "baslik": "Atıf kuyruğu",
+          "aciklama": "Yayın eşiğinin altında kalan atıf adaylarını onaylayın ya da reddedin."
+        }
+      }
     },
     "veri": {
       "baslik": "Verilerim",
@@ -238,6 +253,90 @@
         "tamam": "Yönetici onayı verildi.",
         "hata": "Kod doğrulanamadı. Lütfen yeniden deneyin."
       }
+    },
+    "bildirimler": {
+      "baslik": "Bildirimler",
+      "aciklama": "Hangi bildirimi hangi kanaldan alacağınızı seçin. Değiştirmediğiniz bildirimler açık kalır.",
+      "kanallar": {
+        "email": "E-posta",
+        "webPush": "Tarayıcı bildirimi",
+        "apns": "iPhone ve iPad"
+      },
+      "turler": {
+        "teslim_hatirlatmasi": {
+          "baslik": "Teslim hatırlatması",
+          "aciklama": "Yazma projenizin teslim tarihi yaklaştığında."
+        },
+        "kalemcik": {
+          "baslik": "Kalemcik",
+          "aciklama": "Günlük yazma hedefiniz için kısa notlar."
+        },
+        "odeme": {
+          "baslik": "Ödeme bildirimi",
+          "aciklama": "Tahsilat, iade ve fatura bilgileri."
+        },
+        "fesih_teyidi": {
+          "baslik": "Fesih teyidi",
+          "aciklama": "Abonelik feshinin yazılı teyidi."
+        }
+      },
+      "zorunlu": "Ödeme ve fesih bilgisi e-postayla her zaman gönderilir; bu kanal kapatılamaz.",
+      "sessizSaat": "Bildirimler 22.00 ile 08.00 arasında gönderilmez, sabah iletilir. Ödeme ve fesih bildirimleri bu kuralın dışındadır.",
+      "kaydet": "Tercihleri kaydedin",
+      "kaydedildi": "Bildirim tercihleriniz kaydedildi.",
+      "hata": "Tercihleriniz kaydedilemedi. Lütfen yeniden deneyin.",
+      "ticari": {
+        "baslik": "Kampanya ve duyurular",
+        "aciklama": "Bu iletiler ticari elektronik iletidir; yalnız ayrı onayınızla ve İleti Yönetim Sistemi kaydıyla gönderilir. Onay vermemeniz hiçbir hizmeti etkilemez.",
+        "onay": "Kulular Bilişim Teknolojileri Ltd. Şti.'nin Kazuist kampanya, indirim ve yeni özellik duyurularını e-posta ile göndermesine onay veriyorum. Onayım İleti Yönetim Sistemi'ne (İYS) kaydedilir; dilediğim an her iletideki bağlantıdan veya hesap ayarlarından geri alabilirim.",
+        "metin": "Açık rıza metinleri",
+        "acik": "Ticari ileti onayınız kayıtlı.",
+        "kapali": "Ticari ileti onayınız yok.",
+        "kaydet": "Onay tercihini kaydedin",
+        "kaydedildi": "Ticari ileti tercihiniz kaydedildi.",
+        "hata": "Tercihiniz kaydedilemedi. Lütfen yeniden deneyin."
+      }
+    },
+    "iade": {
+      "baslik": "İade talebi",
+      "aciklama": "Kredi paketi iadesi ve cayma bildirimi.",
+      "kural": "Satın almadan sonraki 14 gün içinde paketten hiç kredi kullanmadıysanız tam iade yapılır. İlk kredi kullanımıyla ifa başlar ve cayma hakkınız sona erer. Promosyon kredisi iade edilmez.",
+      "nasil": "Talebinizi hesabınızda kayıtlı e-posta adresinizden {eposta} adresine yazmanız yeterlidir. Sipariş tarihini ve ürün adını eklemeniz işlemi hızlandırır.",
+      "kayitli": "Hesabınızda kayıtlı e-posta adresi: {eposta}",
+      "gonder": "İade talebi e-postası yazın",
+      "konu": "Kazuist iade talebi",
+      "sure": "İade, cayma bildiriminin bize ulaştığı tarihten itibaren 14 gün içinde aynı ödeme aracına, tek seferde ve masrafsız yapılır.",
+      "kurallar": "İade, iptal ve kredi kuralları",
+      "silme": "Hesabınızı silerken kullanılmamış satın alınmış krediniz varsa silme ekranında ayrıca iade talebi seçeneği sunulur.",
+      "verilerim": "Verilerim sayfasına gidin"
+    },
+    "atifKuyrugu": {
+      "baslik": "Atıf kuyruğu",
+      "aciklama": "Çıkarıcının yayın eşiğinin altında bulduğu atıf adayları. Onaylanan atıf ağda ve atıf sayısında görünür; reddedilen atıf bir daha gösterilmez.",
+      "yetkiYok": "Bu sayfa için passkey ile açılmış bir oturum ve bu oturumda yönetici onayı gerekir.",
+      "guvenlige": "Güvenlik sayfasında onay verin",
+      "bos": "Kuyrukta bekleyen atıf adayı yok.",
+      "sayi": "Bu sayfada {n} aday",
+      "sonraki": "Sonraki sayfa",
+      "ilk": "İlk sayfa",
+      "turler": {
+        "karar": "Karar atfı",
+        "doktrin": "Doktrin atfı"
+      },
+      "kaynak": "Atıf yapan karar",
+      "kaynakYok": "Kayıt bulunamadı",
+      "aday": "Aday",
+      "guven": "Güven",
+      "gerekce": "Gerekçe",
+      "baglam": "Metindeki yer (maskeli)",
+      "sayfalar": "Sayfa",
+      "not": "Not (isteğe bağlı)",
+      "onayla": "Onaylayın",
+      "reddet": "Reddedin",
+      "onaylandi": "Onaylandı.",
+      "reddedildi": "Reddedildi.",
+      "zatenKarar": "Bu aday başka bir editör tarafından karara bağlandı.",
+      "hata": "Karar kaydedilemedi. Lütfen yeniden deneyin."
     }
   },
   "bildirim": {

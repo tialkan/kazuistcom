@@ -21,6 +21,10 @@ export interface SqlPool extends SqlClient {
  */
 const SERVABLE = 'r.masked_text IS NOT NULL AND r.hidden_at IS NULL';
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+/** Id of a passage built on the fly by chunkText for a record without chunk rows. */
+const ON_THE_FLY = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}):\d{1,6}$/i;
+
 /**
  * Citation edges that count toward cited_by (importance weight, plan 7.2/5; Öncü label, SRS 3.3). An editor
  * rejection never counts: `rejected` is the v1.5 marker (ADR-0035, mimar-yonlendirme-3 casuist madde);
@@ -282,6 +286,33 @@ export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBac
       const missing = ids.filter((id) => !out.some((c) => c.recordId === id));
       if (missing.length)
         for (const r of await records(missing)) out.push(...chunkText(r.id, r.text).slice(0, perRecord));
+      return out;
+    },
+
+    async chunks(ids) {
+      const stored = ids.filter((id) => UUID.test(id));
+      const out: Chunk[] = [];
+      if (stored.length) {
+        const { rows } = await db.query<ChunkRow>(
+          `SELECT ch.id, ch.record_id, ch.seq, ch.section, ch.text, ch.char_start, ch.char_end
+           FROM chunks ch JOIN records r ON r.id = ch.record_id
+           WHERE ch.id = ANY($1::uuid[]) AND ${SERVABLE}`,
+          [stored],
+        );
+        out.push(...rows.map(toChunk));
+      }
+      // On the fly passages of `passages` above: `<recordId>:<seq>`, rebuilt from the servable record text.
+      const built = ids.flatMap((id) => {
+        const m = ON_THE_FLY.exec(id);
+        return m?.[1] ? [{ id, recordId: m[1] }] : [];
+      });
+      if (built.length) {
+        const recs = await records([...new Set(built.map((b) => b.recordId))]);
+        for (const r of recs) {
+          const all = chunkText(r.id, r.text);
+          for (const b of built) if (b.recordId === r.id) out.push(...all.filter((c) => c.id === b.id));
+        }
+      }
       return out;
     },
   };

@@ -16,6 +16,7 @@
 | `works.csl` kullanımı | mevcut `jsonb` | `{kind, venue, editions:[{year, edition, place, volume}]}` yazılır; sütun değişmez. |
 
 Okuma sorgusu (`apps/web/src/app/atif-agi/_sunucu/sql.ts`): kenar görünür ise `(confirmed AND confidence > 0) OR confidence >= 0.90`.
+v1.5 (ADR-0035) ile koşulun başına `NOT rejected AND` eklenir (`packages/casuist/src/sql.ts` `COUNTED_EDGE` bunu yapar).
 Tablolar yoksa (`42P01`) arayüz doktrin verisini "yok" sayar, hata vermez.
 
 ## 2. Alan eşlemesi (karar çözümleme)
@@ -31,8 +32,11 @@ Büyük corpusta `esas_no` üzerindeki trigram dizini `replace(...)` ile kullan�
 `review_queue.queue = 'citations'`, `subject_type = 'citation_edge'`, `subject_id` kenar kimliği, `payload`:
 `{recordId, kind: 'karar'|'doktrin', confidence, reasons[], context (maskeli metinden en çok 400 karakter), candidate}`.
 `decision` değerleri mevcut check kısıtıyla uyumludur (`onay`, `ret`, `duzelt`, `superseded`). Editör ekranı (kimlik ajanı,
-`api/v1/admin/**`) onayda `confirmed = true`, retde `confirmed = true, confidence = 0` yazmalıdır. Bu ekran yoktur;
-kuyruk şimdilik yalnız dolar.
+`api/v1/admin/**`) onayda `confirmed = true`, retde `rejected = true` yazmalıdır (sözleşme v1.5, ADR-0035; aynı kural
+`work_citations` için de geçerlidir; `docs/istekler/mimar-yonlendirme-3-sozlesme-v1-5.md` kimlik madde 4). Eski ret
+biçimi (`confirmed = true, confidence = 0`) artık yazılmaz; migration 0007 öncesindeki bu satırlar `rejected = true`
+olarak işaretlendi ve okuma sorguları geçiş bitene kadar `confidence > 0` koşulunu da korur. Bu ekran yoktur; kuyruk
+şimdilik yalnız dolar.
 
 ## Sonuç (mimar, 12 Kasım 2026, sözleşme v1.5, ADR-0035)
 

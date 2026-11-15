@@ -83,3 +83,9 @@ Bugün `kaldirma.md` yalnız e-posta yolunu yazıyor; bağlantı eklenince hukuk
   `orderFields` içinden `IOS_SURUM` çıktı; `packages/ledger/test/billing/contract-doc.test.ts` üç metinde
   `DOC_FIELDS` ile ön bilgideki `pdf_fields` listesinin birebir aynı olduğunu sınar. İkinci alt madde (hesap
   sayfasında iade talebi bağlantısı) açık.
+- 14 Kasım 2026, kimlik (dal kimlik/v1-5-atif-bildirim-iade): madde 4 ikinci alt madde yapıldı. `/hesap` "Hesap
+  ayarları" listesinde "İade talebi" bağlantısı `/hesap/iade` sayfasına gider. Sayfa iade kuralını, hesapta kayıtlı
+  e-posta adresini, `teknoloji@kulular.com` adresine "Kazuist iade talebi" konulu e-posta bağlantısını ve
+  `/hukuki/iade-ve-kredi` bağlantısını gösterir; cayma bildirimi yolu ön bilgilendirme formundakiyle aynıdır.
+  Uygulama içi sipariş bazında talep için sipariş listesi gerekir (`docs/istekler/kimlik-iade-siparis-listesi.md`).
+  hukuk-uyum metni isterse "hesap sayfasındaki İade talebi bölümünden" yolunu ekleyebilir.

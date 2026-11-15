@@ -21,6 +21,7 @@ import { sablonUret } from './_cekirdek/docx-uret.ts';
 import { ornekKayit, varsayilanDegerler } from './_cekirdek/kural-semasi.ts';
 import type { KuralModeli } from './_cekirdek/kural-cikarma.ts';
 import { dergiTaslagiOlustur } from './_sunucu/dergiler.ts';
+import type { YzKimlik } from './_sunucu/yz.ts';
 import { denetimKurallari } from './_sunucu/denetim.ts';
 import {
   ayarlarGet,
@@ -146,10 +147,33 @@ describe('writing projects (FR-45)', () => {
       { ...proje, deadline: '07.12.2026' },
       { ...proje, ekstra: 1 },
       { ...proje, title: ' ' },
+      { ...proje, targetWords: 2_000_001 },
+      { kind: 'tez', targetWords: 1000 },
+      { title: 'Tez', targetWords: 1000 },
+      { title: 'Tez', kind: 'tez' },
     ]) {
       const r = await projelerPost(bag())(istek('/v1/writing-projects', a, { method: 'POST', json: bad }));
       expect(r.status, JSON.stringify(bad)).toBe(400);
     }
+  });
+  it('updates partially with the contract rules (WritingProjectInput)', async () => {
+    const p = await projeAc();
+    const patch = (json: unknown) =>
+      projePatch(bag())(istek(`/v1/writing-projects/${p.id}`, a, { method: 'PATCH', json }), rc(p.id));
+    for (const bad of [
+      { ekstra: 1 },
+      { title: ' ' },
+      { kind: 'roman' },
+      { targetWords: 2_000_001 },
+      { deadline: null },
+      { deadline: '07.12.2026' },
+    ]) {
+      expect((await patch(bad)).status, JSON.stringify(bad)).toBe(400);
+    }
+    const r = await patch({ title: '  Yeni başlık  ' });
+    expect(r.status).toBe(200);
+    expect(await gov(r)).toMatchObject({ title: 'Yeni başlık', kind: 'makale', targetWords: 6000 });
+    expect((await patch({})).status).toBe(200);
   });
   it('never shows or changes another user project (IDOR)', async () => {
     const p = await projeAc();
@@ -672,12 +696,24 @@ describe('table of abbreviations endpoint (FR-91)', () => {
   });
   it('sends only the abbreviations to the model, never the text, and says when suggestions are closed', async () => {
     const gorulen: string[][] = [];
+    const kimler: YzKimlik[] = [];
     const r = await gonder(
       a,
       { text: METIN, useAi: true },
-      { kisaltmaModeli: () => ({ oner: async (k) => (gorulen.push(k), { ABC: 'Örnek Cetvel' }) }) },
+      {
+        kisaltmaModeli: (kim) => (
+          kimler.push(kim),
+          { oner: async (k) => (gorulen.push(k), { ABC: 'Örnek Cetvel' }) }
+        ),
+      },
     );
     expect(gorulen).toEqual([['ABC']]);
+    // The gateway budgets per user and IP: the port is told who asks, never charged without an identity.
+    expect(kimler).toHaveLength(1);
+    expect(kimler[0]).toMatchObject({ userId: aId });
+    expect(kimler[0]?.ip).toBeTruthy();
+    expect(kimler[0]?.istekKimligi).toMatch(/^[0-9a-f-]{36}$/);
+    expect(kimler[0]).not.toHaveProperty('kredisiz');
     expect((await gov(r)).find((x: { short: string }) => x.short === 'ABC')).toMatchObject({
       long: 'Örnek Cetvel',
       source: 'oneri',

@@ -92,12 +92,23 @@ export const TemplateDocxInput = z.strictObject({
   templateRuleId: uuid.optional(),
   journalRuleVersionId: uuid.optional(),
 });
-export const WritingProjectInput = z.strictObject({
-  title: z.string().max(300).optional(),
-  kind: z.enum(['tez', 'makale', 'odev']).optional(),
-  targetWords: z.number().int().min(0).optional(),
+/**
+ * POST /v1/writing-projects (v1.5.1): title, kind and targetWords are required, deadline is optional. The title
+ * is trimmed and a blank one is rejected.
+ */
+export const WritingProjectCreateInput = z.strictObject({
+  title: z.string().trim().min(1).max(300),
+  kind: z.enum(['tez', 'makale', 'odev']),
+  targetWords: z.number().int().min(0).max(2_000_000),
   deadline: z.iso.date().optional(),
 });
+export type WritingProjectCreateInput = z.infer<typeof WritingProjectCreateInput>;
+/**
+ * PATCH /v1/writing-projects/{id}: partial update with the same rules; only the given fields change. The deadline
+ * cannot be cleared (null is rejected).
+ */
+export const WritingProjectInput = WritingProjectCreateInput.partial();
+export type WritingProjectInput = z.infer<typeof WritingProjectInput>;
 export const WritingProgressInput = z.strictObject({
   words: z.number().int().min(0).max(100000),
   note: z.string().max(1000).optional(),
@@ -257,7 +268,7 @@ export const requestBodies = {
   createTemplateDocx: TemplateDocxInput,
   checkTemplateDocx: TemplateCheckUpload,
   setWritingSettings: WritingSettings,
-  createWritingProject: WritingProjectInput,
+  createWritingProject: WritingProjectCreateInput,
   updateWritingProject: WritingProjectInput,
   logWritingProgress: WritingProgressInput,
   countDocxWords: DocxCountUpload,

@@ -215,6 +215,33 @@ export async function scrubParts(parts: readonly string[], ner?: NameRecognizer)
   return { parts: out, mapping: r.mapping, counts: r.counts };
 }
 
+export interface ScrubSourcedResult {
+  question: string;
+  passages: string[];
+  /** Label to original value; keep in request memory only, never persist or log. */
+  mapping: Map<string, string>;
+  counts: Record<string, number>;
+}
+
+/**
+ * Sourced summary scrub (plan 8.5): question and passages in one label space, passages first. Labels are numbered
+ * in reading order, so a passage's masked text depends on the passages alone and never on the question. That lets
+ * POST /v1/answers/verify rebuild exactly what the model saw from the store, without keeping the question.
+ */
+export async function scrubSourced(
+  question: string,
+  passages: readonly string[],
+  ner?: NameRecognizer,
+): Promise<ScrubSourcedResult> {
+  const r = await scrubParts([...passages, question], ner);
+  return {
+    question: r.parts[passages.length] ?? '',
+    passages: r.parts.slice(0, passages.length),
+    mapping: r.mapping,
+    counts: r.counts,
+  };
+}
+
 /** Puts original values back into model output, for display to the same user only. */
 export function restore(text: string, mapping: ReadonlyMap<string, string>): string {
   return text.replace(/\[[^\]\n]{1,24}-\d+\]/gu, (tag) => mapping.get(tag) ?? tag);
