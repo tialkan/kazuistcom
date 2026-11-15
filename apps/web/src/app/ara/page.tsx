@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { platformAiAvailable } from '@kazuist/ai-gateway/config';
 import { authorityClasses, recordTypes, SearchQuery, type RecordType } from '@kazuist/contracts';
 import ara from '@kazuist/i18n/tr/ara.json';
 import { BosDurum, Dugme, Etiket, FormAlani, HataDurumu } from '@kazuist/ui';
@@ -360,6 +361,7 @@ export default async function AraSayfasi({ searchParams }: { searchParams: Promi
         girisVar={girisVar}
         girisAdresi={giris}
         gorunenKayitlar={res.items.map((r) => r.record.id)}
+        platformYz={platformAiAvailable()}
       />
       <section aria-labelledby="sonuc-baslik" className={styles.sonuclar}>
         <div className={styles.sonucUst}>

@@ -1,3 +1,5 @@
+import byok from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
+
 /**
  * Public pricing display from plan.md 4.2-4.4. Free/BYOK model approved on 2026-10-27 (ADR-0029).
  * Package prices include VAT. Runtime financial catalog remains versioned in packages/ledger.
@@ -5,16 +7,30 @@
  */
 export const fiyatTablosuSurumu = '2026-10-27';
 
-export type Plan = { ad: string; kime: string; fiyat: string; kredi: string; ozellik: string };
+export type Plan = {
+  kod: 'ucretsiz' | 'byok' | 'kredi';
+  ad: string;
+  kime: string;
+  fiyat: string;
+  kredi: string;
+  ozellik: string;
+};
+
+/** The free plan's allowance cell (plan 4.2) in its two sentences; the promo one is shown only when it holds. */
+const gunlukHak = 'Günlük hak: 2 kaynaklı özet, edu.tr doğrulanmışsa 5.';
+const promosyon = 'Açılışta 50 promosyon kredisi.';
+
 export const planlar: Plan[] = [
   {
+    kod: 'ucretsiz',
     ad: 'Ücretsiz',
     kime: 'Hesabı olan herkes',
     fiyat: '0 TL',
-    kredi: 'Günlük hak: 2 kaynaklı özet, edu.tr doğrulanmışsa 5. Açılışta 50 promosyon kredisi.',
+    kredi: `${gunlukHak} ${promosyon}`,
     ozellik: 'Tüm özellikler; platform YZ işlemleri günlük ücretsiz hakla',
   },
   {
+    kod: 'byok',
     ad: 'BYOK',
     kime: 'Kendi sağlayıcı anahtarını kullanan herkes',
     fiyat: '0 TL',
@@ -22,6 +38,7 @@ export const planlar: Plan[] = [
     ozellik: 'Tüm özellikler; YZ işlemleri kendi anahtarıyla, adil kullanım sınırıyla',
   },
   {
+    kod: 'kredi',
     ad: 'Platform kredisi',
     kime: 'Kendi anahtarını kullanmadan platform YZ hizmetini seçen herkes',
     fiyat: 'Paket ücreti',
@@ -29,6 +46,31 @@ export const planlar: Plan[] = [
     ozellik: 'Tüm özellikler; platform YZ işlemlerinde kullandıkça kredi düşülür',
   },
 ];
+
+/** Server configuration that decides which offer the page may make; read per request, never sent to the client. */
+export interface Teklif {
+  /** platformAiAvailable(): a platform key and AI_DAILY_BUDGET_TRY are set, so the daily free allowance runs. */
+  platformYz: boolean;
+  /** odemeAcik(): the iyzico credentials are set, so credits can be bought. */
+  satisAcik: boolean;
+}
+
+/** Promo credits are spent on platform AI calls and come with the credit system, so both have to be on. */
+export const promosyonVar = (t: Teklif): boolean => t.platformYz && t.satisAcik;
+
+/**
+ * Plan rows as offered right now. With the platform AI on and sales open this is plan 4.2 verbatim. Without the
+ * platform AI the free plan cannot promise a daily allowance: it says that summaries run with the user's own key.
+ * While sales are off the promo credit sentence is dropped.
+ */
+export function gorunenPlanlar(t: Teklif): Plan[] {
+  return planlar.map((p) => {
+    if (p.kod !== 'ucretsiz') return p;
+    if (!t.platformYz)
+      return { ...p, kredi: byok.teklif.ucretsizKrediByok, ozellik: byok.teklif.ucretsizOzellikByok };
+    return promosyonVar(t) ? p : { ...p, kredi: gunlukHak };
+  });
+}
 
 export type Paket = { ad: string; kredi: string; fiyat: string; krediBasi: string };
 export const paketler: Paket[] = [

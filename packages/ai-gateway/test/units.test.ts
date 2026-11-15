@@ -9,6 +9,7 @@ import {
   assertSourcesMatch,
   passageDigest,
   type BudgetConfig,
+  type PlatformCapAlert,
   FakeLedger,
   MemoryCounterStore,
   MemoryNonceStore,
@@ -293,9 +294,9 @@ describe('budget guard', () => {
     await expect(g.admit(paid(1))).resolves.toBeDefined();
   });
   it('the platform TL cap stops every platform call (free and credit); BYOK continues', async () => {
-    const alerts: string[] = [];
-    const g = new BudgetGuard(new MemoryCounterStore(), cfg({ platformDailyTlCap: 5 }), day, (k) =>
-      alerts.push(k),
+    const alerts: PlatformCapAlert[] = [];
+    const g = new BudgetGuard(new MemoryCounterStore(), cfg({ platformDailyTlCap: 5 }), day, (a) =>
+      alerts.push(a),
     );
     (await g.admit(paid(2))).release();
     await g.recordSpendTl(5);
@@ -303,8 +304,51 @@ describe('budget guard', () => {
     await expect(g.admit(paid(2))).rejects.toMatchObject({ reason: 'platform_tavan_kredili_durdu' });
     // A platform call that holds no credit is still paid by the platform.
     await expect(g.admit(paid(0))).rejects.toMatchObject({ reason: 'platform_tavan_kredili_durdu' });
-    expect(alerts).toEqual(['platform_tavan', 'platform_tavan', 'platform_tavan']);
+    // plan 8.7/2: the crossing call alerts once, the refusals once per day in this process, not per request.
+    expect(alerts).toEqual([
+      { kind: 'platform_tavan', trigger: 'crossed', day: '2026-10-19', spendTl: 5, capTl: 5 },
+      { kind: 'platform_tavan', trigger: 'refused', day: '2026-10-19', spendTl: 5, capTl: 5 },
+    ]);
     (await g.admit(byok())).release();
+  });
+  it('the cap alert fires only for the spend that crosses the ceiling, and again on a new day', async () => {
+    const store = new MemoryCounterStore();
+    let now = new Date('2026-10-19T10:00:00Z');
+    const alerts: PlatformCapAlert[] = [];
+    const g = new BudgetGuard(
+      store,
+      cfg({ platformDailyTlCap: 10 }),
+      () => now,
+      (a) => alerts.push(a),
+    );
+    await g.recordSpendTl(4);
+    await g.recordSpendTl(4);
+    expect(alerts).toEqual([]);
+    await g.recordSpendTl(3);
+    await g.recordSpendTl(3);
+    expect(alerts.map((a) => [a.trigger, a.day, a.spendTl])).toEqual([['crossed', '2026-10-19', 11]]);
+    // Two instances share the counter store: the second one never sees a crossing on the same day.
+    const other = new BudgetGuard(
+      store,
+      cfg({ platformDailyTlCap: 10 }),
+      () => now,
+      (a) => alerts.push(a),
+    );
+    await other.recordSpendTl(1);
+    expect(alerts).toHaveLength(1);
+    now = new Date('2026-10-20T10:00:00Z');
+    await g.recordSpendTl(12);
+    expect(alerts.map((a) => [a.trigger, a.day])).toEqual([
+      ['crossed', '2026-10-19'],
+      ['crossed', '2026-10-20'],
+    ]);
+  });
+  it('a throwing alert hook breaks neither admission nor spend recording', async () => {
+    const g = new BudgetGuard(new MemoryCounterStore(), cfg({ platformDailyTlCap: 1 }), day, () => {
+      throw new Error('hook');
+    });
+    await expect(g.recordSpendTl(2)).resolves.toBeUndefined();
+    await expect(g.admit(paid(1))).rejects.toMatchObject({ reason: 'platform_tavan_kredili_durdu' });
   });
   it('a BYOK call never counts platform credits or free uses, even if the caller passes them', async () => {
     const store = new MemoryCounterStore();

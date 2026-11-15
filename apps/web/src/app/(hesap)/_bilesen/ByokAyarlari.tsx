@@ -41,8 +41,9 @@ function kontrolMetni(r: KeyCheck): Bildirim {
  * BYOK settings (FR-84, plan 8.3, K-08). The key is read from and written to this browser's Web Storage only;
  * nothing here sends it to Kazuist. The stored key is never put back into the input, only its masked form is
  * shown. "Anahtarı dene" asks OpenRouter directly, which also tells whether the key is on the free tier.
+ * `platformYz` (server side platformAiAvailable) decides whether "no key" may mention the daily free allowance.
  */
-export function ByokAyarlari() {
+export function ByokAyarlari({ platformYz }: { platformYz: boolean }) {
   const [yuklendi, setYuklendi] = useState(false);
   const [kayitli, setKayitli] = useState<ByokSettings | null>(null);
   const [secim, setSecim] = useState<string>(DEFAULT_BYOK_MODEL);
@@ -124,7 +125,9 @@ export function ByokAyarlari() {
               ? `${doldur(b.durum.kayitli, { anahtar: maskKey(kayitli.apiKey), model: modelAdi(kayitli.model) })} ${
                   kayitli.persistence === 'cihaz' ? b.durum.cihazda : b.durum.oturumda
                 }`
-              : b.durum.yok}
+              : platformYz
+                ? b.durum.yok
+                : b.durum.yokByok}
         </p>
         {kayitli ? (
           <Dugme tur="ikincil" onClick={sil}>

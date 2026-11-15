@@ -43,6 +43,7 @@
     "oturumda": "Bu oturum için saklanıyor.",
     "cihazda": "Bu cihazda hatırlanıyor.",
     "yok": "Kayıtlı anahtar yok. Kaynaklı özet günlük ücretsiz hakkınızla çıkarılır.",
+    "yokByok": "Kayıtlı anahtar yok. Kaynaklı özet için OpenRouter anahtarınızı aşağıdan ekleyin.",
     "kaydedildi": "Anahtarınız bu tarayıcıya kaydedildi.",
     "silindi": "Anahtar bu tarayıcıdan silindi.",
     "kaydedilemedi": "Tarayıcınız yerel depolamaya izin vermiyor; anahtar kaydedilemedi.",
@@ -71,6 +72,8 @@
     "kendiAnahtar": "Kendi OpenRouter anahtarınızla da çalışabilirsiniz.",
     "kendiAnahtarBag": "Kendi anahtarınızı ekleyin",
     "hakBitti": "Kendi OpenRouter anahtarınızla devam edebilirsiniz.",
+    "platformKapali": "Platform üzerinden kaynaklı özet şu anda sunulmuyor.",
+    "yalnizByok": "Kaynaklı özet şu anda kendi OpenRouter anahtarınızla çıkarılır. Anahtarınız yalnız bu tarayıcıda tutulur ve Kazuist sunucusuna gönderilmez; kullanım bedeli OpenRouter hesabınıza yansır.",
     "dusmedi": "Bu özet kendi anahtarınızla çıkarıldı; kredi düşülmedi.",
     "sunucuReddetti": "Sunucudaki doğrulamadan geçmeyen bir cümle kaldırıldı."
   },
@@ -96,8 +99,16 @@
   "satisKapali": {
     "baslik": "Kredi satışı henüz açılmadı",
     "metin": "Bütün özellikleri günlük ücretsiz hakla ve kendi anahtarınızla kullanabilirsiniz. Aşağıdaki paket fiyatları bilgi içindir; şu anda kredi satın alınamaz.",
+    "metinByok": "Bütün özellikleri kullanabilirsiniz; kaynaklı özeti kendi OpenRouter anahtarınızla çıkarabilirsiniz. Aşağıdaki paket fiyatları bilgi içindir; şu anda kredi satın alınamaz.",
     "odemeMetin": "Şu anda kredi satın alınamaz. Bütün özellikleri günlük ücretsiz hakla ve kendi OpenRouter anahtarınızla kullanabilirsiniz.",
+    "odemeMetinByok": "Şu anda kredi satın alınamaz. Bütün özellikleri kullanabilirsiniz; kaynaklı özeti kendi OpenRouter anahtarınızla çıkarabilirsiniz.",
     "byok": "Kendi anahtarınızı ekleyin",
     "fiyatlar": "Kullanım seçeneklerine bakın"
+  },
+  "teklif": {
+    "giris": "Tüm özellikler ücretsizdir. Platformun günlük YZ hakkını kullanabilir veya kendi sağlayıcı anahtarınızla (BYOK) çalışabilirsiniz. BYOK kullanım bedelini kendi sağlayıcınıza ödersiniz.",
+    "girisByok": "Tüm özellikler ücretsizdir. Kaynaklı özet gibi YZ işlemlerini şu anda kendi sağlayıcı anahtarınızla (BYOK) kullanabilirsiniz; kullanım bedelini kendi sağlayıcınıza ödersiniz.",
+    "ucretsizKrediByok": "Günlük ücretsiz özet hakkı şu anda sunulmuyor; kaynaklı özeti kendi anahtarınızla (BYOK) çıkarabilirsiniz.",
+    "ucretsizOzellikByok": "Tüm özellikler; YZ işlemleri şimdilik kendi anahtarınızla (BYOK)"
   }
 }

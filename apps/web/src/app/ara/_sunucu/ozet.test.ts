@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- test assertions on known fixtures */
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   FakeLedger,
   MemoryCounterStore,
@@ -10,6 +10,7 @@ import {
   type StreamChunk,
 } from '@kazuist/ai-gateway';
 import type { AnswerEvent, AnswerFilters, ByokProvider } from '@kazuist/contracts';
+import byokMetin from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
 import { api, createHarness, signUp, type Harness } from '@/server/auth/__tests__/harness';
 import { eq } from 'drizzle-orm';
 import { schema } from '@/server/auth/db';
@@ -17,7 +18,13 @@ import { MemoryRateLimitStore, RateLimiter } from '@/server/auth/rate-limit';
 import { byokOzet, kazuistDeps } from '../_bilesen/byok.ts';
 import type { SearchBackend } from '@kazuist/casuist';
 import { getSearchDeps, setSearchDeps } from './baglam.ts';
-import { buildSummaryDeps, GatewayConfigError, setSummaryDeps, type SummaryDeps } from './gecit.ts';
+import {
+  buildSummaryDeps,
+  GatewayConfigError,
+  platformCapAlert,
+  setSummaryDeps,
+  type SummaryDeps,
+} from './gecit.ts';
 import { answersPost, preparePost, verifyPost } from './ozet.ts';
 
 /**
@@ -587,6 +594,141 @@ describe('production configuration (review.md P8.5)', () => {
       expect(res.status).toBe(503);
     } finally {
       env.NODE_ENV = before;
+    }
+  });
+});
+
+describe('platform AI configuration (BYOK-only launch, plan 8.7/2)', () => {
+  const KEY = 'yer-tutucu-anahtar';
+  const memory = {
+    counters: new MemoryCounterStore(),
+    nonces: new MemoryNonceStore(),
+    sink: () => undefined,
+  };
+
+  it('a platform key alone is not enough: platform AI needs AI_DAILY_BUDGET_TRY as well', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      expect(buildSummaryDeps(memory, {}).platformAcik).toBe(false);
+      expect(buildSummaryDeps(memory, { OPENROUTER_API_KEY: KEY }).platformAcik).toBe(false);
+      expect(
+        buildSummaryDeps(memory, { OPENROUTER_API_KEY: KEY, AI_DAILY_BUDGET_TRY: '500' }).platformAcik,
+      ).toBe(true);
+      expect(
+        buildSummaryDeps(memory, { ANTHROPIC_API_KEY: KEY, AI_DAILY_BUDGET_TRY: '500' }).platformAcik,
+      ).toBe(true);
+      // The warning names the missing variable and never carries a value.
+      const logged = warn.mock.calls.map((c) => String(c[0])).join('\n');
+      expect(logged).toContain('"name":"AI_DAILY_BUDGET_TRY"');
+      expect(logged).not.toContain(KEY);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it('an invalid AI_USD_TRY_RATE falls back to 50 and is reported by name only', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      expect(() => buildSummaryDeps(memory, { AI_USD_TRY_RATE: '49,37' })).not.toThrow();
+      const logged = warn.mock.calls.map((c) => String(c[0])).join('\n');
+      expect(logged).toContain('"error":"invalid_env","name":"AI_USD_TRY_RATE"');
+      expect(logged).not.toContain('49,37');
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it('platform mode answers 503 with the BYOK pointer before searching or counting anything', async () => {
+    const off = buildSummaryDeps({ ...memory, ledger, signingSecret: 'x'.repeat(48), hashSecret: 'h' }, {});
+    expect(off.platformAcik).toBe(false);
+    setSummaryDeps(off);
+    const res = await post(answersPost, '/v1/answers', {
+      q: 'KVKK m.11',
+      mode: 'platform',
+      depth: 'standart',
+    });
+    expect(res.status).toBe(503);
+    expect(((await res.json()) as { message: string }).message).toBe(byokMetin.ozet.platformKapali);
+    expect(prompts).toHaveLength(0);
+    expect(ledger.reservations.size).toBe(0);
+  });
+
+  it('crossing AI_DAILY_BUDGET_TRY logs one JSON line (amounts and day only) and calls the extra hook', async () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const hooked: string[] = [];
+    try {
+      const d = buildSummaryDeps(
+        {
+          ...memory,
+          adapters: {
+            anthropic: fake('anthropic'),
+            openrouter: fake('openrouter'),
+            openai: fake('openai'),
+            gemini: fake('gemini'),
+          },
+          ledger: new FakeLedger(),
+          hashSecret: 'h',
+          onPlatformCap: (a) => hooked.push(a.trigger),
+        },
+        { OPENROUTER_API_KEY: KEY, AI_DAILY_BUDGET_TRY: '0.0001' },
+      );
+      expect(d.platformAcik).toBe(true);
+      lines = () => ['bir cevap'];
+      const r = await d.gateway.complete({
+        requestId: 'yazma:kisaltma:1',
+        operation: 'kisaltma_oneri',
+        mode: 'platform',
+        userId,
+        userHash: 'u',
+        ipHash: 'i',
+        credits: 0,
+        free: false,
+        system: 'Sabit talimat.',
+        prompt: 'TBK',
+      });
+      expect(r.cost.costTl).toBeGreaterThan(0.0001);
+      expect(hooked).toEqual(['crossed']);
+      const logged = err.mock.calls.map((c) => String(c[0]));
+      const line = JSON.parse(logged.find((l) => l.includes('platform_tavan'))!) as Record<string, unknown>;
+      expect(line).toMatchObject({
+        at: 'gecit',
+        level: 'error',
+        event: 'platform_tavan',
+        trigger: 'crossed',
+      });
+      expect(line.day).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(line.capTl).toBe(0.0001);
+      expect(Object.keys(line).sort()).toEqual([
+        'at',
+        'capTl',
+        'day',
+        'event',
+        'level',
+        'spendTl',
+        'trigger',
+      ]);
+      for (const l of logged) for (const secret of [KEY, 'TBK', 'Sabit']) expect(l).not.toContain(secret);
+    } finally {
+      err.mockRestore();
+    }
+  });
+
+  it('platformCapAlert rounds the spend to kuruş', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    try {
+      platformCapAlert({
+        kind: 'platform_tavan',
+        trigger: 'refused',
+        day: '2026-11-15',
+        spendTl: 1000.456,
+        capTl: 1000,
+      });
+      expect(JSON.parse(String(err.mock.calls[0]?.[0]))).toMatchObject({
+        spendTl: 1000.46,
+        trigger: 'refused',
+      });
+    } finally {
+      err.mockRestore();
     }
   });
 });

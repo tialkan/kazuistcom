@@ -1,3 +1,4 @@
+import { platformAiAvailable } from '@kazuist/ai-gateway/config';
 import byok from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
 import odeme from '@kazuist/i18n/tr/odeme.json';
 import { Dugme } from '@kazuist/ui';
@@ -38,7 +39,10 @@ export default async function OdemePage(props: { searchParams: Promise<{ urun?: 
         <h1>{odeme.baslik}</h1>
         <section aria-labelledby="satis-kapali" data-testid="satis-kapali">
           <h2 id="satis-kapali">{byok.satisKapali.baslik}</h2>
-          <p role="status">{byok.satisKapali.odemeMetin}</p>
+          {/* No daily allowance is promised when the platform AI is off (BYOK-only launch). */}
+          <p role="status">
+            {platformAiAvailable() ? byok.satisKapali.odemeMetin : byok.satisKapali.odemeMetinByok}
+          </p>
           <p style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
             <Dugme href="/hesap/yz-anahtari">{byok.satisKapali.byok}</Dugme>
             <Dugme href="/fiyatlar" tur="ikincil">

@@ -6,6 +6,7 @@ export * from './jsonl.ts';
 export * from './pii.ts';
 export * from './protocol.ts';
 export * from './budget.ts';
+export * from './config.ts';
 export * from './routing.ts';
 export * from './ledger.ts';
 export * from './observe.ts';
