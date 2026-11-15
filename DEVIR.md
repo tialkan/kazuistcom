@@ -1,6 +1,6 @@
 ## 15 Kasım 2026, altyapi: main denetimi düzeltmeleri (altyapi/denetim-duzeltmeleri)
 
-Bağımsız main denetiminin beş maddesi (501eb35 üstünde). Sözleşme, şema, migration ve bağımlılık değişmedi.
+Bağımsız main denetiminin beş maddesi (#118, e229c70 üstünde). Yeni log satırları `@kazuist/log` ile (ADR-0039). Sözleşme, şema, migration ve bağımlılık değişmedi.
 - `infra/docker-compose.prod.yml` worker-py: `KAZUIST_SCHEDULER`, `KAZUIST_SCHEDULER_DRY_RUN`,
   `KAZUIST_SCHEDULE_TICK_SECONDS` (öntanım 600, `float("")` zamanlayıcıyı düşürürdü), `KAZUIST_POLL_SECONDS` (öntanım
   5; `core/main.py` artık boşu öntanım sayıyor) ve eksik üç kaynak anahtarı `KAZUIST_SOURCE_AYM/YARGITAY/DANISTAY`
