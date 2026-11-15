@@ -110,9 +110,15 @@ def test_labeler_letters() -> None:
 
 
 def test_high_court_member_follows_source() -> None:
-    text = "Başkan Hülya Altınpınar ve üye Cem Öztekinler karara katıldı."
-    assert "Hülya" not in anonymize(text).masked_text
-    assert "Hülya" in anonymize(text, court="AYM").masked_text
+    panel = "Başkan : Hülya ALTINPINAR\nÜyeler : Cem ÖZTEKİNLER\nDavut KARAHAN\n"
+    assert "Hülya" not in anonymize(panel).masked_text
+    for court in ("AYM", "Anayasa Mahkemesi"):
+        masked = anonymize(panel, court=court).masked_text
+        assert "Hülya ALTINPINAR" in masked and "Davut KARAHAN" in masked
+    assert "Davut" in anonymize(panel, source_key="aym:bb:1").masked_text
+    # a member word inside a sentence is not the court's own panel list: masked even for an open source
+    sentence = "Başkan Hülya Altınpınar ve üye Cem Öztekinler karara katıldı."
+    assert "Hülya" not in anonymize(sentence, court="AYM").masked_text
 
 
 def test_sole_proprietor() -> None:

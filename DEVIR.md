@@ -1,3 +1,41 @@
+## 15 Kasım 2026, anonimlestirme: açık kaynak eşleşmesi (AYM), kurul satırları, editör onayının uygulanması (anonimlestirme/acik-kaynak-onay)
+
+Yönlendirme `mimar-yonlendirme-4-sozlesme-v1-6.md` "anonimlestirme" maddesi ve orkestranın onay işi. Sözleşme, şema,
+migration ve bağımlılık değişmedi; `jobs.result` biçimi aynı. İstek: `docs/istekler/anonimlestirme-onay-ve-acik-kaynak.md`.
+- Eşleşme (`policy.py`, `policy.yaml`): `open_source_match` her açık kaynak için `source_keys` (kayıt
+  `source_key` ad alanı, `aym:`) ve `courts` ("Anayasa Mahkemesi", "T.C. ...", AİHM ve ABAD adları) tutar; mahkeme adı
+  NFKC, Türkçe küçük harf, aksan, nokta ve boşluk farkı gözetmeden ama tam eşitlikle karşılaştırılır ("Alman Federal
+  Anayasa Mahkemesi", "Uluslararası Adalet Divanı" eşleşmez). Bozuk tablo yüklemede hata verir. `policy_version`
+  ekE-2026.11.0, `ENGINE_VERSION` anon-0.4.0.
+- Kimin adı açık (`roles.find_panel_members`, `pipeline._open_panel`): yalnız kararın kendi kurul satırlarındaki
+  üyeler ("Başkan : Ad SOYAD", "Üyeler :" ve altındaki tek ad satırları, "Başkan A Başkanvekili B" imza satırları, tek
+  başına etiket ve alt satırda ad). Önceki kural "rolü hakim olan her span" idi: AYM eşleşseydi cümle içindeki "Belediye
+  Başkanı X", "meclis üyeleri Y" ve ilk derece hâkimi de açılacaktı. Kurulda adı geçen biri başka yerde taraf, vekil,
+  raportör rolüyle anılıyorsa her yerde maskeli; maskeli bir kişiyle aynı soyadı taşıyan yalnız soyadı anması maskeli.
+- Kural katmanı: rol ipucu araması tutulan adın sonundan sürer (önceden "Üye A Üye B Üye C" satırında ortadaki üye
+  hiç maskelenmiyordu; Yargıtay ve Danıştay imza satırlarında da geçerli). Yeni ipuçları: "Raportör" (`[Raportör]`,
+  politika hâkim ve savcı satırına eklendi) ve yalnız etiket biçiminde "Başvurucu :" (`[Başvurucu]`, cümle içinde
+  "başvurucunun Adalet Bakanlığına" kurum adını yakalıyordu). STOP: Başkanvekili, Üyeler, Üyesi, Raportör, Başvurucu.
+- `public_names.index_text`: arama dizini ve özet için açık üye adlarını `[Üye n]` yapan saf fonksiyon; casuist'in
+  parça metninde kullanması istendi (Ek E: kişi adıyla arama ve dizin yok, FR-21).
+- Editör onayı (`store.py`, `job.py`, `approvals.py`): `anon.run`, aynı sürümün en son kararı `onay` ise ve bütün
+  inceleme öğelerini kapsıyorsa yayımlar (`masked_text`, `anonymized`, `embed.chunks`, spanlarda `reviewed_by`,
+  `reviewed_at`); sonraki `ret` veya `duzelt` onayı iptal eder; `blocked` kalem onayla yayımlanmaz.
+  `python -m anonymizer.approvals` onaylı ve yayımlanmamış kayıtlar için `anon.run` koyar. Tetik kimliğin
+  (`admin.ts`, istek madde 3).
+- Fikstür sayıları (yalnız kural katmanı, ad yazdırmadan): AYM bireysel başvuru 5 kurul adı açık (Başkan ve 4 üye),
+  raportör maskeli, başvurucu ve vekil kaynakta baş harfle; aynı metin açık kaynak dışı mahkemeyle 6 kişi maskeli. AYM
+  norm denetimi imza bloğunda 17 üye açık, metindeki raportör maskeli; kaynak dışıyla 18 maskeli. Yargıtay HGK ve
+  Danıştay İDDK fikstürlerinde kişi spanı 0, maskelenmemiş taraf adı 0 (iki kaynak da tarafları kendisi gizliyor:
+  "Taraflar arasındaki", "(DAVALI) : ..."); kalan büyük harfli diziler mahkeme, kurum, genelge adı ve "Tetkik
+  Hâkimi" (her biri beklenen ifadeyle doğrulandı). Gerçek metne yazılan sentetik taraf, vekil ve imza satırı maskeli.
+- Ölçüm: `eval/anon/raporlar/anon-0.4.0-{sentetik,zor}.json` anon-0.3.0 ile aynı (sentetik kişi %97,21, zor %28,99,
+  kesinlik %100). 15.3/2 kapısı kanıtlanmadı, geçmedi sayılır.
+- Doğrulama: `uv run pytest` 533 geçti, 15 atlandı; `KAZUIST_IT_DATABASE_URL` ile (yerel geçici PostgreSQL 18.6,
+  migration 0000-0008) 534 geçti, 14 atlandı: onay, kuyruklama, yayın, `ret` iptali ve ölü iş koruması gerçek SQL ile.
+- Açık: kimlik tetikleyicisi ve casuist `index_text` kullanımı (istek); `duzelt` yaması uygulanmıyor; AİHM ve ABAD
+  kurul biçimleri (İngilizce "composed of") tanınmıyor, bu kaynaklarda üyeler maskeli kalır (güvenli yön);
+  `docs/kaynaklar/aym.md` notu veri-toplama'da.
 ## 15 Kasım 2026, kimlik: edu_claims okuması, 23505 eşlemesi, ek maskeleme sonrası yeniden gösterme (kimlik/edu-claims-yeniden-goster)
 
 Orkestra görevi: `docs/istekler/mimar-yonlendirme-4-sozlesme-v1-6.md` kimlik maddeleri 1 ve 2, DEVIR'deki açık iş
