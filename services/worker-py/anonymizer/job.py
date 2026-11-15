@@ -11,6 +11,10 @@ publishable. The spans and a review row with payload.blocked = "ner_unavailable"
 records.anonymized is false and records.masked_text NULL, so an earlier published text of the record is
 withdrawn too and embed.chunks is not queued. Saving instead of raising matters: a raised error rolls the
 transaction back and would leave an earlier masked_text in place.
+
+Editor approval (store.py): when the latest decided anonymization item of the same anonymizationVersion is an
+"onay" that lists every review item of this run, the run publishes (masked_text, anonymized, embed.chunks) and
+opens no new item. The admin panel records the decision; queueing this run afterwards is approvals.py's job.
 """
 
 from __future__ import annotations
@@ -53,12 +57,17 @@ def make_anon_run_handler(
         loaded = store.load(record_id)
         if loaded is None:
             raise RecordNotFound(record_id)
-        text, court = loaded
-        result = anonymize(text, court=court, policy=policy or default_policy(), ner=ner, require_ner=required)
+        result = anonymize(loaded.text, court=loaded.court, source_key=loaded.source_key,
+                           policy=policy or default_policy(), ner=ner, require_ner=required)
+        if result.review and result.blocked is None:
+            result = result.with_approval(store.approval(record_id, result.anonymization_version))
         store.save(record_id, result)
         if result.blocked:
             # Ids and the reason only; the record text never reaches the log.
             json_log("anon.run held for review", reason=result.blocked, recordId=record_id)
+        elif result.approval is not None:
+            json_log("anon.run published after editor approval", recordId=record_id,
+                     reviewId=result.approval.review_id)
         return {
             "recordId": record_id,
             "spans": len(result.spans),

@@ -28,6 +28,9 @@ CUES: List[Tuple[str, str]] = [
     (r"davac[ıi]\w*\s+vekil\w*|daval[ıi]\w*\s+vekil\w*|katılan\s+vekil\w*|vekil\w*|müdafi\w*|Av\.|Avukat", "vekil"),
     (r"davac[ıi]\w*", "davaci"),
     (r"daval[ıi]\w*", "davali"),
+    # Label form only ("Başvurucu : Ad SOYAD"): in running text the word is followed by institutions ("takiben
+    # başvurucunun Adalet Bakanlığına başvuru tarihinden").
+    (r"başvurucu(?:lar)?(?=[ \t]*:)", "basvurucu"),
     (r"sanı[kğ]\w*", "sanik"),
     (r"mağdur\w*", "magdur"),
     (r"katılan\w*", "katilan"),
@@ -36,6 +39,7 @@ CUES: List[Tuple[str, str]] = [
     (r"bilirkişi\w*", "bilirkisi"),
     (r"arabulucu\w*", "arabulucu"),
     (r"Cumhuriyet\s+Savcıs\w*|savcı\w*", "savci"),
+    (r"raportör\w*", "raportor"),
     (r"hâkim\w*|hakim\w*|başkan\w*|üye\w*", "hakim"),
 ]
 
@@ -46,6 +50,7 @@ STOP = {
         "Mahkemesi Mahkeme Daire Dairesi Hukuk Ceza Asliye Ağır Sulh İcra Aile İş Tüketici Bölge Adliye Yargıtay "
         "Danıştay Anayasa Kurul Kurulu Genel Başsavcılığı Cumhuriyet Başsavcılığı Savcılığı Vekili Vekil "
         "Davacı Davalı Sanık Tanık Bilirkişi Mağdur Katılan Müşteki Arabulucu Hâkim Hakim Başkan Üye Kâtip "
+        "Başkanvekili Başkanvekilleri Üyeler Üyesi Raportör Başvurucu Başvurucular "
         "Esas Karar Tarih Sayı Dosya Dava Davanın Konusu Hüküm Gereği Gerekçe Kanun Kanunu Madde Türk TMK TBK TCK "
         "HMK CMK İYUK T.C. TC Şirketi Limited Anonim Ltd Şti A.Ş. Bankası Belediyesi Bakanlığı Müdürlüğü "
         "Mahallesi Sokak Caddesi Bulvarı İl İlçe Ocak Şubat Mart Nisan Mayıs Haziran Temmuz Ağustos Eylül Ekim "
@@ -57,6 +62,7 @@ STOP = {
 ROLE_LABELS = {
     "davaci": "Davacı",
     "davali": "Davalı",
+    "basvurucu": "Başvurucu",
     "sanik": "Sanık",
     "magdur": "Mağdur",
     "katilan": "Katılan",
@@ -67,6 +73,7 @@ ROLE_LABELS = {
     "vekil": "Vekil",
     "hakim": "Hâkim",
     "savci": "Savcı",
+    "raportor": "Raportör",
     "cocuk": "Çocuk",
     None: "Kişi",
 }
@@ -109,17 +116,87 @@ def _trim_name(text: str, start: int, end: int) -> Optional[Tuple[int, int]]:
 
 
 def find_cued_persons(text: str) -> List[Span]:
+    """Names right after a role cue. The search resumes where the kept name ends, not where the greedy match
+    ended, so a cue swallowed by the previous candidate still counts ("Üye Ali KAYA Üye Can ER Üye ...": the
+    first match runs into "Üye Can", is trimmed at "Üye" and the next search starts there)."""
     out: List[Span] = []
-    for m in _CUE_RE.finditer(text):
+    pos = 0
+    while True:
+        m = _CUE_RE.search(text, pos)
+        if m is None:
+            break
         # The case insensitive flag must not make lowercase words count as names.
         trimmed = _trim_name(text, m.start("name"), m.end("name"))
         if trimmed is None:
+            pos = m.start("name")
             continue
         s, e = trimmed
+        pos = e
         name = text[s:e]
         if not all(w[0].isupper() for w in name.split()):
             continue
         out.append(Span(s, e, "PERSON", "context:cue", 0.92, role=_role_of(m), key=name_key(name)))
+    return out
+
+
+# Panel lists of a high court decision (plan Ek E, "Yüksek mahkeme üyesi"): the header and signature lines
+# in which the court names its own members, "Başkan : Ad SOYAD", "Üyeler : Ad SOYAD" followed by one name per
+# line, "Başkan Ad SOYAD Başkanvekili Ad SOYAD" and a label alone on a line with the name on the next one.
+# Only such lines count; a member word inside a sentence ("Belediye Başkanı Ad Soyad", "meclis üyeleri Ad
+# Soyad") does not, so for an open source (policy open_source_match) only the panel the source itself lists
+# stays readable.
+_PANEL_LABEL = (r"(?:Başkanvekilleri|Başkanvekili|Başkan|Üyeler|Üye"
+                r"|BAŞKANVEKİLLERİ|BAŞKANVEKİLİ|BAŞKAN|ÜYELER|ÜYE)")
+_PANEL_PLURAL = {"başkanvekilleri", "üyeler"}
+_PANEL_WORD = rf"(?!{_PANEL_LABEL}(?![{LO}{UP}]))(?:{NAME_WORD}|[{UP}]\.)"
+_PANEL_NAME = rf"{_PANEL_WORD}(?:[ \t]+{_PANEL_WORD}){{1,3}}"
+_PANEL_ITEM = re.compile(
+    rf"(?P<label>{_PANEL_LABEL})[ \t]*(?::[ \t]*)?(?P<name>{_PANEL_NAME})(?![{LO}{UP}.])")
+_PANEL_LINE = re.compile(rf"[ \t]*(?:{_PANEL_ITEM.pattern}[ \t]*)+")
+_PANEL_LABEL_ONLY = re.compile(rf"[ \t]*(?P<label>{_PANEL_LABEL})[ \t]*:?[ \t]*")
+_PANEL_NAME_ONLY = re.compile(rf"[ \t]*(?P<name>{_PANEL_NAME})[ \t]*")
+_TITLE_WORD = re.compile(rf"[{UP}][{LO}]+")
+
+
+def _panel_name_ok(name: str) -> bool:
+    words = [w for w in name.split() if not re.fullmatch(rf"[{UP}]\.", w)]
+    return bool(words) and all(tr_fold(w) not in _NOT_IN_NAME for w in words)
+
+
+def find_panel_members(text: str) -> List[Span]:
+    """Members named on the panel lines of a decision, role "hakim", detector "context:panel". A name alone
+    on a line counts only right after a plural label ("Üyeler : ...") or a label alone on its line, needs one
+    word in title case (so "İKİNCİ BÖLÜM" is not a name) and ends the list at the first line of another
+    shape."""
+    out: List[Span] = []
+
+    def add(s: int, e: int) -> None:
+        out.append(Span(s, e, "PERSON", "context:panel", 0.92, role="hakim", key=name_key(text[s:e])))
+
+    pending = ""  # "" no list open, "one" a label alone on the previous line, "many" a plural list
+    offset = 0
+    for line in text.splitlines(keepends=True):
+        body = line.rstrip("\r\n")
+        label_only = _PANEL_LABEL_ONLY.fullmatch(body)
+        name_only = _PANEL_NAME_ONLY.fullmatch(body) if pending else None
+        if name_only and not (_panel_name_ok(name_only.group("name"))
+                              and _TITLE_WORD.search(name_only.group("name"))):
+            name_only = None
+        if _PANEL_LINE.fullmatch(body):
+            items = list(_PANEL_ITEM.finditer(body))
+            pending = ""
+            if all(_panel_name_ok(m.group("name")) for m in items):
+                for m in items:
+                    add(offset + m.start("name"), offset + m.end("name"))
+                pending = "many" if tr_fold(items[-1].group("label")) in _PANEL_PLURAL else ""
+        elif label_only:
+            pending = "many" if tr_fold(label_only.group("label")) in _PANEL_PLURAL else "one"
+        elif name_only:
+            add(offset + name_only.start("name"), offset + name_only.end("name"))
+            pending = pending if pending == "many" else ""
+        else:
+            pending = ""
+        offset += len(line)
     return out
 
 
