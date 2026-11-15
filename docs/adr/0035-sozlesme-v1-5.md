@@ -191,3 +191,23 @@ ve DEVIR.md'dedir.
 
 Not (14 Kasım 2026): `/v1/notifications/preferences`, `/v1/push/web-subscriptions` ve `/v1/push/apns-tokens`
 işleyicileri kimlik tarafından yazıldı (PR #91); `planlandi` ekleri kaldırıldı.
+
+## Not: sözleşme 1.5.1, yazma projesi gövdeleri (14 Kasım 2026)
+
+Sözleşmede `createWritingProject` ve `updateWritingProject` aynı, alanları tümüyle isteğe bağlı `WritingProjectInput`
+şemasını kullanıyordu; sunucu (`apps/web/src/app/yazma/_sunucu/projeler.ts`) ise POST'ta `title`, `kind` ve
+`targetWords` alanlarını zorunlu tutuyor, başlığı kırpıp boşu reddediyor ve `targetWords` için 2.000.000 üst sınırı
+uyguluyordu. Sözleşme, gerçek davranışa göre düzeltildi:
+
+- Yeni `WritingProjectCreateInput` (POST): `title` (kırpılır, 1-300), `kind` (`tez`, `makale`, `odev`) ve
+  `targetWords` (0-2.000.000 tam sayı) zorunlu, `deadline` (tarih) isteğe bağlı; bilinmeyen alan reddedilir.
+- `WritingProjectInput` (PATCH) aynı kurallarla kısmi şemadır (`WritingProjectCreateInput.partial()`); yalnız verilen
+  alanlar değişir, `deadline` `null` ile silinemez. Ad, eklemeci kalmak için değişmedi; `WritingProjectUpdateInput`
+  adına geçiş ADR-0036'da konuşulabilir.
+- Yazma rotaları (`uclar.ts` `projelerPost`, `projePatch`) yerel `ProjeGirdisi` ve `ProjeGuncelleme` yerine bu iki
+  sözleşme şemasını içe aktarır (orkestra isteğiyle, yazma yolunda tek dokunuş). Yerel kopya kalktığı için sözleşme
+  ile işleyici artık ayrışamaz; `packages/contracts/test/writing-projects.test.ts` zod ile OpenAPI'deki zorunlu
+  alanları ve sınırları karşılaştırır.
+- Sürüm 1.5.1 (`openapi.yaml` `info.version`, `CONTRACT_VERSION`, `packages/contracts/package.json`). Yalnız
+  sözleşme değişti; şema ve migration yok, `packages/db` 1.5.0'da kaldı. Sunucu bu kuralları zaten uyguladığı için
+  kablo davranışı değişmedi; iOS istemcisi henüz üretilmedi.
