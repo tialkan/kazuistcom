@@ -12,6 +12,7 @@ import {
   type SablonTuru,
 } from './kural-semasi.ts';
 import type { MetinSayfasi } from './metin-cikarma.ts';
+import { yzEngelKodu, type YzEngelKodu } from './yz-engel.ts';
 
 /**
  * Rule extraction of plan 10.5/2: the guide text goes to a model (Haiku 5.5 first, Sonnet 5.5 when the answer
@@ -36,10 +37,12 @@ export interface KuralModeli {
   }): Promise<string>;
 }
 
+export type KuralCikarmaHataKodu = 'sema' | 'model' | 'bos_metin' | YzEngelKodu;
+
 export class KuralCikarmaHatasi extends Error {
-  readonly kod: 'sema' | 'model' | 'bos_metin';
+  readonly kod: KuralCikarmaHataKodu;
   // No parameter property: Node's type stripping (used by eval/rules) does not support it.
-  constructor(kod: 'sema' | 'model' | 'bos_metin') {
+  constructor(kod: KuralCikarmaHataKodu) {
     super(kod);
     this.name = 'KuralCikarmaHatasi';
     this.kod = kod;
@@ -360,9 +363,10 @@ export async function kuralCikar(
         istem,
         kabul: (cevap) => semaDogrula(cevap, tur) !== null,
       });
-    } catch {
-      // A provider failure is not a schema failure: the gateway already tried its fallbacks.
-      throw new KuralCikarmaHatasi('model');
+    } catch (e) {
+      // A provider failure is not a schema failure: the gateway already tried its fallbacks. A credit or cap
+      // refusal keeps its own code, and the Sonnet retry is not attempted: it would be refused too.
+      throw new KuralCikarmaHatasi(yzEngelKodu(e) ?? 'model');
     }
     alanlar = semaDogrula(ham, tur);
     if (alanlar) break;

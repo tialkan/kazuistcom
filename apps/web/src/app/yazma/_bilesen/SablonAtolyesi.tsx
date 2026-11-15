@@ -47,6 +47,8 @@ const hataKodlari: Record<string, string> = {
   yz_yok: tr.hata.yzYok,
   sema: tr.hata.sema,
   model: tr.hata.model,
+  kredi_yetersiz: tr.hata.krediYetersiz,
+  butce_tavani: tr.hata.butceTavani,
   bos_metin: tr.hata.metinAz,
   cok_buyuk: tr.hata.cokBuyuk,
   bozuk: tr.hata.bozuk,

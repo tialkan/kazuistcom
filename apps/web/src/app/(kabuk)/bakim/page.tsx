@@ -4,7 +4,8 @@ import { Yukleniyor } from '@kazuist/ui';
 
 const t = ortak();
 export const metadata: Metadata = {
-  title: t.durum.bakimBaslik,
+  // The heading already names Kazuist, so the "%s | Kazuist" template of the root layout is skipped.
+  title: { absolute: t.durum.bakimBaslik },
   robots: { index: false, follow: false },
 };
 

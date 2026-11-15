@@ -37,10 +37,13 @@ export function robotsKurallari(env: SeoEnv = process.env): MetadataRoute.Robots
   };
 }
 
-/** The sitemap lists the same public pages in every environment; robots.txt decides who may read it. */
+/**
+ * The sitemap lists the public pages; robots.txt decides who may read it. Only the modules production does not
+ * show yet (yayin.ts) make it differ between environments.
+ */
 export function siteHaritasi(env: SeoEnv = process.env): MetadataRoute.Sitemap {
   const koku = siteKoku(env);
-  return siteHaritasiAdresleri().map(({ yol, lastModified }) => ({
+  return siteHaritasiAdresleri(env).map(({ yol, lastModified }) => ({
     url: yol === '/' ? koku : `${koku}${yol}`,
     ...(lastModified ? { lastModified } : {}),
   }));
