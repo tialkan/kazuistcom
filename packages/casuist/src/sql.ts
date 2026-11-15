@@ -1,5 +1,6 @@
+import { DOMESTIC_JURISDICTIONS } from './authority.ts';
 import type { SearchBackend } from './backend.ts';
-import { chunkText } from './chunk.ts';
+import { chunkText, sectionsFor } from './chunk.ts';
 import { decisionKey } from './decisions.ts';
 import { words } from './normalize.ts';
 import type { ParsedQuery } from './query.ts';
@@ -35,8 +36,17 @@ const ON_THE_FLY = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{1
  */
 const COUNTED_EDGE = 'NOT e.rejected AND ((e.confirmed AND e.confidence > 0) OR e.confidence >= 0.90::real)';
 
+/**
+ * authority.ts servedAuthority in SQL: EU law and foreign records are served as "karsilastirmali" (plan Ek F),
+ * doctrine as stored. Used for the column and the authority filter, so both agree.
+ */
+export const SERVED_AUTHORITY = `CASE WHEN r.type IN ('makale', 'kitap', 'tez') THEN r.authority_class
+  WHEN r.type = 'ab_hukuku' OR r.jurisdiction NOT IN (${DOMESTIC_JURISDICTIONS.map((j) => `'${j}'`).join(', ')})
+  THEN 'karsilastirmali'::authority_class ELSE r.authority_class END`;
+
 const RECORD_COLUMNS = `r.id, r.type, r.title, r.court, r.chamber, r.esas_no, r.karar_no,
-  to_char(r.decision_date, 'YYYY-MM-DD') AS decision_date, r.authority_class, r.status, r.jurisdiction,
+  to_char(r.decision_date, 'YYYY-MM-DD') AS decision_date, ${SERVED_AUTHORITY} AS authority_class, r.status,
+  r.jurisdiction,
   r.norm_refs, to_char(r.valid_from, 'YYYY-MM-DD') AS valid_from, to_char(r.valid_to, 'YYYY-MM-DD') AS valid_to,
   r.amended_by, r.license_basis, r.anonymized, r.anonymization_version, r.source_url, r.fetched_at, r.live_only,
   r.openalex_cited_by, r.masked_text`;
@@ -127,7 +137,7 @@ export function filterSql(f: SearchFilters, start: number): { sql: string; param
     parts.push(clause(start + params.length - 1));
   };
   if (f.type) add((n) => `r.type = $${n}::record_type`, f.type);
-  if (f.authority) add((n) => `r.authority_class = $${n}::authority_class`, f.authority);
+  if (f.authority) add((n) => `${SERVED_AUTHORITY} = $${n}::authority_class`, f.authority);
   if (f.from) add((n) => `r.decision_date >= $${n}::date`, f.from);
   if (f.to) add((n) => `r.decision_date <= $${n}::date`, f.to);
   if (f.court)
@@ -147,12 +157,38 @@ export function orTsQuery(q: ParsedQuery): string {
   return list.join(' | ');
 }
 
+const plainWord = (t: string): boolean => /^[\p{L}\p{N}]+$/u.test(t);
+
+/**
+ * Input for websearch_to_tsquery('turkish', ...), the AND leg: the same words as orTsQuery (tr-TR lower case,
+ * apostrophe suffixes dropped, single letters left out) separated by spaces, which websearch_to_tsquery ANDs;
+ * a phrase in double quotes stays a phrase. Operators other than quotes are not passed on (no "-" exclusion,
+ * which alone would match almost every passage), and websearch_to_tsquery never raises on malformed input.
+ */
+export function andTsQueryText(q: ParsedQuery): string {
+  const out: string[] = [];
+  for (const m of q.raw.matchAll(/["\u201c\u201d]([^"\u201c\u201d]*)["\u201c\u201d]|[^"\u201c\u201d]+/gu)) {
+    const ws = words(m[1] ?? m[0]).filter(plainWord);
+    if (m[1] !== undefined && ws.length > 1) out.push(`"${ws.join(' ')}"`);
+    else out.push(...ws.filter((w) => w !== 'or'));
+  }
+  return [...new Set(out)].slice(0, 32).join(' ');
+}
+
+/** The OR query runs as well when the AND query returns fewer records than this (review: AND first). */
+export const OR_FALLBACK_BELOW = 5;
+
 /** Title matches weigh more than passage matches (plan 7.2/2). Ranks are length normalised (flag 1). */
 const TITLE_WEIGHT = 3;
 
 export interface SqlBackendOptions {
   /** hnsw.ef_search for the vector leg; must be at least the leg limit to return that many rows. */
   efSearch?: number;
+  /**
+   * Full text leg: "and_first" (default) runs websearch_to_tsquery and adds the OR query when it returns fewer
+   * than OR_FALLBACK_BELOW records; "or" is the earlier OR only behaviour, kept for measurement (eval/rag).
+   */
+  fullText?: 'and_first' | 'or';
 }
 
 /**
@@ -171,6 +207,43 @@ export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBac
       [ids],
     );
     return rows.map(toRecord);
+  }
+
+  /**
+   * Best passage per record and the title match for one tsquery; `parser` is a fixed function name, the query
+   * text is a bound parameter.
+   */
+  async function fullTextQuery(
+    parser: 'websearch_to_tsquery' | 'to_tsquery',
+    text: string,
+    f: SearchFilters,
+    limit: number,
+  ): Promise<Hit[]> {
+    const filter = filterSql(f, 3);
+    const { rows } = await db.query<ChunkRow & { rid: string; chunk_id: string | null }>(
+      `WITH q AS (SELECT ${parser}('turkish', $1) AS tq),
+       c AS (
+         SELECT DISTINCT ON (ch.record_id) ch.record_id, ch.id AS chunk_id, ch.seq, ch.section, ch.text,
+                ch.char_start, ch.char_end, ts_rank_cd(ch.tsv, q.tq, 1) AS rank
+         FROM chunks ch, q WHERE ch.tsv @@ q.tq
+         ORDER BY ch.record_id, rank DESC, ch.seq),
+       t AS (SELECT r.id AS record_id, ts_rank_cd(r.title_tsv, q.tq, 1) AS trank
+             FROM records r, q WHERE r.title_tsv @@ q.tq)
+       SELECT r.id AS rid, c.chunk_id, c.seq, c.section, c.text, c.char_start, c.char_end,
+              coalesce(c.rank, 0) + ${TITLE_WEIGHT} * coalesce(t.trank, 0) AS score
+       FROM records r
+       LEFT JOIN c ON c.record_id = r.id
+       LEFT JOIN t ON t.record_id = r.id
+       WHERE (c.record_id IS NOT NULL OR t.record_id IS NOT NULL) AND ${SERVABLE}${filter.sql}
+       ORDER BY score DESC, r.id
+       LIMIT $2`,
+      [text, limit, ...filter.params],
+    );
+    return rows.map((row): Hit => ({
+      id: row.rid,
+      score: Number(row.score),
+      chunk: row.chunk_id ? toChunk({ ...row, id: row.chunk_id, record_id: row.rid }) : null,
+    }));
   }
 
   return {
@@ -203,33 +276,16 @@ export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBac
     },
 
     async fullText(q, f, limit) {
-      const tsq = orTsQuery(q);
-      if (!tsq) return [];
-      const filter = filterSql(f, 3);
-      const { rows } = await db.query<ChunkRow & { rid: string; chunk_id: string | null }>(
-        `WITH q AS (SELECT to_tsquery('turkish', $1) AS tq),
-         c AS (
-           SELECT DISTINCT ON (ch.record_id) ch.record_id, ch.id AS chunk_id, ch.seq, ch.section, ch.text,
-                  ch.char_start, ch.char_end, ts_rank_cd(ch.tsv, q.tq, 1) AS rank
-           FROM chunks ch, q WHERE ch.tsv @@ q.tq
-           ORDER BY ch.record_id, rank DESC, ch.seq),
-         t AS (SELECT r.id AS record_id, ts_rank_cd(r.title_tsv, q.tq, 1) AS trank
-               FROM records r, q WHERE r.title_tsv @@ q.tq)
-         SELECT r.id AS rid, c.chunk_id, c.seq, c.section, c.text, c.char_start, c.char_end,
-                coalesce(c.rank, 0) + ${TITLE_WEIGHT} * coalesce(t.trank, 0) AS score
-         FROM records r
-         LEFT JOIN c ON c.record_id = r.id
-         LEFT JOIN t ON t.record_id = r.id
-         WHERE (c.record_id IS NOT NULL OR t.record_id IS NOT NULL) AND ${SERVABLE}${filter.sql}
-         ORDER BY score DESC, r.id
-         LIMIT $2`,
-        [tsq, limit, ...filter.params],
-      );
-      return rows.map((row): Hit => ({
-        id: row.rid,
-        score: Number(row.score),
-        chunk: row.chunk_id ? toChunk({ ...row, id: row.chunk_id, record_id: row.rid }) : null,
-      }));
+      const orText = orTsQuery(q);
+      const andText = opts.fullText === 'or' ? '' : andTsQueryText(q);
+      if (!orText && !andText) return [];
+      const first = andText ? await fullTextQuery('websearch_to_tsquery', andText, f, limit) : [];
+      // One word: the AND and the OR query are the same.
+      const single = !andText.includes(' ') && !andText.includes('"');
+      if (first.length >= OR_FALLBACK_BELOW || !orText || (andText && single)) return first;
+      const seen = new Set(first.map((h) => h.id));
+      const more = await fullTextQuery('to_tsquery', orText, f, limit);
+      return [...first, ...more.filter((h) => !seen.has(h.id))].slice(0, limit);
     },
 
     async vector(embedding, model, f, limit) {
@@ -285,7 +341,8 @@ export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBac
       // Records whose chunks are not written yet (embed.chunks pending) fall back to on the fly passages.
       const missing = ids.filter((id) => !out.some((c) => c.recordId === id));
       if (missing.length)
-        for (const r of await records(missing)) out.push(...chunkText(r.id, r.text).slice(0, perRecord));
+        for (const r of await records(missing))
+          out.push(...chunkText(r.id, r.text, { sections: sectionsFor(r.type) }).slice(0, perRecord));
       return out;
     },
 

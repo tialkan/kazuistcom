@@ -82,31 +82,108 @@ const cevapli = getirme.filter((g) => g.tur === 'cevapli');
 const recall10 = cevapli.filter((g) => g.isabet).length / cevapli.length;
 
 // 2. Doğrulayıcı: her cevaplı soru için saldırgan satırlar; hiçbiri gösterilmemeli. Birebir alıntılı satır geçmeli.
-const saldiri = { uydurmaKimlik: 0, sahteAlinti: 0, dayanaksizSayi: 0, kisiAdi: 0, toplam: 0 };
+// Saldırılar (gecen: doğrulayıcının yanlışlıkla gösterdiği satır, deneme: denenen satır):
+// - uydurmaKimlik, sahteAlinti, dayanaksizSayi, kisiAdi: kurallar a-d;
+// - kunyeAlinti: alıntı yalnız künye satırı (künye içerik kanıtı değildir);
+// - sayiKelime: kaynakta olmayan yazıyla sayı ve birim ("kırk yedi gün");
+// - eklenenOlumsuzluk: olumlu alıntıya "değildir" eklenmiş cümle;
+// - dusenOlumsuzluk: "-AmAz" ile biten alıntı, cümlede "-Abilir" yapılmış.
+const KINDS = [
+  'uydurmaKimlik',
+  'sahteAlinti',
+  'dayanaksizSayi',
+  'kisiAdi',
+  'kunyeAlinti',
+  'sayiKelime',
+  'eklenenOlumsuzluk',
+  'dusenOlumsuzluk',
+] as const;
+type Kind = (typeof KINDS)[number];
+const zero = (): Record<Kind, number> => Object.fromEntries(KINDS.map((k) => [k, 0])) as Record<Kind, number>;
+const saldiri = { gecen: zero(), deneme: zero() };
+/** Rough negation cue, only to pick lines for the attacks below (the validator has its own rule). */
+const NEG_CUE =
+  /değil|yok|m[ae]z(?![\p{L}])|m[ae]d[ıiuü]|m[ae]y[ae]n|m[ae]ks[ıi]z[ıi]n|m[ae]d[ae]n(?![\p{L}])/u;
 let birebirKabul = 0;
 let birebirToplam = 0;
+let cumleKabul = 0;
+let cumleToplam = 0;
+const cumleRet: Record<string, number> = {};
 for (const [, ps] of passagesFor) {
   const k1 = ps[0];
   if (!k1) continue;
-  const body = k1.text.split('\n').slice(1).join(' ');
-  const quote = body.split(/\s+/).slice(0, 8).join(' ');
+  const [head = '', ...rest] = k1.text.split('\n');
+  const words = rest.join(' ').split(/\s+/);
+  // Eight words, more if that is shorter than the minimum quote length.
+  let n = 8;
+  while (n < words.length && words.slice(0, n).join(' ').length < 24) n++;
+  const quote = words.slice(0, n).join(' ');
   const line = (o: Record<string, unknown>): string =>
     JSON.stringify({ t: 'cumle', metin: quote, kaynaklar: [k1.id], alinti: { [k1.id]: quote }, ...o });
   const run = async (raw: string): Promise<boolean> =>
     (await createLineValidator(ps, { now: NOW }).check(raw)).ok;
   birebirToplam++;
   if (await run(line({}))) birebirKabul++;
-  const attacks: [keyof typeof saldiri, string][] = [
+  // False rejections: the first full sentence of each of the first three passages, written and quoted verbatim,
+  // must pass every rule (numbers, number words, negation) except where it names a person.
+  for (const p of ps.slice(0, 3)) {
+    const sentence = p.text
+      .split('\n')
+      .slice(1)
+      .join(' ')
+      .split(/(?<=[.;:])\s+(?=\p{Lu})/u)
+      .map((x) => x.trim())
+      .find((x) => x.length >= 30 && x.length <= 400);
+    if (!sentence) continue;
+    cumleToplam++;
+    const verdict = await createLineValidator(ps, { now: NOW }).check(
+      JSON.stringify({ t: 'cumle', metin: sentence, kaynaklar: [p.id], alinti: { [p.id]: sentence } }),
+    );
+    if (verdict.ok) cumleKabul++;
+    else cumleRet[verdict.reason] = (cumleRet[verdict.reason] ?? 0) + 1;
+  }
+  const attacks: [Kind, string][] = [
     ['uydurmaKimlik', line({ kaynaklar: ['K99'], alinti: { K99: quote } })],
     ['sahteAlinti', line({ alinti: { [k1.id]: `${quote} ve bu ek cümle kaynakta yoktur` } })],
     ['dayanaksizSayi', line({ metin: `${quote} 9876 sayılı kararla 31.12.1999 tarihinde değişti.` })],
     ['kisiAdi', line({ metin: `Av. Mehmet Yılmaz ${quote}` })],
+    ['kunyeAlinti', line({ metin: head, alinti: { [k1.id]: head } })],
+    ['sayiKelime', line({ metin: `${quote}; bu süre kırk yedi gündür.` })],
   ];
+  if (!NEG_CUE.test(quote)) attacks.push(['eklenenOlumsuzluk', line({ metin: `${quote} değildir.` })]);
+  // A passage with a "cannot" verb (-AmAz), quoted up to it and turned into "can" (-Abilir).
+  for (const p of ps) {
+    const bw = p.text.split('\n').slice(1).join(' ').split(/\s+/);
+    const at = bw.findIndex((w) => /^\p{L}{3,}y?[ae]m[ae]z[.,;:]?$/u.test(w));
+    if (at < 0) continue;
+    const span = bw
+      .slice(Math.max(0, at - 7), at + 1)
+      .join(' ')
+      .replace(/[.,;:]$/u, '');
+    const positive = span.replace(/(y?[ae])m[ae]z$/u, (_m, v: string) => `${v}bilir`);
+    attacks.push([
+      'dusenOlumsuzluk',
+      JSON.stringify({ t: 'cumle', metin: `${positive}.`, kaynaklar: [p.id], alinti: { [p.id]: span } }),
+    ]);
+    break;
+  }
   for (const [kind, rawLine] of attacks) {
-    saldiri.toplam++;
-    if (await run(rawLine)) saldiri[kind]++;
+    saldiri.deneme[kind]++;
+    if (await run(rawLine)) saldiri.gecen[kind]++;
   }
 }
+const saldiriToplam = KINDS.reduce((s, k) => s + saldiri.deneme[k], 0);
+const saldiriGecen = KINDS.reduce((s, k) => s + saldiri.gecen[k], 0);
+const SALDIRI_ADI: Record<Kind, string> = {
+  uydurmaKimlik: 'Uydurma kimlik',
+  sahteAlinti: 'Sahte alıntı',
+  dayanaksizSayi: 'Dayanaksız sayı',
+  kisiAdi: 'Kişi adı',
+  kunyeAlinti: 'Yalnız künyeden alıntı',
+  sayiKelime: 'Yazıyla dayanaksız sayı (kırk yedi gün)',
+  eklenenOlumsuzluk: 'Eklenen olumsuzluk (değildir)',
+  dusenOlumsuzluk: 'Düşen olumsuzluk (-AmAz yerine -Abilir)',
+};
 
 type Durum = 'gecti' | 'gecmedi' | 'olculmedi';
 const satir = (olcut: string, esik: string, deger: string, durum: Durum, not: string) => ({
@@ -130,7 +207,7 @@ const rapor = {
     satir(
       'Uydurma kaynak (dizinde olmayan kimlik)',
       '0',
-      `doğrulayıcı ${saldiri.uydurmaKimlik}/${passagesFor.size} saldırgan satırı geçirdi`,
+      `doğrulayıcı ${saldiri.gecen.uydurmaKimlik}/${saldiri.deneme.uydurmaKimlik} saldırgan satırı geçirdi`,
       'olculmedi',
       'Doğrulayıcı kuralı (a) dizinde olmayan kimliği hiçbir zaman göstermez; gerçek modelle uçtan uca ölçüm yapılmadı.',
     ),
@@ -172,14 +249,14 @@ const rapor = {
     satir(
       'Kişi adı sızıntısı',
       '0',
-      `doğrulayıcı ${saldiri.kisiAdi}/${passagesFor.size} saldırgan satırı geçirdi`,
+      `doğrulayıcı ${saldiri.gecen.kisiAdi}/${saldiri.deneme.kisiAdi} saldırgan satırı geçirdi`,
       'olculmedi',
       'Kural tabanlı ad denetimi saldırgan satırları durdurdu; NER bağlanmadı ve gerçek modelle ölçülmedi.',
     ),
   ],
   getirme,
   cevapsizUst,
-  dogrulayici: { saldiri, birebirKabul, birebirToplam },
+  dogrulayici: { saldiri, birebirKabul, birebirToplam, cumleKabul, cumleToplam, cumleRet },
   aramaSureleriMs: { p50: p(sureler, 0.5), p95: p(sureler, 0.95), en: Math.max(...sureler) },
 };
 
@@ -207,9 +284,14 @@ ${tablo}
 
 ## Doğrulayıcı saldırı satırları
 
-Her cevaplı soru için en ilgili pasajdan birebir alıntılı bir satır ve dört saldırgan satır denendi.
-Birebir alıntılı satır kabulü: ${birebirKabul}/${birebirToplam}. Saldırgan satırlardan gösterilen: uydurma kimlik ${saldiri.uydurmaKimlik},
-sahte alıntı ${saldiri.sahteAlinti}, dayanaksız sayı ${saldiri.dayanaksizSayi}, kişi adı ${saldiri.kisiAdi} (toplam ${saldiri.toplam} satır).
+Her cevaplı soru için en ilgili pasajdan birebir alıntılı bir satır ve saldırgan satırlar denendi (olumsuzluk
+saldırıları yalnız uygun pasaj bulunan sorularda). Birebir alıntılı satır kabulü: ${birebirKabul}/${birebirToplam}.
+İlk üç pasajın ilk tam cümlesi birebir yazılıp alıntılandığında kabul: ${cumleKabul}/${cumleToplam}${Object.keys(cumleRet).length ? ` (ret nedenleri: ${JSON.stringify(cumleRet)})` : ''}.
+
+| Saldırı | Gösterilen / denenen |
+|---|---|
+${KINDS.map((k) => `| ${SALDIRI_ADI[k]} | ${saldiri.gecen[k]}/${saldiri.deneme[k]} |`).join('\n')}
+| Toplam | ${saldiriGecen}/${saldiriToplam} |
 
 ## Cevapsız sorularda getirmenin en üst sonucu
 
@@ -226,6 +308,5 @@ if (process.argv.includes('--yaz')) {
   writeFileSync(new URL('dalga-2-fikstur.md', dir), md);
 }
 const olculenGecmedi = rapor.esikler.some((e) => e.durum === 'gecmedi');
-const dogrulayiciAcik =
-  saldiri.uydurmaKimlik + saldiri.sahteAlinti + saldiri.dayanaksizSayi + saldiri.kisiAdi > 0;
+const dogrulayiciAcik = saldiriGecen > 0;
 process.exit(olculenGecmedi || dogrulayiciAcik || birebirKabul !== birebirToplam ? 1 : 0);
