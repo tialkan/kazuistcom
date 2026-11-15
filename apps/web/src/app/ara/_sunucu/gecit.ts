@@ -3,12 +3,15 @@ import {
   BudgetGuard,
   createAdapters,
   createGateway,
+  dailyBudgetTry,
   DEFAULT_BUDGET,
   MemoryCounterStore,
   MemoryNonceStore,
+  platformAiAvailable,
   ProviderSwitch,
   sanitizeMetric,
   scrub,
+  usdTryRate,
   valkeyNonceStore,
   type CounterStore,
   type GatewayDeps,
@@ -16,6 +19,7 @@ import {
   type MetricSink,
   type NameRecognizer,
   type NonceStore,
+  type PlatformCapAlert,
   type SettlementFailure,
 } from '@kazuist/ai-gateway';
 import { nameSpans } from '@kazuist/casuist';
@@ -104,6 +108,11 @@ export interface SummaryDeps {
   ledger: ValidatedChargeLedger;
   counters: CounterStore;
   nonces: NonceStore;
+  /**
+   * The platform pays for AI calls (platform key and AI_DAILY_BUDGET_TRY, or test keys). When false the summary
+   * endpoint refuses platform mode at once and the pages offer BYOK instead (platformAiAvailable).
+   */
+  platformAcik: boolean;
   /** BYOK_SIGNING_SECRET; prepare and verify answer 503 without it. */
   signingSecret: string | null;
   hashSecret: string;
@@ -171,6 +180,45 @@ function settleAlert(f: SettlementFailure): void {
 /** Gateway metrics (plan 8.8): only the whitelisted metadata fields of sanitizeMetric, one info line each. */
 const metricSink: MetricSink = (m) => logEvent('info', 'ai-gateway', { ...sanitizeMetric(m) });
 
+/**
+ * Operator alert for the daily platform ceiling (plan 8.7/2) through @kazuist/log, like the other gecit alerts:
+ * amounts and day only. A staff notification job needs a notify contract change
+ * (docs/istekler/yz-gecidi-platform-tavan-uyarisi.md); until then buildSummaryDeps takes an extra hook.
+ */
+export function platformCapAlert(a: PlatformCapAlert): void {
+  logEvent('error', 'gecit', {
+    event: a.kind,
+    trigger: a.trigger,
+    day: a.day,
+    spendTl: Math.round(a.spendTl * 100) / 100,
+    capTl: a.capTl,
+  });
+}
+
+/** Configuration warnings: variable names only, never values; once per process. */
+const warned = new Set<string>();
+function warnConfig(error: string, name: string): void {
+  if (warned.has(`${error}:${name}`)) return;
+  warned.add(`${error}:${name}`);
+  logEvent('warn', 'gecit', { error, name });
+}
+
+/**
+ * Platform keys only when the platform AI is available: a key without an explicit AI_DAILY_BUDGET_TRY used to run
+ * under the 1.000 TL default ceiling while the runbook promised BYOK only. Now the operator sets both or neither.
+ */
+function envPlatformKeys(env: Record<string, string | undefined>): Partial<Record<ByokProvider, string>> {
+  const keys: Partial<Record<ByokProvider, string>> = {};
+  if (!platformAiAvailable(env)) {
+    if (env.OPENROUTER_API_KEY?.trim() || env.ANTHROPIC_API_KEY?.trim())
+      warnConfig('platform_ai_off', 'AI_DAILY_BUDGET_TRY');
+    return keys;
+  }
+  if (env.OPENROUTER_API_KEY?.trim()) keys.openrouter = env.OPENROUTER_API_KEY.trim();
+  if (env.ANTHROPIC_API_KEY?.trim()) keys.anthropic = env.ANTHROPIC_API_KEY.trim();
+  return keys;
+}
+
 /** Tests replace the dependencies. */
 export function setSummaryDeps(d: SummaryDeps | undefined): void {
   current = d;
@@ -184,6 +232,8 @@ export function buildSummaryDeps(
     signingSecret?: string | null;
     hashSecret?: string;
     now?: () => Date;
+    /** Extra receiver of the platform ceiling alert (a staff notification once the contract allows it). */
+    onPlatformCap?: (a: PlatformCapAlert) => void;
   } = {},
   env: Record<string, string | undefined> = process.env,
 ): SummaryDeps {
@@ -203,23 +253,29 @@ export function buildSummaryDeps(
   const ledger = new ValidatedChargeLedger(
     overrides.ledger ?? (env.DATABASE_URL ? dbLedger(env.DATABASE_URL) : noLedger),
   );
-  const platformKeys: Partial<Record<ByokProvider, string>> = {};
-  if (env.OPENROUTER_API_KEY) platformKeys.openrouter = env.OPENROUTER_API_KEY;
-  if (env.ANTHROPIC_API_KEY) platformKeys.anthropic = env.ANTHROPIC_API_KEY;
-  const cap = Number(env.AI_DAILY_BUDGET_TRY ?? '');
+  const platformKeys = overrides.platformKeys ?? envPlatformKeys(env);
+  const cap = dailyBudgetTry(env);
+  const rate = usdTryRate(env);
+  if (rate.invalid) warnConfig('invalid_env', 'AI_USD_TRY_RATE');
   const now = overrides.now ?? (() => new Date());
+  const onCap = overrides.onPlatformCap;
   const gateway = createGateway({
     adapters: overrides.adapters ?? createAdapters(),
     budget:
       overrides.budget ??
       new BudgetGuard(
         counters,
-        { ...DEFAULT_BUDGET, ...(Number.isFinite(cap) && cap > 0 ? { platformDailyTlCap: cap } : {}) },
+        { ...DEFAULT_BUDGET, ...(cap === null ? {} : { platformDailyTlCap: cap }) },
         now,
+        (a) => {
+          platformCapAlert(a);
+          onCap?.(a);
+        },
       ),
     switches: overrides.switches ?? new ProviderSwitch(),
     ledger,
-    platformKeys: overrides.platformKeys ?? platformKeys,
+    platformKeys,
+    usdTryRate: overrides.usdTryRate ?? rate.rate,
     sink: overrides.sink ?? metricSink,
     ner: overrides.ner ?? nameRecognizer,
     onSettleFailure: overrides.onSettleFailure ?? settleAlert,
@@ -231,6 +287,7 @@ export function buildSummaryDeps(
     ledger,
     counters,
     nonces,
+    platformAcik: Object.values(platformKeys).some(Boolean),
     signingSecret:
       overrides.signingSecret === undefined ? (env.BYOK_SIGNING_SECRET ?? null) : overrides.signingSecret,
     hashSecret: overrides.hashSecret ?? env.BETTER_AUTH_SECRET ?? 'yerel-gelistirme',

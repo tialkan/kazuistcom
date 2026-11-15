@@ -67,6 +67,23 @@ docs/kararlar.md (22 Ekim 2026): Gemini anahtarı yalnız kullanıcı ücretli f
   standart özet bütçesinden düşer. Haiku için parametre gönderilmiyor; canlı anahtarla çıktı tokeni ve
   çekimserlik oranı ölçülmeden değiştirilmedi.
 
+## Platform modu yapılandırması (15 Kasım 2026)
+
+- Platform YZ (günlük ücretsiz hak ve kredili çağrı) yalnız bir platform anahtarı (`OPENROUTER_API_KEY` veya
+  `ANTHROPIC_API_KEY`) ile pozitif `AI_DAILY_BUDGET_TRY` birlikte doluyken açılır (`src/config.ts`
+  `platformAiAvailable`). Önceden anahtar tek başına yetiyor, tavan boşsa 1.000 TL varsayılanıyla harcanıyordu.
+  Kapalıyken `/fiyatlar`, `/odeme`, `/hesap/yz-anahtari` ve `/ara` özet alanı günlük hak vaat etmez, BYOK'u gösterir;
+  `POST /api/v1/answers` platform kipini arama yapmadan 503 ile reddeder. Sayfalara sunucuda okunan tek bir boolean
+  geçer; ortam değeri tarayıcıya gitmez.
+- `AI_USD_TRY_RATE`: platform harcama sayacı ve maliyet olaylarında 1 USD'nin TL karşılığı; boşsa 50 (plan 4.4).
+  1 ile 1000 arası noktalı ondalık kabul edilir; virgüllü, üslü, sıfır veya sınır dışı değer yok sayılır, 50 kullanılır
+  ve log'a yalnız değişken adı yazılır (`invalid_env`). `createGateway` sınır dışı `usdTryRate`'i kurulumda reddeder.
+- Tavan uyarısı (plan 8.7/2): `BudgetGuard` uyarı kancası `PlatformCapAlert` alır. `crossed`: harcamayı tavanın
+  üstüne taşıyan çağrı; sayaç atomik arttığı için günde bir kez ve bütün örnekler arasında tek. `refused`: tavanda
+  reddedilen ilk platform çağrısı, süreç başına günde bir kez. `gecit.ts` ikisini de `@kazuist/log` `logEvent` ile
+  stderr'e tek JSON satırı olarak yazar (`event: "platform_tavan"`, gün, harcama ve tavan; kullanıcı, IP ve içerik yok). Personele bildirim işi
+  sözleşme değişikliği ister: `docs/istekler/yz-gecidi-platform-tavan-uyarisi.md`.
+
 ## Doğrulanamayanlar
 
 - Anthropic CORS başlığının güncel belgedeki yeri bu çalışmada yalnız ikincil kaynakla teyit edildi; gerçek duman testi anahtar dosyası olmadığı için çalışmadı.

@@ -1,5 +1,6 @@
 import type { ByokProvider, ModelLine } from '@kazuist/contracts';
 import { BudgetGuard, ProviderSwitch } from './budget.ts';
+import { DEFAULT_USD_TRY_RATE, isUsdTryRate } from './config.ts';
 import { geminiPolicy, type ContentSensitivity, type GeminiBilling } from './gemini.ts';
 import { parseJsonLines } from './jsonl.ts';
 import {
@@ -21,8 +22,6 @@ import {
   type ReasoningEffort,
   type StreamChunk,
 } from './types.ts';
-
-export const USD_TL = 50;
 
 export interface ByokRelay {
   provider: ByokProvider;
@@ -112,6 +111,11 @@ export interface GatewayDeps {
   onCost?: (e: CostEvent) => void;
   /** Operator alert when consume or release kept failing; the stream still ends normally. */
   onSettleFailure?: (f: SettlementFailure) => void;
+  /**
+   * TRY per USD for the platform spend counter and cost events; default DEFAULT_USD_TRY_RATE (plan 4.4). The caller
+   * reads it with usdTryRate (AI_USD_TRY_RATE); a value outside USD_TRY_RATE_BOUNDS is refused here.
+   */
+  usdTryRate?: number;
   now?: () => number;
 }
 
@@ -147,6 +151,8 @@ interface Call {
 export function createGateway(deps: GatewayDeps) {
   const now = deps.now ?? Date.now;
   const modelFor = deps.platformModelFor ?? platformModel;
+  const usdTry = deps.usdTryRate ?? DEFAULT_USD_TRY_RATE;
+  if (!isUsdTryRate(usdTry)) throw new RangeError('usdTryRate out of bounds');
 
   /**
    * Consume or release one reservation without ever throwing (review.md P8.5). A failure used to escape the
@@ -258,7 +264,7 @@ export function createGateway(deps: GatewayDeps) {
       // The provider is paid whatever the ledger does next, so the platform spend is counted first (plan 8.7/2).
       if (usd > 0) {
         try {
-          await deps.budget.recordSpendTl(usd * USD_TL);
+          await deps.budget.recordSpendTl(usd * usdTry);
         } catch {
           errorKind ??= 'budget_spend_failed';
         }
@@ -280,7 +286,7 @@ export function createGateway(deps: GatewayDeps) {
         inputTokens,
         outputTokens,
         costUsd: usd,
-        costTl: usd * USD_TL,
+        costTl: usd * usdTry,
         creditsCharged: charge,
         creditsDue: due,
         settlement,

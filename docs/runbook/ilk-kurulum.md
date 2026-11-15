@@ -171,7 +171,8 @@ yere kaydedilmez, Kulular parola yöneticisine yazılır.
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | hayır | Google Cloud Console | web |
 | `APPLE_CLIENT_ID`, `APPLE_CLIENT_SECRET`, `APPLE_APP_BUNDLE_IDENTIFIER` | hayır | Apple Developer | web |
 | `ACCOUNT_PURGE_GRACE_DAYS` | hayır | boş = 14 | web |
-| `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, `AI_DAILY_BUDGET_TRY` | hayır | platform YZ modu (ADR-0025); boşken yalnız BYOK | web (Anthropic worker-py de) |
+| `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY`, `AI_DAILY_BUDGET_TRY` | hayır | platform YZ modu (ADR-0025) yalnız bir anahtar ve günlük TL tavanı birlikte doluyken açılır; biri boşsa yalnız BYOK (sayfalar BYOK'u gösterir, günlük ücretsiz hak vaat edilmez) | web (Anthropic worker-py de) |
+| `AI_USD_TRY_RATE` | hayır | boş = 50 (plan 4.4); 1 ile 1000 arası noktalı ondalık, ör. `49.37`; geçersiz değer uyarıyla yok sayılır | web |
 | `KAZUIST_ARAMA_AGIRLIK`, `KAZUIST_EMBED_URL`, `KAZUIST_EMBED_MODEL`, `KAZUIST_EMBED_DIM`, `KAZUIST_EMBED_ESIK` | hayır | casuist; sorgu gömme servisi gelince | web |
 | `YAZMA_YZ`, `PRATIK_ONIZLEME` | hayır | `PRATIK_ONIZLEME` yalnız kapalı provada, yayında boş | web |
 | `IYZICO_API_KEY`, `IYZICO_SECRET_KEY`, `IYZICO_MERCHANT_ID`, `IYZICO_BASE_URL` | hayır | yayında boş (ödemesiz kip); canlı anahtar yalnız Tarık onayıyla | web, worker-node |

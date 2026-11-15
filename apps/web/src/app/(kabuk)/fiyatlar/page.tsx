@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import { platformAiAvailable } from '@kazuist/ai-gateway/config';
 import { ortak } from '@kazuist/i18n';
 import byok from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
 import { Dugme, Tablo } from '@kazuist/ui';
 import { odemeAcik } from '@/server/billing/acik';
-import { islemler, paketler, planlar } from './fiyatlar.ts';
+import { gorunenPlanlar, islemler, paketler, promosyonVar, type Teklif } from './fiyatlar.ts';
 import styles from './fiyatlar.module.css';
 
 const t = ortak();
@@ -11,15 +12,28 @@ const f = t.fiyatlar;
 
 export const metadata: Metadata = { title: f.baslik, description: f.aciklama };
 
-/** Payments-off launch mode (K-09): read per request, so turning sales on needs no rebuild. */
+/**
+ * Payments-off launch mode (K-09) and BYOK-only launch: sales and platform AI are read per request on the server,
+ * so turning either on needs no rebuild and no setting reaches the browser. The page promises only what the server
+ * can run: the daily free allowance needs the platform AI (platformAiAvailable), promo credits need sales as well.
+ */
 export default function FiyatlarSayfasi() {
   const s = f.sutun;
-  const satisAcik = odemeAcik();
+  const teklif: Teklif = { platformYz: platformAiAvailable(), satisAcik: odemeAcik() };
+  const { platformYz, satisAcik } = teklif;
+  const planlar = gorunenPlanlar(teklif);
+  const giris = !platformYz ? byok.teklif.girisByok : satisAcik ? f.giris : byok.teklif.giris;
+  const kurallar = [
+    f.kural['1'],
+    ...(promosyonVar(teklif) ? [f.kural['2']] : []),
+    f.kural['3'],
+    f.kural['4'],
+  ];
   return (
     <div className="sayfa">
       <header className="sayfa-ust">
         <h1>{f.baslik}</h1>
-        <p className="sayfa-ust__giris">{f.giris}</p>
+        <p className="sayfa-ust__giris">{giris}</p>
       </header>
       <section className={styles.mobilePlans} aria-labelledby="kullanim-secenekleri">
         <h2 id="kullanim-secenekleri">{f.planlar}</h2>
@@ -71,7 +85,7 @@ export default function FiyatlarSayfasi() {
       {satisAcik ? null : (
         <section aria-labelledby="satis-kapali" className={styles.satisKapali} data-testid="satis-kapali">
           <h2 id="satis-kapali">{byok.satisKapali.baslik}</h2>
-          <p>{byok.satisKapali.metin}</p>
+          <p>{platformYz ? byok.satisKapali.metin : byok.satisKapali.metinByok}</p>
         </section>
       )}
       <Tablo
@@ -97,7 +111,7 @@ export default function FiyatlarSayfasi() {
       />
       <h2>{f.kurallarBaslik}</h2>
       <ul className="duz-liste">
-        {[f.kural['1'], f.kural['2'], f.kural['3'], f.kural['4']].map((k) => (
+        {kurallar.map((k) => (
           <li key={k}>{k}</li>
         ))}
       </ul>

@@ -1,3 +1,33 @@
+## 15 Kasım 2026, yz-gecidi: teklif metni sunucu yapılandırmasına bağlı, tavan uyarısı, USD/TL kuru (yz-gecidi/platform-yz-yapilandirma)
+
+Bağımsız denetim bulgusu: `OPENROUTER_API_KEY` boşken /fiyatlar ve `byok.json` `satisKapali.metin` günlük ücretsiz hak ve
+50 promosyon kredisi vaat ediyor, platform özeti 503 dönüyordu. Sözleşme, şema, migration ve bağımlılık değişmedi.
+- `packages/ai-gateway/src/config.ts` (yeni, `@kazuist/ai-gateway/config`): `platformAiAvailable(env)` bir platform
+  anahtarı ve pozitif `AI_DAILY_BUDGET_TRY` birlikteyse doğru; `usdTryRate(env)` `AI_USD_TRY_RATE`'i okur (boş 50,
+  1-1000 arası noktalı ondalık, geçersizse 50 ve `invalid` işareti). `gateway.ts` `USD_TL` sabiti kalktı,
+  `GatewayDeps.usdTryRate` (sınır dışı değer kurulumda `RangeError`).
+- `gecit.ts`: platform anahtarları yalnız `platformAiAvailable` doğruyken gateway'e verilir (önceden tavan boşsa
+  1.000 TL varsayılanıyla harcanıyordu), anahtar var tavan yoksa adı yazan tek uyarı; `SummaryDeps.platformAcik`;
+  `ozet.ts` platform kipini arama ve sayaçtan önce 503 ve `byok.ozet.platformKapali` ile reddeder.
+- Teklif: `/fiyatlar` (`fiyatlar.ts` `gorunenPlanlar`, `promosyonVar`) platform kapalıyken Ücretsiz satırında ve
+  girişte BYOK'u, ödeme kapalıyken promosyon cümlesini ve 90 gün kuralını göstermez; plan 4.2 tablosu (`planlar`)
+  aynı, test plan.md'yle eşleşir. `/ara` özet alanı (`OzetAlani` `platformYz` prop) anahtarsız ve platform kapalıyken
+  "Kendi anahtarınızı ekleyin" düğmesiyle /hesap/yz-anahtari'ya yönlendirir, platform çağrısı yapmaz; 402 ve 503'te
+  sunucunun mesajı ve BYOK bağlantısı. `/odeme` ve `/hesap/yz-anahtari` (`ByokAyarlari` `platformYz`) da günlük hak
+  vaat etmez. Tarayıcıya yalnız bir boolean gider; ortam değeri gitmez.
+- Tavan uyarısı (plan 8.7/2): `BudgetGuard` kancası `PlatformCapAlert`; `crossed` tavanı geçen harcamada günde bir ve
+  örnekler arasında tek (atomik sayaç), `refused` süreç başına günde bir. `gecit.ts` `platformCapAlert` stderr'e JSON
+  satırı (`event: platform_tavan`, gün, harcama, tavan) `@kazuist/log` `logEvent` ile yazar (ADR-0039, #117 ile
+  birleştirildi; yapılandırma uyarıları da `logEvent('warn', ...)`) ve `buildSummaryDeps({ onPlatformCap })` ikinci
+  alıcı alır. Personel bildirimi sözleşme değişikliği ister: `docs/istekler/yz-gecidi-platform-tavan-uyarisi.md`.
+- Belgeler: `.env.example`, `infra/docker-compose.prod.yml` (`AI_USD_TRY_RATE` geçişi), `docs/runbook/ilk-kurulum.md`,
+  `packages/ai-gateway/SAGLAYICILAR.md`.
+- Sahiplik dışı dokunulan yollar (orkestra görevi gereği): on-yuz `(kabuk)/fiyatlar/**`, casuist `ara/**`, odeme
+  `(odeme)/odeme/page.tsx`, kimlik `(hesap)/**` iki dosya, mimar `.env.example`, altyapi compose ve runbook satırı.
+- Açık: `content/hukuki/tr/kosullar.md` ve `aydinlatma.md` günlük ücretsiz hakkı hizmet tanımı olarak anar
+  (hukuk-uyum); `yazma/_sunucu/yz.ts` `yzAcikMi` yalnız anahtara bakıyor, tavan yoksa gateway 503 verir (yazma);
+  platform kapalı ve ödeme açık durumda kredi satılabilir ama harcanamaz (odeme kararı).
+
 ## 15 Kasım 2026, hukuk-uyum: hukuki metinler dar çekirdekli ilk yayına göre; Hetzner Standart Sözleşme 2 kontrol listesi
 
 ADR-0038 madde 8 (dar çekirdek), ADR-0030 (Hetzner, Almanya) ve yayındaki BYOK koduna göre. Sözleşme, şema ve kod
@@ -88,6 +118,7 @@ ve `packages/db` değişmedi; yeni bağımlılık yok.
   çıktısında adres yok.
 - Dokunulmayan: kimlik dışındaki modüllerin log satırları (ödeme, casuist, yazma vb.) bu sanitizer'ı kullanmıyor;
   `apps/worker-node` zaten yalnız hata sınıfını logluyor.
+
 ## 15 Kasım 2026, casuist: açık kaynak kurul adları dizin, embedding ve özet dışında (casuist/uye-adlari-dizin-disi)
 
 İstek `docs/istekler/anonimlestirme-onay-ve-acik-kaynak.md` madde 4 (#114 main'de, 52c6951 üstünde). Sözleşme,
