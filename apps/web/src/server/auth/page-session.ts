@@ -2,6 +2,7 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getAuthContext, type AuthContext } from './context.ts';
 import { resolvePrincipal, type Principal } from './guard.ts';
+import { logError } from './log.ts';
 
 /** Signed in caller of a server rendered account page. */
 export interface PageSession {
@@ -33,13 +34,7 @@ export async function pageSession(): Promise<PageSession | null> {
     const principal = await resolvePrincipal(new Request('http://kazuist.local/', { headers: h }), ctx);
     return principal ? { principal, ctx } : null;
   } catch (err) {
-    console.error(
-      JSON.stringify({
-        at: 'page-session',
-        level: 'error',
-        error: err instanceof Error ? err.name : 'Unknown',
-      }),
-    );
+    logError('page-session', err);
     return null;
   }
 }

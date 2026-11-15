@@ -1,3 +1,32 @@
+## 15 Kasım 2026, kimlik: anonimleştirme onayı anon.run kuyruğa alır, loglanan hatalar temizlenir (kimlik/anon-onay-ve-log-temizligi)
+
+Orkestra görevi: `docs/istekler/anonimlestirme-onay-ve-acik-kaynak.md` madde 3 (PR #114) ve Drizzle hata mesajlarının
+loglara girmemesi. PR #111 dalı (`kimlik/edu-claims-yeniden-goster`) bu dalın tabanına birleştirildi. `packages/contracts`
+ve `packages/db` değişmedi; yeni bağımlılık yok.
+- `apps/web/src/server/auth/admin.ts` `decideAnonymization`: `anonymization` kuyruğunda kalem tek işlemde kapanır
+  (`decision IS NULL` koşullu güncelleme); `onay` ve `subject_type = 'record'` ise aynı işlemde istek dosyasındaki SQL ile
+  `anon.run` eklenir (`payload = {recordId}`, `dedupe_key = anon:<recordId>`, kuyrukta veya çalışan iş eklemeyi yutar).
+  `ret` ve `duzelt` yalnız kararı yazar. İkinci karar `not_found` (404). Denetim satırı `admin.queue.<karar>`,
+  `diff = { queue, closed, recordId, jobQueued, patchPaths }`.
+- `apps/web/src/server/auth/log.ts` (yeni): `safeErrorFields(err)` hatanın yalnız sınıf adını ve `cause` zincirinden SQLSTATE,
+  `constraint`, `table`, `column` tanımlayıcılarını verir; `message`, `detail`, `hint`, `query`, `params` hiç okunmaz.
+  `logError(at, err, extra)` tek JSON satırı yazar. `betterAuthLog` Better Auth'un `logger.log`'u: yalnız warn ve error,
+  serbest metin mesaj ancak kısa ve sabit cümle görünümündeyse (rakam, tırnak, `@`, "query" yok) kalır, yoksa `redacted`.
+- Uygulandığı yerler: `auth.ts` (`logger: { log: betterAuthLog }`, `runHook`), `guard.ts` (`internalError`; `withAuth` ve
+  `withPublic` oturum çözümü, hız sınırı ve yönetici denetimini de `try` içine aldı, böylece çerçeveye ham hata gitmez),
+  `handlers.ts` (`authHandler` hataları `internalError`'a), `page-session.ts`.
+- Bulgu: Better Auth 1.7.11 yönlendiricisi yakalanmayan hatayı nesnesiyle, "column/relation/table" içeren hatanın
+  `message`'ını düz metin loglar; Drizzle mesajı sorgu parametrelerini (e-posta) taşır. Kontrol denemesinde `logger`
+  seçeneği kaldırılınca kayıt testi adresi logda buldu; seçenekle temiz.
+- Test `__tests__/admin-kvkk.test.ts` (anonimleştirme bloğu, 6 test): onaydan sonra `anon:<id>` anahtarlı tek `anon.run`,
+  ikinci onay 404, denetim satırı; kuyrukta bekleyen iş eklemeyi yutar; `done` iş yenisini engellemez; `ret`/`duzelt` iş
+  eklemez; kayıt dışı konu iş eklemez; personel olmayan 403. `__tests__/log-sanitizer.test.ts` (8 test): bütün `console`
+  kanalları yakalanırken PGlite tetikleyicileri e-postayı hem Postgres mesajına hem Drizzle parametresine koyar; Better
+  Auth kaydı, e-posta kodu girişi, edu.tr başlatma (500, `code: P0001`), kamuya açık kaldırma talebi ve `internalError`
+  çıktısında adres yok.
+- Dokunulmayan: kimlik dışındaki modüllerin log satırları (ödeme, casuist, yazma vb.) bu sanitizer'ı kullanmıyor;
+  `apps/worker-node` zaten yalnız hata sınıfını logluyor.
+
 ## 15 Kasım 2026, kimlik: edu_claims okuması, 23505 eşlemesi, ek maskeleme sonrası yeniden gösterme (kimlik/edu-claims-yeniden-goster)
 
 Orkestra görevi: `docs/istekler/mimar-yonlendirme-4-sozlesme-v1-6.md` kimlik maddeleri 1 ve 2, DEVIR'deki açık iş

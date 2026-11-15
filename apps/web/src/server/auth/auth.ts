@@ -10,6 +10,7 @@ import { eq } from 'drizzle-orm';
 import { writeAudit } from './audit.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';
+import { betterAuthLog, logError } from './log.ts';
 import type { Mailer } from './mailer.ts';
 
 export interface AuthConfig {
@@ -61,20 +62,13 @@ export interface AccountHooks {
 
 export const noAccountHooks: AccountHooks = { onSignup: async () => {}, onDeletion: async () => {} };
 
-/** Runs a hook without letting it fail the account flow; logs only the error class. */
+/** Runs a hook without letting it fail the account flow; logs only the sanitized error (log.ts). */
 export async function runHook(name: string, fn: () => Promise<void>): Promise<boolean> {
   try {
     await fn();
     return true;
   } catch (err) {
-    console.error(
-      JSON.stringify({
-        at: 'account-hook',
-        level: 'error',
-        hook: name,
-        error: err instanceof Error ? err.name : 'Unknown',
-      }),
-    );
+    logError('account-hook', err, { hook: name });
     return false;
   }
 }
@@ -103,6 +97,9 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: Ac
     baseURL: config.baseUrl,
     basePath: '/api/auth',
     secret: config.secret,
+    // Better Auth logs raw errors (Drizzle messages carry query parameters such as e-mail addresses); every line
+    // goes through the sanitizer instead (log.ts).
+    logger: { log: betterAuthLog },
     trustedOrigins: [
       config.baseUrl,
       ...config.trustedOrigins,
