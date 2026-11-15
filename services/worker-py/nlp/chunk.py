@@ -180,7 +180,9 @@ _COLON = re.compile(r"[ \t]*:")
 
 @dataclass(frozen=True)
 class Chunk:
-    """One chunks table row. text is masked_text sliced by [char_start, char_end) in UTF-16 units."""
+    """One chunks table row. chunk_text gives text = masked_text sliced by [char_start, char_end) in UTF-16
+    units; the embed job then writes open panel member names as "[Üye n]" (panel_names.index_chunks), the
+    offsets still indexing masked_text."""
 
     seq: int
     text: str
