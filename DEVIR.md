@@ -1,3 +1,29 @@
+## 15 Kasım 2026, on-yuz: dar çekirdekli yayın bayrağı, hata ve yükleme sayfaları, bağlantı denetimi (on-yuz/dar-cekirdek-yayin)
+
+Orkestra görevi (Tarık kararı): ilk yayın dar çekirdek; onaylı içeriği olmayan modül üretimde görünmez.
+`packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok.
+- Tek karar dosyası `apps/web/src/app/(kabuk)/_kabuk/yayin.ts`: `ertelenenModuller = pratik, kalemcik, atif-agi`.
+  Üretim derlemesinde (`NODE_ENV=production`, `KAZUIST_ENV` development ya da test değilse; güvenli tarafta kapanır)
+  bu modüller sekmelerden, alt bilgiden, ana sayfadan, Yazma'daki Kalemcik kartından, site haritasından ve
+  llms.txt'den çıkar; rotaları `layout.tsx` içindeki `notFound()` ile 404 döner. `KAZUIST_MODULLER=pratik,...` ya da
+  `hepsi` üretimde açar. `next dev`, testler ve `KAZUIST_ENV=development` ile başlatılan yerel üretim hepsini gösterir.
+- `app/error.tsx` ve `app/global-error.tsx` (ortak gövde `HataGovdesi.tsx`; yalnız digest, ileti ve yığın yok),
+  `not-found.tsx` başlığı; `loading.tsx` Kaydettiklerim ve Atıf ağı için; Yazma'da dergi listesi `Suspense` ile
+  (dergi profili 404'ü 200'e dönmesin diye `yazma/loading.tsx` konmadı). Metinler `ortak.json` `durum.*`.
+- Ana sayfa: yer tutucu künyeler yerine fikstür derleminden KVKK m.11, TBK m.49 ve m.72 (metin resmî metinden
+  kısaltıldı); `/` ve `/bakim` başlıkları `title.absolute` ile tek markalı.
+- Kırık bağlantı: `/hesap/cuzdan` (ödeme ve fesih bildirimleri) yerine `/hesap`; `apps/web/test/baglantilar.test.ts`
+  web, worker-node ve sözlüklerdeki sabit iç adresleri sayfa dosyasına karşı denetler. `/yonetim` yalnız robots
+  yasak listesinde, bağlantı yok.
+- Yazma: kredi yetersizliği ve bütçe tavanı (`GatewayError`/`ReservationError` `insufficient_credits`, `BudgetError`,
+  platform anahtarına OpenRouter 402) `kredi_yetersiz` ve `butce_tavani` kodlarıyla ayrı iletiye düşer; kural çıkarma
+  iş kaydında ve kısaltma `X-Yazma-Oneri` başlığında. Sonnet yedeği bu durumda denenmez.
+- Doğrulama: typecheck, lint, check:text, web 693 (1 atlandı), worker-node 118, i18n 23, ui 31, build yeşil;
+  üretim kipinde `/pratik`, `/kalemcik`, `/atif-agi` 404, geliştirme kipinde 200; 5 sayfa x 375/768/1440 axe 0,
+  taşma 0 (`docs/tasarim/ekran/dar-cekirdek/`).
+- İstekler: `docs/istekler/on-yuz-dar-cekirdek-yayin.md` (mimar ADR ve `.env.example`, altyapı web imajında
+  `KAZUIST_ENV=production`).
+
 ## 15 Kasım 2026, anonimlestirme: üretimde NER zorunlu, Türkçe ek ayırıcı, worker-py model birimleri (anonimlestirme/ner-zorunlu-ek-ayirici)
 
 Orkestra görevi: main'de doğrulanan açık. `KAZUIST_NER_BACKEND` boşken `backend_from_env()` NullBackend döndürüyor,

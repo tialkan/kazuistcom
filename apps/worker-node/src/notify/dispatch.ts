@@ -66,8 +66,9 @@ const paths: Record<NotificationType, string> = {
   tam_metin_istegi: '/hesap',
   tam_metin_cevabi: '/hesap',
   takip: '/hesap',
-  odeme: '/hesap/cuzdan',
-  fesih_teyidi: '/hesap/cuzdan',
+  // There is no wallet page; billing notices land on the account hub (link check 2026-11-15).
+  odeme: '/hesap',
+  fesih_teyidi: '/hesap',
   mevzuat_degisikligi: '/hesap',
   kampanya: '/',
 };

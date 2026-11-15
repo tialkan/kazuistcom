@@ -87,7 +87,10 @@ export function KisaltmaAraci() {
         ),
       );
       setMesaj(liste.length ? doldur(t.sonuc, { adet: liste.length }) : t.bosSonuc);
-      if (yapayZeka && r.headers.get('x-yazma-oneri') === 'kapali') setHata(t.oneriYok);
+      const oneri = yapayZeka ? r.headers.get('x-yazma-oneri') : null;
+      if (oneri === 'kredi_yetersiz') setHata(t.oneriKredi);
+      else if (oneri === 'butce_tavani') setHata(t.oneriTavan);
+      else if (oneri === 'kapali') setHata(t.oneriYok);
     } catch (e) {
       setMesaj('');
       setHata(

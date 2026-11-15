@@ -686,6 +686,25 @@ describe('table of abbreviations endpoint (FR-91)', () => {
     expect(kapali.status).toBe(200);
     expect(kapali.headers.get('x-yazma-oneri')).toBe('kapali');
   });
+  it('names a credit or cap refusal in the header and still returns the table', async () => {
+    const reddeden = (e: Error) => ({ kisaltmaModeli: () => ({ oner: async () => Promise.reject(e) }) });
+    const kredi = await gonder(
+      a,
+      { text: METIN, useAi: true },
+      reddeden(Object.assign(new Error('x'), { name: 'GatewayError', code: 'insufficient_credits' })),
+    );
+    expect(kredi.status).toBe(200);
+    expect(kredi.headers.get('x-yazma-oneri')).toBe('kredi_yetersiz');
+    expect(((await gov(kredi)) as unknown[]).length).toBe(4);
+    const tavan = await gonder(
+      a,
+      { text: METIN, useAi: true },
+      reddeden(Object.assign(new Error('x'), { name: 'BudgetError', reason: 'kullanici_gunluk_tavan' })),
+    );
+    expect(tavan.headers.get('x-yazma-oneri')).toBe('butce_tavani');
+    const baska = await gonder(a, { text: METIN, useAi: true }, reddeden(new Error('500')));
+    expect(baska.headers.get('x-yazma-oneri')).toBe('kapali');
+  });
 });
 
 describe('DOCX check endpoint', () => {

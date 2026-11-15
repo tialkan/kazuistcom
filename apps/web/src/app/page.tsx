@@ -2,11 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ortak } from '@kazuist/i18n';
 import { Dugme, FormAlani, KaynakCipi, SerhliMetin, SerhSatiri } from '@kazuist/ui';
+import { modulGorunur } from './(kabuk)/_kabuk/yayin.ts';
 
 const t = ortak();
 const a = t.anasayfa;
 
-export const metadata: Metadata = { title: a.baslik, description: a.aciklama };
+// The home title already carries the brand, so it skips the "%s | Kazuist" template of the root layout.
+export const metadata: Metadata = { title: { absolute: a.baslik }, description: a.aciklama };
 
 const ornekler = [a.ornekler['1'], a.ornekler['2'], a.ornekler['3'], a.ornekler['4']];
 
@@ -57,7 +59,7 @@ export default function Home() {
               serh={
                 <KaynakCipi
                   no={1}
-                  kunye="Kanun m.0/0"
+                  kunye={a.serhKunye['1']}
                   otorite="baglayici"
                   otoriteMetni={a.otoriteBaglayici}
                 />
@@ -71,13 +73,13 @@ export default function Home() {
                 <>
                   <KaynakCipi
                     no={2}
-                    kunye="E.0000/00 K.0000/00"
-                    otorite="yuksek-emsal"
-                    otoriteMetni={a.otoriteYuksek}
+                    kunye={a.serhKunye['2']}
+                    otorite="baglayici"
+                    otoriteMetni={a.otoriteBaglayici}
                   />
                   <KaynakCipi
                     no={3}
-                    kunye="Kanun m.0"
+                    kunye={a.serhKunye['3']}
                     otorite="baglayici"
                     otoriteMetni={a.otoriteBaglayici}
                   />
@@ -95,19 +97,22 @@ export default function Home() {
         <dl>
           {(
             [
-              ['/ara', t.gezinme.sekme.ara, a.modul.ara],
-              ['/yazma', t.gezinme.sekme.yazma, a.modul.yazma],
-              ['/pratik', t.gezinme.sekme.pratik, a.modul.pratik],
-              ['/rehberler', t.gezinme.sekme.rehberler, a.modul.rehberler],
+              ['/ara', t.gezinme.sekme.ara, a.modul.ara, true],
+              ['/yazma', t.gezinme.sekme.yazma, a.modul.yazma, true],
+              // Narrowed launch: Pratik is listed only where yayin.ts shows it (no approved card in production yet).
+              ['/pratik', t.gezinme.sekme.pratik, a.modul.pratik, modulGorunur('pratik')],
+              ['/rehberler', t.gezinme.sekme.rehberler, a.modul.rehberler, true],
             ] as const
-          ).map(([href, ad, metin]) => (
-            <div key={href}>
-              <dt>
-                <Link href={href}>{ad}</Link>
-              </dt>
-              <dd>{metin}</dd>
-            </div>
-          ))}
+          )
+            .filter(([, , , gorunur]) => gorunur)
+            .map(([href, ad, metin]) => (
+              <div key={href}>
+                <dt>
+                  <Link href={href}>{ad}</Link>
+                </dt>
+                <dd>{metin}</dd>
+              </div>
+            ))}
         </dl>
       </section>
 

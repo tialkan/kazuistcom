@@ -8,11 +8,8 @@ Kazuist hukuki soruyu yanıtlamaz; dayanağı denetlenebilir kılar. Hukuki dan�
 
 - [Ana sayfa](https://kazuist.com/): tek arama kutusu ve örnek sorular.
 - [Ara](https://kazuist.com/ara): mevzuat, mahkeme kararları, bağımsız kurum kararları ve hukuk makaleleri için tek arama; kaynaklı özet.
-- [Atıf ağı](https://kazuist.com/atif-agi): kararların ve eserlerin birbirine atıflarını gösteren ağ ve eşdeğer tablo görünümü.
 - [Rehberler](https://kazuist.com/rehberler): makale yazımı, tez yazımı, Zotero ve EndNote kullanımı, kontrol listesi ve etik kutusu.
 - [Yazma](https://kazuist.com/yazma): tez ve makale şablonu, kılavuz denetimi, dergi profilleri.
-- [Kalemcik](https://kazuist.com/kalemcik): yazma koçu.
-- [Pratik](https://kazuist.com/pratik): aralıklı tekrarla çalışma ve HMGS hazırlığı.
 - [Tespit](https://kazuist.com/tespit): yazım kuralları istemi ve tarayıcı içinde çalışan iz denetleyici.
 - [Fiyatlar](https://kazuist.com/fiyatlar): özellikler ücretsizdir; yapay zekâ işlemleri günlük ücretsiz hak, kendi anahtarınız veya isteğe bağlı platform kredisiyle çalışır.
 

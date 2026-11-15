@@ -40,7 +40,8 @@ function fill(key: Key, vars: Record<string, string | null>): BillingMessage | n
     if (!v) missing = true;
     return v ?? '';
   });
-  return missing ? null : { title: t.baslik, body, path: '/hesap/cuzdan' };
+  // There is no wallet page: billing notices open the account hub.
+  return missing ? null : { title: t.baslik, body, path: '/hesap' };
 }
 
 /** Message for a billing refId, or null when the refId is not a billing notice or lacks a value. */

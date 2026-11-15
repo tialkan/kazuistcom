@@ -4,6 +4,7 @@ import {
   kuralCikar,
   KuralCikarmaHatasi,
   type KuralModeli,
+  type KuralCikarmaHataKodu,
   type KuralCikarmaSonucu,
 } from '../_cekirdek/kural-cikarma.ts';
 import { kuralAnahtarlari, type KuralKaydi, type SablonTuru } from '../_cekirdek/kural-semasi.ts';
@@ -34,7 +35,7 @@ export interface IsSonucu {
   institutionName: string | null;
 }
 
-export type HataKodu = YuklemeHatasiKodu | 'sema' | 'model' | 'bos_metin' | 'yz_yok';
+export type HataKodu = YuklemeHatasiKodu | KuralCikarmaHataKodu | 'yz_yok';
 
 /** Creates the job row in the running state; the web process finishes it. Returns the id. */
 export async function isOlustur(
