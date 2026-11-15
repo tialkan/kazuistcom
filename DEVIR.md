@@ -1,3 +1,51 @@
+## 15 Kasım 2026, yz-gecidi: platform TL tavanı her platform çağrısında, kullanıcıya bağlı BYOK doğrulaması, yazma geçitten (yz-gecidi/butce-byok-baglama)
+
+Orkestra görevi: PR #95 sonrası main'de kalan dört madde. `packages/contracts` ve `packages/db` değişmedi; yeni
+bağımlılık yok. Sözleşme isteği: `docs/istekler/yz-gecidi-soru-denetim-karakteri.md`. Orkestra açıkça istediği
+için sahiplik dışı yollar da değişti: `apps/web/src/app/ara/_sunucu/{ozet,gecit}.ts` ve testleri, `packages/casuist`
+(`backend.ts`, `sql.ts`, `memory.ts`, `answer/passages.ts`, `test/answer.test.ts`), `apps/web/src/app/yazma/**`,
+`eval/rules/olc.ts` (yalnız yeni imza).
+- Bütçe (`budget.ts`): platform TL tavanı artık her platform çağrısını durdurur: ücretsiz hak
+  (`platform_tavan_ucretsiz_durdu`) ve kredili çağrı, promosyon kredisi dahil (`platform_tavan_kredili_durdu`).
+  BYOK yalnız eşzamanlı akış yuvası tutar. `AdmitInput.platform` zorunlu. Yeni IP kredi tavanı
+  (`ipDailyCredits`, varsayılan 3.000) çok hesapla promosyon kredisi harcamayı sınırlar. Bütün sınırlar önce
+  denetlenir, sonra sayılır: reddedilen çağrı sayaç bırakmaz; `rollback` IP kredi sayacını da geri alır.
+  Plan 8.7/2 "kredili işlem sürer" diyor; bu PR orkestra talimatıyla bundan ayrılıyor, plan metni orkestranın.
+- BYOK prepare ve verify (`protocol.ts`, `ozet.ts`): imzalı paket kullanıcıya (`subject`, kullanıcı kimliğinin
+  anahtarlı özeti; Valkey ham kimliği tutmaz), rotaya ve (K-kimliği, kayıt, parça, pasaj SHA-256) listesine
+  bağlı (kanonik biçim `kazuist-byok-v2`). verify pasajları istemden ayrıştırmaz: `loadPromptPassages` kayıt ve
+  parçayı arama deposundan (yalnız yayımlanabilir kayıt, anlık parça kimlikleri dahil) yükler, prepare ile aynı
+  `promptPassage` üreticisiyle kurar, aynı maskelemeyle (pasajlar önce, `scrubSourced`) maskeler, özetleri
+  karşılaştırır; uymazsa 409, başka kullanıcı 403, eski biçim 400, yeniden kullanım 410.
+- Maskeleme: `scrubSourced` soru ve pasajları tek etiket uzayında, pasajlar önce maskeler; pasaj maskesi soruya
+  bağlı değildir (verify soruyu saklamadan yeniden kurar). Geçidin `run()` da aynı sırayı kullanır. Denetim
+  karakterleri maskelemeden önce silinir; web ucu (`POST /v1/answers`, `/prepare`) C0 (sekme ve satır sonu
+  hariç) ve DEL içeren soruyu 400 ile reddeder.
+- Akış iptali: istemci akışı bıraktığında geçit çalışması kapanmıyordu; kullanıcının akış yuvası sızıyor, iki
+  iptalden sonra kullanıcı yeniden başlatmaya kadar 429 alıyordu. `ozet.ts` `closeRun` hem satır döngüsünün
+  sonunda hem akış kapanınca çalışır; test düzeltme olmadan kırılıyor (elle denendi).
+- Yazma: `kural-cikarma.ts` kılavuz metnini `neutralize()` ile istemine koyar (`@kazuist/ai-gateway/prompt`, Node
+  tip ayıklamasıyla yüklenebilir; eval/rules oracle kipi çalışır); `normallestir` `‹›` işaretlerini geri katlar.
+  `kisaltmaIstemi` de nötrler. `yz.ts` yalnız `gateway.complete` çağırır: kişi adı tanıyıcısı, kullanıcı, IP ve
+  TL bütçesi, kredi tutma (plan 4.4: kural çıkarma 30, kısaltma 2), şema geçerse tüketim, geçmezse çözme,
+  maliyet olayı. Uçlar porta kullanıcı ve IP verir (`YzKimlik`).
+- Geçit (`gateway.ts`): ortak çağrı çekirdeği (`open`/`finish`), yeni `complete()` (`modelTier`, `accept`,
+  `restoreLabels`), erken bırakmada sağlayıcı akışı kapanır. `kisaltma_oneri` rotası. `buildSummaryDeps`
+  `onCost`'u geçirir; `ValidatedChargeLedger` yalnız `ozet:` isteklerine dokunur.
+- Sonnet akıl yürütme: platform Sonnet 5.5 çağrısı OpenRouter'da `reasoning.effort: low`, Anthropic doğrudan
+  yedeğinde `output_config.effort: low` gönderir (models API ve Anthropic effort sayfası 15 Kasım'da okundu,
+  `SAGLAYICILAR.md`). Haiku'ya parametre gönderilmiyor.
+- Doğrulama (main 7cbe91b üzerine yeniden temellendikten sonra): `pnpm typecheck`, `pnpm lint`,
+  `pnpm check:text`, `pnpm test` (ai-gateway 126, casuist 108, web 719 ve 1 atlanan, ledger 174, worker-node
+  118), enjeksiyon seti 60/60, `pnpm build`. Yerel üretim sunucusu (PostgreSQL 18, Redis, fikstür derlemi):
+  `byok.spec.ts` 9/9; elle akış prepare 200 (11 kaynak), aynı kullanıcı verify 200 ve satır kabul, yeniden
+  kullanım 410, başka kullanıcı 403, denetim karakterli soru 400.
+  Canlı sağlayıcı duman testi çalışmadı: OpenRouter ve Anthropic anahtar dosyası yok.
+- Açık: Haiku 5.5 varsayılan düşünme (`medium`) 400 tokenlik standart özette canlı ölçülmeli; yazmada kredi
+  yetersiz ya da bütçe dolu durumu `model` koduyla düşüyor (ayrı kod ve metin yazma ajanının); plan 8.7/2
+  metni; sözleşmede soru denetim karakteri kuralı (istek yazıldı); eval/rules canlı kipi Node tip ayıklamasıyla
+  geçit dizinini yükleyemiyor (önceden de böyleydi).
+
 ## 14 Kasım 2026, casuist: embedding modeli ölçümü ve önerisi (casuist/embed-model-secimi)
 
 Vektör kolunun kapalı olma nedeni (model seçilmemişti) için plan 5.3'ün üç adayı ölçüldü ve ADR-0037 (Önerildi,

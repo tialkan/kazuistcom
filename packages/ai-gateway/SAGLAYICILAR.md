@@ -44,11 +44,34 @@ docs/kararlar.md (22 Ekim 2026): Gemini anahtarı yalnız kullanıcı ücretli f
   gönderilir), `google/gemini-3.8-flash` (zorunlu, en düşük `effort: low` gönderilir). Listedeki `:free` sonlu
   modeller için arayüz ücretsiz model uyarısı gösterir.
 - Dikkat: `anthropic/claude-sonnet-5.5` için `reasoning.mandatory: true`, varsayılan `high`. Platformdaki derin
-  özet (1.200 çıktı tokeni) bu yüzden çıktı bütçesinin çoğunu akıl yürütmeye harcayabilir; derin özet yalnız
-  krediyle açıldığı ve ödeme kapalı yayında kullanılmadığı için bu PR'da değiştirilmedi.
+  özet (1.200 çıktı tokeni) bu yüzden çıktı bütçesinin çoğunu akıl yürütmeye harcayabilir. Aşağıdaki
+  "Akıl yürütme düzeyi" bölümüyle kapandı.
+
+## Akıl yürütme düzeyi (15 Kasım 2026, ikinci denetim)
+
+- `https://openrouter.ai/api/v1/models` (anahtarsız, 15 Kasım 2026): `anthropic/claude-sonnet-5.5`
+  `reasoning.mandatory: true`, `supported_efforts` `max, xhigh, high, medium, low`, `default_effort: high`.
+  `anthropic/claude-haiku-5.5` `mandatory: false`, `supported_efforts` `none` dahil, `default_effort: medium`.
+- Anthropic Messages API (https://platform.claude.com/docs/en/build-with-claude/effort): düzey
+  `output_config.effort` ile gönderilir, beta başlığı yok; değerler `max`, `xhigh`, `high`, `medium`, `low`.
+  Sonnet 5.5 varsayılanı `high`, Haiku 5.5 varsayılanı `medium`; düşünme tokenleri `max_tokens`'tan düşer.
+  Belgede `none` ve `minimal` yok.
+- API sürümü (https://platform.claude.com/docs/en/api/versioning): en yeni sürüm `2026-10-21`; `2023-06-01`
+  desteklenmeye devam ediyor ve yeni isteğe bağlı girdiler eski sürümde de kabul ediliyor. Bağdaştırıcı
+  `temperature`, `top_p`, `top_k` göndermediği için yeni sürümün kaldırdığı alanlardan etkilenmez; başlık
+  `2023-06-01` kaldı.
+- Uygulama: platformda Sonnet 5.5 çağrısı (derin özet ve kural çıkarmanın Sonnet yedeği) `low` ister.
+  OpenRouter'a `reasoning: { effort: "low" }`, Anthropic doğrudan yedeğine `output_config: { effort: "low" }`
+  gider (`routing.ts` `PLATFORM_REASONING_EFFORT`). BYOK çağrılarına platform düzeyi eklenmez.
+- Açık: Haiku 5.5 Anthropic belgesine göre varsayılan olarak düşünür (`medium`) ve bu tokenler 400 tokenlik
+  standart özet bütçesinden düşer. Haiku için parametre gönderilmiyor; canlı anahtarla çıktı tokeni ve
+  çekimserlik oranı ölçülmeden değiştirilmedi.
 
 ## Doğrulanamayanlar
 
 - Anthropic CORS başlığının güncel belgedeki yeri bu çalışmada yalnız ikincil kaynakla teyit edildi; gerçek duman testi anahtar dosyası olmadığı için çalışmadı.
 - OpenAI tarayıcı CORS davranışı resmî belgede açıkça yazılı değil; tarayıcıdan ilk kurulumda denenmeli, başarısızsa `browserCallSupport.openai` false yapılır.
+- 15 Kasım 2026 (ikinci denetim): `output_config.effort` ve `reasoning.effort: low` canlıda denenmedi; anahtar
+  dosyası (`~/Desktop/kazuist-openrouter.txt`, `kazuist-anthropic.txt`) yok, `pnpm --filter
+  @kazuist/ai-gateway test:smoke` iki testi atladı.
 - 15 Kasım 2026: OpenRouter'a gerçek anahtarla canlı BYOK çağrısı yapılmadı (`~/Desktop/` altında OpenRouter anahtar dosyası yok). `reasoning.effort` değerlerinin GPT-5.6 Luna ve Gemini 3.8 Flash'ta beklenen bütçeyi bıraktığı canlıda denenmeli.

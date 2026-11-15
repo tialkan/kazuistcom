@@ -7,15 +7,18 @@ export type Operation =
   | 'ozet'
   | 'derin_ozet'
   | 'kural_cikarma'
+  | 'kisaltma_oneri'
   | 'kampus_ozet'
   | 'atif_cikarma'
   | 'kart_editor'
   | 'kart_akademisyen';
 
 /**
- * OpenRouter reasoning effort (https://openrouter.ai/docs/guides/best-practices/reasoning-tokens, checked
- * 2026-11-15): reasoning tokens count against max_tokens, so a reasoning model can spend the whole output
- * budget before the first JSON line. Only sent for models whose supported efforts are known.
+ * Reasoning effort (checked 2026-11-15). OpenRouter `reasoning.effort`
+ * (https://openrouter.ai/docs/guides/best-practices/reasoning-tokens) and Anthropic `output_config.effort`
+ * (https://platform.claude.com/docs/en/build-with-claude/effort): thinking tokens count against the output
+ * limit, so a reasoning model can spend the whole budget before the first JSON line. Only sent for models
+ * whose supported efforts are known; Anthropic has no `none` or `minimal`, so only `low` reaches it.
  */
 export type ReasoningEffort = 'none' | 'minimal' | 'low';
 
@@ -27,7 +30,7 @@ export interface CompletionRequest {
   /** Already scrubbed user prompt. */
   prompt: string;
   maxOutputTokens: number;
-  /** OpenRouter only; ignored by the other adapters. */
+  /** OpenRouter (`reasoning.effort`) and Anthropic (`output_config.effort`, `low` only); others ignore it. */
   reasoningEffort?: ReasoningEffort;
 }
 
