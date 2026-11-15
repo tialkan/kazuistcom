@@ -26,7 +26,10 @@ export interface PromptPassage extends ValidatorPassage {
   body: string;
   /** Decision section of the passage (chunks.section), also written into the künye line for the model. */
   section: ChunkSection | null;
-  /** Offsets of the passage body in the full record text, for "Dayanağı göster" (FR-82). */
+  /**
+   * Offsets of the passage body in the full record text (masked_text), for "Dayanağı göster" (FR-82). A chunk
+   * whose text writes open panel names as "[Üye n]" keeps the offsets of the original span.
+   */
   charStart: number;
   charEnd: number;
   sourceUrl: string;
@@ -128,7 +131,7 @@ export function promptPassage(id: string, r: CorpusRecord, c: Chunk, maxPassageC
     body,
     section,
     charStart: c.charStart,
-    charEnd: c.charStart + body.length,
+    charEnd: body === c.text ? c.charEnd : c.charStart + body.length,
     sourceUrl: r.sourceUrl,
   };
 }

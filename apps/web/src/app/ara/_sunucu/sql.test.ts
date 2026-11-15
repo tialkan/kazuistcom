@@ -6,9 +6,10 @@ import { migrationsFolder } from '@kazuist/db';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
 import { readFileSync } from 'node:fs';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   andTsQueryText,
+  chunkText,
   loadPromptPassages,
   OR_FALLBACK_BELOW,
   parseQuery,
@@ -233,6 +234,112 @@ describe('sqlBackend over PostgreSQL (turkish tsvector, chunks, citation count)'
       `UPDATE records SET authority_class = 'karsilastirmali', jurisdiction = 'AB' WHERE id = $1`,
       [gdpr.id],
     );
+  });
+});
+
+/**
+ * Open panel member names (plan Ek E, FR-21, FR-80): an AYM decision keeps the members it lists readable in
+ * masked_text for the record page, while chunks, chunks.tsv and the prompt passages carry "[Üye n]"
+ * (services/worker-py/nlp/panel_names.py writes the chunk rows; the Python suite runs the real AYM decisions).
+ * Synthetic names in the AYM layout. The records are removed again so the eval/rag set below is unchanged.
+ */
+describe('open panel member names over PostgreSQL (plan Ek E)', () => {
+  const ID = '00000000-0000-4000-8000-00000000a7a2';
+  const CLOSED = '00000000-0000-4000-8000-00000000a7a3';
+  const MEMBERS = ['Ayla ÖRNEKSOY', 'Cem DENEMEOĞLU', 'Ece SINAMALI'];
+  const BODY = [
+    'I. BAŞVURUNUN KONUSU',
+    '1. Başvuru, kamulaştırmasız el atma nedeniyle açılan tazminat davasının makul sürede sonuçlandırılmaması nedeniyle adil yargılanma hakkının ihlal edildiği iddiasına ilişkindir.',
+    'II. DEĞERLENDİRME',
+    '2. Kamulaştırmasız el atma tazminat davasında yargılama süresi, davanın karmaşıklığı ve başvurucunun tutumu dikkate alındığında makul değildir.',
+    'III. HÜKÜM',
+    'Makul sürede yargılanma hakkının ihlal edildiğine OYBİRLİĞİYLE karar verildi.',
+  ];
+  const panel = (m: string[]) => [`Başkan : ${m[0]}`, `Üyeler : ${m[1]}`, m[2]!];
+  const head = ['ANAYASA MAHKEMESİ', 'İKİNCİ BÖLÜM', 'KARAR'];
+  const OPEN = [
+    ...head,
+    ...panel(MEMBERS),
+    'Raportör : [Raportör]',
+    'Başvurucu : [Başvurucu]',
+    ...BODY,
+    `Başkan ${MEMBERS[0]} Üye ${MEMBERS[1]} Üye ${MEMBERS[2]}`,
+  ].join('\n');
+  const LABELS = MEMBERS.map((_, i) => `[Hâkim ${i + 1}]`);
+  const SHUT = [...head, ...panel(LABELS), 'Raportör : [Raportör]', ...BODY].join('\n');
+  const Q = 'kamulaştırmasız el atma makul süre';
+  const named = (s: string) => MEMBERS.some((n) => s.includes(n) || s.includes(n.split(' ')[1]!));
+  const count = async (sql: string, params: unknown[]) =>
+    (await db.query<{ n: number }>(sql, params)).rows[0]!.n;
+
+  beforeAll(async () => {
+    for (const [id, text, key] of [
+      [ID, OPEN, 'aym:bb:test-2099-1'],
+      [CLOSED, SHUT, 'test:kapali-2099-2'],
+    ] as const)
+      await db.query(
+        `INSERT INTO records (id, type, title, court, esas_no, decision_date, authority_class, license_basis,
+           anonymized, source_url, source_key, fetched_at, text, masked_text)
+         VALUES ($1, 'karar', $2, 'Anayasa Mahkemesi', $3, '2025-01-01', 'yuksek_emsal', 'test', true,
+           'https://example.org/aym', $3, now(), $4, $4)`,
+        [id, `Anayasa Mahkemesi, İkinci Bölüm, B. No: ${key.slice(-6)} (01.01.2025)`, key, text],
+      );
+  });
+  afterAll(async () => {
+    await db.query('DELETE FROM records WHERE id = ANY($1::uuid[])', [[ID, CLOSED]]);
+  });
+
+  it('cuts no passage on the fly from a text that shows panel names; the record page keeps them', async () => {
+    const backend = sqlBackend(db);
+    expect((await backend.records([ID]))[0]!.text).toBe(OPEN);
+    expect(await backend.passages(parseQuery(Q), [ID], 2)).toEqual([]);
+    expect(await backend.chunks([`${ID}:0`, `${ID}:1`])).toEqual([]);
+    // A closed source decision without chunk rows still gets them, rebuilt with the same sections (BYOK).
+    const fly = await backend.passages(parseQuery(Q), [CLOSED], 3);
+    expect(fly.length).toBeGreaterThan(1);
+    expect(chunkText(CLOSED, SHUT).map((c) => c.text)).not.toEqual(
+      chunkText(CLOSED, SHUT, { sections: true }).map((c) => c.text),
+    );
+    const rebuilt = await backend.chunks(fly.map((c) => c.id));
+    expect([...rebuilt].sort((a, b) => a.seq - b.seq)).toEqual([...fly].sort((a, b) => a.seq - b.seq));
+  });
+
+  it('serves the chunk rows the worker writes: no member name in chunks.tsv, results or prompt passages', async () => {
+    // embed.chunks: masked_text boundaries and offsets, "[Üye n]" in the text.
+    for (const c of chunkText(ID, OPEN, { sections: true }))
+      await db.query(
+        `INSERT INTO chunks (record_id, seq, section, text, char_start, char_end) VALUES ($1, $2, $3, $4, $5, $6)`,
+        [
+          ID,
+          c.seq,
+          c.section,
+          MEMBERS.reduce((t, n, i) => t.replaceAll(n, `[Üye ${i + 1}]`), c.text),
+          c.charStart,
+          c.charEnd,
+        ],
+      );
+    const backend = sqlBackend(db);
+    for (const n of MEMBERS) {
+      const surname = n.split(' ')[1]!;
+      const inRecord = `SELECT count(*)::int AS n FROM records
+        WHERE id = $1 AND to_tsvector('turkish', masked_text) @@ plainto_tsquery('turkish', $2)`;
+      const inChunks = `SELECT count(*)::int AS n FROM chunks
+        WHERE record_id = $1 AND tsv @@ plainto_tsquery('turkish', $2)`;
+      expect(await count(inRecord, [ID, surname])).toBe(1);
+      expect(await count(inChunks, [ID, surname])).toBe(0);
+      expect((await backend.fullText(parseQuery(n), {}, 100)).map((h) => h.id)).not.toContain(ID);
+    }
+    const res = await search({ q: Q }, { backend, now: NOW });
+    const item = res.items.find((i) => i.record.id === ID);
+    expect(item?.chunk && !named(item.chunk.text)).toBe(true);
+    const own = (await selectPassages(res.items, res.query, backend, STANDARD_SELECTION)).filter(
+      (p) => p.recordId === ID,
+    );
+    expect(own.length).toBeGreaterThan(0);
+    expect(own.filter((p) => named(p.text))).toEqual([]);
+    const rows = (await backend.chunks(own.map((p) => p.chunkId))).sort((a, b) => a.seq - b.seq);
+    expect(rows.every((c) => OPEN.slice(c.charStart, c.charEnd).length >= c.text.length)).toBe(true);
+    expect((await backend.records([ID]))[0]!.text).toBe(OPEN);
   });
 });
 

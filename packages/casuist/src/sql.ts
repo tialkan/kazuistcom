@@ -3,6 +3,7 @@ import type { SearchBackend } from './backend.ts';
 import { chunkText, sectionsFor } from './chunk.ts';
 import { decisionKey } from './decisions.ts';
 import { words } from './normalize.ts';
+import { showsPanelNames } from './panel.ts';
 import type { ParsedQuery } from './query.ts';
 import type { Chunk, CorpusRecord, Hit, SearchFilters } from './types.ts';
 
@@ -88,6 +89,14 @@ interface ChunkRow {
   char_end: number;
   score?: number | string;
 }
+
+/**
+ * Passages of a record without chunk rows, cut the way embed.chunks cuts them (sections for decisions), so the
+ * `<recordId>:<seq>` ids of `passages` and `chunks` name the same text. A text that may show open panel member
+ * names gets none: only the worker's index text may carry it (panel.ts, plan Ek E).
+ */
+const onTheFly = (r: CorpusRecord): Chunk[] =>
+  showsPanelNames(r.text) ? [] : chunkText(r.id, r.text, { sections: sectionsFor(r.type) });
 
 const toChunk = (c: ChunkRow): Chunk => ({
   id: c.id,
@@ -341,8 +350,7 @@ export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBac
       // Records whose chunks are not written yet (embed.chunks pending) fall back to on the fly passages.
       const missing = ids.filter((id) => !out.some((c) => c.recordId === id));
       if (missing.length)
-        for (const r of await records(missing))
-          out.push(...chunkText(r.id, r.text, { sections: sectionsFor(r.type) }).slice(0, perRecord));
+        for (const r of await records(missing)) out.push(...onTheFly(r).slice(0, perRecord));
       return out;
     },
 
@@ -366,7 +374,7 @@ export function sqlBackend(db: SqlPool, opts: SqlBackendOptions = {}): SearchBac
       if (built.length) {
         const recs = await records([...new Set(built.map((b) => b.recordId))]);
         for (const r of recs) {
-          const all = chunkText(r.id, r.text);
+          const all = onTheFly(r);
           for (const b of built) if (b.recordId === r.id) out.push(...all.filter((c) => c.id === b.id));
         }
       }

@@ -2,8 +2,11 @@
 
 Payload {"recordId": "<uuid>"}, nothing else. Producers: the records trigger of migration 0004 (whenever
 masked_text gets a value) and anon.run. The handler reads records.masked_text only (plus records.type, so that
-decisions are cut along their sections), splits it with the same rule as packages/casuist (nlp/chunk.py), embeds
-the passages when a model is configured and replaces the record's chunks. Without a model the chunks are written without vectors: full text search works, the vector
+decisions are cut along their sections), splits it with the same rule as packages/casuist (nlp/chunk.py),
+takes the chunk text from anonymizer.public_names.index_text (nlp/panel_names.py: the panel member names an
+open source keeps readable on the record page become "[Üye n]" in chunks.text, chunks.tsv, the embeddings and
+the summary passages, plan Ek E and FR-21), embeds the passages when a model is configured and replaces the
+record's chunks. Without a model the chunks are written without vectors: full text search works, the vector
 leg reports itself degraded.
 
 jobs.result holds counts and the model id, never text. Logs carry class names only.
@@ -18,6 +21,7 @@ from core.jobs import ClaimedJob, JobType
 
 from .chunk import SECTIONED_TYPES, Chunk, chunk_text
 from .embedder import Log, PassageEmbedder, embedder_from_env, json_log, valid_vectors
+from .panel_names import index_chunks
 from .store import EmbedStore, SqlEmbedStore
 
 
@@ -76,7 +80,8 @@ def make_embed_chunks_handler(
                 "skipped": "not_servable",
             }
         masked, digest, record_type = loaded
-        chunks = chunk_text(masked, sections=record_type in SECTIONED_TYPES)
+        # Boundaries from masked_text, text from index_text: no open panel name reaches an index or a model.
+        chunks = index_chunks(masked, chunk_text(masked, sections=record_type in SECTIONED_TYPES))
         vectors, model = embed_chunks(embedder, chunks, log)
         if not store.replace(record_id, digest, chunks, vectors, model):
             return {
