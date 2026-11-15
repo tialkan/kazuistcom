@@ -15,6 +15,7 @@ export * from './scoring.ts';
 export * from './labels.ts';
 export * from './types.ts';
 export * from './chunk.ts';
+export * from './panel.ts';
 export * from './vector.ts';
 export * from './backend.ts';
 export * from './memory.ts';

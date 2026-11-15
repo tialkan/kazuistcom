@@ -3,6 +3,7 @@ import { chunkText, sectionsFor } from './chunk.ts';
 import { decisionKey } from './decisions.ts';
 import { normalize, terms } from './normalize.ts';
 import { normMatches } from './norms.ts';
+import { showsPanelNames } from './panel.ts';
 import type { ParsedQuery } from './query.ts';
 import type { Chunk, CorpusRecord, Hit, SearchFilters } from './types.ts';
 import { cosine, type Embedder } from './vector.ts';
@@ -59,6 +60,8 @@ export class MemoryBackend implements SearchBackend {
       const t = terms(r.title);
       this.titles.set(r.id, { tf: tf(t), len: t.length });
       for (const term of new Set(t)) this.titleDf.set(term, (this.titleDf.get(term) ?? 0) + 1);
+      // A text that may show open panel member names is not cut here (panel.ts); the fixture corpus has none.
+      if (showsPanelNames(r.text)) continue;
       for (const chunk of chunkText(r.id, r.text, { sections: sectionsFor(r.type) })) {
         const ct = terms(chunk.text);
         const doc = { chunk, tf: tf(ct), len: ct.length };

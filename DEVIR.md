@@ -1,3 +1,39 @@
+## 15 Kasım 2026, casuist: açık kaynak kurul adları dizin, embedding ve özet dışında (casuist/uye-adlari-dizin-disi)
+
+İstek `docs/istekler/anonimlestirme-onay-ve-acik-kaynak.md` madde 4 (#114 main'de, 52c6951 üstünde). Sözleşme,
+şema, migration ve bağımlılık değişmedi; `jobs.result` biçimi aynı.
+- `services/worker-py/nlp/panel_names.py` ve `nlp/job.py`: `embed.chunks` parça sınırlarını ve `char_start`,
+  `char_end`'i yine `masked_text`'ten keser, parça metnini `anonymizer.public_names.index_text` ile üretir: kurul
+  satırlarında açık kalan üye adları ve metindeki diğer anılmaları (tam ad, soyadı, kesme ekli) `[Üye n]`. Adlar bütün
+  metinde bir kez bulunur; karşı oy gibi kurul satırı olmayan parçada da aynı numara, parça sınırının böldüğü ad iki
+  yanda da etiket. Yerine koymalar `index_text` ile aynı anonimleştirici işlevlerinden hesaplanır ve bütün metne
+  uygulandığında `index_text(masked_text)` ile birebir aynı olmadığı an iş `IndexTextMismatch` ile düşer, hiçbir parça
+  yazılmaz (kapalı hata). Ofsetler UTF-16 biriminde (TS ile aynı). Açık adı olmayan metin aynen kalır.
+- Sonuç: `chunks.text`, `chunks.tsv`, embedding girdisi, arama sonucu parçası ve özet istemine giden pasajlar üye adı
+  taşımaz; `records.masked_text` ve kayıt sayfası değişmedi (Ek E adları kayıt sayfasında gösterir).
+- TypeScript tarafında `index_text` kopyası yok. `packages/casuist/src/panel.ts` `showsPanelNames`: kurul etiketiyle
+  başlayıp büyük harfli adla ya da hiçbir şeyle biten satır varsa doğru (anonimleştiricinin `find_panel_members`'ının
+  bulduğu her metni kapsar, fazlası yalnız anlık pasajı kaybeder). Böyle bir metinden `sql.ts` anlık pasajı
+  (`passages`, BYOK `chunks` yeniden kurulumu), fikstür `MemoryBackend` ve `seedCorpus` parça kesmez; parçaları worker
+  yazar. Desenler `packages/casuist/fixtures/kurul-satiri.json`'da; Python testi bunları gerçek kararlarda dener.
+- Yan düzeltmeler: `sql.ts` `chunks()` anlık pasajı bölümsüz kesiyordu, `passages()` bölümlü; karar kayıtlarında BYOK
+  verify başka metin kurup kapalı düşüyordu, ikisi aynı kurala bağlandı. `promptPassage` `charEnd`'i kırpılmamış
+  parçada satırın `char_end`'inden alır (`[Üye n]` metni kısaltır, ofset `masked_text`'te kalır).
+- Testler: `nlp/tests/test_panel_names.py` gerçek AYM bireysel başvuru (5 üye) ve norm denetimi (17 üye) kararı
+  anonimleştirilip `embed.chunks`'tan geçer: `masked_text`'te bütün üyeler okunur, parça metninde, embedding girdisinde
+  ve `jobs.result`'ta tam ad ve soyadı sayısı 0, etiketler `[Üye 1]`..`[Üye n]`; gerçek metne eklenen karşı oyda üye
+  aynı numarayı alır; kapalı kaynak AYM, Yargıtay ve Danıştay metinleri aynen parçalanır; sapma testi; TS deseni
+  açık metinleri yakalar, kapalıları yakalamaz. `KAZUIST_TEST_DATABASE_URL` ile gerçek PostgreSQL'de norm denetimi
+  kararı: `masked_text` tsvector'ü 17 soyadının hepsini bulur, `chunks.tsv` hiçbirini. PGlite (`sql.test.ts`): açık
+  kurullu metinden anlık pasaj yok, kayıt sayfası metni aynı, worker biçimli parçalarla tsv, sonuç parçası ve istem
+  pasajında ad yok, kapalı karar anlık pasajı bölümlü yeniden kurulur. Adlar testlerde yalnız sayılır.
+- Doğrulama: `uv run pytest` 567 geçti, 17 atlandı; yerel geçici PostgreSQL 18 (migration 0000-0008) ile 572 geçti,
+  12 atlandı. `pnpm test` (casuist 124, web 787/2 atlandı ve diğerleri), `pnpm typecheck`, `pnpm lint`,
+  `pnpm check:text`, `pnpm build` yeşil.
+- Açık: `eval/embed/olc.py` fikstür derlemini `index_chunks`'sız keser (fikstürde açık kurul adı yok, etki 0). AYM
+  kaynağı açılmadan önce bu dal main'de olmalı. İsteğe bağlı: anonimleştirici `public_names`'e
+  yerine koyma listesini döndüren bir işlev eklerse `panel_names.member_replacements` ona bağlanıp kopya kalkar.
+
 ## 15 Kasım 2026, anonimlestirme: açık kaynak eşleşmesi (AYM), kurul satırları, editör onayının uygulanması (anonimlestirme/acik-kaynak-onay)
 
 Yönlendirme `mimar-yonlendirme-4-sozlesme-v1-6.md` "anonimlestirme" maddesi ve orkestranın onay işi. Sözleşme, şema,

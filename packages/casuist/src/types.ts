@@ -48,6 +48,11 @@ export interface CorpusRecord {
   text: string;
 }
 
+/**
+ * A passage (chunks row). charStart and charEnd index records.masked_text in UTF-16 units; text is that slice,
+ * except that the panel member names an open source keeps readable in masked_text are written "[Üye n]"
+ * (services/worker-py/nlp/panel_names.py, plan Ek E), so search, embeddings and prompts never carry them.
+ */
 export interface Chunk {
   id: string;
   recordId: string;

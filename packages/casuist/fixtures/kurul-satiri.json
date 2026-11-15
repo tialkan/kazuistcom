@@ -1,0 +1,5 @@
+{
+  "aciklama": "packages/casuist/src/panel.ts PANEL_LINE ve LINE_BREAK desenleri. TypeScript testi desenlerin bu dosyayla aynı olduğunu, services/worker-py/nlp/tests/test_panel_names.py gerçek AYM, Yargıtay ve Danıştay kararlarında açık kurul adı gösteren her metni yakaladıklarını sınar.",
+  "line": "^[ \\t]*(?:Başkanvekilleri|Başkanvekili|Başkan|Üyeler|Üye|BAŞKANVEKİLLERİ|BAŞKANVEKİLİ|BAŞKAN|ÜYELER|ÜYE)[ \\t]*:?[ \\t]*(?:$|[A-ZÇĞİÖŞÜÂÎÛ])",
+  "lineBreak": "\\r\\n|[\\n\\r\\v\\f\\x1c-\\x1e\\x85\\u2028\\u2029]"
+}

@@ -1,11 +1,14 @@
 import { chunkText, sectionsFor } from './chunk.ts';
+import { showsPanelNames } from './panel.ts';
 import type { SqlClient } from './sql.ts';
 import type { CorpusRecord } from './types.ts';
 
 /**
  * Writes corpus records and their passages into an empty development or test database (records, chunks).
  * masked_text equals the fixture text, which is published anonymised at source; production records get
- * masked_text from anon.run only. Never run against production.
+ * masked_text from anon.run only. Never run against production. A text that may show open panel member names
+ * gets no chunk rows here (panel.ts): the records trigger queues embed.chunks, whose worker writes them from the
+ * index text.
  */
 export async function seedCorpus(db: SqlClient, records: readonly CorpusRecord[]): Promise<number> {
   let n = 0;
@@ -44,7 +47,8 @@ export async function seedCorpus(db: SqlClient, records: readonly CorpusRecord[]
         r.openalexCitedBy ?? null,
       ],
     );
-    for (const c of chunkText(r.id, r.text, { sections: sectionsFor(r.type) })) {
+    const chunks = showsPanelNames(r.text) ? [] : chunkText(r.id, r.text, { sections: sectionsFor(r.type) });
+    for (const c of chunks) {
       await db.query(
         `INSERT INTO chunks (record_id, seq, section, text, char_start, char_end)
          VALUES ($1, $2, $3, $4, $5, $6) ON CONFLICT (record_id, seq) DO NOTHING`,
