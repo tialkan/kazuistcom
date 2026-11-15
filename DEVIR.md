@@ -1,3 +1,27 @@
+## 15 Kasım 2026, veri-toplama: AYM, Yargıtay, Danıştay bağlayıcıları, keşif işleri ve zamanlayıcı (worktree-agent-ac159744b3b120907)
+
+Üç yeni kaynak (hepsi `tarik_onayi: bekliyor`, anahtar varsayılan kapalı), kuyruk tabanlı keşif ve zamanlayıcı. Sözleşme,
+şema ve bağımlılık değişmedi; yeni yük biçimleri için `docs/istekler/veri-toplama-ingest-payloadlari.md` (o gelene kadar
+yeni kaynak işlerini tüketici "invalid payload" diye gömer, zamanlayıcı onları `contract_pending` diye atlar).
+- `connectors/aym.py` (norm denetimi 5.620 ve bireysel başvuru 18.003; yalnız JSON ucu `POST /api/core/public/search`;
+  PDF/UDF indirmeleri sitenin CAPTCHA kapısında olduğu için hiç kullanılmaz; başvurucu adı `basvuruAdi` hiçbir kayda
+  kopyalanmaz), `connectors/yargitay.py` (BGK=İBK 40, HGK, CGK) ve `connectors/danistay.py` (İBK siteden 0 sonuç, İDDK,
+  VDDK), `connectors/judicial.py` (paragraf ve tablo satırı farkındalıklı HTML'den metin, tarih ve numara yardımcıları).
+- `core/fetcher.py`: POST (JSON gövde) desteği, POST yönlendirmede tekrarlanmaz; `core/challenge.py`: CAPTCHA ve bot
+  denetimi cevabı (`DisplayCaptcha`, `reCaptchaTimeout`, reCAPTCHA, hCaptcha, CDN sayfaları) kaynağı anında durdurur
+  (`ChallengeDetected`), elle `reset` gerekir; aşılmaz. Üstbilgi yalnız `KazuistBot/1.0`; taklit Origin, Referer yok.
+- `core/discovery.py`: liste işi bilinmeyen kararlar için belge işi ve sıradaki sayfa işini kuyruğa alır (kuyruk durumu
+  devam noktası); KVKK ve Rekabet için de liste işi. `core/runtime.py` yeni yükleri yönlendirir; `Repository.known_source_keys`.
+- `core/scheduler.py`: RG günlük (07:00 sonrası), KVKK, Rekabet, AYM, Yargıtay, Danıştay haftalık, EUR-Lex aylık, 01:00-06:00
+  penceresi, eski yıllar için günde bir birim-yıl doldurma; anahtar, onay, kesici ve pencereye uyar; `python -m core.scheduler
+  --dry-run`; `KAZUIST_SCHEDULER=on` işçide döngüyü başlatır (`core/main.py`), `KAZUIST_SCHEDULER_DRY_RUN=on` yalnız loglar.
+- `core/cli.py`: `python -m core.cli sources | probe <kaynak>` küçük canlı örnek ve hata oranı.
+- Mevzuat düzeltmesi: bağlayıcı sayfa kabuğunu çekiyordu (madde yok); metin `/anasayfa/MevzuatFihristDetayIframe` adresinden
+  çekilir. mevzuat.gov.tr ve resmigazete.gov.tr bu ağdan cevap vermiyor (TLS tamam, HTTP cevabı yok), ham baytla doğrulama açık.
+- Belgeler: `docs/kaynaklar/{aym,yargitay,danistay}.md` (robots, koşullar, kişisel veri, hız, protokol), mevzuat, resmi-gazete,
+  kvkk, rekabet ve README güncellendi. Kod alınmadı (yargi-mcp yalnız uç şekli için okundu), `NOTICE` değişmedi.
+- Doğrulama: `uv run pytest` 391 geçti, 15 atlandı (önce 328); `pnpm check:text` temiz. Gerçek canlı kontrol:
+  aym, yargitay, danistay, kvkk, rekabet hata oranı 0,0; resmi-gazete ve mevzuat robots.txt okunamadı.
 ## 15 Kasım 2026, yz-gecidi: kaynaklı özet talimatı doğrulayıcının yeni kurallarıyla (yz-gecidi/ozet-talimati-dogrulayici)
 
 Orkestra görevi: #101'in doğrulayıcı kurallarını modele söylemek, Ek D'yi #102 sonrası plan metniyle hizalı

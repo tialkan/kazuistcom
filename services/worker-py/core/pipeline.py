@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Protocol, Tuple
+from typing import Any, Dict, List, Optional, Protocol, Set, Tuple
 
 from .jobs import JobType
 from .records import RecordDraft, VersionDraft
@@ -23,6 +23,8 @@ class Repository(Protocol):
     def enqueue(self, job_type: JobType, payload: Dict[str, Any], dedupe_key: Optional[str]) -> None: ...
 
     def upsert_work(self, record_id: str, work: Dict[str, Any]) -> None: ...
+
+    def known_source_keys(self, keys: List[str]) -> Set[str]: ...
 
 
 @dataclass
@@ -59,6 +61,9 @@ class InMemoryRepository:
 
     def upsert_work(self, record_id: str, work: Dict[str, Any]) -> None:
         self.works[record_id] = work
+
+    def known_source_keys(self, keys: List[str]) -> Set[str]:
+        return {k for k in keys if k in self.dedupe_index}
 
     def upsert_record(self, draft: RecordDraft, raw: Optional[RawDocument]) -> Tuple[str, bool]:
         existing = self.dedupe_index.get(draft.source_key)
@@ -146,6 +151,8 @@ ON CONFLICT (doi) DO UPDATE SET record_id = EXCLUDED.record_id, title = EXCLUDED
   openalex_id = COALESCE(EXCLUDED.openalex_id, works.openalex_id)
 """
 
+KNOWN_KEYS_SQL = "SELECT source_key FROM records WHERE source_key = ANY(%(keys)s)"
+
 ENQUEUE_SQL = """
 INSERT INTO jobs (type, payload, dedupe_key) VALUES (%(type)s::job_type, %(payload)s::jsonb, %(dedupe_key)s)
 ON CONFLICT (type, dedupe_key) WHERE dedupe_key IS NOT NULL AND status IN ('queued', 'running') DO NOTHING
@@ -194,6 +201,12 @@ class PgRepository:
                     {"record_id": record_id, "valid_from": v.valid_from, "valid_to": _day_before(v.valid_from)},
                 )
         return str(record_id), bool(created)
+
+    def known_source_keys(self, keys: List[str]) -> Set[str]:
+        if not keys:
+            return set()
+        self.cur.execute(KNOWN_KEYS_SQL, {"keys": list(keys)})
+        return {row[0] for row in self.cur.fetchall()}
 
     def upsert_work(self, record_id: str, work: Dict[str, Any]) -> None:
         params = {**work, "record_id": record_id, "authors": json.dumps(work.get("authors") or [])}

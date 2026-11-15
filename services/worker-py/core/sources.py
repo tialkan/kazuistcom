@@ -21,6 +21,14 @@ DEFAULT_DOCS_DIR = Path(__file__).resolve().parents[3] / "docs" / "kaynaklar"
 _FRONT = re.compile(r"\A---\n(.*?)\n---\n", re.S)
 
 
+# protokol_durumu values a source file may carry. The first five are the protocol_status enum of the records
+# table; gerekli_yapilmadi means the plan asks for a protocol for bulk collection and none was applied for yet.
+# Records of such a source are written with the enum default (gerekmez) until the enum gets a value for it
+# (docs/istekler/veri-toplama-ingest-payloadlari.md).
+RECORD_PROTOCOL_STATUSES = ("gerekmez", "basvuruldu", "imzalandi", "reddedildi", "canli_federasyon")
+SOURCE_PROTOCOL_STATUSES = RECORD_PROTOCOL_STATUSES + ("gerekli_yapilmadi",)
+
+
 @dataclass(frozen=True)
 class SourceConfig:
     name: str
@@ -30,6 +38,10 @@ class SourceConfig:
     protocol_status: str = "gerekmez"
     approved: bool = False
     robots_hosts: List[str] = field(default_factory=list)
+
+    @property
+    def record_protocol_status(self) -> str:
+        return self.protocol_status if self.protocol_status in RECORD_PROTOCOL_STATUSES else "gerekmez"
 
     @property
     def env_switch(self) -> str:
@@ -45,6 +57,8 @@ def load_source_file(path: Path) -> SourceConfig:
     hosts = [str(h).lower() for h in meta.get("alan_adlari", [])]
     if not hosts:
         raise ValueError(f"{path.name}: alan_adlari is empty")
+    if str(meta.get("protokol_durumu", "gerekmez")) not in SOURCE_PROTOCOL_STATUSES:
+        raise ValueError(f"{path.name}: unknown protokol_durumu")
     return SourceConfig(
         name=str(meta["kaynak"]),
         hosts=hosts,
