@@ -53,12 +53,11 @@ export function toNormRef(n: {
 }
 
 /**
- * Contract SearchResponse. `degraded` lists retrieval legs that could not run (e.g. "vektor" without an
- * embedding service) and is present only when not empty, so clients can say the results are keyword only. The
- * SearchResponse object is open (no additionalProperties: false); declaring the field in the contract is
- * requested in docs/istekler/casuist-arama-kalitesi.md.
+ * Contract SearchResponse. `degraded` (v1.6, ADR-0038) lists retrieval legs that could not run (e.g. "vektor"
+ * without an embedding service) and is present only when not empty, so clients can say the results are keyword
+ * only.
  */
-export function toSearchResponse(res: SearchResult): SearchResponse & { degraded?: string[] } {
+export function toSearchResponse(res: SearchResult): SearchResponse {
   return {
     items: res.items.map(toSummary),
     live: res.live.map(toSummary),

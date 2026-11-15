@@ -45,3 +45,8 @@ Kabul. `QuestionText` (`packages/contracts/src/schemas.ts`, desen `QUESTION_TEXT
 Sözleşme testi zod ile OpenAPI desenini her C0 karakteri ve DEL için karşılaştırır. `SearchQuery.q`'ya kural
 eklenmedi (bugün kabul edilen sorguları reddederdi). Uçtaki `hasControlChars` satırının kaldırılması casuist'e
 yönlendirildi; geçitteki `scrubParts` silmesi kalır.
+
+## Uygulama (casuist, 15 Kasım 2026, dal `casuist-contract-1-6-filters`)
+
+`hasControlChars` ve ek satır `ozet.ts`'den kaldırıldı; iki uçta 400 testi (`ozet.test.ts`, NUL, BEL, DEL; sekme ve
+satır sonu 200) ve BYOK uçtan uca testindeki ayırıcı reddi kaldı ve geçiyor. `scrubParts` değişmedi.
