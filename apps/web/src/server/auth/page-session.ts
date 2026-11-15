@@ -1,8 +1,8 @@
+import { logError } from '@kazuist/log';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getAuthContext, type AuthContext } from './context.ts';
 import { resolvePrincipal, type Principal } from './guard.ts';
-import { logError } from './log.ts';
 
 /** Signed in caller of a server rendered account page. */
 export interface PageSession {

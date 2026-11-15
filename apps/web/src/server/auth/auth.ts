@@ -1,5 +1,6 @@
 import { passkey } from '@better-auth/passkey';
 import { authMethods, type AuthMethod } from '@kazuist/contracts';
+import { logError } from '@kazuist/log';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { nextCookies } from 'better-auth/next-js';
@@ -10,7 +11,7 @@ import { eq } from 'drizzle-orm';
 import { writeAudit } from './audit.ts';
 import type { Db } from './db.ts';
 import { schema } from './db.ts';
-import { betterAuthLog, logError } from './log.ts';
+import { betterAuthLog } from './log.ts';
 import type { Mailer } from './mailer.ts';
 
 export interface AuthConfig {
@@ -62,7 +63,7 @@ export interface AccountHooks {
 
 export const noAccountHooks: AccountHooks = { onSignup: async () => {}, onDeletion: async () => {} };
 
-/** Runs a hook without letting it fail the account flow; logs only the sanitized error (log.ts). */
+/** Runs a hook without letting it fail the account flow; logs only the sanitized error (@kazuist/log). */
 export async function runHook(name: string, fn: () => Promise<void>): Promise<boolean> {
   try {
     await fn();
@@ -98,7 +99,7 @@ export function createAuth(db: Db, config: AuthConfig, mailer: Mailer, hooks: Ac
     basePath: '/api/auth',
     secret: config.secret,
     // Better Auth logs raw errors (Drizzle messages carry query parameters such as e-mail addresses); every line
-    // goes through the sanitizer instead (log.ts).
+    // goes through the sanitizer instead (log.ts, @kazuist/log).
     logger: { log: betterAuthLog },
     trustedOrigins: [
       config.baseUrl,

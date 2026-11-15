@@ -1,10 +1,9 @@
-import { randomUUID } from 'node:crypto';
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
+import { logEvent, logRequestError } from '@kazuist/log';
 import { eq } from 'drizzle-orm';
 import { getAuthContext, type AuthContext } from './context.ts';
 import { schema } from './db.ts';
 import { apiError, rateLimited } from './http.ts';
-import { safeErrorFields } from './log.ts';
 import { clientIp, type RateRule } from './rate-limit.ts';
 import { hasAnyRole, isRole, type Role } from './roles.ts';
 import { hasPasskeySession, hasSecondStep } from './step-up.ts';
@@ -125,23 +124,12 @@ export function withAuth(opts: GuardOptions, handler: Handler) {
 }
 
 /**
- * Structured log of an unexpected error (plan 14.7): method, path, requestId and the sanitized error (class,
- * SQLSTATE, constraint, table, column; log.ts); no message, body, query, header or personal data. The same
- * requestId goes to the client.
+ * Structured log of an unexpected error (plan 14.7, ADR-0039): method, path, requestId and the sanitized error
+ * (class, SQLSTATE, constraint, table, column; @kazuist/log); no message, body, query, header or personal data.
+ * The same requestId goes to the client.
  */
 export function internalError(req: Request, err: unknown): Response {
-  const requestId = randomUUID();
-  console.error(
-    JSON.stringify({
-      at: 'api',
-      level: 'error',
-      method: req.method,
-      path: new URL(req.url).pathname,
-      requestId,
-      ...safeErrorFields(err),
-    }),
-  );
-  return apiError('internal', undefined, {}, requestId);
+  return apiError('internal', undefined, {}, logRequestError('api', req, err));
 }
 
 /**
@@ -151,7 +139,7 @@ export function internalError(req: Request, err: unknown): Response {
 export async function checkIp(ctx: AuthContext, req: Request, rule: RateRule) {
   const ip = clientIp(req.headers, ctx.config.trustedProxies);
   if (ip !== 'unknown') return ctx.limiter.check(rule, ip);
-  console.warn(JSON.stringify({ at: 'rate-limit', level: 'warn', rule: rule.name, ip: 'unknown' }));
+  logEvent('warn', 'rate-limit', { rule: rule.name, ip: 'unknown' });
   return ctx.limiter.check(
     {
       name: `${rule.name}-unknown`,

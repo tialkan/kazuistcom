@@ -1,8 +1,9 @@
 import { format } from 'node:util';
+import { safeErrorFields } from '@kazuist/log';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { internalError } from '../guard.ts';
 import { authHandler, eduStart, meGet, takedownPost } from '../handlers.ts';
-import { betterAuthLog, safeErrorFields } from '../log.ts';
+import { betterAuthLog } from '../log.ts';
 import { schema } from '../db.ts';
 import { api, authReq, createHarness, signUp, type Harness } from './harness.ts';
 
