@@ -18,9 +18,10 @@ Cadence per source (Istanbul time, UTC+3 without daylight saving):
   openalex,
   crossref      no schedule             (DOIs are queued by the citation pipeline)
 
-Jobs whose payload shape the job contract (core/jobs.py payload_problem) does not accept yet are not enqueued
-either; they are reported as contract_pending until the architect adds the shapes
-(docs/istekler/veri-toplama-ingest-payloadlari.md). assume_contract=True plans as if they were accepted.
+Every payload shape it produces is in the job contract (v1.6, ADR-0038: core/jobs.py payload_problem mirrors
+packages/contracts IngestFetchPayload), so the consumer accepts what the scheduler enqueues. As a second guard a job
+whose payload the contract does not accept is not enqueued; it is reported as contract_pending (a device for shapes
+added in a later version). assume_contract=True plans as if such shapes were accepted.
 """
 
 from __future__ import annotations

@@ -5,8 +5,8 @@ decision the corpus does not hold yet (dedupe key = the record's source_key, so 
 never queued twice) and, while the source has more pages, the next list job. Killing the worker loses nothing;
 a retry of a list job re-queues only what is still unknown.
 
-Payload shapes (docs/istekler/veri-toplama-ingest-payloadlari.md asks the architect to add them to the job
-contract; until then core/jobs.py buries them as invalid payload, which is the fail closed side):
+Payload shapes (job contract v1.6, ADR-0038, packages/contracts/src/jobs.ts IngestFetchPayload; core/jobs.py checks
+the same shapes before a handler runs, and the handlers below check the fields again):
 
   aym list      {"source":"aym","kararTipi":"BireyselBasvuru"|"NormDenetimi","page":n}
   aym document  {"source":"aym","kararTipi":...,"id":"<uuid>"}
@@ -34,7 +34,12 @@ from .pipeline import Repository
 
 MAX_PAGE = 10_000
 _UUID = re.compile(r"^[0-9a-fA-F-]{36}$")
-_CASE_NO = re.compile(r"^\d{4}/[\dA-Za-z()\-]+$")
+# The contract's case number (core/jobs.py _CASE_NO, connectors/judicial.py case_number): four ASCII digits, a slash,
+# the number part and an optional trailing "/<digits>" ("2024/817", "2019/1-123", "2024/2914/2"). Python \d would
+# also match other Unicode digits, so [0-9] is spelled out.
+_CASE_NO = re.compile(r"^[0-9]{4}/[0-9A-Za-z()\-]+(?:/[0-9]+)?\Z")
+_CASE_NO_MAX = 50
+_DOC_ID = re.compile(r"^[0-9]{1,20}\Z")
 
 
 class BadJob(ValueError):
@@ -43,6 +48,10 @@ class BadJob(ValueError):
 
 def _queue(repo: Repository, payload: Dict[str, Any], key: Optional[str]) -> None:
     repo.enqueue(JobType.INGEST_FETCH, payload, key)
+
+
+def _case_no(value: str) -> bool:
+    return len(value) <= _CASE_NO_MAX and bool(_CASE_NO.match(value))
 
 
 def _page(payload: Mapping[str, Any]) -> int:
@@ -95,7 +104,7 @@ def court_job(fetcher: Fetcher, repo: Repository, payload: Mapping[str, Any]) ->
         raise BadJob("unit")
     if "id" in payload:
         doc_id, esas, karar = str(payload["id"]), str(payload.get("esas", "")), str(payload.get("karar", ""))
-        if not doc_id.isdigit() or not _CASE_NO.match(esas) or not _CASE_NO.match(karar):
+        if not _DOC_ID.match(doc_id) or not _case_no(esas) or not _case_no(karar):
             raise BadJob("id")
         try:
             decided = date.fromisoformat(str(payload.get("date", "")))

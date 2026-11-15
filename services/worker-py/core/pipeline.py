@@ -111,7 +111,7 @@ VALUES (%(type)s::record_type, %(title)s, %(court)s, %(chamber)s, %(esas_no)s, %
 ON CONFLICT (source_key) DO UPDATE SET
   title = EXCLUDED.title, status = EXCLUDED.status, valid_from = EXCLUDED.valid_from,
   valid_to = EXCLUDED.valid_to, amended_by = EXCLUDED.amended_by, fetched_at = EXCLUDED.fetched_at,
-  openalex_cited_by = EXCLUDED.openalex_cited_by, updated_at = now(),
+  protocol_status = EXCLUDED.protocol_status, openalex_cited_by = EXCLUDED.openalex_cited_by, updated_at = now(),
   anonymized = CASE WHEN records.text = EXCLUDED.text THEN records.anonymized ELSE EXCLUDED.anonymized END,
   anonymization_version = CASE WHEN records.text = EXCLUDED.text THEN records.anonymization_version
                                ELSE EXCLUDED.anonymization_version END,

@@ -32,6 +32,18 @@ Orkestra görevi: `docs/istekler/mimar-yonlendirme-4-sozlesme-v1-6.md` kimlik ma
   409; personel olmayan 403; yayımlanınca onay kaydı gösterir, kalem kapanır, denetim satırı; iki maskeleme talebi;
   geçici gizlenen talebin `ret`'i; kalıcı kaldırma altında gizli kalma ve kalem `ret`'i; kalem `duzelt`'i.
 - Açık: yönetim panelinde takedowns kuyruğu ekranı yok (yalnız API); Kampüs hedefleri için yeniden maskeleme yok.
+## 15 Kasım 2026, veri-toplama: sözleşme v1.6 sonrası işler (yönlendirme 4)
+
+- `core/sources.py`: `RECORD_PROTOCOL_STATUSES` `gerekli_yapilmadi` içerir (veri tabanı enum'uyla aynı küme, testle
+  `packages/db/src/schema/corpus.ts` karşılaştırılır); Yargıtay ve Danıştay kayıtları artık `gerekli_yapilmadi` yazar.
+- `core/discovery.py`: `_CASE_NO` sözleşmeyle aynı desen (`^[0-9]{4}/[0-9A-Za-z()-]+(?:/[0-9]+)?\Z`, en çok 50,
+  ASCII rakam); belge kimliği `^[0-9]{1,20}\Z`. Sonda `/<rakam>` taşıyan numara artık `BadJob` ile ölmez. Belge başı ve
+  `core/scheduler.py` başı v1.6'ya göre güncellendi; `contract_pending` düzeneği ileri sürümler için kaldı.
+- `tests/test_scheduler_e2e.py` (yeni): `run_tick` gerçek `ENQUEUE_ONCE_SQL` ile sahte jobs tablosuna yazar, gerçek
+  `JobConsumer` gerçek `CLAIM_JOBS_SQL` ile alıp gerçek `ingest.fetch` işleyicisine verir; hiçbir iş geçersiz yük diye
+  gömülmez, işleyici `BadJob` atmaz, keşif işlerinin kuyruğa koyduğu devam işleri sözleşmeye uyar, dry-run CLI
+  `contract_pending` üretmez. `docs/kaynaklar/{yargitay,danistay,README}.md` metinleri güncellendi.
+- Doğrulama: `uv run pytest` 535 geçti, 15 atlandı; `pnpm check:text` geçti.
 
 ## 15 Kasım 2026, mimar: sözleşme v1.6, migration 0008, ADR-0038 (mimar/sozlesme-v1-6)
 
