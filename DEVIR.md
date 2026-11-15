@@ -24,9 +24,9 @@ tutmak. Dal #101'in dalından açıldı; main (#96-#100) ve #102'nin dalı için
   düzeneği sınar (36/36 kabul, künye alıntısı 50/50 düşer, 15 karakterlik alıntı 36/36 çekimser);
   `test/ozet-ab.live.test.ts` ve `pnpm --filter @kazuist/ai-gateway test:ab` eski ve yeni talimatı gerçek modelle
   karşılaştırır (OpenRouter, zdr, 2 x 50 çağrı, tahminen 0,45 M girdi tokenı).
-- Doğrulama: typecheck, lint, check:text, build temiz; testler gateway 143/3 skip, web 728/1 skip, casuist 119,
-  worker-node 118, ledger 174, contracts 147, db 54, ui 31, i18n 23, worker-py 450/15 skip, enjeksiyon 60/60 önce ve
-  sonra. `node eval/rag/olc.ts` önce ve sonra aynı (getirme 36/36, birebir satır 36/36, birebir cümle 67/67,
+- Doğrulama (main #90, #91 ve #102 birleştikten sonra): typecheck, lint, check:text, build temiz; testler gateway
+  143/3 skip, web 756/1 skip, casuist 119, worker-node 118, ledger 174, contracts 152, db 54, ui 31, i18n 23,
+  worker-py 450/15 skip, enjeksiyon 60/60 önce ve sonra. `node eval/rag/olc.ts` önce ve sonra aynı (getirme 36/36, birebir satır 36/36, birebir cümle 67/67,
   saldırı 0/283; yalnız arama süresi oynadı). Bu iki set talimatı modele göndermez; modelli çekimserlik ölçülmedi
   ve geçti sayılmadı: `~/Desktop/kazuist-openrouter.txt` yok.
 - Açık: canlı A/B (anahtar dosyası gelince `test:ab`); orkestra Ek D eklerini plana alır; ADR-0001'deki "en az 12
