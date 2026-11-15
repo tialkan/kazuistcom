@@ -184,6 +184,15 @@ jobs:
         run: >
           docker run --rm kazuist-worker-py:ci python -c
           "import importlib.util as u; assert u.find_spec('transformers') is None; print('no transformers')"
+      - name: worker-py image has the ner-runtime extra and fails closed without an NER model
+        run: >
+          docker run --rm kazuist-worker-py:ci python -c
+          "import os, onnxruntime, tokenizers, numpy;
+          from anonymizer.pipeline import anonymize;
+          assert os.environ['KAZUIST_ENV'] == 'production' and os.environ['KAZUIST_NER_DIR'] == '/models/ner';
+          r = anonymize('Davacı Deneme Kişisi dava açmıştır.');
+          assert r.blocked == 'ner_unavailable' and not r.publishable, r.blocked;
+          print('onnxruntime', onnxruntime.__version__, 'fail closed ok')"
       - name: Runtime environment for app containers
         run: |
           set -a; . ./.env; set +a

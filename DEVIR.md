@@ -22,6 +22,90 @@ Orkestra isteği. Şema ve migration değişmedi; yeni bağımlılık yok. Canl�
 - Açık: `.claude/agents/icerik.md` hâlâ "beş ton" diyor (ajan tanımı; Tarık onayıyla düzeltilir).
   `docs/tasarim/gorsel-istemleri.md` 4.7'deki "açık soru" notu artık cevaplı (orkestra yolu). Yazma'nın kalan yerel
   şemaları (`IlerlemeGirdisi`, `HitapGirdisi`, şablon ve kısaltma gövdeleri) yönlendirme belgesindeki gibi açık.
+## 15 Kasım 2026, yz-gecidi: platform TL tavanı her platform çağrısında, kullanıcıya bağlı BYOK doğrulaması, yazma geçitten (yz-gecidi/butce-byok-baglama)
+
+Orkestra görevi: PR #95 sonrası main'de kalan dört madde. `packages/contracts` ve `packages/db` değişmedi; yeni
+bağımlılık yok. Sözleşme isteği: `docs/istekler/yz-gecidi-soru-denetim-karakteri.md`. Orkestra açıkça istediği
+için sahiplik dışı yollar da değişti: `apps/web/src/app/ara/_sunucu/{ozet,gecit}.ts` ve testleri, `packages/casuist`
+(`backend.ts`, `sql.ts`, `memory.ts`, `answer/passages.ts`, `test/answer.test.ts`), `apps/web/src/app/yazma/**`,
+`eval/rules/olc.ts` (yalnız yeni imza).
+- Bütçe (`budget.ts`): platform TL tavanı artık her platform çağrısını durdurur: ücretsiz hak
+  (`platform_tavan_ucretsiz_durdu`) ve kredili çağrı, promosyon kredisi dahil (`platform_tavan_kredili_durdu`).
+  BYOK yalnız eşzamanlı akış yuvası tutar. `AdmitInput.platform` zorunlu. Yeni IP kredi tavanı
+  (`ipDailyCredits`, varsayılan 3.000) çok hesapla promosyon kredisi harcamayı sınırlar. Bütün sınırlar önce
+  denetlenir, sonra sayılır: reddedilen çağrı sayaç bırakmaz; `rollback` IP kredi sayacını da geri alır.
+  Plan 8.7/2 "kredili işlem sürer" diyor; bu PR orkestra talimatıyla bundan ayrılıyor, plan metni orkestranın.
+- BYOK prepare ve verify (`protocol.ts`, `ozet.ts`): imzalı paket kullanıcıya (`subject`, kullanıcı kimliğinin
+  anahtarlı özeti; Valkey ham kimliği tutmaz), rotaya ve (K-kimliği, kayıt, parça, pasaj SHA-256) listesine
+  bağlı (kanonik biçim `kazuist-byok-v2`). verify pasajları istemden ayrıştırmaz: `loadPromptPassages` kayıt ve
+  parçayı arama deposundan (yalnız yayımlanabilir kayıt, anlık parça kimlikleri dahil) yükler, prepare ile aynı
+  `promptPassage` üreticisiyle kurar, aynı maskelemeyle (pasajlar önce, `scrubSourced`) maskeler, özetleri
+  karşılaştırır; uymazsa 409, başka kullanıcı 403, eski biçim 400, yeniden kullanım 410.
+- Maskeleme: `scrubSourced` soru ve pasajları tek etiket uzayında, pasajlar önce maskeler; pasaj maskesi soruya
+  bağlı değildir (verify soruyu saklamadan yeniden kurar). Geçidin `run()` da aynı sırayı kullanır. Denetim
+  karakterleri maskelemeden önce silinir; web ucu (`POST /v1/answers`, `/prepare`) C0 (sekme ve satır sonu
+  hariç) ve DEL içeren soruyu 400 ile reddeder.
+- Akış iptali: istemci akışı bıraktığında geçit çalışması kapanmıyordu; kullanıcının akış yuvası sızıyor, iki
+  iptalden sonra kullanıcı yeniden başlatmaya kadar 429 alıyordu. `ozet.ts` `closeRun` hem satır döngüsünün
+  sonunda hem akış kapanınca çalışır; test düzeltme olmadan kırılıyor (elle denendi).
+- Yazma: `kural-cikarma.ts` kılavuz metnini `neutralize()` ile istemine koyar (`@kazuist/ai-gateway/prompt`, Node
+  tip ayıklamasıyla yüklenebilir; eval/rules oracle kipi çalışır); `normallestir` `‹›` işaretlerini geri katlar.
+  `kisaltmaIstemi` de nötrler. `yz.ts` yalnız `gateway.complete` çağırır: kişi adı tanıyıcısı, kullanıcı, IP ve
+  TL bütçesi, kredi tutma (plan 4.4: kural çıkarma 30, kısaltma 2), şema geçerse tüketim, geçmezse çözme,
+  maliyet olayı. Uçlar porta kullanıcı ve IP verir (`YzKimlik`).
+- Geçit (`gateway.ts`): ortak çağrı çekirdeği (`open`/`finish`), yeni `complete()` (`modelTier`, `accept`,
+  `restoreLabels`), erken bırakmada sağlayıcı akışı kapanır. `kisaltma_oneri` rotası. `buildSummaryDeps`
+  `onCost`'u geçirir; `ValidatedChargeLedger` yalnız `ozet:` isteklerine dokunur.
+- Sonnet akıl yürütme: platform Sonnet 5.5 çağrısı OpenRouter'da `reasoning.effort: low`, Anthropic doğrudan
+  yedeğinde `output_config.effort: low` gönderir (models API ve Anthropic effort sayfası 15 Kasım'da okundu,
+  `SAGLAYICILAR.md`). Haiku'ya parametre gönderilmiyor.
+- Doğrulama (main 7cbe91b üzerine yeniden temellendikten sonra): `pnpm typecheck`, `pnpm lint`,
+  `pnpm check:text`, `pnpm test` (ai-gateway 126, casuist 108, web 719 ve 1 atlanan, ledger 174, worker-node
+  118), enjeksiyon seti 60/60, `pnpm build`. Yerel üretim sunucusu (PostgreSQL 18, Redis, fikstür derlemi):
+  `byok.spec.ts` 9/9; elle akış prepare 200 (11 kaynak), aynı kullanıcı verify 200 ve satır kabul, yeniden
+  kullanım 410, başka kullanıcı 403, denetim karakterli soru 400.
+  Canlı sağlayıcı duman testi çalışmadı: OpenRouter ve Anthropic anahtar dosyası yok.
+- Açık: Haiku 5.5 varsayılan düşünme (`medium`) 400 tokenlik standart özette canlı ölçülmeli; yazmada kredi
+  yetersiz ya da bütçe dolu durumu `model` koduyla düşüyor (ayrı kod ve metin yazma ajanının); plan 8.7/2
+  metni; sözleşmede soru denetim karakteri kuralı (istek yazıldı); eval/rules canlı kipi Node tip ayıklamasıyla
+  geçit dizinini yükleyemiyor (önceden de böyleydi).
+## 15 Kasım 2026, anonimlestirme: üretimde NER zorunlu, Türkçe ek ayırıcı, worker-py model birimleri (anonimlestirme/ner-zorunlu-ek-ayirici)
+
+Orkestra görevi: main'de doğrulanan açık. `KAZUIST_NER_BACKEND` boşken `backend_from_env()` NullBackend döndürüyor,
+`publishable = not review` olduğu için kayıt NER olmadan yayımlanıyordu; imaj `ner-runtime` ekstrasını ve model
+birimini taşımıyordu. `packages/contracts` ve `packages/db` değişmedi; yeni bağımlılık yok (`ner-runtime` ADR-0026
+ile kilitte).
+- Güvenli kapanma: `ner.ner_required()` `KAZUIST_ENV` `development`, `test` ya da boş değilse doğrudur (production,
+  staging ve yanlış yazılmış değerler dahil). O ortamda model yoksa `anonymize` sonucu `blocked =
+  "ner_unavailable"` taşır, `publishable` false olur; anon.run spanları ve `payload.blocked` içeren bir editör
+  kuyruğu satırını yazar, `records.anonymized` false, `masked_text` NULL, embed.chunks kuyruğa girmez. Yükseltme
+  yerine kaydetme seçildi: hata işlemi geri alır ve kaydın daha önce yayımlanmış metnini yerinde bırakırdı; böylece
+  yeniden çalıştırma eski açık metni de geri çeker. Log yalnız kimlik ve nedeni yazar. `jobs.result` biçimi aynı.
+- Yayılım düzeltmesi: bir anma, kişisinin en güçlü tohumundan daha güvenilir olamaz (`min(seed.score, 0.9)`).
+  Önceden düşük puanlı bir NER spanı kendi konumundaki 0,9'luk yayılım ikiziyle editör kuyruğundan çıkıyordu.
+- İmaj (`infra/docker/worker-py/Dockerfile`, altyapınındır, orkestra talimatıyla): `uv sync --frozen --no-dev
+  --extra ner-runtime`; `ENV KAZUIST_ENV=production KAZUIST_NER_DIR=/models/ner KAZUIST_EMBED_DIR=/models/embed
+  HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1`. CI'a imaj içinde onnxruntime içe aktarma ve modelsiz güvenli kapanma
+  adımı eklendi (`.github/workflows/ci.yml`). Runbook: `docs/runbook/dagitim.md` "worker-py model birimleri"
+  (yalnız okunur `/models/ner` ve `/models/embed`, Coolify adımı, izinler, değişkenler, bellek).
+- Kurulum denetimi: `python -m anonymizer.model_check` (manifest anahtarı ve revizyonu, ONNX sha256, yükleme,
+  sentetik cümlede kişi adı); metin yazdırmaz.
+- Türkçe ek ayırıcı `anonymizer/suffixes.py`: kesme işaretinden sonraki çekim ekleri (çoğul, iyelik, hâl, -ki,
+  ek eylem; yapım ekleri asla), düz ve tipografik kesme işaretleri, büyük harfli ekler; "O'Neil" bölünmez.
+  Anahtarlar eksiz (`name_key`), NER spanı kesme işaretinde biter (`person_end`), yayılım boşlukları esnek eşler ve
+  bilinen tam adın kesmesiz ekini ("AHMET YILMAZIN") bütün sözcükle maskeler. Yeni kural `find_suffixed_names`:
+  rol sözcüğü olmadan iki ile dört büyük harfli sözcük ve kesme işaretli ek ("Tarkan Özdağ'a"); yer, kurum ve cümle
+  başı sözcük listeleri eler, tek sözcük alınmaz, puan 0,75 olduğu için editöre düşer, aynı karakterleri örten NER
+  spanı onu kapatır. `ENGINE_VERSION` anon-0.3.0 (plan 6.4/7 gereği yeniden işleme).
+- Ölçüm (yalnız kural katmanı, NER modeli bu makinede yok; `eval/anon/raporlar/anon-0.3.0-{sentetik,zor}.json`):
+  sentetik kişi 418/430 (%97,21) önce ve sonra aynı, kesinlik %100, editör kuyruğu 52 öğe aynı; zor set kişi 9/69
+  (%13,04) -> 20/69 (%28,99), kesinlik 10/10 -> 21/21, editör kuyruğu 0 -> 11 öğe (5 belge). Zor set kuralları
+  yazan ajan ailesinin elinden çıktı, küçük ve iyimser; 15.3/2 kapısı kanıtlanmadı, geçmedi sayılır.
+- Test: worker-py 426 geçti, 10 atlandı (`ner-runtime` ile 429/7); ruff temiz; `pnpm lint`, `pnpm check:text` temiz.
+- İstek: `docs/istekler/anonimlestirme-ner-zorunlu.md` (mimar `.env.example` açıklaması; veri-toplama bilgi: imaj
+  öntanımı `KAZUIST_ENV=production` kaynak onay denetimini de açar).
+- Açık: NER'li yapılandırmada (rules+akdeniz27) yeni kod ölçülmedi (model dosyaları yerelde yok); kesmesiz ekli ilk
+  anma ("Davacı Ahmet Yılmazın") anahtara eki taşır; "Ayşe Hanım'ın" gibi unvanlı tek adlar; 200 gerçek karar seti.
 
 ## 14 Kasım 2026, casuist: embedding modeli ölçümü ve önerisi (casuist/embed-model-secimi)
 

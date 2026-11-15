@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion -- test assertions on known fixtures */
 import { describe, expect, it } from 'vitest';
 import {
   BudgetError,
   BudgetGuard,
+  BundleSubjectError,
+  DEFAULT_BUDGET,
+  SourceMismatchError,
+  assertSourcesMatch,
+  passageDigest,
+  type BudgetConfig,
   FakeLedger,
   MemoryCounterStore,
   MemoryNonceStore,
@@ -96,20 +103,29 @@ describe('PII scrubber', () => {
 
 describe('BYOK nonce protocol', () => {
   const secret = 'test-secret-not-real';
+  const sha = passageDigest('K1 metni');
   const input = {
+    subject: 'kullanici-a',
+    operation: 'ozet',
     provider: 'anthropic',
     model: 'claude-haiku-5-5',
     system: 's',
     prompt: 'p',
-    sourceIds: ['K1'],
+    sources: [{ id: 'K1', recordId: 'r1', chunkId: 'c1', sha256: sha }],
   };
 
   it('verifies once, then returns 410 on reuse', async () => {
     const store = new MemoryNonceStore();
     const b = await prepareBundle(store, secret, input);
     expect(b.nonce.length).toBeGreaterThanOrEqual(16);
-    await expect(verifyBundle(store, secret, b.nonce, b.signature)).resolves.toMatchObject({ prompt: 'p' });
-    const err = await verifyBundle(store, secret, b.nonce, b.signature).catch((e: unknown) => e);
+    await expect(verifyBundle(store, secret, b.nonce, b.signature, 'kullanici-a')).resolves.toMatchObject({
+      prompt: 'p',
+      subject: 'kullanici-a',
+      sources: input.sources,
+    });
+    const err = await verifyBundle(store, secret, b.nonce, b.signature, 'kullanici-a').catch(
+      (e: unknown) => e,
+    );
     expect(err).toBeInstanceOf(NonceGoneError);
     expect((err as NonceGoneError).status).toBe(410);
   });
@@ -119,70 +135,183 @@ describe('BYOK nonce protocol', () => {
     const store = new MemoryNonceStore(() => t);
     const b = await prepareBundle(store, secret, input, new Date(t));
     t += 10 * 60 * 1000 + 1;
-    await expect(verifyBundle(store, secret, b.nonce, b.signature, new Date(t))).rejects.toBeInstanceOf(
-      NonceGoneError,
-    );
+    await expect(
+      verifyBundle(store, secret, b.nonce, b.signature, 'kullanici-a', new Date(t)),
+    ).rejects.toBeInstanceOf(NonceGoneError);
   });
 
   it('rejects a forged signature and still burns the nonce', async () => {
     const store = new MemoryNonceStore();
     const b = await prepareBundle(store, secret, input);
-    await expect(verifyBundle(store, 'other', b.nonce, b.signature)).rejects.toBeInstanceOf(SignatureError);
-    await expect(verifyBundle(store, secret, b.nonce, b.signature)).rejects.toBeInstanceOf(NonceGoneError);
+    await expect(verifyBundle(store, 'other', b.nonce, b.signature, 'kullanici-a')).rejects.toBeInstanceOf(
+      SignatureError,
+    );
+    await expect(verifyBundle(store, secret, b.nonce, b.signature, 'kullanici-a')).rejects.toBeInstanceOf(
+      NonceGoneError,
+    );
+  });
+
+  it('is bound to the user it was issued to: another user gets 403 and the nonce is gone', async () => {
+    const store = new MemoryNonceStore();
+    const b = await prepareBundle(store, secret, input);
+    const err = await verifyBundle(store, secret, b.nonce, b.signature, 'kullanici-b').catch(
+      (e: unknown) => e,
+    );
+    expect(err).toBeInstanceOf(BundleSubjectError);
+    expect((err as BundleSubjectError).status).toBe(403);
+    await expect(verifyBundle(store, secret, b.nonce, b.signature, 'kullanici-a')).rejects.toBeInstanceOf(
+      NonceGoneError,
+    );
+  });
+
+  it('signs the user, the route and the source list: changing any of them in the store breaks it', async () => {
+    const tampers: ((p: Record<string, unknown>) => Record<string, unknown>)[] = [
+      (p) => ({ ...p, subject: 'kullanici-b' }),
+      (p) => ({ ...p, sources: [{ id: 'K1', recordId: 'r1', chunkId: 'c2', sha256: sha }] }),
+      (p) => ({
+        ...p,
+        sources: [{ id: 'K1', recordId: 'r1', chunkId: 'c1', sha256: passageDigest('uydurma') }],
+      }),
+      (p) => ({ ...p, operation: 'derin_ozet' }),
+    ];
+    for (const tamper of tampers) {
+      const store = new MemoryNonceStore();
+      const b = await prepareBundle(store, secret, input);
+      const key = `byok:nonce:${b.nonce}`;
+      const changed = tamper(JSON.parse((await store.getDel(key))!) as Record<string, unknown>);
+      await store.setNx(key, JSON.stringify(changed), 600);
+      await expect(
+        verifyBundle(store, secret, b.nonce, b.signature, String(changed.subject)),
+      ).rejects.toBeInstanceOf(SignatureError);
+    }
+  });
+
+  it('rejects a payload of the old format (sourceIds, no subject)', async () => {
+    const store = new MemoryNonceStore();
+    const b = await prepareBundle(store, secret, input);
+    const key = `byok:nonce:${b.nonce}`;
+    await store.getDel(key);
+    const old = {
+      nonce: b.nonce,
+      expiresAt: b.expiresAt,
+      provider: 'a',
+      model: 'm',
+      system: 's',
+      prompt: 'p',
+    };
+    await store.setNx(key, JSON.stringify({ ...old, sourceIds: ['K1'] }), 600);
+    await expect(verifyBundle(store, secret, b.nonce, b.signature, 'kullanici-a')).rejects.toBeInstanceOf(
+      SignatureError,
+    );
+  });
+
+  it('assertSourcesMatch accepts the same passages and refuses a changed, missing or reordered one', () => {
+    const sources = [
+      { id: 'K1', recordId: 'r1', chunkId: 'c1', sha256: passageDigest('bir') },
+      { id: 'K2', recordId: 'r2', chunkId: 'c2', sha256: passageDigest('iki') },
+    ];
+    const one = { id: 'K1', recordId: 'r1', chunkId: 'c1', text: 'bir' };
+    const two = { id: 'K2', recordId: 'r2', chunkId: 'c2', text: 'iki' };
+    expect(() => assertSourcesMatch(sources, [one, two])).not.toThrow();
+    for (const rebuilt of [
+      [one, { ...two, text: 'iki (değişti)' }],
+      [one],
+      [two, one],
+      [one, { ...two, chunkId: 'c9' }],
+    ])
+      expect(() => assertSourcesMatch(sources, rebuilt)).toThrow(SourceMismatchError);
   });
 });
 
 describe('budget guard', () => {
   const day = () => new Date('2026-10-19T12:00:00Z');
+  const cfg = (over: Partial<BudgetConfig> = {}): BudgetConfig => ({ ...DEFAULT_BUDGET, ...over });
+  const paid = (credits: number, u = 'u', ip = 'i') => ({
+    userHash: u,
+    ipHash: ip,
+    platform: true,
+    credits,
+    free: false,
+  });
+  const freeUse = (u = 'u', ip = 'i') => ({
+    userHash: u,
+    ipHash: ip,
+    platform: true,
+    credits: 0,
+    free: true,
+  });
+  const byok = (u = 'u', ip = 'i') => ({ userHash: u, ipHash: ip, platform: false, credits: 0, free: false });
+
   it('caps daily user credits at 500', async () => {
     const g = new BudgetGuard(new MemoryCounterStore(), undefined, day);
-    (await g.admit({ userHash: 'u', ipHash: 'i', credits: 480, free: false })).release();
-    (await g.admit({ userHash: 'u', ipHash: 'i', credits: 20, free: false })).release();
-    await expect(g.admit({ userHash: 'u', ipHash: 'i', credits: 1, free: false })).rejects.toMatchObject({
-      reason: 'kullanici_gunluk_tavan',
-    });
+    (await g.admit(paid(480))).release();
+    (await g.admit(paid(20))).release();
+    await expect(g.admit(paid(1))).rejects.toMatchObject({ reason: 'kullanici_gunluk_tavan' });
   });
   it('limits free uses per IP', async () => {
     const g = new BudgetGuard(
       new MemoryCounterStore(),
-      { userDailyCredits: 500, ipDailyFreeUses: 2, maxConcurrentStreamsPerUser: 9, platformDailyTlCap: 100 },
+      cfg({ ipDailyFreeUses: 2, maxConcurrentStreamsPerUser: 9, platformDailyTlCap: 100 }),
       day,
     );
-    for (const u of ['a', 'b'])
-      (await g.admit({ userHash: u, ipHash: 'ip', credits: 0, free: true })).release();
-    await expect(g.admit({ userHash: 'c', ipHash: 'ip', credits: 0, free: true })).rejects.toMatchObject({
-      reason: 'ip_ucretsiz_tavan',
-    });
-    (await g.admit({ userHash: 'c', ipHash: 'ip2', credits: 0, free: true })).release();
+    for (const u of ['a', 'b']) (await g.admit(freeUse(u, 'ip'))).release();
+    await expect(g.admit(freeUse('c', 'ip'))).rejects.toMatchObject({ reason: 'ip_ucretsiz_tavan' });
+    (await g.admit(freeUse('c', 'ip2'))).release();
+  });
+  it('limits platform credits per IP across accounts (promo credits on many accounts)', async () => {
+    const store = new MemoryCounterStore();
+    const g = new BudgetGuard(store, cfg({ ipDailyCredits: 100 }), day);
+    for (const u of ['a', 'b']) (await g.admit(paid(50, u, 'ip'))).release();
+    await expect(g.admit(paid(2, 'c', 'ip'))).rejects.toMatchObject({ reason: 'ip_kredi_tavan' });
+    // The refused call counted nothing for user c.
+    expect(await store.get('credits:user:c:2026-10-19')).toBe(0);
+    (await g.admit(paid(2, 'c', 'ip2'))).release();
+    // BYOK spends no platform credits and is not limited by it.
+    (await g.admit(byok('d', 'ip'))).release();
+  });
+  it('a refused call leaves no counter behind; rollback undoes every counter', async () => {
+    const store = new MemoryCounterStore();
+    const g = new BudgetGuard(store, cfg({ userDailyCredits: 10 }), day);
+    await expect(g.admit(paid(11))).rejects.toMatchObject({ reason: 'kullanici_gunluk_tavan' });
+    expect(await store.get('credits:ip:i:2026-10-19')).toBe(0);
+    const a = await g.admit(paid(4));
+    expect(await store.get('credits:ip:i:2026-10-19')).toBe(4);
+    await a.rollback();
+    expect(await store.get('credits:ip:i:2026-10-19')).toBe(0);
+    expect(await store.get('credits:user:u:2026-10-19')).toBe(0);
+    const f = await g.admit(freeUse());
+    await f.rollback();
+    expect(await store.get('free:ip:i:2026-10-19')).toBe(0);
   });
   it('allows at most 2 concurrent streams per user, freeing slots on release', async () => {
     const g = new BudgetGuard(new MemoryCounterStore(), undefined, day);
-    const results = await Promise.allSettled(
-      [1, 2, 3].map(() => g.admit({ userHash: 'u', ipHash: 'i', credits: 1, free: false })),
-    );
+    const results = await Promise.allSettled([1, 2, 3].map(() => g.admit(paid(1))));
     expect(results.filter((r) => r.status === 'fulfilled')).toHaveLength(2);
     const rej = results.find((r) => r.status === 'rejected') as PromiseRejectedResult;
     expect((rej.reason as BudgetError).reason).toBe('eszamanli_akis');
     (results[0] as PromiseFulfilledResult<{ release(): void }>).value.release();
-    await expect(g.admit({ userHash: 'u', ipHash: 'i', credits: 1, free: false })).resolves.toBeDefined();
+    await expect(g.admit(paid(1))).resolves.toBeDefined();
   });
-  it('stops free use when the platform TL cap is reached, paid use continues', async () => {
+  it('the platform TL cap stops every platform call (free and credit); BYOK continues', async () => {
     const alerts: string[] = [];
-    const g = new BudgetGuard(
-      new MemoryCounterStore(),
-      {
-        ...{ userDailyCredits: 500, ipDailyFreeUses: 10, maxConcurrentStreamsPerUser: 2 },
-        platformDailyTlCap: 5,
-      },
-      day,
-      (k) => alerts.push(k),
+    const g = new BudgetGuard(new MemoryCounterStore(), cfg({ platformDailyTlCap: 5 }), day, (k) =>
+      alerts.push(k),
     );
+    (await g.admit(paid(2))).release();
     await g.recordSpendTl(5);
-    await expect(g.admit({ userHash: 'u', ipHash: 'i', credits: 0, free: true })).rejects.toMatchObject({
-      reason: 'platform_tavan_ucretsiz_durdu',
-    });
-    expect(alerts).toEqual(['platform_tavan']);
-    (await g.admit({ userHash: 'u', ipHash: 'i', credits: 2, free: false })).release();
+    await expect(g.admit(freeUse())).rejects.toMatchObject({ reason: 'platform_tavan_ucretsiz_durdu' });
+    await expect(g.admit(paid(2))).rejects.toMatchObject({ reason: 'platform_tavan_kredili_durdu' });
+    // A platform call that holds no credit is still paid by the platform.
+    await expect(g.admit(paid(0))).rejects.toMatchObject({ reason: 'platform_tavan_kredili_durdu' });
+    expect(alerts).toEqual(['platform_tavan', 'platform_tavan', 'platform_tavan']);
+    (await g.admit(byok())).release();
+  });
+  it('a BYOK call never counts platform credits or free uses, even if the caller passes them', async () => {
+    const store = new MemoryCounterStore();
+    const g = new BudgetGuard(store, cfg({ platformDailyTlCap: 0 }), day);
+    (await g.admit({ userHash: 'u', ipHash: 'i', platform: false, credits: 60, free: true })).release();
+    expect(await store.get('credits:user:u:2026-10-19')).toBe(0);
+    expect(await store.get('free:ip:i:2026-10-19')).toBe(0);
   });
   it('kill switch removes a provider from candidates', () => {
     const s = new ProviderSwitch(['anthropic', 'openrouter']);

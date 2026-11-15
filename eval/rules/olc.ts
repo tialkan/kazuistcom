@@ -84,7 +84,11 @@ function oracleModeli(a: Altin): KuralModeli {
 
 async function canliModel(): Promise<KuralModeli> {
   const { kuralModeli } = await import('../../apps/web/src/app/yazma/_sunucu/yz.ts');
-  const m = kuralModeli(process.env);
+  // Operator measurement: no credit hold; the gateway budget and the platform TL cap still apply.
+  const m = kuralModeli(
+    { userId: 'olcum', ip: '127.0.0.1', istekKimligi: `olcum:${Date.now()}`, kredisiz: true },
+    process.env,
+  );
   if (!m) throw new Error('YAZMA_YZ=acik ve OPENROUTER_API_KEY olmadan --mod=canli çalışmaz');
   return m;
 }
