@@ -4,6 +4,9 @@ import * as exportRoute from '../../../app/api/v1/me/export/route.ts';
 import * as kvkkRoute from '../../../app/api/v1/kvkk-requests/route.ts';
 import * as professionsRoute from '../../../app/api/v1/professions/route.ts';
 import * as queueRoute from '../../../app/api/v1/admin/queues/[queue]/route.ts';
+import { eq } from 'drizzle-orm';
+import { grantPromoIfVerified } from '../auth.ts';
+import { schema } from '../db.ts';
 import { withAuth } from '../guard.ts';
 import { api, createHarness, signUp, type Harness } from './harness.ts';
 
@@ -85,6 +88,10 @@ describe('route modules under the Next.js 16 calling convention', () => {
   it('sign up and deletion call the odeme account hooks', async () => {
     const { token: t } = await signUp('kanca@example.invalid');
     const id = JSON.parse(await (await meRoute.GET(api('/v1/me', t), nextStatic)).text()).id;
+    // Promo credits wait for a verified e-mail (kimlik.test.ts covers the code flow).
+    expect(h.hookCalls).not.toContain(`signup:${id}`);
+    await h.db.update(schema.users).set({ emailVerified: true }).where(eq(schema.users.id, id));
+    expect(await grantPromoIfVerified(h.db, h.ctx.hooks, id)).toBe(true);
     expect(h.hookCalls).toContain(`signup:${id}`);
     expect((await meRoute.DELETE(api('/v1/me', t, { method: 'DELETE' }), nextStatic)).status).toBe(202);
     expect(h.hookCalls).toContain(`deletion:${id}`);
