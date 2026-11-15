@@ -5,17 +5,18 @@ import {
   createGateway,
   dailyBudgetTry,
   DEFAULT_BUDGET,
-  jsonLineSink,
   MemoryCounterStore,
   MemoryNonceStore,
   platformAiAvailable,
   ProviderSwitch,
+  sanitizeMetric,
   scrub,
   usdTryRate,
   valkeyNonceStore,
   type CounterStore,
   type GatewayDeps,
   type LedgerReservations,
+  type MetricSink,
   type NameRecognizer,
   type NonceStore,
   type PlatformCapAlert,
@@ -25,6 +26,7 @@ import { nameSpans } from '@kazuist/casuist';
 import { ensureWallet, walletRunner } from '@kazuist/ledger/pg';
 import { LedgerReservationsAdapter } from '@kazuist/ledger';
 import type { ByokProvider } from '@kazuist/contracts';
+import { logEvent } from '@kazuist/log';
 import { sharedPool, sharedValkey } from '@/server/deps';
 
 /**
@@ -160,42 +162,37 @@ function requireProductionConfig(
   if (!env.BETTER_AUTH_SECRET && !overrides.hashSecret) missing.push('BETTER_AUTH_SECRET');
   if (!missing.length) return;
   // Variable names only, never values.
-  console.error(JSON.stringify({ at: 'gecit', level: 'error', error: 'GatewayConfigError', missing }));
+  logEvent('error', 'gecit', { error: 'GatewayConfigError', missing });
   throw new GatewayConfigError(missing);
 }
 
 /** Operator alert for a reservation that could not be settled; ids and amounts only (plan 8.8). */
 function settleAlert(f: SettlementFailure): void {
-  console.error(
-    JSON.stringify({
-      at: 'gecit',
-      level: 'error',
-      error: 'ledger_settle_failed',
-      requestId: f.requestId,
-      action: f.action,
-      credits: f.credits,
-      kind: f.errorKind,
-    }),
-  );
+  logEvent('error', 'gecit', {
+    error: 'ledger_settle_failed',
+    requestId: f.requestId,
+    action: f.action,
+    credits: f.credits,
+    kind: f.errorKind,
+  });
 }
 
+/** Gateway metrics (plan 8.8): only the whitelisted metadata fields of sanitizeMetric, one info line each. */
+const metricSink: MetricSink = (m) => logEvent('info', 'ai-gateway', { ...sanitizeMetric(m) });
+
 /**
- * Operator alert for the daily platform ceiling (plan 8.7/2). One JSON line on stderr like the other gecit alerts,
+ * Operator alert for the daily platform ceiling (plan 8.7/2) through @kazuist/log, like the other gecit alerts:
  * amounts and day only. A staff notification job needs a notify contract change
  * (docs/istekler/yz-gecidi-platform-tavan-uyarisi.md); until then buildSummaryDeps takes an extra hook.
  */
 export function platformCapAlert(a: PlatformCapAlert): void {
-  console.error(
-    JSON.stringify({
-      at: 'gecit',
-      level: 'error',
-      event: a.kind,
-      trigger: a.trigger,
-      day: a.day,
-      spendTl: Math.round(a.spendTl * 100) / 100,
-      capTl: a.capTl,
-    }),
-  );
+  logEvent('error', 'gecit', {
+    event: a.kind,
+    trigger: a.trigger,
+    day: a.day,
+    spendTl: Math.round(a.spendTl * 100) / 100,
+    capTl: a.capTl,
+  });
 }
 
 /** Configuration warnings: variable names only, never values; once per process. */
@@ -203,7 +200,7 @@ const warned = new Set<string>();
 function warnConfig(error: string, name: string): void {
   if (warned.has(`${error}:${name}`)) return;
   warned.add(`${error}:${name}`);
-  console.warn(JSON.stringify({ at: 'gecit', level: 'warn', error, name }));
+  logEvent('warn', 'gecit', { error, name });
 }
 
 /**
@@ -279,7 +276,7 @@ export function buildSummaryDeps(
     ledger,
     platformKeys,
     usdTryRate: overrides.usdTryRate ?? rate.rate,
-    sink: overrides.sink ?? jsonLineSink((line) => console.info(line)),
+    sink: overrides.sink ?? metricSink,
     ner: overrides.ner ?? nameRecognizer,
     onSettleFailure: overrides.onSettleFailure ?? settleAlert,
     ...(overrides.onCost ? { onCost: overrides.onCost } : {}),

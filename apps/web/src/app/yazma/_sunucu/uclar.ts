@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import tr from '@kazuist/i18n/tr/yazma.json' with { type: 'json' };
+import { logWarn } from '@kazuist/log';
 import { after } from 'next/server';
 import { z } from 'zod';
 import {
@@ -401,9 +402,7 @@ export const denetimPost = (b = varsayilan) =>
     try {
       yanit = await istemci(dosya.bayt, kurallar.tur, d.degerler);
     } catch (e) {
-      console.error(
-        JSON.stringify({ at: 'docxcheck', level: 'warn', error: e instanceof Error ? e.name : 'Unknown' }),
-      );
+      logWarn('docxcheck', e);
       return apiError('unavailable', tr.hata.denetimYok);
     }
     if (yanit.durum === 200) return json(yanit.govde);

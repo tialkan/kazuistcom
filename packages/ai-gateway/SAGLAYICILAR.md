@@ -80,8 +80,8 @@ docs/kararlar.md (22 Ekim 2026): Gemini anahtarı yalnız kullanıcı ücretli f
   ve log'a yalnız değişken adı yazılır (`invalid_env`). `createGateway` sınır dışı `usdTryRate`'i kurulumda reddeder.
 - Tavan uyarısı (plan 8.7/2): `BudgetGuard` uyarı kancası `PlatformCapAlert` alır. `crossed`: harcamayı tavanın
   üstüne taşıyan çağrı; sayaç atomik arttığı için günde bir kez ve bütün örnekler arasında tek. `refused`: tavanda
-  reddedilen ilk platform çağrısı, süreç başına günde bir kez. `gecit.ts` ikisini de stderr'e tek JSON satırı olarak
-  yazar (`event: "platform_tavan"`, gün, harcama ve tavan; kullanıcı, IP ve içerik yok). Personele bildirim işi
+  reddedilen ilk platform çağrısı, süreç başına günde bir kez. `gecit.ts` ikisini de `@kazuist/log` `logEvent` ile
+  stderr'e tek JSON satırı olarak yazar (`event: "platform_tavan"`, gün, harcama ve tavan; kullanıcı, IP ve içerik yok). Personele bildirim işi
   sözleşme değişikliği ister: `docs/istekler/yz-gecidi-platform-tavan-uyarisi.md`.
 
 ## Doğrulanamayanlar

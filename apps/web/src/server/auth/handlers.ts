@@ -36,7 +36,7 @@ import {
 import { decideQueueItem, listFlags, listQueue, searchUsers, setFlag } from './admin.ts';
 import { getAuthContext } from './context.ts';
 import { confirmEduVerification, startEduVerification } from './edu.ts';
-import { checkIp, originAllowed, resolvePrincipal, withAuth, withPublic } from './guard.ts';
+import { checkIp, internalError, originAllowed, resolvePrincipal, withAuth, withPublic } from './guard.ts';
 import { apiError, json, rateLimited, readJson } from './http.ts';
 import { createGuestKvkkRequest, createKvkkRequest, verifyGuestKvkkRequest } from './kvkk.ts';
 import {
@@ -307,15 +307,19 @@ const codePaths = [
 
 /** Better Auth handler behind the shared limiter. */
 export async function authHandler(req: Request): Promise<Response> {
-  const ctx = await getAuthContext();
-  const path = new URL(req.url).pathname.replace(/^\/api\/auth/, '');
-  const d = await checkIp(ctx, req, rules.authIp);
-  if (!d.ok) return rateLimited(d.retryAfterSec);
-  if (req.method === 'POST' && codePaths.includes(path)) {
-    const c = await checkIp(ctx, req, rules.codeIp);
-    if (!c.ok) return rateLimited(c.retryAfterSec);
+  try {
+    const ctx = await getAuthContext();
+    const path = new URL(req.url).pathname.replace(/^\/api\/auth/, '');
+    const d = await checkIp(ctx, req, rules.authIp);
+    if (!d.ok) return rateLimited(d.retryAfterSec);
+    if (req.method === 'POST' && codePaths.includes(path)) {
+      const c = await checkIp(ctx, req, rules.codeIp);
+      if (!c.ok) return rateLimited(c.retryAfterSec);
+    }
+    return await ctx.auth.handler(req);
+  } catch (err) {
+    return internalError(req, err);
   }
-  return ctx.auth.handler(req);
 }
 
 export { originAllowed, resolvePrincipal };

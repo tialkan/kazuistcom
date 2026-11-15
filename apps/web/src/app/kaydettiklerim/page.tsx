@@ -4,6 +4,7 @@ import tr from '@kazuist/i18n/tr/kaydettiklerim.json';
 import { BosDurum, Dugme, Etiket, HataDurumu } from '@kazuist/ui';
 import { toPlainList } from '@kazuist/casuist';
 import type { AuthorityClass, RecordStatus, RecordType } from '@kazuist/contracts';
+import { logError } from '@kazuist/log';
 import { doldur, otoriteEtiketi, tarihTr } from '../ara/_bilesen/metin.ts';
 import { oturum } from '../ara/_sunucu/oturum.ts';
 import { KaldirDugmesi } from './_bilesen/KaldirDugmesi.tsx';
@@ -96,7 +97,7 @@ export default async function KaydettiklerimSayfasi() {
   try {
     rows = await listSaved(ctx.db, principal.userId, { limit: SAYFA_SINIRI });
   } catch (e) {
-    console.error(JSON.stringify({ at: 'kaydettiklerim', error: (e as Error)?.name }));
+    logError('kaydettiklerim', e);
     return (
       <div className="sayfa">
         {ust}

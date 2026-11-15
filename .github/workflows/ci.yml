@@ -344,6 +344,11 @@ jobs:
         run: |
           set -a; . ./app.env; set +a
           KAZUIST_IT_DATABASE_URL="$DATABASE_URL" pnpm --filter @kazuist/worker-node exec vitest run src/account
+      - name: web edu_claims (one account per edu.tr mailbox, two connection race) against the real PostgreSQL
+        run: |
+          set -a; . ./app.env; set +a
+          KAZUIST_IT_DATABASE_URL="$DATABASE_URL" \
+            pnpm --filter @kazuist/web exec vitest run src/server/auth/__tests__/edu-claims.test.ts
       - name: Install Playwright suites (tests/e2e, tests/security)
         run: |
           pnpm --dir tests/e2e install --ignore-workspace --frozen-lockfile

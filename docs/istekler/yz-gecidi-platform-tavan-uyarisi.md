@@ -4,7 +4,7 @@
 
 2. Gerekçe: plan 8.7/2 "genel günlük platform harcama tavanı (TL); aşılırsa ücretsiz hak ve kredili platform çağrısı
    durur, BYOK sürer, yöneticiye uyarı". Tavan ve durdurma çalışıyor; uyarı bugün yalnız log satırı:
-   `apps/web/src/app/ara/_sunucu/gecit.ts` `platformCapAlert` stderr'e tek JSON satırı yazar
+   `apps/web/src/app/ara/_sunucu/gecit.ts` `platformCapAlert` `@kazuist/log` `logEvent` ile stderr'e tek JSON satırı yazar
    (`{"at":"gecit","level":"error","event":"platform_tavan","trigger":"crossed"|"refused","day":"YYYY-MM-DD",
    "spendTl":..,"capTl":..}`). `trigger: "crossed"` günde bir kez ve bütün örnekler arasında tek çağrıda çıkar
    (Valkey `INCRBYFLOAT` sonucu tavanı ilk geçen çağrı); `refused` her süreçte günde bir kez. Personele e-posta veya

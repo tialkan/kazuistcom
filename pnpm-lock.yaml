@@ -62,6 +62,9 @@ importers:
       '@kazuist/ledger':
         specifier: workspace:*
         version: link:../../packages/ledger
+      '@kazuist/log':
+        specifier: workspace:*
+        version: link:../../packages/log
       '@kazuist/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -141,6 +144,9 @@ importers:
       '@kazuist/ledger':
         specifier: workspace:*
         version: link:../../packages/ledger
+      '@kazuist/log':
+        specifier: workspace:*
+        version: link:../../packages/log
       '@pdf-lib/fontkit':
         specifier: 1.1.1
         version: 1.1.1
@@ -277,6 +283,8 @@ importers:
       fast-check:
         specifier: 4.10.2
         version: 4.10.2
+
+  packages/log: {}
 
   packages/ui:
     devDependencies:
