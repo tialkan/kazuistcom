@@ -10,7 +10,7 @@ import {
   answerEvents,
   createLineValidator,
   DEEP_SELECTION,
-  passagesFromPrompt,
+  loadPromptPassages,
   search,
   selectPassages,
   sourceChips,
@@ -19,14 +19,19 @@ import {
   type PromptPassage,
 } from '@kazuist/casuist';
 import {
+  assertSourcesMatch,
   BudgetError,
   buildSourcedPrompt,
+  BundleSubjectError,
   GatewayError,
+  neutralize,
   NonceGoneError,
+  passageDigest,
   prepareBundle,
   ROUTES,
-  scrubParts,
+  scrubSourced,
   SignatureError,
+  SourceMismatchError,
   SOURCED_SUMMARY_SYSTEM,
   verifyBundle,
   type GatewayEvent,
@@ -95,6 +100,18 @@ async function consentGranted(ctx: AuthContext, userId: string, kind: 'yz_aktari
 
 const IDEMPOTENCY = /^[\x21-\x7e]{8,100}$/;
 
+/**
+ * C0 controls other than tab and line breaks, and DEL. A question never needs them; the gateway strips them
+ * before masking (scrubParts), and the edge refuses them so a question cannot carry the internal part separator
+ * at all. The contract schema does not say this yet (docs/istekler/yz-gecidi-soru-denetim-karakteri.md).
+ */
+// eslint-disable-next-line no-control-regex -- the point is to match control characters
+const CONTROL_CHARS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
+export const hasControlChars = (q: string): boolean => CONTROL_CHARS.test(q);
+
+/** Selection per route; a bundle names its route so verify rebuilds passages at the same size. */
+const SELECTION = { ozet: STANDARD_SELECTION, derin_ozet: DEEP_SELECTION } as const;
+
 function sse(events: AsyncIterable<AnswerEvent>, onClose: () => void): Response {
   const enc = new TextEncoder();
   const it = events[Symbol.asyncIterator]();
@@ -158,7 +175,7 @@ async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Res
   const key = req.headers.get('idempotency-key') ?? '';
   if (!IDEMPOTENCY.test(key)) return apiError('bad_request');
   const parsed = AnswerRequest.safeParse(await readJson(req));
-  if (!parsed.success) return apiError('bad_request');
+  if (!parsed.success || hasControlChars(parsed.data.q)) return apiError('bad_request');
   const body = parsed.data;
   if (body.mode === 'byok_aktarma') {
     if (!body.byok) return apiError('bad_request');
@@ -258,6 +275,15 @@ async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Res
     throw e;
   }
 
+  /**
+   * Closes the gateway run if it is still open: frees the user's stream slot and releases the credit hold. A client
+   * that went away used to leave the run suspended, so the slot leaked and two cancelled summaries blocked the user
+   * until a restart. A no-op once the run finished.
+   */
+  const closeRun = async (): Promise<void> => {
+    await Promise.resolve(it.return?.(undefined)).catch(() => undefined);
+  };
+
   let charged = 0;
   async function* lines(): AsyncGenerator<ModelLine | null> {
     try {
@@ -271,6 +297,8 @@ async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Res
       // Technical errors are free (plan 4.5/3): the gateway released the hold; the free use is returned too.
       await refundFree();
       throw e;
+    } finally {
+      await closeRun();
     }
   }
   const events = answerEvents({
@@ -285,7 +313,11 @@ async function answer(req: Request, p: Principal, ctx: AuthContext): Promise<Res
       return s.abstained ? 0 : Math.min(charged, credits);
     },
   });
-  return sse(events, () => deps.ledger.forget(requestId));
+  // A cancel before the first model line never starts lines(), so the stream end closes the run as well; the charge
+  // decision (setAccepted) is forgotten only after the run settled.
+  return sse(events, () => {
+    void closeRun().finally(() => deps.ledger.forget(requestId));
+  });
 }
 
 export const answersPost = withAuth({ rate: casuistRules.answerUser }, async (req, p, ctx) => {
@@ -297,28 +329,32 @@ export const answersPost = withAuth({ rate: casuistRules.answerUser }, async (re
 });
 
 /** POST /v1/answers/prepare (plan 8.1, BYOK istemci): masked question and passages in a signed bundle. */
-export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (req) => {
+export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (req, p) => {
   const parsed = PrepareRequest.safeParse(await readJson(req));
-  if (!parsed.success) return apiError('bad_request');
+  if (!parsed.success || hasControlChars(parsed.data.q)) return apiError('bad_request');
   const deps = summaryDeps();
   if (deps instanceof Response) return deps;
   if (!deps.signingSecret) return apiError('unavailable');
-  const searchDeps = await getSearchDeps();
+  let searchDeps;
+  try {
+    searchDeps = await getSearchDeps();
+  } catch (e) {
+    if (e instanceof SearchUnavailable) return apiError('unavailable');
+    throw e;
+  }
   const result = await search(
     { q: parsed.data.q, page: 1, pageSize: 50 },
     { ...searchDeps, mask: maskQuery },
   );
-  const derin = parsed.data.depth === 'derin';
-  const passages = await selectPassages(
-    result.items,
-    result.query,
-    searchDeps.backend,
-    derin ? DEEP_SELECTION : STANDARD_SELECTION,
+  const operation = parsed.data.depth === 'derin' ? 'derin_ozet' : 'ozet';
+  const passages = await selectPassages(result.items, result.query, searchDeps.backend, SELECTION[operation]);
+  // Same scrub as the gateway: one label space, passages first, so verify can rebuild the passages alone.
+  const scrubbed = await scrubSourced(
+    parsed.data.q,
+    passages.map((x) => x.text),
+    nameRecognizer,
   );
-  // Same scrub as the gateway: question and passages in one label space, so labels are consistent.
-  const scrubbed = await scrubParts([parsed.data.q, ...passages.map((x) => x.text)], nameRecognizer);
   scrubbed.mapping.clear();
-  const parts = scrubbed.parts;
   const masked = passages.map((x, i) => ({
     id: x.id,
     type: x.type,
@@ -326,24 +362,32 @@ export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (r
     status: x.status,
     date: x.date,
     dataDay: x.dataDay,
-    text: parts[i + 1] ?? '',
+    text: scrubbed.passages[i] ?? '',
   }));
-  const prompt = buildSourcedPrompt(parts[0] ?? '', masked);
-  const route = ROUTES[derin ? 'derin_ozet' : 'ozet'];
+  const prompt = buildSourcedPrompt(scrubbed.question, masked);
+  // What the model sees inside each <kaynak> block: the masked text with tags neutralised.
+  const seen = masked.map((x) => neutralize(x.text));
+  const route = ROUTES[operation];
   const bundle = await prepareBundle(
     deps.nonces,
     deps.signingSecret,
     {
+      subject: keyedHash(deps.hashSecret, 'kullanici', p.userId),
+      operation,
       provider: parsed.data.provider,
       model: parsed.data.model,
       system: SOURCED_SUMMARY_SYSTEM,
       prompt,
-      sourceIds: passages.map((x) => x.id),
+      sources: passages.map((x, i) => ({
+        id: x.id,
+        recordId: x.recordId,
+        chunkId: x.chunkId,
+        sha256: passageDigest(seen[i] ?? ''),
+      })),
     },
     deps.now(),
   );
-  // The client validates against exactly what the model sees (the scrubbed passages in the prompt).
-  const forClient = passagesFromPrompt(prompt);
+  // The browser validates against exactly what the model sees.
   return json({
     nonce: bundle.nonce,
     expiresAt: bundle.expiresAt,
@@ -351,13 +395,17 @@ export const preparePost = withAuth({ rate: casuistRules.prepareUser }, async (r
     system: bundle.system,
     prompt: bundle.prompt,
     sources: sourceChips(passages),
-    passages: Object.fromEntries(forClient.map((x) => [x.id, x.text])),
+    passages: Object.fromEntries(masked.map((x, i) => [x.id, seen[i] ?? ''])),
     limits: { maxInputTokens: route.maxInputTokens, maxOutputTokens: route.maxOutputTokens },
   });
 });
 
-/** POST /v1/answers/verify (plan 8.1): server side re-validation of BYOK client lines; nonce is single use. */
-export const verifyPost = withAuth({ rate: casuistRules.verifyUser }, async (req) => {
+/**
+ * POST /v1/answers/verify (plan 8.1): server side re-validation of BYOK client lines; the nonce is single use and
+ * bound to the user it was issued to. The passages are reloaded from the store by (record, chunk), rebuilt and
+ * masked like prepare did, and must match the signed digests; the prompt text is never parsed for passages.
+ */
+export const verifyPost = withAuth({ rate: casuistRules.verifyUser }, async (req, p) => {
   const parsed = VerifyRequest.safeParse(await readJson(req));
   if (!parsed.success) return apiError('bad_request');
   const deps = summaryDeps();
@@ -370,14 +418,55 @@ export const verifyPost = withAuth({ rate: casuistRules.verifyUser }, async (req
       deps.signingSecret,
       parsed.data.nonce,
       parsed.data.signature,
+      keyedHash(deps.hashSecret, 'kullanici', p.userId),
       deps.now(),
     );
   } catch (e) {
     if (e instanceof NonceGoneError) return apiError('nonce_expired');
     if (e instanceof SignatureError) return apiError('bad_request');
+    if (e instanceof BundleSubjectError) return apiError('forbidden');
     throw e;
   }
-  const v = createLineValidator(passagesFromPrompt(bundle.prompt), { now: deps.now() });
+  const selection =
+    bundle.operation === 'ozet' || bundle.operation === 'derin_ozet' ? SELECTION[bundle.operation] : null;
+  if (!selection) return apiError('bad_request');
+  let searchDeps;
+  try {
+    searchDeps = await getSearchDeps();
+  } catch (e) {
+    if (e instanceof SearchUnavailable) return apiError('unavailable');
+    throw e;
+  }
+  const loaded = await loadPromptPassages(searchDeps.backend, bundle.sources, selection);
+  const scrubbed = await scrubSourced(
+    '',
+    loaded.map((x) => x.text),
+    nameRecognizer,
+  );
+  scrubbed.mapping.clear();
+  const rebuilt = loaded.map((x, i) => ({
+    id: x.id,
+    recordId: x.recordId,
+    chunkId: x.chunkId,
+    text: neutralize(scrubbed.passages[i] ?? ''),
+  }));
+  try {
+    assertSourcesMatch(bundle.sources, rebuilt);
+  } catch (e) {
+    // A source changed, was hidden or removed after prepare: nothing can be checked against what the model saw.
+    if (e instanceof SourceMismatchError) return apiError('conflict');
+    throw e;
+  }
+  const v = createLineValidator(
+    loaded.map((x, i) => ({
+      id: x.id,
+      text: rebuilt[i]?.text ?? '',
+      authority: x.authority,
+      status: x.status,
+      fetchedAt: x.fetchedAt,
+    })),
+    { now: deps.now() },
+  );
   const results = [];
   for (const [index, line] of parsed.data.lines.entries()) {
     const verdict = await v.check(line);

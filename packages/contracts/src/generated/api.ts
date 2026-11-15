@@ -2183,6 +2183,16 @@ export interface components {
             deadline?: string | null;
             currentWords?: number;
         };
+        /** @description Body of createWritingProject (v1.5.1). title, kind and targetWords are required; the server trims title and rejects a blank one. */
+        WritingProjectCreateInput: {
+            title: string;
+            /** @enum {string} */
+            kind: "tez" | "makale" | "odev";
+            targetWords: number;
+            /** Format: date */
+            deadline?: string;
+        };
+        /** @description Body of updateWritingProject: a partial update, every field optional and only the given fields change. Same rules as WritingProjectCreateInput; deadline cannot be cleared (null is rejected). */
         WritingProjectInput: {
             title?: string;
             /** @enum {string} */
@@ -3793,7 +3803,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["WritingProjectInput"];
+                "application/json": components["schemas"]["WritingProjectCreateInput"];
             };
         };
         responses: {

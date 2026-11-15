@@ -4,7 +4,7 @@ import { hukukiMetinSurumu } from '@/app/(kabuk)/_hukuki/yukle';
 import { listConsents } from './account.ts';
 import type { AuthContext } from './context.ts';
 import { schema } from './db.ts';
-import type { Principal } from './guard.ts';
+import { adminAllowed, type Principal } from './guard.ts';
 import { hasAnyRole } from './roles.ts';
 import { hasPasskeySession, hasSecondStep, hasTotpEnabled } from './step-up.ts';
 
@@ -92,4 +92,28 @@ export async function listOwnPasskeys(ctx: AuthContext, userId: string) {
     name: r.name ?? null,
     createdAt: (r.createdAt ?? new Date(0)).toISOString(),
   }));
+}
+
+export interface MarketingConsent {
+  /** Version of content/hukuki/tr/acik-riza.md the box shows; a new grant or withdrawal records it. */
+  version: string;
+  /** The latest acik_riza_pazarlama row is a grant (any version: a withdrawal is always a new row). */
+  granted: boolean;
+}
+
+/** Commercial message consent for /hesap/bildirimler (plan 10.8, 6563; separate from notification types). */
+export async function marketingConsent(ctx: AuthContext, userId: string): Promise<MarketingConsent> {
+  const version = hukukiMetinSurumu('acik-riza');
+  if (!version) throw new Error('legal text acik-riza not found');
+  const rows = (await listConsents(ctx, userId)).filter((c) => c.kind === 'acik_riza_pazarlama');
+  return { version, granted: rows.at(-1)?.granted ?? false };
+}
+
+/** True when the caller may open admin screens now (staff role, passkey session, TOTP step this session). */
+export async function staffReady(
+  ctx: AuthContext,
+  p: Principal,
+): Promise<{ staff: boolean; ready: boolean }> {
+  const staff = hasAnyRole(p.roles, ['editor', 'yonetici']);
+  return { staff, ready: staff && (await adminAllowed(ctx, p, ['editor', 'yonetici'])) };
 }

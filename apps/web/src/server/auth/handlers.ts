@@ -5,6 +5,7 @@ import {
   AdminProfessionInput,
   AdminQueueDecisionInput,
   AdminWeightsInput,
+  ApnsTokenInput,
   ConsentInput,
   EduVerificationConfirm,
   EduVerificationStart,
@@ -13,10 +14,12 @@ import {
   KvkkRequestInput,
   MePatch,
   MeDeleteInput,
+  NotificationPreferencesInput,
   ReviewQueueName,
   StepUpConfirmInput,
   TakedownRequestInput,
   TargetProfessionInput,
+  WebPushSubscriptionInput,
 } from '@kazuist/contracts';
 import tr from '@kazuist/i18n/tr/hesap.json' with { type: 'json' };
 import type { z } from 'zod';
@@ -36,13 +39,22 @@ import { confirmEduVerification, startEduVerification } from './edu.ts';
 import { checkIp, originAllowed, resolvePrincipal, withAuth, withPublic } from './guard.ts';
 import { apiError, json, rateLimited, readJson } from './http.ts';
 import { createGuestKvkkRequest, createKvkkRequest, verifyGuestKvkkRequest } from './kvkk.ts';
+import {
+  getNotificationPreferences,
+  registerApnsToken,
+  registerWebPush,
+  setNotificationPreferences,
+} from './notifications.ts';
 import { listProfessions } from './professions.ts';
 import { rules } from './rate-limit.ts';
 import type { Role } from './roles.ts';
 import { confirmSecondStep, hasPasskeySession, hasTotpEnabled } from './step-up.ts';
 import { createTakedownRequest } from './takedown.ts';
 
-/** Route handlers for /api/v1/{me,kvkk-requests,professions,takedown-requests,admin}/** and /api/auth/**. */
+/**
+ * Route handlers for /api/v1/{me,kvkk-requests,professions,notifications,push,takedown-requests,admin}/** and
+ * /api/auth/**.
+ */
 
 const noContent = () => new Response(null, { status: 204, headers: { 'Cache-Control': 'no-store' } });
 
@@ -134,6 +146,31 @@ export const eduConfirm = withAuth({ rate: rules.meUser }, async (req, p, ctx) =
   return r === 'verified' ? json(await getMe(ctx, p.userId)) : apiError('bad_request', tr.hata.kodHatali);
 });
 
+/** Notification preferences of the caller only; the user id comes from the session, never the body. */
+export const notificationPrefsGet = withAuth({ rate: rules.meUser }, async (_req, p, ctx) =>
+  json(await getNotificationPreferences(ctx, p.userId)),
+);
+
+export const notificationPrefsPut = withAuth({ rate: rules.meUser }, async (req, p, ctx) => {
+  const body = NotificationPreferencesInput.safeParse(await readJson(req));
+  if (!body.success) return apiError('bad_request');
+  return json(await setNotificationPreferences(ctx, p, body.data));
+});
+
+/** 201 {id}. Only https endpoints of the browsers' push services with RFC 8291 keys are stored. */
+export const webPushPost = withAuth({ rate: rules.pushUser }, async (req, p, ctx) => {
+  const body = WebPushSubscriptionInput.safeParse(await readJson(req));
+  if (!body.success) return apiError('bad_request');
+  const id = await registerWebPush(ctx, p, body.data);
+  return id === 'invalid' ? apiError('bad_request') : json({ id }, 201);
+});
+
+export const apnsTokenPost = withAuth({ rate: rules.pushUser }, async (req, p, ctx) => {
+  const body = ApnsTokenInput.safeParse(await readJson(req));
+  if (!body.success) return apiError('bad_request');
+  return json({ id: await registerApnsToken(ctx, p, body.data) }, 201);
+});
+
 export const kvkkPost = withAuth({ rate: rules.kvkkUser }, async (req, p, ctx) => {
   const body = KvkkRequestInput.safeParse(await readJson(req));
   if (!body.success) return apiError('bad_request');
@@ -214,6 +251,7 @@ export const adminQueueDecide = withAuth(
     const body = AdminQueueDecisionInput.safeParse(await readJson(req));
     if (!q.success || !id || !body.success) return apiError('bad_request');
     const r = await decideQueueItem(ctx, p.userId, q.data, id, body.data);
+    if (r === 'unsupported') return apiError('bad_request');
     return r === 'not_found' ? apiError('not_found') : json({ ok: true });
   },
 );
