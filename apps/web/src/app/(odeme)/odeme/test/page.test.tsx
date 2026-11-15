@@ -1,7 +1,8 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-const state = vi.hoisted(() => ({ signedIn: true, name: 'Çağrı Özgür', published: true }));
+const state = vi.hoisted(() => ({ signedIn: true, name: 'Çağrı Özgür', published: true, payments: true }));
+vi.mock('@/server/billing/acik.ts', () => ({ odemeAcik: () => state.payments }));
 vi.mock('next/headers', () => ({ headers: async () => new Headers() }));
 vi.mock('@/server/auth/context.ts', () => ({
   getAuthContext: async () => ({ config: { baseUrl: 'https://kazuist.com' } }),
@@ -32,6 +33,7 @@ vi.mock('../../../(kabuk)/_hukuki/yukle.ts', () => ({
 import OdemePage from '../page.tsx';
 
 beforeEach(() => {
+  state.payments = true;
   state.signedIn = true;
   state.name = 'Çağrı Özgür';
   state.published = true;
@@ -75,4 +77,14 @@ it('closes legacy subscription links without showing consent or buyer fields', a
   expect(body).toContain('Yeni abonelik satışı kapalıdır');
   expect(body).not.toContain('cagri@example.invalid');
   expect(body).not.toContain('type="checkbox"');
+});
+
+it('payments-off launch mode: no checkout, free and BYOK are offered instead (K-09)', async () => {
+  state.payments = false;
+  const body = await html();
+  expect(body).toContain('Kredi satışı henüz açılmadı');
+  expect(body).toContain('href="/hesap/yz-anahtari"');
+  expect(body).toContain('href="/fiyatlar"');
+  expect(body).not.toContain('type="checkbox"');
+  expect(body).not.toContain('cagri@example.invalid');
 });

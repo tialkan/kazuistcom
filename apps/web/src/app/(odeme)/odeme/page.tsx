@@ -1,9 +1,12 @@
+import byok from '@kazuist/i18n/tr/byok.json' with { type: 'json' };
 import odeme from '@kazuist/i18n/tr/odeme.json';
+import { Dugme } from '@kazuist/ui';
 import { PRICE_TABLE_V1, addMonths, findProduct } from '@kazuist/ledger';
 import { orderFields, type Order } from '@kazuist/ledger/billing';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { getMe } from '@/server/auth/account.ts';
+import { odemeAcik } from '@/server/billing/acik.ts';
 import { getAuthContext } from '@/server/auth/context.ts';
 import { resolvePrincipal } from '@/server/auth/guard.ts';
 import { hukukiMetin } from '../../(kabuk)/_hukuki/yukle.ts';
@@ -26,6 +29,23 @@ export default async function OdemePage(props: { searchParams: Promise<{ urun?: 
       <div className="sayfa" style={{ maxWidth: '54rem', margin: '0 auto', padding: '2rem 1.25rem' }}>
         <h1>{odeme.baslik}</h1>
         <p role="status">{odeme.abonelikSatisiKapali}</p>
+      </div>
+    );
+  // Payments-off launch mode (K-09): no buy flow that can only end in 503; free and BYOK are offered instead.
+  if (!odemeAcik())
+    return (
+      <div className="sayfa" style={{ maxWidth: '54rem', margin: '0 auto', padding: '2rem 1.25rem' }}>
+        <h1>{odeme.baslik}</h1>
+        <section aria-labelledby="satis-kapali" data-testid="satis-kapali">
+          <h2 id="satis-kapali">{byok.satisKapali.baslik}</h2>
+          <p role="status">{byok.satisKapali.odemeMetin}</p>
+          <p style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <Dugme href="/hesap/yz-anahtari">{byok.satisKapali.byok}</Dugme>
+            <Dugme href="/fiyatlar" tur="ikincil">
+              {byok.satisKapali.fiyatlar}
+            </Dugme>
+          </p>
+        </section>
       </div>
     );
   let legal: CheckoutLegalPresentation | null = null;

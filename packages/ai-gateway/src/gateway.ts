@@ -2,9 +2,14 @@ import type { ByokProvider, ModelLine } from '@kazuist/contracts';
 import { BudgetGuard, ProviderSwitch } from './budget.ts';
 import { geminiPolicy, type ContentSensitivity, type GeminiBilling } from './gemini.ts';
 import { parseJsonLines } from './jsonl.ts';
-import { reservationErrorCode, type CostEvent, type LedgerReservations } from './ledger.ts';
+import {
+  reservationErrorCode,
+  type CostEvent,
+  type LedgerReservations,
+  type SettlementFailure,
+} from './ledger.ts';
 import { sanitizeMetric, type MetricSink } from './observe.ts';
-import { restore, scrub, type NameRecognizer } from './pii.ts';
+import { restore, scrubParts, type NameRecognizer } from './pii.ts';
 import { SOURCED_SUMMARY_SYSTEM, buildSourcedPrompt, type Passage } from './prompt.ts';
 import { ROUTES, costUsd, estimateTokens, platformModel } from './routing.ts';
 import {
@@ -73,12 +78,56 @@ export interface GatewayDeps {
   sink: MetricSink;
   ner?: NameRecognizer;
   onCost?: (e: CostEvent) => void;
+  /** Operator alert when consume or release kept failing; the stream still ends normally. */
+  onSettleFailure?: (f: SettlementFailure) => void;
   now?: () => number;
 }
+
+/** Attempts per settlement; only failures without a typed ledger code are retried. */
+const SETTLE_ATTEMPTS = 2;
+
+const ledgerCode = (e: unknown): string | null => {
+  const code = e && typeof e === 'object' ? (e as { code?: unknown }).code : undefined;
+  return typeof code === 'string' && code ? code : null;
+};
 
 export function createGateway(deps: GatewayDeps) {
   const now = deps.now ?? Date.now;
   const modelFor = deps.platformModelFor ?? platformModel;
+
+  /**
+   * Consume or release one reservation without ever throwing (review.md P8.5). A failure used to escape the
+   * generator's finally block: the user lost the end of a finished summary, no cost event or metric was written
+   * and the platform spend counter missed a paid call. Now the result says what the ledger really recorded.
+   */
+  async function settle(
+    requestId: string,
+    reservationId: string,
+    credits: number,
+  ): Promise<{ ok: boolean; charged: number; errorKind?: string }> {
+    const action = credits > 0 ? 'consume' : 'release';
+    let errorKind = 'unknown';
+    for (let attempt = 1; attempt <= SETTLE_ATTEMPTS; attempt++) {
+      try {
+        if (credits > 0) await deps.ledger.consume(reservationId, credits);
+        else await deps.ledger.release(reservationId);
+        return { ok: true, charged: credits };
+      } catch (e) {
+        const code = ledgerCode(e);
+        // A retry that finds the hold settled: the first attempt committed before its reply was lost.
+        if (attempt > 1 && code === 'already_settled') return { ok: true, charged: credits };
+        errorKind = code ?? (e instanceof Error ? e.name : 'unknown');
+        // Typed ledger answers (expired, already settled) are final; only unknown failures are retried.
+        if (code) break;
+      }
+    }
+    try {
+      deps.onSettleFailure?.({ requestId, reservationId, action, credits, errorKind });
+    } catch {
+      // The alert hook must not break the stream either.
+    }
+    return { ok: false, charged: 0, errorKind };
+  }
 
   async function* run(input: RunInput): AsyncGenerator<GatewayEvent> {
     const route = ROUTES[input.operation];
@@ -90,11 +139,9 @@ export function createGateway(deps: GatewayDeps) {
       if (!d.allowed) throw new GatewayError('forbidden', 403, 'gemini byok requires paid billing');
     }
 
-    // plan 8.5: scrub question and passages together so labels are consistent.
-    const SEP = '\u0000\u0001';
-    const joined = [input.question, ...input.passages.map((p) => p.text)].join(SEP);
-    const scrubbed = await scrub(joined, deps.ner);
-    const parts = scrubbed.text.split(SEP);
+    // plan 8.5: scrub question and passages with one label space so labels are consistent.
+    const scrubbed = await scrubParts([input.question, ...input.passages.map((p) => p.text)], deps.ner);
+    const parts = scrubbed.parts;
     const passages = input.passages.map((p, i) => ({ ...p, text: parts[i + 1] ?? '' }));
     const prompt = buildSourcedPrompt(parts[0] ?? '', passages);
     if (estimateTokens(SOURCED_SUMMARY_SYSTEM + prompt) > route.maxInputTokens)
@@ -171,6 +218,7 @@ export function createGateway(deps: GatewayDeps) {
             },
             {
               apiKey: a.key,
+              timeoutMs: route.timeoutMs,
               ...(input.signal ? { signal: input.signal } : {}),
               ...(a.or ? { openRouter: a.or } : {}),
             },
@@ -233,13 +281,24 @@ export function createGateway(deps: GatewayDeps) {
     } finally {
       admission.release();
       // plan 4.5/3: abstention and technical errors are free.
-      const charge = outcome === 'ok' && reservation ? input.credits : 0;
-      if (reservation) {
-        if (charge > 0) await deps.ledger.consume(reservation.reservationId, charge);
-        else await deps.ledger.release(reservation.reservationId);
-      }
+      const due = outcome === 'ok' && reservation ? input.credits : 0;
       const usd = platform ? costUsd(model, inputTokens, outputTokens) : 0;
-      if (usd > 0) await deps.budget.recordSpendTl(usd * USD_TL);
+      // The provider is paid whatever the ledger does next, so the platform spend is counted first (plan 8.7/2).
+      if (usd > 0) {
+        try {
+          await deps.budget.recordSpendTl(usd * USD_TL);
+        } catch {
+          errorKind ??= 'budget_spend_failed';
+        }
+      }
+      let charge = 0;
+      let settlement: CostEvent['settlement'] = 'none';
+      if (reservation) {
+        const s = await settle(input.requestId, reservation.reservationId, due);
+        charge = s.charged;
+        settlement = s.ok ? 'ok' : 'failed';
+        if (!s.ok) errorKind = `ledger_${s.errorKind ?? 'unknown'}`;
+      }
       const cost: CostEvent = {
         requestId: input.requestId,
         operation: input.operation,
@@ -251,6 +310,8 @@ export function createGateway(deps: GatewayDeps) {
         costUsd: usd,
         costTl: usd * USD_TL,
         creditsCharged: charge,
+        creditsDue: due,
+        settlement,
         reservationId: reservation?.reservationId ?? null,
         at: new Date(now()).toISOString(),
       };
