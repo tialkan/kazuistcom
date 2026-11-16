@@ -5,6 +5,8 @@ Her ajan yalnız kendi satırını günceller. Durum değerleri: bekliyor, sür�
 
 Güncel orkestra kaydı, 2 Kasım 2026: CI hesap kısıtı kalktı; #43, #50, #51, #52, #53, #54 ve #55 dörder yeşil CI işiyle main'e alındı, #38/#41/#42/#47/#48/#49 içerildikleri için kapatıldı. Açık PR yok. Dalga 1 kapısı 5/9; staging, gerçek sandbox akışı, bağlayıcıların staging çalışması ve hukuki hazırlık açık. Dalga 2 başlamadı.
 
+Karar, 17 Kasım 2026 (Tarık): ilk yayın yalnız BYOK. Üretimde `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY` ve `AI_DAILY_BUDGET_TRY` boş bırakılır; platform YZ, ücretsiz günlük özet ve OpenRouter için platform tarafı Standart Sözleşme 2 bu yayında yoktur.
+
 | Dalga | Ajan | İş | Durum | Not |
 |---|---|---|---|---|
 | 0 | mimar | Monorepo, sözleşmeler v1, şema v1, ADR-0001..0020, sahiplik | tamam | CI yeşil (4400e99); docker compose up doğrulanamadı, gerçek PostgreSQL doğrulaması Dalga 1 altyapi'ye devredildi |
