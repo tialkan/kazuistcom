@@ -44,15 +44,22 @@ async function imagesLoaded(page: Page) {
 }
 
 test.describe('product shell', () => {
-  test('home: one h1, a search form posting to /ara, sample questions', async ({ page }) => {
+  test('home: welcome scene with one h1 and one call to action to /lansman', async ({ page }) => {
     const errors = await open(page, '/');
     await expect(page.locator('h1')).toHaveCount(1);
-    const form = page.locator('form[role="search"]');
-    await expect(form).toHaveAttribute('action', '/ara');
-    await expect(form.locator('input[type="search"]')).toBeVisible();
-    expect(await page.locator('.ana-ornekler a').count()).toBeGreaterThanOrEqual(3);
+    const cta = page.locator('.kzw-cta');
+    await expect(cta).toHaveCount(1);
+    await expect(cta).toHaveAttribute('href', '/lansman');
+    await expect(page.locator('.kzw-harf')).toHaveCount(7);
     // ADR-0032: Turkish only, no English link or language switch.
     await expect(page.locator('a[href="/en"]')).toHaveCount(0);
+    expect(errors).toEqual([]);
+  });
+
+  test('/lansman counts down to 12 December', async ({ page }) => {
+    const errors = await open(page, '/lansman');
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('[role="timer"]')).toHaveCount(1);
     expect(errors).toEqual([]);
   });
 

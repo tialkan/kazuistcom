@@ -8,8 +8,8 @@ const A = '/karsilama/';
 const BULUT_SAYISI = 12;
 
 // Hand drawn letters, no font: [advance, mode (n nonzero fill, e evenodd fill, s stroke 34), path, sink, tilt].
-type Harf = [number, 'n' | 'e' | 's', string, number, number];
-const HARFLER: Harf[] = [
+export type Harf = [number, 'n' | 'e' | 's', string, number, number];
+export const HARFLER: Harf[] = [
   [118, 'n', 'M0 0H34V300H0Z M30 186L82 0H118L64 196Z M50 150L82 126L118 300H82Z', 20, -7],
   [122, 'e', 'M0 300L45 0H77L122 300H87L79 244H43L35 300Z M48 210H74L61 112Z', 38, 5],
   [114, 'n', 'M0 0H114V34L38 266H114V300H0V266L76 34H0Z', 24, -9],
@@ -24,7 +24,7 @@ const HARFLER: Harf[] = [
   ],
   [122, 's', 'M0 17H122M61 17V300', 42, -4],
 ];
-const ARALIK = 24;
+export const ARALIK = 24;
 
 function harfCiz(g: CanvasRenderingContext2D, h: Harf) {
   g.lineWidth = 34;
@@ -67,14 +67,17 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
   const $ = <T extends HTMLElement>(q: string) => k.querySelector(q) as T;
   const durdur: Array<() => void> = [];
   let acik = true;
+  // one animation frame loop for every layer
+  const isler: Array<(t: number) => void> = [];
   const raf = (f: (t: number) => void) => {
-    const d = (t: number) => {
-      if (!acik) return;
-      f(t);
-      requestAnimationFrame(d);
-    };
-    requestAnimationFrame(d);
+    isler.push(f);
   };
+  const dongu = (t: number) => {
+    if (!acik) return;
+    for (const f of isler) f(t);
+    requestAnimationFrame(dongu);
+  };
+  requestAnimationFrame(dongu);
   const dinle = <K extends keyof WindowEventMap>(
     hedef: Window | HTMLElement,
     ad: K,
@@ -85,6 +88,10 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
     durdur.push(() => hedef.removeEventListener(ad, f as EventListener, o));
   };
   const azHareket = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // secondary images wait for the scene to start, so the mountain and sky get the bandwidth first
+  for (const im of k.querySelectorAll<HTMLImageElement>('img[data-src]')) im.src = im.dataset.src ?? '';
+  if (!azHareket) k.classList.add('kzw--canli');
+  durdur.push(() => k.classList.remove('kzw--canli'));
 
   // sand grains: tiny and faint
   const cv = $<HTMLCanvasElement>('.kzw-kum');
@@ -236,9 +243,13 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
   const yazilar = s.yazilar ?? [];
   const yg = yz?.getContext('2d');
   if (yz && kalem && yg && yazilar.length && !azHareket) {
+    let kutu = yz.getBoundingClientRect();
+    let kalemH = kalem.offsetHeight;
     const yrs = () => {
       yz.width = yz.clientWidth * devicePixelRatio;
       yz.height = yz.clientHeight * devicePixelRatio;
+      kutu = yz.getBoundingClientRect();
+      kalemH = kalem.offsetHeight;
     };
     yrs();
     dinle(window, 'resize', yrs);
@@ -293,14 +304,14 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
         yg.restore();
       }
       // pen nib follows the writing head with a small handwriting bob; it lifts away once the word is done
-      const r = yz.getBoundingClientRect();
+      const r = kutu;
       const d = devicePixelRatio;
       const bitti = head >= gen;
       const kalk = bitti ? Math.min(1, (gecen - gen / hiz) / 700) : 0;
       const nx = r.left + (px + head) / d;
       const ny = r.top + py / d - 6 + Math.sin(t / 90) * 3 * (1 - kalk) - kalk * 40;
       kalem.style.opacity = String(1 - kalk);
-      kalem.style.transform = `translate3d(${nx}px,${ny - kalem.offsetHeight}px,0)`;
+      kalem.style.transform = `translate3d(${nx}px,${ny - (kalemH || (kalemH = kalem.offsetHeight))}px,0)`;
       if (tail >= gen + yz.width * 0.06) {
         bekle = bekle || t;
         if (t - bekle > 900) {
@@ -313,50 +324,19 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
 
   // wordmark: letters sink into the sand at different, very slow speeds, some tilting
   if (s.kelime) {
-    let ax = 0;
-    const row = $('.kzw-kelime');
-    const W = HARFLER.reduce((t, h) => t + h[0] + ARALIK, -ARALIK);
-    row.style.aspectRatio = `${W}/300`;
-    const L = HARFLER.map((h) => {
-      const c = document.createElement('canvas');
-      const S = 4;
-      c.width = (h[0] + 4) * S;
-      c.height = 304 * S;
-      const g = c.getContext('2d');
-      if (g) {
-        g.scale(S, S);
-        g.translate(2, 2);
-        g.fillStyle = g.strokeStyle = '#fff';
-        harfCiz(g, h);
-        g.globalCompositeOperation = 'source-atop';
-        g.strokeStyle = 'rgba(205,150,96,.32)';
-        g.lineWidth = 1.2;
-        for (let i = 0; i < 70; i++) {
-          const y0 = -10 + i * 5.2;
-          g.beginPath();
-          g.moveTo(-30, y0);
-          for (let xx = -30; xx < h[0] + 60; xx += 8)
-            g.lineTo(xx, y0 + Math.sin((xx + ax) / 38 + i * 0.7) * 3.2 + Math.sin((xx + ax) / 91 + i) * 2.4);
-          g.stroke();
-        }
-      }
-      const im = document.createElement('img');
-      im.src = c.toDataURL();
-      im.alt = '';
-      im.style.cssText = `position:absolute;left:${(ax / W) * 100}%;width:${((h[0] + 4) / W) * 100}%;top:0;transform-origin:50% 100%;will-change:transform`;
-      row.appendChild(im);
-      ax += h[0] + ARALIK;
+    const L = [...k.querySelectorAll<SVGSVGElement>('.kzw-harf')].map((el, i) => {
+      const h = HARFLER[i];
       return {
-        im,
-        y: (h[3] / 300) * 100,
-        tilt: h[4] * (0.8 + Math.random() * 0.5),
+        el,
+        y: ((h?.[3] ?? 0) / 300) * 100,
+        tilt: (h?.[4] ?? 0) * (0.8 + Math.random() * 0.5),
         sp: 100 / ((240 + Math.random() * 420) * 60),
       };
     });
     raf(() => {
       for (const l of L) {
         l.y = Math.min(105, l.y + l.sp);
-        l.im.style.transform = `translateY(${l.y}%) rotate(${(l.tilt * Math.min(1, l.y / 100)).toFixed(2)}deg)`;
+        l.el.style.transform = `translateY(${l.y}%) rotate(${(l.tilt * Math.min(1, l.y / 100)).toFixed(2)}deg)`;
       }
     });
   }
@@ -436,3 +416,12 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
     durdur.forEach((f) => f());
   };
 }
+
+/** Desert pattern tile for the wordmark: ten wavy lines, computed once so server and client agree. */
+export const KUM_DESEN = Array.from({ length: 10 }, (_, i) => {
+  const y0 = i * 5.2;
+  const pts: string[] = [];
+  for (let x = 0; x <= 240; x += 8)
+    pts.push(`${x},${(y0 + Math.sin((x / 240) * Math.PI * 2 + i * 0.7) * 3.2).toFixed(1)}`);
+  return `M${pts.join('L')}`;
+}).join(' ');
