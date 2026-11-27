@@ -263,7 +263,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
     let bekle = 0;
     const yeni = (t: number) => {
       kelime = yazilar[wi++ % yazilar.length] ?? '';
-      const fs = Math.min(yz.width / 7, yz.height * 0.6);
+      const fs = Math.min(yz.width / 7, yz.height * 0.6) * 0.9;
       yg.font = `500 ${fs}px KzEl, cursive`;
       gen = yg.measureText(kelime).width;
       px = (yz.width - gen) * (0.1 + Math.random() * 0.8);

@@ -383,7 +383,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: clamp(54px, 7vh, 90px);
+  width: clamp(27px, 3.5vh, 45px);
   z-index: 11;
   pointer-events: none;
   will-change: transform, opacity;
