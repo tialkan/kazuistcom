@@ -4,7 +4,8 @@
 - Tek çağrı düğmesi `/lansman` sayfasına gider; geri sayım 12 Aralık 2026 00:00 (İstanbul) içindir.
 - Kod: `apps/web/src/app/_karsilama/`, `apps/web/src/app/lansman/`, görseller `apps/web/public/karsilama/` (Midjourney, webp). Metinler `packages/i18n/tr/ortak.json` > `karsilama`.
 - Gökte el yazısı efekti: dağ stilindeki dolma kalem (`public/karsilama/kalem.webp`) akademik kelimeler yazar, kelime bitmeden ilk harfler silinmeye başlar. Yazı tipi Caveat 500 (OFL-1.1, `public/fonts/caveat/`), kelimeler `karsilama.yazilar`.
-- Açık: lansman saati Tarık'tan teyit edilmeli (00:00 varsayıldı); Kazu için göz kırpma ve kuyruk sallama çizimleri gelecek.
+- Kazu tek pozda durur; Midjourney Editor ile yalnız gözleri ve yalnız kuyruğu yeniden çizilmiş iki kare (`kazu-goz`, `kazu-kuyruk`) arada göz kırpma ve kuyruk sallama verir.
+- Açık: lansman saati Tarık'tan teyit edilmeli (00:00 varsayıldı).
 
 ## 15 Kasım 2026, kimlik: hesap ön ele geçirme, e-posta yokken 503, kaldırma ve anonimleştirme ekranları (kimlik/on-ele-gecirme-eposta-kuyruklar)
 

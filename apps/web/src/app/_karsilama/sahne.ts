@@ -6,7 +6,6 @@
 
 const A = '/karsilama/';
 const BULUT_SAYISI = 12;
-const POZLAR = ['okuma', 'kirpma', 'okuma', 'dusunme', 'fikir', 'el', 'okuma', 'esneme', 'kutlama'];
 
 // Hand drawn letters, no font: [advance, mode (n nonzero fill, e evenodd fill, s stroke 34), path, sink, tilt].
 type Harf = [number, 'n' | 'e' | 's', string, number, number];
@@ -184,29 +183,42 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
   });
   durdur.push(() => zamanlayicilar.forEach((id) => clearTimeout(id)));
 
-  // Kazu: slow pose changes and a very small breathing
+  // Kazu: one pose; now and then a blink and a tail swish (same drawing, only the eyes or the tail redrawn)
   const kz = $('.kzw-kazu');
-  const pozImg = new Map<string, HTMLImageElement>();
-  for (const n of new Set(POZLAR)) {
+  const kare = (ad: string, ac: boolean) => {
     const im = document.createElement('img');
-    im.src = `${A}kazu-${n}.webp`;
+    im.src = `${A}kazu-${ad}.webp`;
     im.alt = '';
-    im.className = 'kzw-poz';
+    im.className = ac ? 'kzw-poz acik' : 'kzw-poz';
     kz.appendChild(im);
-    pozImg.set(n, im);
+    return im;
+  };
+  kare('ana', true);
+  const goz = kare('goz', false);
+  const kuyruk = kare('kuyruk', false);
+  goz.style.transition = 'opacity .08s linear';
+  kuyruk.style.transition = 'opacity .35s ease';
+  const zamanla = (f: () => void, ms: number) => {
+    const id = window.setTimeout(() => {
+      zamanlayicilar.delete(id);
+      if (acik) f();
+    }, ms);
+    zamanlayicilar.add(id);
+  };
+  const kirp = () => {
+    goz.classList.add('acik');
+    zamanla(() => goz.classList.remove('acik'), 170);
+    zamanla(kirp, 2800 + Math.random() * 4200);
+  };
+  const salla = () => {
+    kuyruk.classList.add('acik');
+    zamanla(() => kuyruk.classList.remove('acik'), 650);
+    zamanla(salla, 5000 + Math.random() * 6000);
+  };
+  if (!azHareket) {
+    zamanla(kirp, 2000);
+    zamanla(salla, 4000);
   }
-  let pi = 0;
-  pozImg.get(POZLAR[0] ?? 'okuma')?.classList.add('acik');
-  const pozId = window.setInterval(() => {
-    const a = pozImg.get(POZLAR[pi % POZLAR.length] ?? '');
-    pi++;
-    const b = pozImg.get(POZLAR[pi % POZLAR.length] ?? '');
-    if (a && b && a !== b) {
-      a.classList.remove('acik');
-      b.classList.add('acik');
-    }
-  }, 11000);
-  durdur.push(() => clearInterval(pozId));
   const t0 = performance.now();
   if (!azHareket)
     raf((t) => {
