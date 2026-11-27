@@ -18,12 +18,13 @@ export function Sahne({
 }) {
   const kok = useRef<HTMLDivElement>(null);
   const [logo, setLogo] = useState('');
-  const { kelime, gunes } = secenek;
+  const { kelime, gunes, yazilar } = secenek;
+  const yaziAnahtar = yazilar?.join('|') ?? '';
   useEffect(() => {
     setLogo(logoUrl(2));
     if (!kok.current) return;
-    return sahneKur(kok.current, { kelime, gunes });
-  }, [kelime, gunes]);
+    return sahneKur(kok.current, { kelime, gunes, yazilar: yaziAnahtar ? yaziAnahtar.split('|') : [] });
+  }, [kelime, gunes, yaziAnahtar]);
   return (
     <div className="kzw" ref={kok} data-gunes={gunes}>
       <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
@@ -50,6 +51,7 @@ export function Sahne({
         <div className="kzw-haze" />
         <div className="kzw-glow" />
       </div>
+      <canvas className="kzw-yazi" aria-hidden="true" />
       <div className="kzw-ly kzw-l-kz" aria-hidden="true">
         <div className="kzw-kazu" />
       </div>
@@ -57,6 +59,9 @@ export function Sahne({
         <div className="kzw-wmbox">{kelime ? <div className="kzw-kelime" /> : null}</div>
       </div>
       <canvas className="kzw-kum" aria-hidden="true" />
+      {secenek.yazilar?.length ? (
+        <img className="kzw-kalem" src="/karsilama/kalem.webp" alt="" aria-hidden="true" />
+      ) : null}
       <div className="kzw-grain" aria-hidden="true" />
       {children}
       <div className="kzw-ust">

@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: { absolute: t.baslik }, description: 
 export default function Home() {
   return (
     <Sahne
-      secenek={{ kelime: true, gunes: 'kaydir' }}
+      secenek={{ kelime: true, gunes: 'kaydir', yazilar: Object.values(t.yazilar) }}
       logoAlt={t.logo}
       ust={
         <Link className="kzw-cta" href="/lansman">

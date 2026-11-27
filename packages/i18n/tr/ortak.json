@@ -184,6 +184,18 @@
       "saniye": "saniye",
       "bitti": "Kazuist yayında",
       "geri": "Karşılama sayfasına dön"
+    },
+    "yazilar": {
+      "1": "Tez",
+      "2": "Makale",
+      "3": "Hipotez",
+      "4": "Kaynakça",
+      "5": "Literatür",
+      "6": "Yöntem",
+      "7": "Özet",
+      "8": "Atıf",
+      "9": "Bulgular",
+      "10": "Sonuç"
     }
   }
 }

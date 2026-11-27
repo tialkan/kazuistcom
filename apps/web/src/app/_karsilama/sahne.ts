@@ -62,7 +62,7 @@ export function logoUrl(olcek = 2): string {
   return c.toDataURL();
 }
 
-export type SahneSecenek = { kelime: boolean; gunes: 'kaydir' | 'batis' };
+export type SahneSecenek = { kelime: boolean; gunes: 'kaydir' | 'batis'; yazilar?: string[] };
 
 export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
   const $ = <T extends HTMLElement>(q: string) => k.querySelector(q) as T;
@@ -217,6 +217,87 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       const y = -0.15 * Math.max(0, Math.sin(sn * 0.35)) ** 8;
       kz.style.transform = `translateX(-50%) translateY(${y}vh) rotate(${r.toFixed(2)}deg) scale(${sx.toFixed(4)},${sy.toFixed(4)})`;
     });
+
+  // handwriting: the pen writes academic words; the first letters start fading before the word is finished
+  const yz = k.querySelector<HTMLCanvasElement>('.kzw-yazi');
+  const kalem = k.querySelector<HTMLImageElement>('.kzw-kalem');
+  const yazilar = s.yazilar ?? [];
+  const yg = yz?.getContext('2d');
+  if (yz && kalem && yg && yazilar.length && !azHareket) {
+    const yrs = () => {
+      yz.width = yz.clientWidth * devicePixelRatio;
+      yz.height = yz.clientHeight * devicePixelRatio;
+    };
+    yrs();
+    dinle(window, 'resize', yrs);
+    let wi = Math.floor(Math.random() * yazilar.length);
+    let kelime = '';
+    let px = 0;
+    let py = 0;
+    let gen = 0;
+    let bas = 0;
+    let hiz = 0;
+    let bekle = 0;
+    const yeni = (t: number) => {
+      kelime = yazilar[wi++ % yazilar.length] ?? '';
+      const fs = Math.min(yz.width / 7, yz.height * 0.6);
+      yg.font = `500 ${fs}px KzEl, cursive`;
+      gen = yg.measureText(kelime).width;
+      px = (yz.width - gen) * (0.1 + Math.random() * 0.8);
+      py = yz.height * (0.55 + Math.random() * 0.2);
+      hiz = gen / (900 + kelime.length * 260);
+      bas = t;
+    };
+    let hazir = false;
+    void document.fonts.load('500 40px KzEl').finally(() => {
+      hazir = true;
+    });
+    raf((t) => {
+      if (!hazir) return;
+      if (!kelime) yeni(t);
+      const gecen = t - bas;
+      const bas2 = gen * 0.45;
+      const head = Math.min(gen, gecen * hiz);
+      const tail = Math.max(0, (gecen * hiz - bas2) * 1.15);
+      yg.clearRect(0, 0, yz.width, yz.height);
+      yg.save();
+      yg.beginPath();
+      yg.rect(px - 4, 0, head + 8, yz.height);
+      yg.clip();
+      yg.fillStyle = 'rgba(255,248,236,.94)';
+      yg.fillText(kelime, px, py);
+      yg.restore();
+      if (tail > 0) {
+        const fx = px + tail;
+        const gr = yg.createLinearGradient(fx - yz.width * 0.06, 0, fx, 0);
+        gr.addColorStop(0, 'rgba(0,0,0,1)');
+        gr.addColorStop(1, 'rgba(0,0,0,0)');
+        yg.save();
+        yg.globalCompositeOperation = 'destination-out';
+        yg.fillStyle = 'rgba(0,0,0,1)';
+        yg.fillRect(0, 0, Math.max(0, fx - yz.width * 0.06), yz.height);
+        yg.fillStyle = gr;
+        yg.fillRect(fx - yz.width * 0.06, 0, yz.width * 0.06, yz.height);
+        yg.restore();
+      }
+      // pen nib follows the writing head with a small handwriting bob; it lifts away once the word is done
+      const r = yz.getBoundingClientRect();
+      const d = devicePixelRatio;
+      const bitti = head >= gen;
+      const kalk = bitti ? Math.min(1, (gecen - gen / hiz) / 700) : 0;
+      const nx = r.left + (px + head) / d;
+      const ny = r.top + py / d - 6 + Math.sin(t / 90) * 3 * (1 - kalk) - kalk * 40;
+      kalem.style.opacity = String(1 - kalk);
+      kalem.style.transform = `translate3d(${nx}px,${ny - kalem.offsetHeight}px,0)`;
+      if (tail >= gen + yz.width * 0.06) {
+        bekle = bekle || t;
+        if (t - bekle > 900) {
+          bekle = 0;
+          kelime = '';
+        }
+      }
+    });
+  }
 
   // wordmark: letters sink into the sand at different, very slow speeds, some tilting
   if (s.kelime) {
