@@ -263,7 +263,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
     let bekle = 0;
     const yeni = (t: number) => {
       kelime = yazilar[wi++ % yazilar.length] ?? '';
-      const fs = Math.min(yz.width / 7, yz.height * 0.6) * 0.9;
+      const fs = Math.min(yz.width / 7, yz.height * 0.6) * 0.18;
       yg.font = `400 ${fs}px KzEl, cursive`;
       gen = yg.measureText(kelime).width;
       px = (yz.width - gen) * (0.1 + Math.random() * 0.8);
@@ -309,7 +309,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       const bitti = head >= gen;
       const kalk = bitti ? Math.min(1, (gecen - gen / hiz) / 700) : 0;
       const nx = r.left + (px + head) / d;
-      const ny = r.top + py / d - 6 + Math.sin(t / 90) * 3 * (1 - kalk) - kalk * 40;
+      const ny = r.top + py / d - 2 + Math.sin(t / 90) * 1 * (1 - kalk) - kalk * 16;
       kalem.style.opacity = String(1 - kalk);
       kalem.style.transform = `translate3d(${nx}px,${ny - (kalemH || (kalemH = kalem.offsetHeight))}px,0)`;
       if (tail >= gen + yz.width * 0.06) {
