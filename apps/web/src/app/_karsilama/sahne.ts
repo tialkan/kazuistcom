@@ -271,6 +271,27 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       hiz = gen / (900 + kelime.length * 260);
       bas = t;
     };
+    // fairy dust: tiny four point stars fall from the nib and twinkle out
+    const toz: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      r: number;
+      o: number;
+      ph: number;
+      c: string;
+    }> = [];
+    const RENK = ['255,236,150', '255,250,235', '252,211,34', '255,190,120'];
+    const yildiz = (x: number, y: number, r: number) => {
+      yg.beginPath();
+      yg.moveTo(x, y - r);
+      yg.quadraticCurveTo(x, y, x + r, y);
+      yg.quadraticCurveTo(x, y, x, y + r);
+      yg.quadraticCurveTo(x, y, x - r, y);
+      yg.quadraticCurveTo(x, y, x, y - r);
+      yg.fill();
+    };
     let hazir = false;
     void document.fonts.load('400 40px KzEl').finally(() => {
       hazir = true;
@@ -302,6 +323,43 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
         yg.fillStyle = gr;
         yg.fillRect(fx - yz.width * 0.06, 0, yz.width * 0.06, yz.height);
         yg.restore();
+      }
+      // nib glow and sparkles, drawn after the fade so they are never erased
+      const d0 = devicePixelRatio;
+      const yaziyor = head < gen;
+      const ux = px + head;
+      if (yaziyor) {
+        for (let i = 0; i < 2; i++)
+          toz.push({
+            x: ux + (Math.random() - 0.5) * 6 * d0,
+            y: py - 4 * d0 + (Math.random() - 0.5) * 6 * d0,
+            vx: (Math.random() - 0.7) * 0.6 * d0,
+            vy: (Math.random() * 0.5 + 0.15) * d0,
+            r: (0.8 + Math.random() * 2.2) * d0,
+            o: 1,
+            ph: Math.random() * 6,
+            c: RENK[(Math.random() * RENK.length) | 0] ?? RENK[0] ?? '255,255,255',
+          });
+        const gl = yg.createRadialGradient(ux, py - 3 * d0, 0, ux, py - 3 * d0, 14 * d0);
+        gl.addColorStop(0, 'rgba(255,240,170,.75)');
+        gl.addColorStop(1, 'rgba(255,240,170,0)');
+        yg.fillStyle = gl;
+        yg.fillRect(ux - 14 * d0, py - 17 * d0, 28 * d0, 28 * d0);
+      }
+      for (let i = toz.length - 1; i >= 0; i--) {
+        const p = toz[i];
+        if (!p) continue;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy *= 0.985;
+        p.o -= 0.012;
+        if (p.o <= 0) {
+          toz.splice(i, 1);
+          continue;
+        }
+        const tw = 0.55 + 0.45 * Math.sin(t / 70 + p.ph);
+        yg.fillStyle = `rgba(${p.c},${(p.o * tw).toFixed(3)})`;
+        yildiz(p.x, p.y, p.r * (0.6 + 0.4 * tw));
       }
       // pen nib follows the writing head with a small handwriting bob; it lifts away once the word is done
       const r = kutu;
