@@ -14,15 +14,8 @@
       "settings": {
         "formFactor": "mobile",
         "throttlingMethod": "simulate",
-        "onlyCategories": [
-          "performance",
-          "accessibility",
-          "best-practices",
-          "seo"
-        ],
-        "skipAudits": [
-          "is-crawlable"
-        ],
+        "onlyCategories": ["performance", "accessibility", "best-practices", "seo"],
+        "skipAudits": ["is-crawlable"],
         "chromeFlags": "--no-sandbox --headless=new"
       }
     },
