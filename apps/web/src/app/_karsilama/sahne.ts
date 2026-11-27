@@ -264,7 +264,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
     const yeni = (t: number) => {
       kelime = yazilar[wi++ % yazilar.length] ?? '';
       const fs = Math.min(yz.width / 7, yz.height * 0.6) * 0.9;
-      yg.font = `500 ${fs}px KzEl, cursive`;
+      yg.font = `400 ${fs}px KzEl, cursive`;
       gen = yg.measureText(kelime).width;
       px = (yz.width - gen) * (0.1 + Math.random() * 0.8);
       py = yz.height * (0.55 + Math.random() * 0.2);
@@ -272,7 +272,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       bas = t;
     };
     let hazir = false;
-    void document.fonts.load('500 40px KzEl').finally(() => {
+    void document.fonts.load('400 40px KzEl').finally(() => {
       hazir = true;
     });
     raf((t) => {
