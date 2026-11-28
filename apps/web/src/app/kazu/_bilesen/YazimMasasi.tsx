@@ -158,6 +158,30 @@ function Masa({ ilk }: { ilk: Taslak }) {
   }, [editor, baslik, iddia, ilk.tur]);
 
   const zincir = () => editor?.chain().focus();
+  const [indiriliyor, setIndiriliyor] = useState(false);
+  // Word export: the docx module is loaded only when asked for, the file is built in the browser
+  const indir = async () => {
+    if (!editor) return;
+    setIndiriliyor(true);
+    try {
+      const { taslakDocx, dosyaAdi } = await import('../_cekirdek/docx-aktar.ts');
+      const bayt = await taslakDocx(editor.getJSON(), baslik.trim());
+      const url = URL.createObjectURL(
+        new Blob([bayt.slice().buffer as ArrayBuffer], {
+          type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        }),
+      );
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = dosyaAdi(baslik);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } finally {
+      setIndiriliyor(false);
+    }
+  };
   const araclar = useMemo(
     () =>
       [
@@ -189,6 +213,9 @@ function Masa({ ilk }: { ilk: Taslak }) {
         <span className="kazu-durum">
           {tr.durum.kaydedildi} · {durum?.kelime ?? 0} {tr.durum.kelime}
         </span>
+        <button type="button" className="kazu-ikincil" onClick={indir} disabled={indiriliyor}>
+          {indiriliyor ? tr.arac.hazirlaniyor : tr.arac.word}
+        </button>
         <button
           type="button"
           className="kazu-ikincil"

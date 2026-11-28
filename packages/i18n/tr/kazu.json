@@ -28,7 +28,9 @@
     "geri": "Geri al",
     "ileri": "Yinele",
     "kazuAc": "Kazu'yu aç",
-    "kazuKapat": "Kazu'yu kapat"
+    "kazuKapat": "Kazu'yu kapat",
+    "word": "Word olarak indir",
+    "hazirlaniyor": "Hazırlanıyor"
   },
   "durum": {
     "kaydedildi": "Bu cihazda kaydedildi",

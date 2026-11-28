@@ -1,3 +1,9 @@
+## 28 Kasım 2026, /kazu: Word olarak indir (feat/kazu-word-aktarim)
+
+- Yazım masasına "Word olarak indir" düğmesi: taslak tarayıcıda `docx` ile .docx olur (ADR-0040 madde 4). A4, 2,5 cm kenar, Times New Roman 12, 1,5 satır, iki yana yaslı gövde, ilk satır girintisi, kalın bölüm başlıkları (anahat düzeyli), numaralı ve madde listeleri, blok alıntı, alt bilgide sayfa numarası.
+- Modül `apps/web/src/app/kazu/_cekirdek/docx-aktar.ts`, testi `__tests__/docx-aktar.test.ts`; düğmeye basılınca yüklenir. LibreOffice ile PDF'e çevrilip görsel olarak denetlendi.
+- Dergi ve üniversite profilleri ile PDF önizleme sonraki dilimlerdir.
+
 ## 28 Kasım 2026, /kazu yazım masası ilk dilimi ve Kazu danışmanlık ilkeleri (feat/kazu-yazim-ekrani)
 
 - ADR-0040 (yazım motoru) uyarınca `/kazu`: "Ne yazıyoruz?" girişi (makale, tez, seminer ödevi, bildiri), türe göre bölüm iskeleti, Tiptap çekirdeğiyle sade editör (başlık, alt başlık, kalın, italik, listeler, blok alıntı, geri al), kelime sayacı, Kazu paneli (sekiz adım, iddia kartı).
