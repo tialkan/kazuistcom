@@ -52,6 +52,33 @@
   opacity: 0;
   z-index: 1;
 }
+.kzw-gece {
+  z-index: 1;
+  background: linear-gradient(to bottom, #070b1f, #141c3c 60%, #2a2440);
+  opacity: calc(var(--gece, 0) * 1.6);
+}
+.kzw-l-ay {
+  z-index: 2;
+  transform: translate3d(-200vw, 0, 0);
+  transform-origin: 50% 16.5vh;
+  scale: 0.86;
+}
+.kzw-ay {
+  position: absolute;
+  left: 50%;
+  top: 9vh;
+  width: 13vh;
+  margin-left: -6.5vh;
+  filter: drop-shadow(0 0 18px rgba(230, 236, 255, 0.35));
+}
+/* at night the foreground layers lose light with the sky */
+.kzw-l-cl,
+.kzw-l-dag,
+.kzw-l-kz,
+.kzw-l-wm,
+.kzw-l-serap {
+  filter: brightness(calc(1 - var(--gece, 0) * 0.55));
+}
 .kzw-l-sun {
   z-index: 2;
   transform-origin: 50% 16.5vh;
