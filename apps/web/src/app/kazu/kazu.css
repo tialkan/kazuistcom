@@ -300,3 +300,74 @@
     display: none;
   }
 }
+
+.kazu-kart h4 {
+  margin: 14px 0 6px;
+  font-size: 0.92rem;
+}
+.kazu-alan select {
+  padding: 8px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font: inherit;
+  background: #fff;
+}
+.kazu-kayit {
+  margin: 0 0 12px;
+  padding: 10px 10px 4px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+.kazu-bag {
+  margin-bottom: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #b42318;
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
+.kazu-gizli {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.kazu-anahat {
+  margin: 0 0 10px;
+  padding-left: 18px;
+}
+.kazu-anahat li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 0;
+}
+.kazu-anahat li.alt {
+  padding-left: 14px;
+}
+.kazu-turler--dikey {
+  grid-template-columns: 1fr;
+  margin: 12px 0;
+}
+.kazu-kontrol {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+.kazu-kontrol li {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 0.92rem;
+}
+.kazu-kontrol li.tamam > span:first-child {
+  color: #1a7f37;
+  font-weight: 700;
+}
+.kazu-kontrol li.eksik > span:first-child {
+  color: #b42318;
+  font-weight: 700;
+}
