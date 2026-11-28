@@ -167,5 +167,35 @@
     },
     "ustBilgi": "Casuist araştırma projesi",
     "eskiNot": "Bu sayfa önceki sitenin arşividir ve güncel değildir."
+  },
+  "karsilama": {
+    "baslik": "Kazuist: akademik yazım danışmanınız",
+    "aciklama": "Makalenizi ve tezinizi adım adım yazdıran akademik yazım danışmanı.",
+    "logo": "Kazuist ana sayfa",
+    "cta": "Akademik Yazım Danışmanı",
+    "lansman": {
+      "baslik": "Kazuist lansmanı 12 Aralık'ta",
+      "aciklama": "Kazuist 12 Aralık 2026'da açılıyor. Geri sayımı buradan izleyebilirsiniz.",
+      "ust": "Lansman",
+      "tarih": "12.12'de",
+      "gun": "gün",
+      "saat": "saat",
+      "dakika": "dakika",
+      "saniye": "saniye",
+      "bitti": "Kazuist yayında",
+      "geri": "Karşılama sayfasına dön"
+    },
+    "yazilar": {
+      "1": "Tez",
+      "2": "Makale",
+      "3": "Hipotez",
+      "4": "Kaynakça",
+      "5": "Literatür",
+      "6": "Yöntem",
+      "7": "Özet",
+      "8": "Atıf",
+      "9": "Bulgular",
+      "10": "Sonuç"
+    }
   }
 }

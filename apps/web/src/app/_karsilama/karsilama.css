@@ -1,0 +1,403 @@
+@font-face {
+  font-family: 'KzEl';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/sacramento/sacramento-latin-ext-400-normal.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+    U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'KzEl';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/sacramento/sacramento-latin-400-normal.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Welcome scene: a fixed full-screen layer above the product shell (kazuist.com first screen and /lansman). */
+.kzw {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  background: #2a2230 url('/karsilama/gok.webp') center bottom / cover;
+  color: #fff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+.kzw h1,
+.kzw p {
+  font-family: inherit;
+  color: inherit;
+}
+.kzw-ly {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.kzw-tint {
+  background: linear-gradient(
+    to bottom,
+    rgba(70, 20, 60, 0.55),
+    rgba(220, 80, 40, 0.55) 70%,
+    rgba(120, 30, 20, 0.6)
+  );
+  opacity: 0;
+  z-index: 1;
+}
+.kzw-l-sun {
+  z-index: 2;
+  transform-origin: 50% 16.5vh;
+  scale: 0.86;
+}
+.kzw-isin {
+  position: absolute;
+  left: 50%;
+  top: 5vh;
+  width: 22vh;
+  margin-left: -11vh;
+  will-change: transform;
+}
+.kzw-tas {
+  position: absolute;
+  left: 50%;
+  top: 10.5vh;
+  width: 12vh;
+  margin-left: -6vh;
+  filter: drop-shadow(0 0 24px rgba(255, 140, 60, 0.55));
+}
+.kzw-l-cl {
+  z-index: 3;
+}
+.kzw-l-dag {
+  z-index: 4;
+}
+.kzw-dag {
+  position: absolute;
+  left: 50%;
+  bottom: -11vh;
+  height: 60vh;
+  transform: translateX(-50%);
+}
+.kzw-haze {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 9vh;
+  background: url('/karsilama/gok.webp') center bottom / cover;
+  mask-image: linear-gradient(to top, #000 40%, transparent);
+}
+.kzw-glow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3vh;
+  height: 6vh;
+  background: linear-gradient(
+    to top,
+    rgba(255, 214, 170, 0),
+    rgba(255, 226, 190, 0.35),
+    rgba(255, 214, 170, 0)
+  );
+  filter: blur(6px);
+  animation: kzw-sh 5s ease-in-out infinite alternate;
+}
+@keyframes kzw-sh {
+  from {
+    opacity: 0.4;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 0.9;
+    transform: translateY(-3px);
+  }
+}
+.kzw-l-kz {
+  z-index: 6;
+}
+.kzw-kazu {
+  position: absolute;
+  left: calc(50% + 5.4vh);
+  bottom: calc(-11vh + 60vh - 2.2vh);
+  height: 5vh;
+  width: 9.5vh;
+  transform: translateX(-50%);
+  transform-origin: 50% 100%;
+}
+.kzw-poz {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 100%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 1.6s ease;
+}
+.kzw-poz.acik {
+  opacity: 1;
+}
+.kzw-l-wm {
+  z-index: 7;
+}
+.kzw-wmbox {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3.2vh;
+  height: 45vh;
+  overflow: hidden;
+}
+.kzw-kelime {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 27vh;
+  max-width: 94vw;
+  transform: translateX(-50%);
+}
+.kzw-harf {
+  position: absolute;
+  top: 0;
+  height: auto;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
+.kzw-kum {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 40vh;
+  z-index: 8;
+  pointer-events: none;
+}
+.kzw-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .25  0 0 0 0 .2  0 0 0 1.4 -.25'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.kzw-ust {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 40px;
+}
+.kzw-logo {
+  display: block;
+  height: 34px;
+  width: auto;
+}
+.kzw-cta {
+  background: #fcd322;
+  color: #1d1d1d;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.3;
+  text-decoration: none;
+  text-align: center;
+}
+.kzw-cta:hover {
+  background: #ffe066;
+}
+.kzw-cta:focus-visible,
+.kzw-geri:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+.kzw-gizli {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .kzw-ust {
+    padding: 16px;
+  }
+  .kzw-logo {
+    height: 24px;
+  }
+  .kzw-cta {
+    font-size: 12px;
+    max-width: 52vw;
+    padding: 9px 12px;
+  }
+}
+
+/* Launch countdown */
+.kzw-geri-sayim {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2.4vh;
+  padding: 15vh 16px 0;
+  text-align: center;
+  pointer-events: none;
+}
+.kzw-lansman-ust {
+  margin: 0;
+  font-size: clamp(13px, 1.6vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #fcd322;
+  text-shadow: 0 1px 12px rgba(60, 20, 10, 0.45);
+  animation: kzw-belir 1.2s ease both;
+}
+.kzw-lansman-baslik {
+  margin: 0;
+  font-size: clamp(56px, 14vw, 180px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 40px rgba(80, 20, 10, 0.4);
+  animation: kzw-belir 1.4s 0.15s ease both;
+}
+.kzw-sayac {
+  display: flex;
+  gap: clamp(10px, 2.4vw, 28px);
+  margin: 1vh 0 0;
+  padding: 0;
+  list-style: none;
+  animation: kzw-belir 1.4s 0.35s ease both;
+}
+.kzw-sayac li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: clamp(60px, 15vw, 128px);
+  padding: clamp(10px, 1.6vw, 18px) 6px;
+  background: rgba(30, 14, 24, 0.28);
+  backdrop-filter: blur(6px);
+  border-top: 2px solid rgba(252, 211, 34, 0.85);
+}
+.kzw-hane {
+  position: relative;
+  display: block;
+  height: 1em;
+  overflow: hidden;
+  font-size: clamp(34px, 7vw, 84px);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.kzw-hane > span {
+  display: block;
+  animation: kzw-dus 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes kzw-dus {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+.kzw-birim {
+  font-size: clamp(10px, 1.1vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.kzw-geri {
+  pointer-events: auto;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  animation: kzw-belir 1.4s 0.6s ease both;
+}
+@keyframes kzw-belir {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kzw-hane > span,
+  .kzw-lansman-ust,
+  .kzw-lansman-baslik,
+  .kzw-sayac,
+  .kzw-geri,
+  .kzw-glow {
+    animation: none;
+  }
+}
+
+/* Countdown: the mountain sits lower so the numbers have the sky to themselves. */
+.kzw[data-gunes='batis'] .kzw-dag {
+  bottom: -24vh;
+}
+.kzw[data-gunes='batis'] .kzw-kazu {
+  bottom: calc(-24vh + 60vh - 2.2vh);
+}
+
+/* Handwriting: canvas in the sky left of the mountain, the pen follows the writing head. */
+.kzw-yazi {
+  position: absolute;
+  left: 5vw;
+  top: 20vh;
+  width: 36vw;
+  height: 18vh;
+  z-index: 5;
+  pointer-events: none;
+}
+.kzw-kalem {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(27px, 3.5vh, 45px);
+  z-index: 11;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+@media (max-width: 640px) {
+  .kzw-yazi {
+    left: 8vw;
+    width: 84vw;
+    top: 22vh;
+    height: 10vh;
+  }
+}
+
+/* The mirage filter is costly to paint, so it starts with the motion (sahne.ts adds .kzw--canli). */
+.kzw--canli .kzw-haze {
+  filter: url(#kzw-serap);
+}
