@@ -1,4 +1,4 @@
-/* global fetch, Buffer, console, process */
+/* global fetch, Buffer */
 // Static snapshot of the pre-launch pages (/ and /lansman) for the interim kazuist.com site.
 // Usage: pnpm --filter @kazuist/web build && (cd apps/web && npx next start -p 3900) & node scripts/karsilama-snapshot.mjs
 // Writes infra/karsilama/site, served by infra/karsilama/Dockerfile (nginx). Until the full stack is live.
