@@ -97,6 +97,10 @@ export function Sahne({
         </filter>
       </svg>
       <div className="kzw-ly kzw-tint" aria-hidden="true" />
+      <div className="kzw-ly kzw-gece" aria-hidden="true" />
+      <div className="kzw-ly kzw-l-ay" aria-hidden="true">
+        <img className="kzw-ay" data-src="/karsilama/ay.webp" alt="" />
+      </div>
       <div className="kzw-ly kzw-l-sun" aria-hidden="true">
         <img className="kzw-isin" data-src="/karsilama/isin.webp" alt="" />
         <img className="kzw-tas" data-src="/karsilama/tas.webp" alt="" />

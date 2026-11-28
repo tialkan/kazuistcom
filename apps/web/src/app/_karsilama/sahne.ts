@@ -261,6 +261,8 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
     let bas = 0;
     let hiz = 0;
     let bekle = 0;
+    // the pen comes back only now and then: a long rest between words
+    let ara = 4000 + Math.random() * 6000;
     let olcek = 1;
     const yeni = (t: number) => {
       kelime = yazilar[wi++ % yazilar.length] ?? '';
@@ -375,8 +377,9 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       kalem.style.transform = `translate3d(${nx}px,${ny - (kalemH || (kalemH = kalem.offsetHeight))}px,0) scale(${olcek.toFixed(3)})`;
       if (tail >= gen + yz.width * 0.06) {
         bekle = bekle || t;
-        if (t - bekle > 900) {
+        if (t - bekle > ara) {
           bekle = 0;
+          ara = 9000 + Math.random() * 12000;
           kelime = '';
         }
       }
@@ -437,7 +440,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       k,
       'wheel',
       (e) => {
-        hedef += e.deltaY / 4200;
+        hedef += e.deltaY / 9000;
         e.preventDefault();
       },
       { passive: false },
@@ -457,7 +460,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       (e) => {
         const y = e.touches[0]?.clientY;
         if (ty == null || y == null) return;
-        hedef += (ty - y) / 2100;
+        hedef += (ty - y) / 4500;
         ty = y;
       },
       { passive: true },
@@ -465,6 +468,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
   }
   const D = { sun: 6, cl: 12, dag: 22, kz: 30, wm: 38 };
   const lSun = $('.kzw-l-sun');
+  const lAy = $('.kzw-l-ay');
   const lCl = $('.kzw-l-cl');
   const lDag = $('.kzw-l-dag');
   const lKz = $('.kzw-l-kz');
@@ -474,21 +478,35 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
     cxs += (mx - cxs) * 0.06;
     cys += (my - cys) * 0.06;
     cur += (hedef - cur) * 0.06;
-    const CY = 1.75;
+    // endless day and night: u in [0,1) the sun crosses, u in [1,2) the moon crosses the same half circle
+    const CY = 2;
     const uu = ((cur % CY) + CY) % CY;
-    const pc = uu < 1 ? uu : 0;
+    const gunduz = uu < 1;
+    const pc = gunduz ? uu : uu - 1;
     const th = Math.PI * pc;
     const vw = innerWidth / 100;
     const vh = innerHeight / 100;
     const sx = 50 * vw - 68 * vw * Math.cos(th);
     const sy = 70 * vh - 54 * vh * Math.sin(th);
     const sc = 0.4 + 0.6 * Math.sin(th);
-    lSun.style.transform = `translate3d(${sx - 50 * vw - cxs * D.sun}px,${sy - 16.5 * vh - cys * D.sun}px,0) scale(${sc})`;
+    const yer = `translate3d(${sx - 50 * vw - cxs * D.sun}px,${sy - 16.5 * vh - cys * D.sun}px,0) scale(${sc})`;
+    const gizli = 'translate3d(-200vw,0,0)';
+    lSun.style.transform = gunduz ? yer : gizli;
+    lAy.style.transform = gunduz ? gizli : yer;
+    // night depth: grows while the moon is up, eases in and out while both bodies are below the horizon
+    const gece = gunduz
+      ? uu > 0.9
+        ? ((uu - 0.9) / 0.1) * 0.4
+        : uu < 0.1
+          ? (1 - uu / 0.1) * 0.4
+          : 0
+      : 0.4 + 0.45 * Math.sin(th);
+    k.style.setProperty('--gece', gece.toFixed(3));
     lCl.style.transform = `translate3d(${-cxs * D.cl}px,${-cys * D.cl}px,0)`;
     lDag.style.transform = `translate3d(${-cxs * D.dag}px,${-cys * D.dag * 0.5}px,0)`;
     lKz.style.transform = `translate3d(${-cxs * D.kz}px,${-cys * D.kz * 0.5}px,0)`;
     lWm.style.transform = `translate3d(${-cxs * D.wm}px,0,0)`;
-    tint.style.opacity = String((1 - Math.sin(th)) * 0.85);
+    tint.style.opacity = String(gunduz ? (1 - Math.sin(th)) * 0.85 : 0.85);
   });
 
   return () => {
