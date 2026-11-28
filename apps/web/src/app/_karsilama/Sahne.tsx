@@ -102,10 +102,13 @@ export function Sahne({
         <img className="kzw-tas" data-src="/karsilama/tas.webp" alt="" />
       </div>
       <div className="kzw-ly kzw-l-cl" aria-hidden="true" />
-      <div className="kzw-ly kzw-l-dag" aria-hidden="true">
-        <img className="kzw-dag" src="/karsilama/dag.webp" alt="" fetchPriority="high" />
+      {/* mirage strip stays still: it is full width, so a depth shift would show its edges */}
+      <div className="kzw-ly kzw-l-serap" aria-hidden="true">
         <div className="kzw-haze" />
         <div className="kzw-glow" />
+      </div>
+      <div className="kzw-ly kzw-l-dag" aria-hidden="true">
+        <img className="kzw-dag" src="/karsilama/dag.webp" alt="" fetchPriority="high" />
       </div>
       <canvas className="kzw-yazi" aria-hidden="true" />
       <div className="kzw-ly kzw-l-kz" aria-hidden="true">
