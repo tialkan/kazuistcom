@@ -8,6 +8,7 @@ export default tseslint.config(
       'docs/denetim/repro/**',
       '**/node_modules/**',
       '**/.next/**',
+      'infra/karsilama/site/**',
       '**/dist/**',
       '**/coverage/**',
       'packages/contracts/src/generated/**',

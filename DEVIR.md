@@ -1,3 +1,10 @@
+## 28 Kasım 2026, geçici kazuist.com: karşılama ve lansman sayfalarının durağan kopyası (infra/karsilama-gecici)
+
+- Tam yığın (Hetzner CX43, Coolify Compose) kurulana kadar kazuist.com, Kulular sunucusundaki (kulular-uretim-01) mevcut Coolify uygulamasından yalnız `/` ve `/lansman` sayfalarını sunar.
+- `scripts/karsilama-snapshot.mjs` yerel üretim derlemesinden iki sayfayı, `_next/static`'i ve gerekli `public` klasörlerini `infra/karsilama/site`'a yazar; `infra/karsilama/Dockerfile` bunu nginx ile 3000 portunda sunar.
+- Sayfa değişince: derle, `next start -p 3900`, betiği çalıştır, commit et, Coolify'da Redeploy.
+- Geri dönüş: Coolify uygulamasında dal `master`, Dockerfile `/Dockerfile` yapılıp Redeploy.
+
 ## 28 Kasım 2026, karşılama ve lansman sayfası (feat/karsilama-lansman)
 
 - `/` artık tam ekran karşılama sahnesi: gök, dönen güneş ışınları, kaydırmayla sonsuz gün döngüsü, risograf bulutlar (ekranda en çok 3), dağ, Kazu, kuma gömülen KAZUIST harfleri, serap, kum taneleri, kâğıt dokusu. Eski ürün ana sayfası git geçmişinde.
