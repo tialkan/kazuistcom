@@ -388,7 +388,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
         el,
         y: ((h?.[3] ?? 0) / 300) * 100,
         tilt: (h?.[4] ?? 0) * (0.8 + Math.random() * 0.5),
-        sp: 100 / ((240 + Math.random() * 420) * 60),
+        sp: 100 / ((90 + Math.random() * 150) * 60),
       };
     });
     raf(() => {
