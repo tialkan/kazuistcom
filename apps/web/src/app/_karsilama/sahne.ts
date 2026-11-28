@@ -261,9 +261,12 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
     let bas = 0;
     let hiz = 0;
     let bekle = 0;
+    let olcek = 1;
     const yeni = (t: number) => {
       kelime = yazilar[wi++ % yazilar.length] ?? '';
-      const fs = Math.min(yz.width / 7, yz.height * 0.6) * 0.18;
+      // depth: each word and the pen are drawn 10 to 50 percent smaller, as if further away
+      olcek = 0.5 + Math.random() * 0.4;
+      const fs = Math.min(yz.width / 7, yz.height * 0.6) * 0.18 * olcek;
       yg.font = `400 ${fs}px KzEl, cursive`;
       gen = yg.measureText(kelime).width;
       px = (yz.width - gen) * (0.1 + Math.random() * 0.8);
@@ -300,9 +303,9 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       if (!hazir) return;
       if (!kelime) yeni(t);
       const gecen = t - bas;
-      const bas2 = gen * 0.45;
       const head = Math.min(gen, gecen * hiz);
-      const tail = Math.max(0, (gecen * hiz - bas2) * 1.15);
+      // fading starts two seconds after the word is finished
+      const tail = Math.max(0, (gecen - gen / hiz - 2000) * hiz * 1.15);
       yg.clearRect(0, 0, yz.width, yz.height);
       yg.save();
       yg.beginPath();
@@ -329,22 +332,22 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       const yaziyor = head < gen;
       const ux = px + head;
       if (yaziyor) {
-        for (let i = 0; i < 2; i++)
+        if (Math.random() < 0.45)
           toz.push({
             x: ux + (Math.random() - 0.5) * 6 * d0,
             y: py - 4 * d0 + (Math.random() - 0.5) * 6 * d0,
             vx: (Math.random() - 0.7) * 0.6 * d0,
             vy: (Math.random() * 0.5 + 0.15) * d0,
-            r: (0.8 + Math.random() * 2.2) * d0,
+            r: (0.5 + Math.random() * 0.9) * d0 * olcek,
             o: 1,
             ph: Math.random() * 6,
             c: RENK[(Math.random() * RENK.length) | 0] ?? RENK[0] ?? '255,255,255',
           });
-        const gl = yg.createRadialGradient(ux, py - 3 * d0, 0, ux, py - 3 * d0, 14 * d0);
-        gl.addColorStop(0, 'rgba(255,240,170,.75)');
+        const gl = yg.createRadialGradient(ux, py - 3 * d0, 0, ux, py - 3 * d0, 9 * d0 * olcek);
+        gl.addColorStop(0, 'rgba(255,240,170,.35)');
         gl.addColorStop(1, 'rgba(255,240,170,0)');
         yg.fillStyle = gl;
-        yg.fillRect(ux - 14 * d0, py - 17 * d0, 28 * d0, 28 * d0);
+        yg.fillRect(ux - 9 * d0 * olcek, py - 12 * d0 * olcek, 18 * d0 * olcek, 18 * d0 * olcek);
       }
       for (let i = toz.length - 1; i >= 0; i--) {
         const p = toz[i];
@@ -369,7 +372,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
       const nx = r.left + (px + head) / d;
       const ny = r.top + py / d - 2 + Math.sin(t / 90) * 1 * (1 - kalk) - kalk * 16;
       kalem.style.opacity = String(1 - kalk);
-      kalem.style.transform = `translate3d(${nx}px,${ny - (kalemH || (kalemH = kalem.offsetHeight))}px,0)`;
+      kalem.style.transform = `translate3d(${nx}px,${ny - (kalemH || (kalemH = kalem.offsetHeight))}px,0) scale(${olcek.toFixed(3)})`;
       if (tail >= gen + yz.width * 0.06) {
         bekle = bekle || t;
         if (t - bekle > 900) {
@@ -388,7 +391,7 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
         el,
         y: ((h?.[3] ?? 0) / 300) * 100,
         tilt: (h?.[4] ?? 0) * (0.8 + Math.random() * 0.5),
-        sp: 100 / ((240 + Math.random() * 420) * 60),
+        sp: 100 / ((90 + Math.random() * 150) * 60),
       };
     });
     raf(() => {
@@ -406,6 +409,25 @@ export function sahneKur(k: HTMLElement, s: SahneSecenek): () => void {
   let cys = 0;
   let hedef = s.gunes === 'batis' ? 0.8 : 0.5;
   let cur = hedef;
+  // phones: depth from tilting the device; iOS asks for permission on the first touch
+  if (matchMedia('(pointer: coarse)').matches && 'DeviceOrientationEvent' in window) {
+    const egim = (e: DeviceOrientationEvent) => {
+      if (e.gamma == null || e.beta == null) return;
+      mx = Math.max(-0.5, Math.min(0.5, e.gamma / 30));
+      my = Math.max(-0.5, Math.min(0.5, (e.beta - 45) / 30));
+    };
+    const iste = (DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> })
+      .requestPermission;
+    if (iste) {
+      const ilk = () => {
+        void iste().then((r) => {
+          if (r === 'granted') dinle(window, 'deviceorientation', egim);
+        });
+      };
+      k.addEventListener('touchend', ilk, { once: true });
+      durdur.push(() => k.removeEventListener('touchend', ilk));
+    } else dinle(window, 'deviceorientation', egim);
+  }
   dinle(window, 'mousemove', (e) => {
     mx = e.clientX / innerWidth - 0.5;
     my = e.clientY / innerHeight - 0.5;

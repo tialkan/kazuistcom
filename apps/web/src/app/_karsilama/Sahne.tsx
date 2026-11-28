@@ -88,12 +88,12 @@ export function Sahne({
           <feTurbulence type="fractalNoise" baseFrequency="0.004 0.09" numOctaves={2} seed={3}>
             <animate
               attributeName="baseFrequency"
-              dur="7s"
-              values="0.004 0.09;0.006 0.12;0.004 0.09"
+              dur="14s"
+              values="0.004 0.09;0.005 0.1;0.004 0.09"
               repeatCount="indefinite"
             />
           </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" scale={14} xChannelSelector="R" yChannelSelector="G" />
+          <feDisplacementMap in="SourceGraphic" scale={4} xChannelSelector="R" yChannelSelector="G" />
         </filter>
       </svg>
       <div className="kzw-ly kzw-tint" aria-hidden="true" />
