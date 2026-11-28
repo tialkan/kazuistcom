@@ -14,6 +14,7 @@ await mkdir(HEDEF, { recursive: true });
 for (const [yol, dosya] of [
   ['/', 'index.html'],
   ['/lansman', 'lansman.html'],
+  ['/kazu', 'kazu.html'],
   ['/icon.svg', 'icon.svg'],
   ['/favicon.ico', 'favicon.ico'],
   ['/apple-icon.png', 'apple-icon.png'],

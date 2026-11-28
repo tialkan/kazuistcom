@@ -1,3 +1,11 @@
+## 28 Kasım 2026, /kazu yazım masası ilk dilimi ve Kazu danışmanlık ilkeleri (feat/kazu-yazim-ekrani)
+
+- ADR-0040 (yazım motoru) uyarınca `/kazu`: "Ne yazıyoruz?" girişi (makale, tez, seminer ödevi, bildiri), türe göre bölüm iskeleti, Tiptap çekirdeğiyle sade editör (başlık, alt başlık, kalın, italik, listeler, blok alıntı, geri al), kelime sayacı, Kazu paneli (sekiz adım, iddia kartı).
+- Taslak bu dilimde yalnız tarayıcıda (localStorage) tutulur; sunucuda sürümlü belge, kaynakça ve PDF önizleme sonraki dilimlerdir.
+- Sayfa karşılamadan bağlanmaz, bağlantıyı bilen açar; `noindex`. Durağan kopyaya `kazu.html` olarak girer.
+- Yeni bağımlılıklar (apps/web): `@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`, `@tiptap/extension-placeholder` 3.35.1, hepsi MIT. Kök kilit dosyası güncellendi (orkestra).
+- Kazu'nun davranışı: `docs/kazu/danismanlik-ilkeleri.md` (Volokh yaklaşımının uyarlaması: iddia kartı, iddia ve kanıt eşlemesi, zor vaka testi, karşı görüş provası, paragraf denetimi, teslim öncesi kontrol, ampirik iddia denetimi, etik).
+
 ## 28 Kasım 2026, geçici kazuist.com: karşılama ve lansman sayfalarının durağan kopyası (infra/karsilama-gecici)
 
 - Tam yığın (Hetzner CX43, Coolify Compose) kurulana kadar kazuist.com, Kulular sunucusundaki (kulular-uretim-01) mevcut Coolify uygulamasından yalnız `/` ve `/lansman` sayfalarını sunar.

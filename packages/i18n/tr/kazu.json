@@ -1,0 +1,106 @@
+{
+  "baslik": "Kazu: yazım masası",
+  "aciklama": "Makale ve tezinizi Kazu ile adım adım yazın.",
+  "giris": {
+    "soru": "Ne yazıyoruz?",
+    "alt": "Türü seçin; Kazu iskeleti ve adımları ona göre kurar.",
+    "baslikEtiket": "Çalışmanın geçici başlığı",
+    "baslikIpucu": "Sonra değiştirebilirsiniz.",
+    "basla": "Yazmaya başla",
+    "devam": "Kaldığınız yerden devam edin",
+    "tur": {
+      "makale": "Makale",
+      "tez": "Tez",
+      "seminer": "Seminer ödevi",
+      "bildiri": "Bildiri"
+    }
+  },
+  "arac": {
+    "etiket": "Biçim araçları",
+    "baslik": "Başlık",
+    "altBaslik": "Alt başlık",
+    "paragraf": "Paragraf",
+    "kalin": "Kalın",
+    "italik": "İtalik",
+    "liste": "Madde listesi",
+    "numarali": "Numaralı liste",
+    "alinti": "Blok alıntı",
+    "geri": "Geri al",
+    "ileri": "Yinele",
+    "kazuAc": "Kazu'yu aç",
+    "kazuKapat": "Kazu'yu kapat"
+  },
+  "durum": {
+    "kaydedildi": "Bu cihazda kaydedildi",
+    "kelime": "kelime"
+  },
+  "yazi": {
+    "yerTutucu": "Yazmaya başlayın. Takıldığınız yerde \"buraya dayanak eklenecek\" diye not düşüp devam edebilirsiniz.",
+    "etiket": "Metin"
+  },
+  "iskelet": {
+    "makale": {
+      "1": "Özet",
+      "2": "Giriş",
+      "3": "Alan haritası",
+      "4": "Ana argüman",
+      "5": "Karşı görüşler",
+      "6": "Sonuç",
+      "7": "Kaynakça"
+    },
+    "tez": {
+      "1": "Özet",
+      "2": "Giriş",
+      "3": "Birinci bölüm",
+      "4": "İkinci bölüm",
+      "5": "Üçüncü bölüm",
+      "6": "Sonuç",
+      "7": "Kaynakça"
+    },
+    "seminer": {
+      "1": "Giriş",
+      "2": "Sorun",
+      "3": "Tartışma",
+      "4": "Sonuç",
+      "5": "Kaynakça"
+    },
+    "bildiri": {
+      "1": "Özet",
+      "2": "Giriş",
+      "3": "Argüman",
+      "4": "Sonuç",
+      "5": "Kaynakça"
+    }
+  },
+  "panel": {
+    "baslik": "Kazu",
+    "asamalar": "Adımlar",
+    "asama": {
+      "1": "Ne yazıyoruz?",
+      "2": "İddia kartı",
+      "3": "Alan haritası ve kaynaklar",
+      "4": "Yapı",
+      "5": "Sıfırıncı taslak",
+      "6": "Zor vaka ve karşı görüş",
+      "7": "Düzeltme turları",
+      "8": "Teslim öncesi kontrol"
+    },
+    "iddia": {
+      "baslik": "İddia kartı",
+      "aciklama": "Konuyu bir cümlelik, araştırılabilir bir iddiaya indirelim. İlk iddia geçicidir; araştırma ilerledikçe daralabilir.",
+      "soru": {
+        "sorun": "Araştırma sorun ne?",
+        "cevap": "Bir cümlelik cevabın ne?",
+        "yakin": "Sana en yakın çalışma hangisi?",
+        "katki": "Sen ne ekliyorsun?"
+      },
+      "ipucu": {
+        "sorun": "Benzer iki olay farklı mı sonuçlanıyor, kanun bir soruyu açık mı bırakıyor?",
+        "cevap": "Konu değil iddia yaz: kim, neyi, hangi koşulda.",
+        "yakin": "Yazar, eser ve cevapladığı soru.",
+        "katki": "\"Az çalışma var\" yerine: A ve B şunu cevaplıyor, ben şunu gösteriyorum."
+      }
+    },
+    "yakinda": "Bu adım yakında açılacak."
+  }
+}
