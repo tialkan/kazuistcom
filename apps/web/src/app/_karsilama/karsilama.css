@@ -69,7 +69,7 @@
   top: 9vh;
   width: 13vh;
   margin-left: -6.5vh;
-  filter: drop-shadow(0 0 18px rgba(230, 236, 255, 0.35));
+  /* no CSS filter here: Safari paints a filtered transparent image as a visible square */
 }
 /* at night the foreground layers lose light with the sky */
 .kzw-l-cl,

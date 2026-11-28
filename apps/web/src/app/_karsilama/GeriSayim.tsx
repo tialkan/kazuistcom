@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 
-/** Launch moment: 12 December 2026, 00:00 Istanbul time (UTC+3). */
-export const LANSMAN = Date.parse('2026-12-12T00:00:00+03:00');
+/** Launch moment: 12 December 2026, 12:12 Istanbul time (UTC+3). */
+export const LANSMAN = Date.parse('2026-12-12T12:12:00+03:00');
 
 type Birimler = { gun: string; saat: string; dakika: string; saniye: string };
 
