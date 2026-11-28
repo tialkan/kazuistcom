@@ -5,15 +5,16 @@ import { EditorContent, useEditor, useEditorState } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import tr from '@kazuist/i18n/tr/kazu.json';
+import { BOS_CALISMA, type Calisma, type PmDugum } from '../_cekirdek/analiz.ts';
+import { KazuPanel } from './KazuPanel.tsx';
 
 type Tur = keyof typeof tr.iskelet;
-type Iddia = { sorun: string; cevap: string; yakin: string; katki: string };
-type Taslak = { tur: Tur; baslik: string; govde: unknown; iddia: Iddia };
+// `calisma` holds the panel's work (claim card, sources, cases, rounds, checks); older drafts only had `iddia`.
+type Taslak = { tur: Tur; baslik: string; govde: unknown; calisma?: Calisma; iddia?: Calisma['iddia'] };
 
 // First slice: the draft lives in this browser only; server storage comes with the versioned document model.
 const ANAHTAR = 'kazu.taslak.v1';
 const TURLER = Object.keys(tr.iskelet) as Tur[];
-const BOS_IDDIA: Iddia = { sorun: '', cevap: '', yakin: '', katki: '' };
 
 function oku(): Taslak | null {
   try {
@@ -87,7 +88,7 @@ function Giris({ kayitli, onBasla }: { kayitli: Taslak | null; onBasla: (t: Tasl
           <button
             type="button"
             className="kazu-birincil"
-            onClick={() => onBasla({ tur, baslik: baslik.trim(), govde: iskelet(tur), iddia: BOS_IDDIA })}
+            onClick={() => onBasla({ tur, baslik: baslik.trim(), govde: iskelet(tur), calisma: BOS_CALISMA })}
           >
             {tr.giris.basla}
           </button>
@@ -104,7 +105,12 @@ function Giris({ kayitli, onBasla }: { kayitli: Taslak | null; onBasla: (t: Tasl
 
 function Masa({ ilk }: { ilk: Taslak }) {
   const [baslik, setBaslik] = useState(ilk.baslik);
-  const [iddia, setIddia] = useState<Iddia>(ilk.iddia ?? BOS_IDDIA);
+  const [calisma, setCalisma] = useState<Calisma>({
+    ...BOS_CALISMA,
+    ...ilk.calisma,
+    iddia: ilk.calisma?.iddia ?? ilk.iddia ?? BOS_CALISMA.iddia,
+  });
+  const [govde, setGovde] = useState<PmDugum | null>((ilk.govde as PmDugum) ?? null);
   const [panel, setPanel] = useState(true);
   const editor = useEditor({
     immediatelyRender: false,
@@ -147,7 +153,11 @@ function Masa({ ilk }: { ilk: Taslak }) {
     let id = 0;
     const kaydet = () => {
       clearTimeout(id);
-      id = window.setTimeout(() => yaz({ tur: ilk.tur, baslik, govde: editor.getJSON(), iddia }), 800);
+      id = window.setTimeout(() => {
+        const g = editor.getJSON();
+        setGovde(g as PmDugum);
+        yaz({ tur: ilk.tur, baslik, govde: g, calisma });
+      }, 800);
     };
     kaydet();
     editor.on('update', kaydet);
@@ -155,7 +165,7 @@ function Masa({ ilk }: { ilk: Taslak }) {
       clearTimeout(id);
       editor.off('update', kaydet);
     };
-  }, [editor, baslik, iddia, ilk.tur]);
+  }, [editor, baslik, calisma, ilk.tur]);
 
   const zincir = () => editor?.chain().focus();
   const [indiriliyor, setIndiriliyor] = useState(false);
@@ -243,52 +253,8 @@ function Masa({ ilk }: { ilk: Taslak }) {
         <div className="kazu-sayfa">
           <EditorContent editor={editor} />
         </div>
-        {panel ? <Panel iddia={iddia} setIddia={setIddia} /> : null}
+        {panel ? <KazuPanel govde={govde} baslik={baslik} calisma={calisma} setCalisma={setCalisma} /> : null}
       </div>
     </div>
-  );
-}
-
-function Panel({ iddia, setIddia }: { iddia: Iddia; setIddia: (i: Iddia) => void }) {
-  const [acik, setAcik] = useState('2');
-  const sorular = Object.keys(tr.panel.iddia.soru) as (keyof Iddia)[];
-  return (
-    <aside className="kazu-panel" aria-label={tr.panel.baslik}>
-      <h2>{tr.panel.baslik}</h2>
-      <ol className="kazu-asamalar" aria-label={tr.panel.asamalar}>
-        {Object.entries(tr.panel.asama).map(([n, ad]) => (
-          <li key={n}>
-            <button
-              type="button"
-              aria-current={acik === n ? 'step' : undefined}
-              className={n === '1' ? 'tamam' : ''}
-              onClick={() => setAcik(n)}
-            >
-              <span className="kazu-no">{n}</span>
-              {ad}
-            </button>
-          </li>
-        ))}
-      </ol>
-      {acik === '2' ? (
-        <section className="kazu-kart">
-          <h3>{tr.panel.iddia.baslik}</h3>
-          <p className="kazu-soluk">{tr.panel.iddia.aciklama}</p>
-          {sorular.map((s) => (
-            <label key={s} className="kazu-alan">
-              <span>{tr.panel.iddia.soru[s]}</span>
-              <textarea
-                rows={2}
-                value={iddia[s]}
-                placeholder={tr.panel.iddia.ipucu[s]}
-                onChange={(e) => setIddia({ ...iddia, [s]: e.target.value })}
-              />
-            </label>
-          ))}
-        </section>
-      ) : acik !== '1' ? (
-        <p className="kazu-soluk">{tr.panel.yakinda}</p>
-      ) : null}
-    </aside>
   );
 }

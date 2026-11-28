@@ -1,3 +1,10 @@
+## 28 Kasım 2026, /kazu: Kazu paneli adımları (feat/kazu-panel-adimlar)
+
+- Panel artık danışmanlık ilkelerindeki sekiz adımın hepsini taşır: iddia kartı, alan haritası ve kaynak notları (eser, yer, desteklediği iddia, asıl/ikincil), yapı (bölüm başına kelime ve açık not), sıfırıncı taslak (açık notlar), zor vaka ve karşı görüş provası, dört düzeltme turu, teslim öncesi kontrol (yedi otomatik denetim ve elle işaretlenen maddeler).
+- Saf çözümleme `apps/web/src/app/kazu/_cekirdek/analiz.ts` (4 test); bileşen `_bilesen/KazuPanel.tsx`; çalışma verisi taslakla birlikte tarayıcıda saklanır (`kazu.taslak.v1`, eski `iddia` alanı taşınır).
+- Doğrulama: typecheck, lint, vitest, check-text temiz; Playwright ile 1440 px'te 3 ile 8 arası adımların her biri axe ile 0 ihlal.
+- Sunucu tarafı sürümlü belge, Zotero ve Citeproc, PDF önizleme ve Kazu YZ bağlantısı db/sözleşme ADR'si gerektirir.
+
 ## 28 Kasım 2026, /kazu: Word olarak indir (feat/kazu-word-aktarim)
 
 - Yazım masasına "Word olarak indir" düğmesi: taslak tarayıcıda `docx` ile .docx olur (ADR-0040 madde 4). A4, 2,5 cm kenar, Times New Roman 12, 1,5 satır, iki yana yaslı gövde, ilk satır girintisi, kalın bölüm başlıkları (anahat düzeyli), numaralı ve madde listeleri, blok alıntı, alt bilgide sayfa numarası.

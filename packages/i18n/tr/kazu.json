@@ -103,6 +103,95 @@
         "katki": "\"Az çalışma var\" yerine: A ve B şunu cevaplıyor, ben şunu gösteriyorum."
       }
     },
-    "yakinda": "Bu adım yakında açılacak."
+    "kaynak": {
+      "baslik": "Alan haritası ve kaynaklar",
+      "aciklama": "Önce temel düzenlemeleri, belirleyici kararları ve ana tartışmayı çıkarın. Her kaynağın yanına yerini ve desteklediği iddiayı yazın; son kontrolde bütün metni baştan aramazsınız.",
+      "eser": "Yazar ve eser ya da karar",
+      "yer": "Sayfa ya da paragraf",
+      "iddia": "Desteklediği iddia",
+      "tur": "Okuma",
+      "asil": "Asıl kaynaktan okudum",
+      "ikincil": "İkincil kaynaktan aktarıyorum",
+      "ekle": "Kaynak notu ekle",
+      "sil": "Sil",
+      "ipucu": "Önemli dayanaklarda asıl kaynağı okuyun. Ulaşamadıysanız ikincil kaynaktan aktardığınızı belirtin."
+    },
+    "yapi": {
+      "baslik": "Yapı",
+      "aciklama": "Alt başlıkları birlikte okuyun: iddia adım adım ilerliyor mu? Başlıklar yalnız konu adıysa hangi bölümde hangi işin yapıldığı belirsiz kalır.",
+      "bos": "Henüz başlık yok.",
+      "kelime": "kelime",
+      "not": "açık not",
+      "adsiz": "Başlıksız açılış"
+    },
+    "taslak": {
+      "baslik": "Sıfırıncı taslak",
+      "aciklama": "Mükemmel olmasını beklemeden ilerleyin. Takıldığınız yere \"buraya dayanak eklenecek\" ya da [[not]] yazıp başka bölüme geçin.",
+      "notlar": "Açık notlar",
+      "notYok": "Açık not yok.",
+      "ipucu": "Teslim takvimini geriye doğru kurun: tam taslak, danışman okuması, büyük revizyon, kaynak denetimi, son okuma."
+    },
+    "vaka": {
+      "baslik": "Zor vaka ve karşı görüş",
+      "aciklama": "Önerdiğiniz kuralı birkaç farklı olaya uygulayın. Her vakada aynı dört soruyu cevaplayın.",
+      "tur": "Vaka türü",
+      "turler": {
+        "tipik": "Tipik olay",
+        "emsal": "Bilinen emsal",
+        "sinir": "Sınırda durum",
+        "rahatsiz": "Öneri için rahatsız edici örnek",
+        "karsi": "Karşı görüşün güçlü olduğu olay"
+      },
+      "mevcut": "Mevcut kural ne sonuç veriyor?",
+      "oneri": "Önerdiğim kural ne sonuç veriyor?",
+      "fark": "Fark hangi unsurdan kaynaklanıyor?",
+      "kabul": "Sonucu kabul ediyor muyum?",
+      "ekle": "Vaka ekle",
+      "sil": "Sil",
+      "itirazBaslik": "Karşı görüş provası",
+      "itiraz": "En güçlü itiraz (savunucusunun kabul edeceği biçimde)",
+      "cevap": "Cevabınız: öneriyi açıklığa kavuşturuyor, daraltıyor ya da bir maliyeti kabul ediyor musunuz?"
+    },
+    "tur": {
+      "baslik": "Düzeltme turları",
+      "aciklama": "Düzeltmeyi turlarla yapın; silinecek bölümleri erken parlatmayın.",
+      "simdi": "Şu anki tur",
+      "adlar": {
+        "1": "İddia ve yapı",
+        "2": "Çıkarım ve kaynaklar",
+        "3": "Paragraf ve cümle",
+        "4": "Yazım ve biçim"
+      },
+      "ipucu": {
+        "1": "Her alt başlık iddiayı bir adım ileri taşıyor mu? Giriş ve sonuç aynı katkıyı mı söylüyor?",
+        "2": "Her önemli iddianın dayanağı var mı? Kaynak cümleyi bütünüyle mi, bir koşulla mı destekliyor? Kararda kimin ne dediği ayrılmış mı?",
+        "3": "Her paragrafın bir ana işi var mı? Paragraflar arasındaki ilişki (örnek, istisna, itiraz) açık mı? \"Sorun doğurabilir\" denen yerde mekanizma yazılmış mı?",
+        "4": "İsimler, tarihler, karar ve sayfa numaraları, tırnaklar, çapraz referanslar ve kaynakça eşleşmesi."
+      }
+    },
+    "kontrol": {
+      "baslik": "Teslim öncesi kontrol",
+      "otomatik": "Kazu'nun baktıkları",
+      "elle": "Sizin bakacaklarınız",
+      "tamam": "Tamam",
+      "eksik": "Eksik",
+      "madde": {
+        "baslik": "Çalışmanın başlığı yazılmış",
+        "iddia": "İddia kartı dolu",
+        "ozet": "Özet bölümü boş değil",
+        "sonuc": "Sonuç bölümü boş değil",
+        "bosBolum": "Boş bölüm kalmamış",
+        "not": "Açık not kalmamış",
+        "kaynakYer": "Her kaynak notunda yer bilgisi var"
+      },
+      "el": {
+        "katki": "Başlık, özet, giriş ve sonuç aynı katkıyı vaat ediyor",
+        "dayanak": "Önemli iddiaların hepsi dayanaklı",
+        "orneklem": "Örneklemin sınırı açıkça yazılmış",
+        "kaynakca": "Her atıfın kaynakçada karşılığı var",
+        "alinti": "Doğrudan alıntılar işaretli ve kaynaklı",
+        "kurallar": "Kurumun ve derginin yapay zekâ ve intihal kuralları kontrol edildi"
+      }
+    }
   }
 }
