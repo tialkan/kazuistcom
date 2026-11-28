@@ -1,0 +1,302 @@
+/* /kazu: a plain writing tool. Full screen above the product shell, white, no scene or texture. */
+.kazu {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: auto;
+  background: #fff;
+  color: #1f2328;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+.kazu h1,
+.kazu h2,
+.kazu h3 {
+  font-family: inherit;
+  color: inherit;
+}
+.kazu button {
+  font: inherit;
+  cursor: pointer;
+}
+.kazu :focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+.kazu-soluk {
+  color: #5c6470;
+  font-size: 0.9rem;
+}
+
+/* start */
+.kazu-giris {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+.kazu-giris__kutu {
+  width: 100%;
+  max-width: 520px;
+}
+.kazu-giris h1 {
+  margin: 0 0 6px;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+.kazu-turler {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin: 24px 0;
+}
+.kazu-turler button {
+  padding: 14px 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+}
+.kazu-turler button.secili {
+  border-color: #2563eb;
+  box-shadow: inset 0 0 0 1px #2563eb;
+  background: #f5f8ff;
+}
+.kazu-alan {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.kazu-alan > span {
+  font-weight: 500;
+  font-size: 0.92rem;
+}
+.kazu-alan input,
+.kazu-alan textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font: inherit;
+  resize: vertical;
+}
+.kazu-giris__eylem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.kazu-birincil {
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 6px;
+  background: #1f2328;
+  color: #fff;
+  font-weight: 600;
+}
+.kazu-ikincil {
+  padding: 8px 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #fff;
+}
+
+/* desk */
+.kazu-masa {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.kazu-ust {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.kazu-marka {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}
+.kazu-baslik {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 1.05rem;
+}
+.kazu-baslik:hover,
+.kazu-baslik:focus {
+  border-color: #d0d7de;
+}
+.kazu-durum {
+  color: #5c6470;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.kazu-arac {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fafbfc;
+}
+.kazu-arac button {
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  font-size: 0.88rem;
+}
+.kazu-arac button:hover {
+  background: #eef1f4;
+}
+.kazu-arac button[aria-pressed='true'] {
+  background: #e3e8ef;
+  border-color: #cfd6df;
+}
+.kazu-ayrac {
+  width: 1px;
+  margin: 2px 6px;
+  background: #e5e7eb;
+}
+.kazu-govde {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.kazu-sayfa {
+  flex: 1;
+  overflow: auto;
+  padding: 32px 16px 80px;
+  background: #f6f7f9;
+}
+.kazu-metin {
+  max-width: 760px;
+  min-height: 70vh;
+  margin: 0 auto;
+  padding: 48px 56px;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  outline: none;
+}
+.kazu-metin h2 {
+  margin: 1.6em 0 0.4em;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-size: 1.25rem;
+}
+.kazu-metin h3 {
+  margin: 1.2em 0 0.3em;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-size: 1.05rem;
+}
+.kazu-metin blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 3px solid #d0d7de;
+  color: #424a53;
+}
+.kazu-metin p.is-editor-empty:first-child::before,
+.kazu-metin .is-empty::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: #9aa1ab;
+  pointer-events: none;
+}
+.kazu-panel {
+  width: 340px;
+  flex-shrink: 0;
+  overflow: auto;
+  padding: 16px;
+  border-left: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+.kazu-panel h2 {
+  margin: 0 0 10px;
+  font-size: 1.05rem;
+}
+.kazu-asamalar {
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.kazu-asamalar button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+  font-size: 0.9rem;
+}
+.kazu-asamalar button[aria-current='step'] {
+  background: #eef1f4;
+  font-weight: 600;
+}
+.kazu-no {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #c5ccd5;
+  border-radius: 50%;
+  font-size: 0.75rem;
+}
+.kazu-asamalar button.tamam .kazu-no {
+  background: #1f2328;
+  border-color: #1f2328;
+  color: #fff;
+}
+.kazu-kart h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+@media (max-width: 900px) {
+  .kazu-panel {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    max-height: 55vh;
+    border-left: 0;
+    border-top: 1px solid #e5e7eb;
+    background: #fff;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  }
+  .kazu-metin {
+    padding: 28px 20px;
+  }
+  .kazu-durum {
+    display: none;
+  }
+}
