@@ -79,6 +79,11 @@
 .kzw-l-dag {
   z-index: 4;
 }
+/* above the mountain foot, as before, but not shifted by depth */
+.kzw-l-serap {
+  z-index: 5;
+  will-change: auto;
+}
 .kzw-dag {
   position: absolute;
   left: 50%;
