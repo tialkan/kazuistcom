@@ -13,3 +13,4 @@ services/worker-py
 apps/web/next-env.d.ts
 packages/contracts/openapi.yaml
 *.tsbuildinfo
+infra/karsilama/site
