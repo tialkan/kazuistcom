@@ -20,7 +20,6 @@
       }
     },
     "assert": {
-      "aggregationMethod": "median-run",
       "assertMatrix": [
         {
           "matchingUrlPattern": "^http://localhost:3000/$",
@@ -73,7 +72,8 @@
                 "maxNumericValue": 600
               }
             ]
-          }
+          },
+          "aggregationMethod": "median-run"
         },
         {
           "matchingUrlPattern": "^http://localhost:3000/.+",
@@ -126,7 +126,8 @@
                 "maxNumericValue": 600
               }
             ]
-          }
+          },
+          "aggregationMethod": "median-run"
         }
       ]
     },
