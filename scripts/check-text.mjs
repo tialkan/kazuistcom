@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Fails when a tracked text file contains U+2014 (em dash). plan.md is the only exception.
+// Fails when a tracked text file contains U+2014 (em dash). plan.md is the only exception; generated build
+// output (infra/karsilama/site, third party bundles) is not authored text and is skipped.
 // Also checks user facing text (packages/i18n, content) against content/yasak-ifadeler.txt.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
@@ -12,7 +13,9 @@ const files = execFileSync('git', ['ls-files', '--cached', '--others', '--exclud
   encoding: 'utf8',
 })
   .split('\n')
-  .filter((f) => f && !EXEMPT.has(f) && !BINARY.test(f) && existsSync(f));
+  .filter(
+    (f) => f && !EXEMPT.has(f) && !f.startsWith('infra/karsilama/site/') && !BINARY.test(f) && existsSync(f),
+  );
 
 const banned = existsSync('content/yasak-ifadeler.txt')
   ? readFileSync('content/yasak-ifadeler.txt', 'utf8')
