@@ -8,12 +8,11 @@
 ## 28 Kasım 2026, karşılama ve lansman sayfası (feat/karsilama-lansman)
 
 - `/` artık tam ekran karşılama sahnesi: gök, dönen güneş ışınları, kaydırmayla sonsuz gün döngüsü, risograf bulutlar (ekranda en çok 3), dağ, Kazu, kuma gömülen KAZUIST harfleri, serap, kum taneleri, kâğıt dokusu. Eski ürün ana sayfası git geçmişinde.
-- Tek çağrı düğmesi `/lansman` sayfasına gider; geri sayım 12 Aralık 2026 00:00 (İstanbul) içindir.
+- Tek çağrı düğmesi `/lansman` sayfasına gider; geri sayım 12 Aralık 2026 12:12 (İstanbul) içindir; saat Tarık'tan geldi.
 - Kod: `apps/web/src/app/_karsilama/`, `apps/web/src/app/lansman/`, görseller `apps/web/public/karsilama/` (Midjourney, webp). Metinler `packages/i18n/tr/ortak.json` > `karsilama`.
 - Gökte el yazısı efekti: dağ stilindeki dolma kalem (`public/karsilama/kalem.webp`) akademik kelimeler yazar, kelime bitmeden ilk harfler silinmeye başlar. Yazı tipi Sacramento, bitişik el yazısı (OFL-1.1, `public/fonts/sacramento/`), kelimeler `karsilama.yazilar`.
 - Kazu tek pozda durur; Midjourney Editor ile yalnız gözleri ve yalnız kuyruğu yeniden çizilmiş iki kare (`kazu-goz`, `kazu-kuyruk`) arada göz kırpma ve kuyruk sallama verir.
 - Lighthouse: `/` için performans eşiği 0,7'ye indirildi (`infra/lighthouse/lighthouserc.json` assertMatrix). Gerekçe: tam ekran görsel karşılama sahnesi; simüle mobilde ölçülen 0,77 ila 0,85. Diğer adreslerin eşiği 0,9 olarak kaldı. Sahne hareketi boşta başlar, ikincil görseller sonra yüklenir, dağ görseli önceliklidir.
-- Açık: lansman saati Tarık'tan teyit edilmeli (00:00 varsayıldı).
 
 ## 15 Kasım 2026, kimlik: hesap ön ele geçirme, e-posta yokken 503, kaldırma ve anonimleştirme ekranları (kimlik/on-ele-gecirme-eposta-kuyruklar)
 
